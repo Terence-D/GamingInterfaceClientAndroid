@@ -21,4 +21,5 @@
     <string name="activity_edit_button_save">Save</string>
     <string name="title_fragment_edit">Edit</string>
     <string name="main_warning">Warning - do NOT use an existing password that you use ANYWHERE else!</string>
+    <string name="edit_helpmsg">To start adding controls, double tap on the screen.  Tap on a control to reselect it</string>
 </resources>

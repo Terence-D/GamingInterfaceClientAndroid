@@ -35,11 +35,13 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditActivity extends AbstractGameActivity implements EditFragment.EditDialogListener {
+public class EditActivity extends AbstractGameActivity implements EditFragment.EditDialogListener, SeekBar.OnSeekBarChangeListener {
     private GestureDetector gd;
     private int currentApiVersion;
     private SeekBar horizontal;
     private SeekBar vertical;
+    private SeekBar width;
+    private SeekBar height;
 
     @SuppressLint("NewApi")
     @Override
@@ -70,15 +72,26 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
         loadControls();
 
-        if (activeControl > -1) {
-            findViewById(R.id.btnEdit).setVisibility(View.VISIBLE);
-            findViewById(R.id.btnDelete).setVisibility(View.VISIBLE);
-        }
+        if (activeControl > -1)
+            toggleEditControls(View.VISIBLE);
+        else
+            toggleEditControls(View.GONE);
+    }
+
+    private void toggleEditControls(int visibility) {
+        findViewById(R.id.btnEdit).setVisibility(visibility);
+        findViewById(R.id.btnDelete).setVisibility(visibility);
+        findViewById(R.id.seekHorizontal).setVisibility(visibility);
+        findViewById(R.id.seekVertical).setVisibility(visibility);
+        findViewById(R.id.seekHeight).setVisibility(visibility);
+        findViewById(R.id.seekWidth).setVisibility(visibility);
     }
 
     private void setupControls() {
         horizontal = findViewById(R.id.seekHorizontal);
         vertical = findViewById(R.id.seekVertical);
+        width = findViewById(R.id.seekWidth);
+        height = findViewById(R.id.seekHeight);
 
         findViewById(R.id.topLayout).setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -90,41 +103,13 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
         horizontal.setMax(display.getWidth() - 32);
         vertical.setMax(display.getHeight() - 32);
-        horizontal.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if (activeControl >= 0) {
-                    controls.get(activeControl).setX(i);
-                }
-            }
+        width.setMax(400);
+        height.setMax(400);
+        horizontal.setOnSeekBarChangeListener(this);
+        vertical.setOnSeekBarChangeListener(this);
+        width.setOnSeekBarChangeListener(this);
+        height.setOnSeekBarChangeListener(this);
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        vertical.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if (activeControl >= 0)
-                    controls.get(activeControl).setY(i);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         findViewById(R.id.btnEdit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,8 +127,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                     layout.removeView(controls.get(activeControl));
                     controls.remove(activeControl);
                     activeControl = -1;
-                    findViewById(R.id.btnEdit).setVisibility(View.GONE);
-                    findViewById(R.id.btnDelete).setVisibility(View.GONE);
+                    toggleEditControls(View.GONE);
                 }
             }
         });
@@ -234,8 +218,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         activeControl = controls.size() - 1;
         horizontal.setProgress(0);
         vertical.setProgress(0);
-        findViewById(R.id.btnEdit).setVisibility(View.VISIBLE);
-        findViewById(R.id.btnDelete).setVisibility(View.VISIBLE);
+        width.setProgress(myButton.getWidth());
+        height.setProgress(myButton.getHeight());
+        toggleEditControls(View.VISIBLE);
     }
 
     @Override
@@ -243,11 +228,43 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         activeControl = view.getId();
         horizontal.setProgress((int) view.getX());
         vertical.setProgress((int) view.getY());
+        width.setProgress(view.getWidth());
+        height.setProgress(view.getHeight());
     }
 
     @Override
     public void onFinishEditDialog(String command, String text) {
         ((Button) controls.get(activeControl)).setText(text);
         controls.get(activeControl).setTag(command);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+        if (activeControl >= 0) {
+            switch (seekBar.getId()) {
+                case R.id.seekHorizontal:
+                    controls.get(activeControl).setX(i);
+                    break;
+                case R.id.seekVertical:
+                    controls.get(activeControl).setY(i);
+                    break;
+                case R.id.seekHeight:
+                    controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(controls.get(activeControl).getWidth(), i));
+                    break;
+                case R.id.seekWidth:
+                    controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(i, controls.get(activeControl).getHeight()));
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 }
