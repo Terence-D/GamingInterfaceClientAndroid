@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Gaming Interface Client</string>
+
+    <string name="title_activity_game_interface">Game Interface</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="hint_url">Address</string>
+    <string name="hint_port">Port Number</string>
+    <string name="hint_password">Password</string>
+    <string name="button_start">Start</string>
+
+    <string name="title_activity_edit">EditActivity</string>
+    <string name="button_edit">Edit</string>
+    <string name="fragment_edit_button_edit">Edit</string>
+    <string name="fragment_edit_button_save">Save</string>
+    <string name="fragment_edit_text_command">Command</string>
+    <string name="fragment_edit_text_text">Text</string>
+
+    <string name="activity_edit_button_edit">Edit</string>
+    <string name="activity_edit_button_delete">Delete</string>
+    <string name="activity_edit_button_save">Save</string>
+    <string name="title_fragment_edit">Edit</string>
+    <string name="main_warning">Warning - do NOT use an existing password that you use ANYWHERE else!</string>
+</resources>
