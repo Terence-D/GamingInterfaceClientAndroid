@@ -1,7 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,9 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Result;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.CommandService;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.RestClientInstance;
@@ -36,8 +35,6 @@ import retrofit2.Response;
  limitations under the License.
  */
 public class GameActivity extends AbstractGameActivity {
-    private ProgressDialog progressDoalog;
-    private List<View> controls = new ArrayList<>();
     private String password;
     private String port;
     private String address;
@@ -96,15 +93,16 @@ public class GameActivity extends AbstractGameActivity {
     }
 
     private void makeCall(String key) {
-        progressDoalog = new ProgressDialog(GameActivity.this);
-
         String url = "http://" + address + ":" + port + "/";
 
         CommandService routeMap = RestClientInstance.getRetrofitInstance(url).create(CommandService.class);
 
         String auth = Credentials.basic("gic", password);
 
-        Call<List<Result>> call = routeMap.getSimpleCommand(auth, key);
+        Command command = new Command();
+        command.setKey(key);
+        //command.addModifier("LSHIFT");
+        Call<List<Result>> call = routeMap.postComplexCommand(auth, command);
 
         call.enqueue(new Callback<List<Result>>() {
             @Override

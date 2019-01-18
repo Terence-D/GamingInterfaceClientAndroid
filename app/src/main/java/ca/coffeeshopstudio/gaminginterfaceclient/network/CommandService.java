@@ -27,17 +27,9 @@ import retrofit2.http.Path;
  limitations under the License.
  */
 public interface CommandService {
-
-    //String auth = "Authorization: Basic XXXXX";
-    //String contentType = "Content-Type: application/json";
-
     @GET("/api/key/{key}")
     Call<List<Result>> getSimpleCommand(@Header("Authorization") String auth, @Path("key") String command);
 
     @POST("/api/key")
-//    @Headers({
-//            contentType,
-//            auth
-//    })
-    Call<List<Result>> postComplexCommand(@Body Command command);
+    Call<List<Result>> postComplexCommand(@Header("Authorization") String auth, @Body Command command);
 }
