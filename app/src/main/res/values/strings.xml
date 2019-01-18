@@ -13,8 +13,14 @@
     <string name="button_edit">Edit</string>
     <string name="fragment_edit_button_edit">Edit</string>
     <string name="fragment_edit_button_save">Save</string>
-    <string name="fragment_edit_text_command">Command</string>
-    <string name="fragment_edit_text_text">Text</string>
+    <string name="fragment_edit_button_delete">Delete</string>
+    <string name="fragment_edit_text_text">Button Text</string>
+    <string name="fragment_edit_text_left_shift">LShift</string>
+    <string name="fragment_edit_text_left_ctrl">LCtrl</string>
+    <string name="fragment_edit_text_left_alt">LAlt</string>
+    <string name="fragment_edit_text_right_shift">RShift</string>
+    <string name="fragment_edit_text_right_ctrl">RCtrl</string>
+    <string name="fragment_edit_text_right_alt">RAlt</string>
 
     <string name="activity_edit_button_edit">Edit</string>
     <string name="activity_edit_button_delete">Delete</string>

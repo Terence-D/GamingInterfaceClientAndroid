@@ -58,7 +58,7 @@ public class EditFragment extends DialogFragment {
         // Show soft keyboard automatically and request focus to field
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        final TextView command = view.findViewById(R.id.txtKey);
+        final TextView command = view.findViewById(R.id.txtText); //TODO temp fix to allow compiling until i set it up properly
         final TextView text = view.findViewById(R.id.txtText);
         view.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
