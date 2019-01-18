@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -92,16 +91,13 @@ public class GameActivity extends AbstractGameActivity {
         }
     }
 
-    private void makeCall(String key) {
+    private void makeCall(Command command) {
         String url = "http://" + address + ":" + port + "/";
 
         CommandService routeMap = RestClientInstance.getRetrofitInstance(url).create(CommandService.class);
 
         String auth = Credentials.basic("gic", password);
 
-        Command command = new Command();
-        command.setKey(key);
-        //command.addModifier("LSHIFT");
         Call<List<Result>> call = routeMap.postComplexCommand(auth, command);
 
         call.enqueue(new Callback<List<Result>>() {
@@ -120,15 +116,6 @@ public class GameActivity extends AbstractGameActivity {
 
     @Override
     public void onClick(View view) {
-        Log.d("TAG", "onClick: " + view.getTag());
-        makeCall(String.valueOf(view.getTag()));
-//        switch (view.getId()) {
-//            case R.id.button3:
-//                makeCall("x");
-//                break;
-//            case R.id.button4:
-//                makeCall("t");
-//                break;
-//        }
+        makeCall((Command) view.getTag());
     }
 }

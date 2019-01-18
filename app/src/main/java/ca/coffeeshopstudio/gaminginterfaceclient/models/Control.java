@@ -19,9 +19,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class Control {
     @JsonProperty("command")
-    private String command;
-    @JsonProperty("modifiers")
-    private String modifiers;
+    private Command command;
     @JsonProperty("text")
     private String text;
     @JsonProperty("left")
@@ -34,24 +32,13 @@ public class Control {
     private int height;
 
     @JsonProperty("command")
-    public void setCommand(String command) {
-        this.command = command;
-    }
-
-    @JsonProperty("command")
-    public String getCommand() {
+    public Command getCommand() {
         return command;
     }
 
-    @JsonProperty("modifiers")
-    public void setModifiers(String modifiers) {
-        this.modifiers = modifiers;
-    }
-
-    @JsonProperty("modifiers")
-    public String getModifers() {
-        return modifiers;
-
+    @JsonProperty("command")
+    public void setCommand(Command command) {
+        this.command = command;
     }
 
     @JsonProperty("text")

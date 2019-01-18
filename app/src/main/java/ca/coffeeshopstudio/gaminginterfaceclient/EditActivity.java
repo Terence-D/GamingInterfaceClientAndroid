@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
 
 /**
@@ -141,7 +142,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 try {
                     for (View aview : controls ) {
                         Control control = new Control();
-                        control.setCommand((String) aview.getTag());
+                        control.setCommand((Command) aview.getTag());
                         control.setWidth(aview.getWidth());
                         control.setLeft(aview.getX());
                         control.setText(((Button)aview).getText().toString());
@@ -235,7 +236,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onFinishEditDialog(String command, String text) {
         ((Button) controls.get(activeControl)).setText(text);
-        controls.get(activeControl).setTag(command);
+        Command toSend = new Command();
+        toSend.setKey(command);
+        controls.get(activeControl).setTag(toSend);
     }
 
     @Override
