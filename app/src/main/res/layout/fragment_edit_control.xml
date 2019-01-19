@@ -12,7 +12,7 @@
         android:layout_marginTop="32dp"
         android:text="@string/fragment_edit_button_save"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox5" />
+        app:layout_constraintTop_toBottomOf="@+id/chkRCtrl" />
 
     <EditText
         android:id="@+id/txtText"
@@ -36,33 +36,33 @@
         android:layout_marginEnd="8dp"
         android:text="@string/fragment_edit_button_delete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox5" />
+        app:layout_constraintTop_toBottomOf="@+id/chkRCtrl" />
 
     <Spinner
         android:id="@+id/spinner"
-        android:layout_width="395dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:spinnerMode="dialog"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtText" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/chkLCtrl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/fragment_edit_text_left_ctrl"
-        app:layout_constraintEnd_toStartOf="@+id/checkBox4"
-        app:layout_constraintStart_toEndOf="@+id/checkBox2"
+        app:layout_constraintEnd_toStartOf="@+id/chkLAlt"
+        app:layout_constraintStart_toEndOf="@+id/chkLShift"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <CheckBox
-        android:id="@+id/checkBox2"
+        android:id="@+id/chkLShift"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -72,17 +72,18 @@
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <CheckBox
-        android:id="@+id/checkBox3"
+        android:id="@+id/chkRShift"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/fragment_edit_text_right_shift"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
+        app:layout_constraintTop_toBottomOf="@+id/chkLShift" />
 
     <CheckBox
-        android:id="@+id/checkBox4"
+        android:id="@+id/chkLAlt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -92,24 +93,38 @@
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <CheckBox
-        android:id="@+id/checkBox5"
+        android:id="@+id/chkRCtrl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/fragment_edit_text_right_ctrl"
-        app:layout_constraintEnd_toStartOf="@+id/checkBox6"
-        app:layout_constraintStart_toEndOf="@+id/checkBox3"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/chkRAlt"
+        app:layout_constraintStart_toEndOf="@+id/chkRShift"
+        app:layout_constraintTop_toBottomOf="@+id/chkLCtrl" />
 
     <CheckBox
-        android:id="@+id/checkBox6"
+        android:id="@+id/chkRAlt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/fragment_edit_text_right_alt"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox4" />
+        app:layout_constraintTop_toBottomOf="@+id/chkLAlt" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/edit_fragment"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtText" />
 </android.support.constraint.ConstraintLayout>

@@ -115,8 +115,13 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             @Override
             public void onClick(View view) {
                 FragmentManager fm = getSupportFragmentManager();
-
-                EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit));
+                Command commandToSend = null;
+                String buttonText = null;
+                if (activeControl >= 0) {
+                    buttonText = (String) ((Button) controls.get(activeControl)).getText();
+                    commandToSend = ((Command) controls.get(activeControl).getTag());
+                }
+                EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend);
                 editNameDialogFragment.show(fm, "fragment_edit_name");
             }
         });
@@ -234,11 +239,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     @Override
-    public void onFinishEditDialog(String command, String text) {
+    public void onFinishEditDialog(Command command, String text) {
         ((Button) controls.get(activeControl)).setText(text);
-        Command toSend = new Command();
-        toSend.setKey(command);
-        controls.get(activeControl).setTag(toSend);
+        controls.get(activeControl).setTag(command);
     }
 
     @Override
