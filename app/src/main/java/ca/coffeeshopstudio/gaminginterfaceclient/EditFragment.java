@@ -7,7 +7,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -24,10 +35,22 @@ import android.widget.TextView;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditFragment extends DialogFragment {
+public class EditFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
 
-    public interface EditDialogListener {
-        void onFinishEditDialog(String command, String text);
+    private AutoItKeyMap map = new AutoItKeyMap();
+    private Spinner spinner;
+    private Command commandToLoad = null;
+    private String commandName;
+
+    public static EditFragment newInstance(String title, String text, Command command) {
+        EditFragment frag = new EditFragment();
+        Bundle args = new Bundle();
+        args.putString("title", title);
+        args.putString("text", text);
+        frag.setArguments(args);
+        if (command != null)
+            frag.loadCommand(command);
+        return frag;
     }
 
     // Empty constructor is required for DialogFragment
@@ -36,12 +59,20 @@ public class EditFragment extends DialogFragment {
     public EditFragment() {
     }
 
-    public static EditFragment newInstance(String title) {
-        EditFragment frag = new EditFragment();
-        Bundle args = new Bundle();
-        args.putString("title", title);
-        frag.setArguments(args);
-        return frag;
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        // Fetch arguments from bundle and set title
+        String title = getArguments().getString("title", "Enter Name");
+        commandName = getArguments().getString("text", "");
+        getDialog().setTitle(title);
+        // Show soft keyboard automatically and request focus to field
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        setupControls(view);
+    }
+
+    public void loadCommand(Command command) {
+        commandToLoad = command;
     }
 
     @Override
@@ -49,24 +80,109 @@ public class EditFragment extends DialogFragment {
         return inflater.inflate(R.layout.fragment_edit_control, container);
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // Fetch arguments from bundle and set title
-        String title = getArguments().getString("title", "Enter Name");
-        getDialog().setTitle(title);
-        // Show soft keyboard automatically and request focus to field
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
-        final TextView command = view.findViewById(R.id.txtKey);
+    private void setupControls(View view) {
         final TextView text = view.findViewById(R.id.txtText);
+
+        buildCommandSpinner(view);
+
+        final CheckBox lShift = view.findViewById(R.id.chkLShift);
+        final CheckBox rShift = view.findViewById(R.id.chkRShift);
+        final CheckBox lCtrl = view.findViewById(R.id.chkLCtrl);
+        final CheckBox rCtrl = view.findViewById(R.id.chkRCtrl);
+        final CheckBox lAlt = view.findViewById(R.id.chkLAlt);
+        final CheckBox rAlt = view.findViewById(R.id.chkRAlt);
+
+        text.setText(commandName);
+        //load in any data we brought in
+        if (commandToLoad != null) {
+            for (int i = 0; i < commandToLoad.getModifiers().size(); i++) {
+                if (commandToLoad.getModifiers().get(i).equals("ALT"))
+                    lAlt.setChecked(true);
+                else
+                    lAlt.setChecked(false);
+                if (commandToLoad.getModifiers().get(i).equals("CTRL"))
+                    lCtrl.setChecked(true);
+                else
+                    lCtrl.setChecked(false);
+                if (commandToLoad.getModifiers().get(i).equals("SHIFT"))
+                    lShift.setChecked(true);
+                else
+                    lShift.setChecked(false);
+            }
+        }
+
         view.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditDialogListener listener = (EditDialogListener) getActivity();
-                listener.onFinishEditDialog(command.getText().toString(), text.getText().toString());
+
+                Command savedCommand = new Command();
+                List<String> keys = new ArrayList<>(map.getKeys().keySet());
+                savedCommand.setKey(keys.get(spinner.getSelectedItemPosition()));
+
+                if (lShift.isChecked()) {
+                    savedCommand.addModifier("SHIFT");
+                }
+                if (lCtrl.isChecked()) {
+                    savedCommand.addModifier("CTRL");
+                }
+                if (lAlt.isChecked()) {
+                    savedCommand.addModifier("ALT");
+                }
+                //for now disabling "right" handed modifiers.  AutoIt seems to have a bug
+                //where it won't properly release them.
+//                if (rShift.isChecked()) {
+//                    savedCommand.addModifier("SHIFT");
+//                }
+//                if (rCtrl.isChecked()) {
+//                    savedCommand.addModifier("CTRL");
+//                }
+//                if (rAlt.isChecked()) {
+//                    savedCommand.addModifier("ALT");
+//                }
+
+                listener.onFinishEditDialog(savedCommand, text.getText().toString());
                 dismiss();
             }
         });
     }
+
+    private void buildCommandSpinner(View view) {
+        spinner = view.findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(this);
+
+        Collection<String> values = map.getKeys().values();
+        String[] spinnerArray = values.toArray(new String[values.size()]);
+        ArrayAdapter<CharSequence> dataAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(dataAdapter);
+
+        if (commandToLoad != null) {
+            String key = commandToLoad.getKey();
+            List<String> keys = new ArrayList<>(map.getKeys().keySet());
+
+            for (int i = 0; i < keys.size(); i++) {
+                if (keys.get(i).equals(key)) {
+                    spinner.setSelection(i);
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    public interface EditDialogListener {
+        void onFinishEditDialog(Command command, String text);
+    }
+
 }
