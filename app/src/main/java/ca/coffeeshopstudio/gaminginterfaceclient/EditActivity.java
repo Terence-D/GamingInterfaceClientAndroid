@@ -81,7 +81,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
     private void toggleEditControls(int visibility) {
         findViewById(R.id.btnEdit).setVisibility(visibility);
-        findViewById(R.id.btnDelete).setVisibility(visibility);
         findViewById(R.id.seekHorizontal).setVisibility(visibility);
         findViewById(R.id.seekVertical).setVisibility(visibility);
         findViewById(R.id.seekHeight).setVisibility(visibility);
@@ -123,18 +122,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 }
                 EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend);
                 editNameDialogFragment.show(fm, "fragment_edit_name");
-            }
-        });
-        findViewById(R.id.btnDelete).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (activeControl >= 0) {
-                    FrameLayout layout = findViewById(R.id.topLayout);
-                    layout.removeView(controls.get(activeControl));
-                    controls.remove(activeControl);
-                    activeControl = -1;
-                    toggleEditControls(View.GONE);
-                }
             }
         });
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
@@ -240,8 +227,18 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
     @Override
     public void onFinishEditDialog(Command command, String text) {
-        ((Button) controls.get(activeControl)).setText(text);
-        controls.get(activeControl).setTag(command);
+        if (command == null && text.equals("DELETE")) {
+            if (activeControl >= 0) {
+                FrameLayout layout = findViewById(R.id.topLayout);
+                layout.removeView(controls.get(activeControl));
+                controls.remove(activeControl);
+                activeControl = -1;
+                toggleEditControls(View.GONE);
+            }
+        } else {
+            ((Button) controls.get(activeControl)).setText(text);
+            controls.get(activeControl).setTag(command);
+        }
     }
 
     @Override

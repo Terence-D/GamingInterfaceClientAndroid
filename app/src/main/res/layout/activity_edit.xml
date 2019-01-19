@@ -54,16 +54,6 @@
         android:layout_marginBottom="32dp"
         android:text="@string/activity_edit_button_save" />
 
-    <Button
-        android:id="@+id/btnDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:visibility="gone"
-        android:text="@string/activity_edit_button_delete" />
-
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"

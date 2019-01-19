@@ -35,12 +35,20 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditFragment extends DialogFragment implements AdapterView.OnItemSelectedListener {
+public class EditFragment extends DialogFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private AutoItKeyMap map = new AutoItKeyMap();
     private Spinner spinner;
     private Command commandToLoad = null;
     private String commandName;
+    private CheckBox lShift;
+    private CheckBox rShift;
+    private CheckBox lCtrl;
+    private CheckBox rCtrl;
+    private CheckBox lAlt;
+    private CheckBox rAlt;
+    private TextView text;
+
 
     public static EditFragment newInstance(String title, String text, Command command) {
         EditFragment frag = new EditFragment();
@@ -81,16 +89,15 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     }
 
     private void setupControls(View view) {
-        final TextView text = view.findViewById(R.id.txtText);
+        text = view.findViewById(R.id.txtText);
+        lShift = view.findViewById(R.id.chkLShift);
+        rShift = view.findViewById(R.id.chkRShift);
+        lCtrl = view.findViewById(R.id.chkLCtrl);
+        rCtrl = view.findViewById(R.id.chkRCtrl);
+        lAlt = view.findViewById(R.id.chkLAlt);
+        rAlt = view.findViewById(R.id.chkRAlt);
 
         buildCommandSpinner(view);
-
-        final CheckBox lShift = view.findViewById(R.id.chkLShift);
-        final CheckBox rShift = view.findViewById(R.id.chkRShift);
-        final CheckBox lCtrl = view.findViewById(R.id.chkLCtrl);
-        final CheckBox rCtrl = view.findViewById(R.id.chkRCtrl);
-        final CheckBox lAlt = view.findViewById(R.id.chkLAlt);
-        final CheckBox rAlt = view.findViewById(R.id.chkRAlt);
 
         text.setText(commandName);
         //load in any data we brought in
@@ -111,40 +118,8 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
             }
         }
 
-        view.findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditDialogListener listener = (EditDialogListener) getActivity();
-
-                Command savedCommand = new Command();
-                List<String> keys = new ArrayList<>(map.getKeys().keySet());
-                savedCommand.setKey(keys.get(spinner.getSelectedItemPosition()));
-
-                if (lShift.isChecked()) {
-                    savedCommand.addModifier("SHIFT");
-                }
-                if (lCtrl.isChecked()) {
-                    savedCommand.addModifier("CTRL");
-                }
-                if (lAlt.isChecked()) {
-                    savedCommand.addModifier("ALT");
-                }
-                //for now disabling "right" handed modifiers.  AutoIt seems to have a bug
-                //where it won't properly release them.
-//                if (rShift.isChecked()) {
-//                    savedCommand.addModifier("SHIFT");
-//                }
-//                if (rCtrl.isChecked()) {
-//                    savedCommand.addModifier("CTRL");
-//                }
-//                if (rAlt.isChecked()) {
-//                    savedCommand.addModifier("ALT");
-//                }
-
-                listener.onFinishEditDialog(savedCommand, text.getText().toString());
-                dismiss();
-            }
-        });
+        view.findViewById(R.id.btnSave).setOnClickListener(this);
+        view.findViewById(R.id.btnDelete).setOnClickListener(this);
     }
 
     private void buildCommandSpinner(View view) {
@@ -181,7 +156,51 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
 
     }
 
-    public interface EditDialogListener {
+    @Override
+    public void onClick(View view) {
+        EditDialogListener listener = (EditDialogListener) getActivity();
+        Command savedCommand = null;
+        String title;
+        switch (view.getId()) {
+            case R.id.btnSave:
+                savedCommand = new Command();
+                List<String> keys = new ArrayList<>(map.getKeys().keySet());
+                savedCommand.setKey(keys.get(spinner.getSelectedItemPosition()));
+
+                title = text.getText().toString();
+
+                if (lShift.isChecked()) {
+                    savedCommand.addModifier("SHIFT");
+                }
+                if (lCtrl.isChecked()) {
+                    savedCommand.addModifier("CTRL");
+                }
+                if (lAlt.isChecked()) {
+                    savedCommand.addModifier("ALT");
+                }
+                //for now disabling "right" handed modifiers.  AutoIt seems to have a bug
+                //where it won't properly release them.
+//                if (rShift.isChecked()) {
+//                    savedCommand.addModifier("SHIFT");
+//                }
+//                if (rCtrl.isChecked()) {
+//                    savedCommand.addModifier("CTRL");
+//                }
+//                if (rAlt.isChecked()) {
+//                    savedCommand.addModifier("ALT");
+//                }
+
+                break;
+            default:
+            case R.id.btnDelete:
+                title = "DELETE";
+                break;
+        }
+        listener.onFinishEditDialog(savedCommand, title);
+        dismiss();
+    }
+
+public interface EditDialogListener {
         void onFinishEditDialog(Command command, String text);
     }
 
