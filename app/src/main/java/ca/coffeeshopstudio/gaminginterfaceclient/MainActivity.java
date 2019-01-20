@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import ca.coffeeshopstudio.gaminginterfaceclient.utils.Encryption;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -56,7 +59,12 @@ public class MainActivity extends AppCompatActivity {
         TextView txtPort = findViewById(R.id.txtPort);
         TextView txtAddress = findViewById(R.id.txtAddress);
 
-        String password = txtPassword.getText().toString();
+        String password = encryptPassword(txtPassword.getText().toString());
+
+        if (password == null) {
+            Log.d("GIC", "startApp: Password Encryption Failure");
+        }
+
         String port = txtPort.getText().toString();
         String address = txtAddress.getText().toString();
         port = port.replaceFirst("\\s++$", "");
@@ -69,6 +77,16 @@ public class MainActivity extends AppCompatActivity {
 
         saveSettings(password, port, address);
         MainActivity.this.startActivity(myIntent);
+    }
+
+    private String encryptPassword(String original) {
+        Encryption aes = new Encryption();
+        try {
+            return aes.encrypt(original);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void saveSettings(String password, String port, String address) {
