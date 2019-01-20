@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -56,7 +59,17 @@ public class MainActivity extends AppCompatActivity {
         TextView txtPort = findViewById(R.id.txtPort);
         TextView txtAddress = findViewById(R.id.txtAddress);
 
-        String password = txtPassword.getText().toString();
+        String password = null;
+        try {
+            password = CryptoHelper.encrypt(txtPassword.getText().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (password == null) {
+            Log.d("GIC", "startApp: Password Encryption Failure");
+        }
+
         String port = txtPort.getText().toString();
         String address = txtAddress.getText().toString();
         port = port.replaceFirst("\\s++$", "");
