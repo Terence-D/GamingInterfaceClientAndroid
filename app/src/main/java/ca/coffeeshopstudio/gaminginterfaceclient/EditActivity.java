@@ -72,7 +72,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     private void toggleEditControls(int visibility) {
-        findViewById(R.id.btnEdit).setVisibility(visibility);
         findViewById(R.id.seekHorizontal).setVisibility(visibility);
         findViewById(R.id.seekVertical).setVisibility(visibility);
         findViewById(R.id.seekHeight).setVisibility(visibility);
@@ -101,21 +100,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         vertical.setOnSeekBarChangeListener(this);
         width.setOnSeekBarChangeListener(this);
         height.setOnSeekBarChangeListener(this);
-
-        findViewById(R.id.btnEdit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fm = getSupportFragmentManager();
-                Command commandToSend = null;
-                String buttonText = null;
-                if (activeControl >= 0) {
-                    buttonText = (String) ((Button) controls.get(activeControl)).getText();
-                    commandToSend = ((Command) controls.get(activeControl).getTag());
-                }
-                EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend);
-                editNameDialogFragment.show(fm, "fragment_edit_name");
-            }
-        });
 
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +181,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
             @Override
             public boolean onDown(MotionEvent e) {
+                if (activeControl >= 0) {
+                    findViewById(controls.get(activeControl).getId()).setBackgroundResource(R.drawable.button_standard);
+                }
+
+                toggleEditControls(View.GONE);
                 return true;
             }
         });
@@ -206,7 +195,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         FrameLayout layout = findViewById(R.id.topLayout);
         if (activeControl >= 0) {
             findViewById(controls.get(activeControl).getId()).setBackgroundResource(R.drawable.button_standard);
-            //controls.get(activeControl).setBackgroundResource(R.drawable.button_selector);
         }
 
         Button myButton = new Button(context);
@@ -225,18 +213,34 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         layout.addView(myButton, lp);
     }
 
+    private void displayEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        Command commandToSend = null;
+        String buttonText = null;
+        if (activeControl >= 0) {
+            buttonText = (String) ((Button) controls.get(activeControl)).getText();
+            commandToSend = ((Command) controls.get(activeControl).getTag());
+        }
+        EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend);
+        editNameDialogFragment.show(fm, "fragment_edit_name");
+    }
+
     @Override
     public void onClick(View view) {
-        if (activeControl >= 0) {
-            controls.get(activeControl).setBackgroundResource(R.drawable.button_standard);
+        if (activeControl == view.getId()) {
+            displayEditDialog();
+        } else {
+            if (activeControl >= 0) {
+                controls.get(activeControl).setBackgroundResource(R.drawable.button_standard);
+            }
+            activeControl = view.getId();
+            view.setBackgroundResource(R.drawable.selected_button);
+            horizontal.setProgress((int) view.getX());
+            vertical.setProgress((int) view.getY());
+            width.setProgress(view.getWidth());
+            height.setProgress(view.getHeight());
+            toggleEditControls(View.VISIBLE);
         }
-        activeControl = view.getId();
-        view.setBackgroundResource(R.drawable.selected_button);
-        horizontal.setProgress((int) view.getX());
-        vertical.setProgress((int) view.getY());
-        width.setProgress(view.getWidth());
-        height.setProgress(view.getHeight());
-        toggleEditControls(View.VISIBLE);
     }
 
     @Override
