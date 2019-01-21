@@ -11,10 +11,13 @@
         android:id="@+id/seekHorizontal"
         android:layout_width="match_parent"
         android:visibility="gone"
+        android:layout_margin="@dimen/seekbar_margin"
+        android:layout_marginStart="32dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" />
     <android.widget.VerticalSeekBar
         android:id="@+id/seekVertical"
+        android:layout_margin="@dimen/seekbar_margin"
         android:layout_width="wrap_content"
         android:visibility="gone"
         android:layout_height="match_parent"
@@ -24,6 +27,7 @@
     <SeekBar
         android:id="@+id/seekWidth"
         android:layout_width="match_parent"
+        android:layout_margin="@dimen/seekbar_margin"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:visibility="gone" />
@@ -31,6 +35,7 @@
     <android.widget.VerticalSeekBar
         android:id="@+id/seekHeight"
         android:layout_width="wrap_content"
+        android:layout_margin="@dimen/seekbar_margin"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:visibility="gone" />

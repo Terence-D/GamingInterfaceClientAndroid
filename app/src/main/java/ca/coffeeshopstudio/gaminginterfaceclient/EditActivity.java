@@ -18,6 +18,7 @@ import android.widget.SeekBar;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.Map;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
@@ -110,10 +111,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 ObjectMapper mapper = new ObjectMapper();
 
                 //first we need to remove all existing controls
-                int i=0;
-                while (prefs.contains("control_" + i)){
-                    prefsEditor.remove("control_" + i);
-                    i++;
+                Map<String,?> keys = prefs.getAll();
+                for (Map.Entry<String, ?> entry : keys.entrySet()) {
+                    if (entry.getKey().contains("control_")) {
+                        prefsEditor.remove(entry.getKey());
+                    }
                 }
 
                 try {
@@ -164,7 +166,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             //here is the method for double tap
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                //activeControl = -1;
                 addButton(context);
                 return true;
             }
@@ -181,11 +182,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
             @Override
             public boolean onDown(MotionEvent e) {
-                if (activeControl >= 0) {
-                    findViewById(controls.get(activeControl).getId()).setBackgroundResource(R.drawable.button_standard);
-                }
-
-                toggleEditControls(View.GONE);
+//                if (activeControl >= 0) {
+//                    findViewById(controls.get(activeControl).getId()).setBackgroundResource(R.drawable.button_standard);
+//                }
+//
+//                toggleEditControls(View.GONE);
                 return true;
             }
         });
