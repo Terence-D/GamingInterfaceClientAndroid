@@ -24,7 +24,7 @@ public class VerticalSeekBar extends android.support.v7.widget.AppCompatSeekBar 
     }
 
     @Override
-    public synchronized void setProgress(int progress)  // it is necessary for calling setProgress on click of a button
+    public synchronized void setProgress(int progress)  // it is necessary for calling setProgress on click of a button_standard
     {
         super.setProgress(progress);
         onSizeChanged(getWidth(), getHeight(), 0, 0);

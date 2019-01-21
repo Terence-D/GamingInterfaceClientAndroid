@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -62,21 +63,12 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_edit);
-
         setupFullScreen();
-
         setupDoubleTap(EditActivity.this);
-
         setupControls();
-
         loadControls();
-
-        if (activeControl > -1)
-            toggleEditControls(View.VISIBLE);
-        else
-            toggleEditControls(View.GONE);
+        toggleEditControls(View.GONE);
     }
 
     private void toggleEditControls(int visibility) {
@@ -124,6 +116,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 editNameDialogFragment.show(fm, "fragment_edit_name");
             }
         });
+
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,6 +124,14 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 SharedPreferences.Editor prefsEditor = prefs.edit();
 
                 ObjectMapper mapper = new ObjectMapper();
+
+                //first we need to remove all existing controls
+                int i=0;
+                while (prefs.contains("control_" + i)){
+                    prefsEditor.remove("control_" + i);
+                    i++;
+                }
+
                 try {
                     for (View aview : controls ) {
                         Control control = new Control();
@@ -142,6 +143,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                         control.setHeight(aview.getBottom());
                         String json = mapper.writeValueAsString(control);
                         prefsEditor.putString("control_" + aview.getId(), json);
+                        Log.d("debug", "onClick: " + aview.getId());
                     }
                     prefsEditor.apply();
                 } catch (IOException e) {
@@ -178,6 +180,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             //here is the method for double tap
             @Override
             public boolean onDoubleTap(MotionEvent e) {
+                //activeControl = -1;
                 addButton(context);
                 return true;
             }
@@ -200,29 +203,40 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     private void addButton(Context context) {
+        FrameLayout layout = findViewById(R.id.topLayout);
+        if (activeControl >= 0) {
+            findViewById(controls.get(activeControl).getId()).setBackgroundResource(R.drawable.button_standard);
+            //controls.get(activeControl).setBackgroundResource(R.drawable.button_selector);
+        }
+
         Button myButton = new Button(context);
+        myButton.setBackgroundResource(R.drawable.selected_button);
         myButton.setText("New");
         myButton.setId(controls.size());
-        FrameLayout layout = findViewById(R.id.topLayout);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(myButton, lp);
         myButton.setOnClickListener(this);
         controls.add(myButton);
         activeControl = controls.size() - 1;
         horizontal.setProgress(0);
         vertical.setProgress(0);
-        width.setProgress(myButton.getWidth());
-        height.setProgress(myButton.getHeight());
+        width.setProgress(100);
+        height.setProgress(100);
         toggleEditControls(View.VISIBLE);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        layout.addView(myButton, lp);
     }
 
     @Override
     public void onClick(View view) {
+        if (activeControl >= 0) {
+            controls.get(activeControl).setBackgroundResource(R.drawable.button_standard);
+        }
         activeControl = view.getId();
+        view.setBackgroundResource(R.drawable.selected_button);
         horizontal.setProgress((int) view.getX());
         vertical.setProgress((int) view.getY());
         width.setProgress(view.getWidth());
         height.setProgress(view.getHeight());
+        toggleEditControls(View.VISIBLE);
     }
 
     @Override

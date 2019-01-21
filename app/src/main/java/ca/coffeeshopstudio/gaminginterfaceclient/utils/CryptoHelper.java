@@ -56,7 +56,6 @@ public class CryptoHelper {
     public static String encrypt(String valueToEncrypt) throws Exception {
         CryptoHelper enc = new CryptoHelper();
         return Base64.encodeBase64String(enc.encryptInternal(valueToEncrypt));
-        //return Base64.encodeToString(enc.encryptInternal(valueToEncrypt), Base64.DEFAULT);
     }
 
     public static String decrypt(String valueToDecrypt) throws Exception {

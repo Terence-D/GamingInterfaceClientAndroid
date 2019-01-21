@@ -53,6 +53,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
         for (Control control : customControls) {
             Button button = new Button(AbstractGameActivity.this);
+            button.setBackgroundResource(R.drawable.button_selector);
             button.setX(control.getLeft());
             button.setY(control.getTop());
             button.setWidth(control.getWidth());
