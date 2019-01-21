@@ -61,6 +61,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             button.setTag(control.getCommand());
             button.setText(control.getText());
             button.setOnClickListener(this);
+                addDragDrop(button);
             FrameLayout layout = findViewById(R.id.topLayout);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
             layout.addView(button, lp);
@@ -70,6 +71,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         //activeControl = controls.size()-1;
 
     }
+
+    protected abstract void addDragDrop(View view);
 
     @Override
     public void onClick(View view) {

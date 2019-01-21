@@ -115,6 +115,11 @@ public class GameActivity extends AbstractGameActivity {
     }
 
     @Override
+    protected void addDragDrop(View view) {
+        //unused
+    }
+
+    @Override
     public void onClick(View view) {
         makeCall((Command) view.getTag());
     }

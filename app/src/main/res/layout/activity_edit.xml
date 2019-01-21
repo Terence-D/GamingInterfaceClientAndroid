@@ -8,23 +8,6 @@
     tools:context=".EditActivity">
 
     <SeekBar
-        android:id="@+id/seekHorizontal"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_margin="@dimen/seekbar_margin"
-        android:layout_marginStart="32dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
-    <android.widget.VerticalSeekBar
-        android:id="@+id/seekVertical"
-        android:layout_margin="@dimen/seekbar_margin"
-        android:layout_width="wrap_content"
-        android:visibility="gone"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        />
-
-    <SeekBar
         android:id="@+id/seekWidth"
         android:layout_width="match_parent"
         android:layout_margin="@dimen/seekbar_margin"
@@ -44,9 +27,7 @@
         android:id="@+id/btnSave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_gravity="bottom|end"
         android:text="@string/activity_edit_button_save" />
 
     <TextView
@@ -57,4 +38,11 @@
         android:layout_margin="120dp"
         android:text="@string/edit_helpmsg"
         android:textSize="18sp" />
+
+    <Switch
+        android:id="@+id/toggleMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:text="Switch" />
 </FrameLayout>

@@ -1,18 +1,22 @@
 package ca.coffeeshopstudio.gaminginterfaceclient;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.view.Display;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
+import android.widget.Switch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -40,10 +44,10 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
 public class EditActivity extends AbstractGameActivity implements EditFragment.EditDialogListener, SeekBar.OnSeekBarChangeListener {
     private GestureDetector gd;
     private int currentApiVersion;
-    private SeekBar horizontal;
-    private SeekBar vertical;
     private SeekBar width;
     private SeekBar height;
+    private boolean mode = false;
+    private int minSize = 48;
 
     @SuppressLint("NewApi")
     @Override
@@ -72,15 +76,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     private void toggleEditControls(int visibility) {
-        findViewById(R.id.seekHorizontal).setVisibility(visibility);
-        findViewById(R.id.seekVertical).setVisibility(visibility);
         findViewById(R.id.seekHeight).setVisibility(visibility);
         findViewById(R.id.seekWidth).setVisibility(visibility);
     }
 
     private void setupControls() {
-        horizontal = findViewById(R.id.seekHorizontal);
-        vertical = findViewById(R.id.seekVertical);
         width = findViewById(R.id.seekWidth);
         height = findViewById(R.id.seekHeight);
 
@@ -90,14 +90,18 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 return gd.onTouchEvent(event);
             }
         });
-        Display display = getWindowManager().getDefaultDisplay();
+        findViewById(R.id.topLayout).setOnDragListener(new MyDragListener());
 
-        horizontal.setMax(display.getWidth() - 32);
-        vertical.setMax(display.getHeight() - 32);
+        ((Switch) findViewById(R.id.toggleMode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mode = b;
+                toggleEditControls(View.GONE);
+            }
+        });
+
         width.setMax(400);
         height.setMax(400);
-        horizontal.setOnSeekBarChangeListener(this);
-        vertical.setOnSeekBarChangeListener(this);
         width.setOnSeekBarChangeListener(this);
         height.setOnSeekBarChangeListener(this);
 
@@ -197,13 +201,12 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         myButton.setBackgroundResource(R.drawable.selected_button);
         myButton.setText("New");
         myButton.setId(controls.size());
-        myButton.setOnClickListener(this);
+        //myButton.setOnClickListener(this);
+        myButton.setOnTouchListener(new MyTouchListener());
         controls.add(myButton);
         activeControl = controls.size() - 1;
-        horizontal.setProgress(0);
-        vertical.setProgress(0);
-        width.setProgress(100);
-        height.setProgress(100);
+        width.setProgress(myButton.getWidth() - minSize);
+        height.setProgress(myButton.getHeight() - minSize);
         toggleEditControls(View.VISIBLE);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layout.addView(myButton, lp);
@@ -223,6 +226,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     @Override
+    protected void addDragDrop(View view) {
+        view.setOnTouchListener(new MyTouchListener());
+    }
+
+    @Override
     public void onClick(View view) {
         if (activeControl == view.getId()) {
             displayEditDialog();
@@ -232,8 +240,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             }
             activeControl = view.getId();
             view.setBackgroundResource(R.drawable.selected_button);
-            horizontal.setProgress((int) view.getX());
-            vertical.setProgress((int) view.getY());
             width.setProgress(view.getWidth());
             height.setProgress(view.getHeight());
             toggleEditControls(View.VISIBLE);
@@ -259,13 +265,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         if (activeControl >= 0) {
+            i = i + minSize;
             switch (seekBar.getId()) {
-                case R.id.seekHorizontal:
-                    controls.get(activeControl).setX(i);
-                    break;
-                case R.id.seekVertical:
-                    controls.get(activeControl).setY(i);
-                    break;
                 case R.id.seekHeight:
                     controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(controls.get(activeControl).getWidth(), i));
                     break;
@@ -284,5 +285,49 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    private final class MyTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && mode) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                        view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+                return true;
+            } else {
+                Log.d("drag", "onTouch: " + motionEvent.toString());
+                return false;
+            }
+        }
+    }
+
+    private final class MyDragListener implements View.OnDragListener {
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    break;
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    break;
+                case DragEvent.ACTION_DROP:
+                    View view = (View) event.getLocalState();
+                    float x = event.getX();
+                    float y = event.getY();
+                    view.setX(x-(view.getWidth()/2));
+                    view.setY(y-(view.getHeight()/2));
+                    view.setVisibility(View.VISIBLE);
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                default:
+                    break;
+            }
+            return true;
+        }
     }
 }
