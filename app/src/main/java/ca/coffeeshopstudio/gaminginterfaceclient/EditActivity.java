@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -119,6 +118,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 }
 
                 try {
+                    int i = 0;
                     for (View aview : controls ) {
                         Control control = new Control();
                         control.setCommand((Command) aview.getTag());
@@ -128,8 +128,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                         control.setTop(aview.getY());
                         control.setHeight(aview.getBottom());
                         String json = mapper.writeValueAsString(control);
-                        prefsEditor.putString("control_" + aview.getId(), json);
-                        Log.d("debug", "onClick: " + aview.getId());
+                        prefsEditor.putString("control_" + i, json);
+                        i++;
                     }
                     prefsEditor.apply();
                 } catch (IOException e) {
@@ -219,6 +219,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         Command commandToSend = null;
         String buttonText = null;
         if (activeControl >= 0) {
+            buttonText = (String) ((Button) controls.get(activeControl)).getText();
             buttonText = (String) ((Button) controls.get(activeControl)).getText();
             commandToSend = ((Command) controls.get(activeControl).getTag());
         }
