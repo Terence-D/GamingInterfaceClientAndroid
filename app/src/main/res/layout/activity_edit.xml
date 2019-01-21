@@ -43,6 +43,6 @@
         android:id="@+id/toggleMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:text="Switch" />
+        android:layout_gravity="bottom|start"
+        android:text="@string/edit_activity_edit_mode" />
 </FrameLayout>

@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -17,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -96,7 +96,13 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 mode = b;
-                toggleEditControls(View.GONE);
+                if (mode) {
+                    toggleEditControls(View.GONE);
+                    Toast.makeText(EditActivity.this, R.string.edit_activity_drag_mode, Toast.LENGTH_SHORT).show();
+                } else if (activeControl > -1) {
+                    toggleEditControls(View.VISIBLE);
+                    Toast.makeText(EditActivity.this, R.string.edit_activity_detail_edit_mode, Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -205,8 +211,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         myButton.setOnTouchListener(new MyTouchListener());
         controls.add(myButton);
         activeControl = controls.size() - 1;
-        width.setProgress(myButton.getWidth() - minSize);
-        height.setProgress(myButton.getHeight() - minSize);
+        width.setProgress(myButton.getWidth() + minSize);
+        height.setProgress(myButton.getHeight() + minSize);
         toggleEditControls(View.VISIBLE);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layout.addView(myButton, lp);
@@ -296,8 +302,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 view.startDrag(data, shadowBuilder, view, 0);
                 view.setVisibility(View.INVISIBLE);
                 return true;
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                onClick(view);
+                return true;
             } else {
-                Log.d("drag", "onTouch: " + motionEvent.toString());
+                //Log.d("drag", "onTouch: " + motionEvent.toString());
                 return false;
             }
         }
