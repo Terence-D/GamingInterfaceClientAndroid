@@ -67,7 +67,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             controls.add(button);
             button.setId(controls.size()-1);
         }
-        activeControl = controls.size()-1;
+        //activeControl = controls.size()-1;
 
     }
 

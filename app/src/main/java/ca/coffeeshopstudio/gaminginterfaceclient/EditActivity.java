@@ -182,11 +182,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
             @Override
             public boolean onDown(MotionEvent e) {
-//                if (activeControl >= 0) {
-//                    findViewById(controls.get(activeControl).getId()).setBackgroundResource(R.drawable.button_standard);
-//                }
-//
-//                toggleEditControls(View.GONE);
                 return true;
             }
         });
