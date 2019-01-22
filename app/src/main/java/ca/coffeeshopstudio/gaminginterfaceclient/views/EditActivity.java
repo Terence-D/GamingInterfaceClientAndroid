@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +27,7 @@ import java.util.Map;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
+import top.defaults.colorpicker.ColorPickerPopup;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -116,41 +118,73 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
-                SharedPreferences.Editor prefsEditor = prefs.edit();
-
-                ObjectMapper mapper = new ObjectMapper();
-
-                //first we need to remove all existing controls
-                Map<String,?> keys = prefs.getAll();
-                for (Map.Entry<String, ?> entry : keys.entrySet()) {
-                    if (entry.getKey().contains("control_")) {
-                        prefsEditor.remove(entry.getKey());
-                    }
-                }
-
-                try {
-                    int i = 0;
-                    for (View aview : controls ) {
-                        Control control = new Control();
-                        control.setCommand((Command) aview.getTag());
-                        control.setWidth(aview.getWidth());
-                        control.setLeft(aview.getX());
-                        control.setText(((Button)aview).getText().toString());
-                        control.setTop(aview.getY());
-                        control.setHeight(aview.getBottom());
-                        String json = mapper.writeValueAsString(control);
-                        prefsEditor.putString("control_" + i, json);
-                        i++;
-                    }
-                    prefsEditor.apply();
-                    Toast.makeText(EditActivity.this, R.string.edit_activity_saved, Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(EditActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                }
+                saveScreen();
             }
         });
+
+        findViewById(R.id.btnSettings).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayColorPicker(findViewById(R.id.topLayout));
+            }
+        });
+    }
+
+    private void displayColorPicker(final View view) {
+        ColorDrawable color = (ColorDrawable) view.getBackground();
+        new ColorPickerPopup.Builder(this)
+                .initialColor(color.getColor()) // Set initial color
+                .enableBrightness(true) // Enable brightness slider or not
+                //.enableAlpha(true) // Enable alpha slider or not
+                .okTitle(getString(R.string.color_picker_title))
+                .cancelTitle(getString(android.R.string.cancel))
+                .showIndicator(true)
+                .showValue(true)
+                .build()
+                .show(view, new ColorPickerPopup.ColorPickerObserver() {
+                    @Override
+                    public void onColorPicked(int color) {
+                        view.setBackgroundColor(color);
+                    }
+                });
+    }
+
+    private void saveScreen() {
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        //first we need to remove all existing controls
+        Map<String,?> keys = prefs.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            if (entry.getKey().contains("control_")) {
+                prefsEditor.remove(entry.getKey());
+            }
+        }
+
+        ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
+        prefsEditor.putInt("background", color.getColor());
+        try {
+            int i = 0;
+            for (View aview : controls ) {
+                Control control = new Control();
+                control.setCommand((Command) aview.getTag());
+                control.setWidth(aview.getWidth());
+                control.setLeft(aview.getX());
+                control.setText(((Button)aview).getText().toString());
+                control.setTop(aview.getY());
+                control.setHeight(aview.getBottom());
+                String json = mapper.writeValueAsString(control);
+                prefsEditor.putString("control_" + i, json);
+                i++;
+            }
+            prefsEditor.apply();
+            Toast.makeText(EditActivity.this, R.string.edit_activity_saved, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(EditActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 
     private void setupFullScreen() {

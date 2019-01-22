@@ -1,6 +1,8 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +39,11 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     protected void loadControls() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
+
+        ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
+        int loadedColor = prefs.getInt("background", Color.BLACK);
+        color.setColor(loadedColor);
+
         final ObjectMapper mapper = new ObjectMapper();
         List<Control> customControls = new ArrayList<>();
 
