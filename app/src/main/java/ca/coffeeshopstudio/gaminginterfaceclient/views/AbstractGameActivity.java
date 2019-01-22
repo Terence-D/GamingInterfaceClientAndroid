@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient;
+package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
 
 /**

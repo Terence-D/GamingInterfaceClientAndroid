@@ -5,5 +5,5 @@
     android:layout_height="match_parent"
     android:background="#0099cc"
     android:id="@+id/topLayout"
-    tools:context=".GameActivity">
+    tools:context=".views.GameActivity">
 </FrameLayout>

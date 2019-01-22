@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient;
+package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper;
 
 /**
@@ -42,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 editApp();
+            }
+        });
+        findViewById(R.id.btnAbout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.this.startActivity(new Intent(MainActivity.this, AboutActivity.class));
             }
         });
 
