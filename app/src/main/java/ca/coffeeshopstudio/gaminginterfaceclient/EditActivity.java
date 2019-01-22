@@ -47,7 +47,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private SeekBar width;
     private SeekBar height;
     private boolean mode = false;
-    private int minSize = 48;
+    private int minControlSize = 48;
+    private int maxControlSize = 800;
 
     @SuppressLint("NewApi")
     @Override
@@ -106,8 +107,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             }
         });
 
-        width.setMax(400);
-        height.setMax(400);
+        width.setMax(maxControlSize);
+        height.setMax(maxControlSize);
         width.setOnSeekBarChangeListener(this);
         height.setOnSeekBarChangeListener(this);
 
@@ -211,8 +212,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         myButton.setOnTouchListener(new MyTouchListener());
         controls.add(myButton);
         activeControl = controls.size() - 1;
-        width.setProgress(myButton.getWidth() + minSize);
-        height.setProgress(myButton.getHeight() + minSize);
+        width.setProgress(myButton.getWidth());
+        height.setProgress(myButton.getHeight());
         toggleEditControls(View.VISIBLE);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layout.addView(myButton, lp);
@@ -269,17 +270,20 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+    public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
         if (activeControl >= 0) {
-            i = i + minSize;
+            int newWidth = controls.get(activeControl).getWidth();
+            int newHeight = controls.get(activeControl).getHeight();
             switch (seekBar.getId()) {
                 case R.id.seekHeight:
-                    controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(controls.get(activeControl).getWidth(), i));
+                    newHeight = value;
                     break;
                 case R.id.seekWidth:
-                    controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(i, controls.get(activeControl).getHeight()));
+                    newWidth = value;
                     break;
             }
+            if (newWidth >= minControlSize && newHeight >= minControlSize)
+                controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(newWidth, newHeight));
         }
     }
 
