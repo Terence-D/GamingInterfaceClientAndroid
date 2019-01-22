@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient;
+package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 
