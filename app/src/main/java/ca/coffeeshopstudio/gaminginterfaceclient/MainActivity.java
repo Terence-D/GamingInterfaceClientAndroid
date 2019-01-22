@@ -101,7 +101,18 @@ public class MainActivity extends AppCompatActivity {
         TextView txtAddress = findViewById(R.id.txtAddress);
 
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("gics", MODE_PRIVATE);
+
         String password = prefs.getString("password", "");
+        try {
+            password = CryptoHelper.decrypt(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (password == null) {
+            Log.d("GIC", "start: Password Decryption Failure");
+        }
+
         String address = prefs.getString("address", "");
         String port = prefs.getString("port", "");
         txtPassword.setText(password);

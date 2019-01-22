@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
 
@@ -35,24 +36,24 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     protected void loadControls() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
-        String pref;
-        int i = 0;
         final ObjectMapper mapper = new ObjectMapper();
         List<Control> customControls = new ArrayList<>();
 
-        do {
-            pref = prefs.getString("control_" + i, "");
-
-            try {
-                customControls.add(mapper.readValue(pref, Control.class));
-            } catch (IOException e) {
-                e.printStackTrace();
+        Map<String,?> keys = prefs.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            if (entry.getKey().contains("control_")) {
+                try {
+                    customControls.add(mapper.readValue(prefs.getString(entry.getKey(), ""), Control.class));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //prefsEditor.remove(entry.getKey());
             }
-            i++;
-        } while (!pref.equals(""));
+        }
 
         for (Control control : customControls) {
             Button button = new Button(AbstractGameActivity.this);
+            button.setBackgroundResource(R.drawable.button_selector);
             button.setX(control.getLeft());
             button.setY(control.getTop());
             button.setWidth(control.getWidth());
@@ -60,15 +61,18 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             button.setTag(control.getCommand());
             button.setText(control.getText());
             button.setOnClickListener(this);
+                addDragDrop(button);
             FrameLayout layout = findViewById(R.id.topLayout);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
             layout.addView(button, lp);
             controls.add(button);
             button.setId(controls.size()-1);
         }
-        activeControl = controls.size()-1;
+        //activeControl = controls.size()-1;
 
     }
+
+    protected abstract void addDragDrop(View view);
 
     @Override
     public void onClick(View view) {

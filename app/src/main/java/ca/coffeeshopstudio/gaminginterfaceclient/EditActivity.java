@@ -1,22 +1,27 @@
 package ca.coffeeshopstudio.gaminginterfaceclient;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.view.Display;
+import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.Map;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
@@ -39,10 +44,11 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
 public class EditActivity extends AbstractGameActivity implements EditFragment.EditDialogListener, SeekBar.OnSeekBarChangeListener {
     private GestureDetector gd;
     private int currentApiVersion;
-    private SeekBar horizontal;
-    private SeekBar vertical;
     private SeekBar width;
     private SeekBar height;
+    private boolean mode = false;
+    private int minControlSize = 48;
+    private int maxControlSize = 800;
 
     @SuppressLint("NewApi")
     @Override
@@ -62,34 +68,20 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_edit);
-
         setupFullScreen();
-
         setupDoubleTap(EditActivity.this);
-
         setupControls();
-
         loadControls();
-
-        if (activeControl > -1)
-            toggleEditControls(View.VISIBLE);
-        else
-            toggleEditControls(View.GONE);
+        toggleEditControls(View.GONE);
     }
 
     private void toggleEditControls(int visibility) {
-        findViewById(R.id.btnEdit).setVisibility(visibility);
-        findViewById(R.id.seekHorizontal).setVisibility(visibility);
-        findViewById(R.id.seekVertical).setVisibility(visibility);
         findViewById(R.id.seekHeight).setVisibility(visibility);
         findViewById(R.id.seekWidth).setVisibility(visibility);
     }
 
     private void setupControls() {
-        horizontal = findViewById(R.id.seekHorizontal);
-        vertical = findViewById(R.id.seekVertical);
         width = findViewById(R.id.seekWidth);
         height = findViewById(R.id.seekHeight);
 
@@ -99,31 +91,27 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 return gd.onTouchEvent(event);
             }
         });
-        Display display = getWindowManager().getDefaultDisplay();
+        findViewById(R.id.topLayout).setOnDragListener(new MyDragListener());
 
-        horizontal.setMax(display.getWidth() - 32);
-        vertical.setMax(display.getHeight() - 32);
-        width.setMax(400);
-        height.setMax(400);
-        horizontal.setOnSeekBarChangeListener(this);
-        vertical.setOnSeekBarChangeListener(this);
+        ((Switch) findViewById(R.id.toggleMode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mode = b;
+                if (mode) {
+                    toggleEditControls(View.GONE);
+                    Toast.makeText(EditActivity.this, R.string.edit_activity_drag_mode, Toast.LENGTH_SHORT).show();
+                } else if (activeControl > -1) {
+                    toggleEditControls(View.VISIBLE);
+                    Toast.makeText(EditActivity.this, R.string.edit_activity_detail_edit_mode, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        width.setMax(maxControlSize);
+        height.setMax(maxControlSize);
         width.setOnSeekBarChangeListener(this);
         height.setOnSeekBarChangeListener(this);
 
-        findViewById(R.id.btnEdit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fm = getSupportFragmentManager();
-                Command commandToSend = null;
-                String buttonText = null;
-                if (activeControl >= 0) {
-                    buttonText = (String) ((Button) controls.get(activeControl)).getText();
-                    commandToSend = ((Command) controls.get(activeControl).getTag());
-                }
-                EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend);
-                editNameDialogFragment.show(fm, "fragment_edit_name");
-            }
-        });
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,7 +119,17 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 SharedPreferences.Editor prefsEditor = prefs.edit();
 
                 ObjectMapper mapper = new ObjectMapper();
+
+                //first we need to remove all existing controls
+                Map<String,?> keys = prefs.getAll();
+                for (Map.Entry<String, ?> entry : keys.entrySet()) {
+                    if (entry.getKey().contains("control_")) {
+                        prefsEditor.remove(entry.getKey());
+                    }
+                }
+
                 try {
+                    int i = 0;
                     for (View aview : controls ) {
                         Control control = new Control();
                         control.setCommand((Command) aview.getTag());
@@ -141,7 +139,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                         control.setTop(aview.getY());
                         control.setHeight(aview.getBottom());
                         String json = mapper.writeValueAsString(control);
-                        prefsEditor.putString("control_" + aview.getId(), json);
+                        prefsEditor.putString("control_" + i, json);
+                        i++;
                     }
                     prefsEditor.apply();
                 } catch (IOException e) {
@@ -200,29 +199,58 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     private void addButton(Context context) {
+        FrameLayout layout = findViewById(R.id.topLayout);
+        if (activeControl >= 0) {
+            findViewById(controls.get(activeControl).getId()).setBackgroundResource(R.drawable.button_standard);
+        }
+
         Button myButton = new Button(context);
+        myButton.setBackgroundResource(R.drawable.selected_button);
         myButton.setText("New");
         myButton.setId(controls.size());
-        FrameLayout layout = findViewById(R.id.topLayout);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(myButton, lp);
-        myButton.setOnClickListener(this);
+        //myButton.setOnClickListener(this);
+        myButton.setOnTouchListener(new MyTouchListener());
         controls.add(myButton);
         activeControl = controls.size() - 1;
-        horizontal.setProgress(0);
-        vertical.setProgress(0);
         width.setProgress(myButton.getWidth());
         height.setProgress(myButton.getHeight());
         toggleEditControls(View.VISIBLE);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        layout.addView(myButton, lp);
+    }
+
+    private void displayEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        Command commandToSend = null;
+        String buttonText = null;
+        if (activeControl >= 0) {
+            buttonText = (String) ((Button) controls.get(activeControl)).getText();
+            buttonText = (String) ((Button) controls.get(activeControl)).getText();
+            commandToSend = ((Command) controls.get(activeControl).getTag());
+        }
+        EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend);
+        editNameDialogFragment.show(fm, "fragment_edit_name");
+    }
+
+    @Override
+    protected void addDragDrop(View view) {
+        view.setOnTouchListener(new MyTouchListener());
     }
 
     @Override
     public void onClick(View view) {
-        activeControl = view.getId();
-        horizontal.setProgress((int) view.getX());
-        vertical.setProgress((int) view.getY());
-        width.setProgress(view.getWidth());
-        height.setProgress(view.getHeight());
+        if (activeControl == view.getId()) {
+            displayEditDialog();
+        } else {
+            if (activeControl >= 0) {
+                controls.get(activeControl).setBackgroundResource(R.drawable.button_standard);
+            }
+            activeControl = view.getId();
+            view.setBackgroundResource(R.drawable.selected_button);
+            width.setProgress(view.getWidth());
+            height.setProgress(view.getHeight());
+            toggleEditControls(View.VISIBLE);
+        }
     }
 
     @Override
@@ -242,22 +270,20 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+    public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
         if (activeControl >= 0) {
+            int newWidth = controls.get(activeControl).getWidth();
+            int newHeight = controls.get(activeControl).getHeight();
             switch (seekBar.getId()) {
-                case R.id.seekHorizontal:
-                    controls.get(activeControl).setX(i);
-                    break;
-                case R.id.seekVertical:
-                    controls.get(activeControl).setY(i);
-                    break;
                 case R.id.seekHeight:
-                    controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(controls.get(activeControl).getWidth(), i));
+                    newHeight = value;
                     break;
                 case R.id.seekWidth:
-                    controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(i, controls.get(activeControl).getHeight()));
+                    newWidth = value;
                     break;
             }
+            if (newWidth >= minControlSize && newHeight >= minControlSize)
+                controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(newWidth, newHeight));
         }
     }
 
@@ -269,5 +295,52 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    private final class MyTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && mode) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                        view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+                return true;
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                onClick(view);
+                return true;
+            } else {
+                //Log.d("drag", "onTouch: " + motionEvent.toString());
+                return false;
+            }
+        }
+    }
+
+    private final class MyDragListener implements View.OnDragListener {
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    break;
+                case DragEvent.ACTION_DRAG_LOCATION:
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    break;
+                case DragEvent.ACTION_DROP:
+                    View view = (View) event.getLocalState();
+                    float x = event.getX();
+                    float y = event.getY();
+                    view.setX(x-(view.getWidth()/2));
+                    view.setY(y-(view.getHeight()/2));
+                    view.setVisibility(View.VISIBLE);
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                default:
+                    break;
+            }
+            return true;
+        }
     }
 }

@@ -29,4 +29,7 @@
     <string name="main_warning">Warning - do NOT use an existing password that you use ANYWHERE else!</string>
     <string name="edit_helpmsg">To start adding controls, double tap on the screen.  Tap on a control to reselect it</string>
     <string name="edit_fragment">Select a Key Below:</string>
+    <string name="edit_activity_edit_mode">Edit Mode</string>
+    <string name="edit_activity_drag_mode">Drag and Drop mode</string>
+    <string name="edit_activity_detail_edit_mode">Detail Edit mode</string>
 </resources>
