@@ -3,6 +3,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -35,14 +36,17 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
  */
 public abstract class AbstractGameActivity extends AppCompatActivity implements View.OnClickListener {
     protected List<View> controls = new ArrayList<>();
+    protected List<Integer> primaryColors = new ArrayList<>();
+    protected List<Integer> secondaryColors = new ArrayList<>();
+
     protected int activeControl = -1;
 
     protected void loadControls() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
 
         ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
-        int loadedColor = prefs.getInt("background", Color.BLACK);
-        color.setColor(loadedColor);
+        int backgroundColor = prefs.getInt("background", Color.BLUE);
+        color.setColor(backgroundColor);
 
         final ObjectMapper mapper = new ObjectMapper();
         List<Control> customControls = new ArrayList<>();
@@ -55,17 +59,25 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //prefsEditor.remove(entry.getKey());
             }
         }
 
         for (Control control : customControls) {
             Button button = new Button(AbstractGameActivity.this);
+
             button.setBackgroundResource(R.drawable.button_selector);
             button.setX(control.getLeft());
             button.setY(control.getTop());
             button.setWidth(control.getWidth());
             button.setHeight(control.getHeight());
+            button.setTextColor(control.getFontColor());
+
+            GradientDrawable gd = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
+            gd.setCornerRadius(3f);
+
+            button.setBackground(gd);
             button.setTag(control.getCommand());
             button.setText(control.getText());
             button.setOnClickListener(this);
@@ -74,6 +86,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
             layout.addView(button, lp);
             controls.add(button);
+            primaryColors.add(control.getPrimaryColor());
+            secondaryColors.add(control.getSecondaryColor());
             button.setId(controls.size()-1);
         }
         //activeControl = controls.size()-1;

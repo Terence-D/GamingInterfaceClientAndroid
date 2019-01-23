@@ -1,5 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models;
 
+import android.graphics.Color;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -15,7 +17,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "left",
         "width",
         "top",
-        "height"
+        "height",
+        "fontColor",
+        "primaryColor",
+        "secondaryColor"
 })
 public class Control {
     @JsonProperty("command")
@@ -30,6 +35,13 @@ public class Control {
     private float top;
     @JsonProperty("height")
     private int height;
+    @JsonProperty("fontColor")
+    private int fontColor = Color.BLACK;
+    @JsonProperty("primaryColor")
+    private int primaryColor = Color.GRAY;
+    @JsonProperty("secondaryColor")
+    private int secondaryColor = Color.WHITE;
+
 
     @JsonProperty("command")
     public Command getCommand() {
@@ -93,5 +105,35 @@ public class Control {
     @JsonProperty("height")
     public int getHeight() {
         return height;
+    }
+
+    @JsonProperty("fontColor")
+    public int getFontColor() {
+        return fontColor;
+    }
+
+    @JsonProperty("fontColor")
+    public void setFontColor(int fontColor) {
+        this.fontColor = fontColor;
+    }
+
+    @JsonProperty("primaryColor")
+    public int getPrimaryColor() {
+        return primaryColor;
+    }
+
+    @JsonProperty("primaryColor")
+    public void setPrimaryColor(int primaryColor) {
+        this.primaryColor = primaryColor;
+    }
+
+    @JsonProperty("secondaryColor")
+    public int getSecondaryColor() {
+        return secondaryColor;
+    }
+
+    @JsonProperty("secondaryColor")
+    public void setSecondaryColor(int secondaryColor) {
+        this.secondaryColor = secondaryColor;
     }
 }

@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -175,6 +177,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 control.setText(((Button)aview).getText().toString());
                 control.setTop(aview.getY());
                 control.setHeight(aview.getBottom());
+                control.setFontColor(((Button) aview).getTextColors().getDefaultColor());
+                control.setPrimaryColor(primaryColors.get(i));
+                control.setSecondaryColor(secondaryColors.get(i));
                 String json = mapper.writeValueAsString(control);
                 prefsEditor.putString("control_" + i, json);
                 i++;
@@ -242,12 +247,22 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         }
 
         Button myButton = new Button(context);
-        myButton.setBackgroundResource(R.drawable.selected_button);
+        GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{Color.WHITE, Color.GRAY}
+        );
+        gd.setCornerRadius(3f);
+        myButton.setBackground(gd);
+
+        //myButton.setBackgroundResource(R.drawable.selected_button);
         myButton.setText("New");
         myButton.setId(controls.size());
         //myButton.setOnClickListener(this);
         myButton.setOnTouchListener(new MyTouchListener());
+
         controls.add(myButton);
+        primaryColors.add(Color.WHITE);
+        secondaryColors.add(Color.GRAY);
         activeControl = controls.size() - 1;
         width.setProgress(myButton.getWidth());
         height.setProgress(myButton.getHeight());
@@ -260,12 +275,17 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         FragmentManager fm = getSupportFragmentManager();
         Command commandToSend = null;
         String buttonText = null;
+        int fontColor = Color.BLACK;
+        int secondaryColor = Color.WHITE;
+        int primaryColor = Color.GRAY;
         if (activeControl >= 0) {
-            buttonText = (String) ((Button) controls.get(activeControl)).getText();
+            fontColor = ((Button) controls.get(activeControl)).getTextColors().getDefaultColor();
+            primaryColor = primaryColors.get(activeControl);
+            secondaryColor = secondaryColors.get(activeControl);
             buttonText = (String) ((Button) controls.get(activeControl)).getText();
             commandToSend = ((Command) controls.get(activeControl).getTag());
         }
-        EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend);
+        EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor);
         editNameDialogFragment.show(fm, "fragment_edit_name");
     }
 
@@ -291,17 +311,29 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     @Override
-    public void onFinishEditDialog(Command command, String text) {
+    public void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor) {
         if (command == null && text.equals("DELETE")) {
             if (activeControl >= 0) {
                 FrameLayout layout = findViewById(R.id.topLayout);
                 layout.removeView(controls.get(activeControl));
                 controls.remove(activeControl);
+                primaryColors.remove(activeControl);
+                secondaryColors.remove(activeControl);
                 activeControl = -1;
                 toggleEditControls(View.GONE);
             }
         } else {
+            GradientDrawable gd = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{secondaryColor, primaryColor});
+            gd.setCornerRadius(3f);
+
+            primaryColors.set(activeControl, primaryColor);
+            secondaryColors.set(activeControl, secondaryColor);
+
+            controls.get(activeControl).setBackground(gd);
             ((Button) controls.get(activeControl)).setText(text);
+            ((Button) controls.get(activeControl)).setTextColor(fontColor);
             controls.get(activeControl).setTag(command);
         }
     }
