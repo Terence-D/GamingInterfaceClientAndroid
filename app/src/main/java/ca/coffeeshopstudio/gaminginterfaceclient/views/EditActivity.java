@@ -267,8 +267,10 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         myButton.setId(controls.size());
         //myButton.setOnClickListener(this);
         myButton.setOnTouchListener(new MyTouchListener());
-        myButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, 20);
+        myButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, 48);
 
+        myButton.setX(80);
+        myButton.setY(80);
         controls.add(myButton);
         primaryColors.add(Color.WHITE);
         secondaryColors.add(Color.GRAY);

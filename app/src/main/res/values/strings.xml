@@ -46,4 +46,8 @@
     <string name="edit_fragment_font_color">Font Color</string>
     <string name="edit_fragment_button_color_1">Primary Color</string>
     <string name="edit_fragment_button_color_2">Secondary Color</string>
+    <string name="activity_main_help">To use this you need to run GIC Server (also Open Source) on your Windows computer where the game resides.  Please visit the link below for further information</string>
+    <string name="password_invalid">Please enter a password of at least 6 characters</string>
+    <string name="port_invalid">Invalid Port number</string>
+    <string name="address_invalid">Please enter a valid address pointing to your computer running GIC Server</string>
 </resources>

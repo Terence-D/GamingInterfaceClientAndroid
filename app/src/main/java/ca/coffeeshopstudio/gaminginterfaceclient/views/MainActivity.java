@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper;
@@ -61,12 +62,53 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.this.startActivity(myIntent);
     }
 
+    public static boolean isInteger(String str) {
+        if (str == null) {
+            return false;
+        }
+        if (str.isEmpty()) {
+            return false;
+        }
+        int i = 0;
+        int length = str.length();
+
+        if (str.charAt(0) == '-') {
+            if (length == 1) {
+                return false;
+            }
+            i = 1;
+        }
+        for (; i < length; i++) {
+            char c = str.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void startApp() {
         TextView txtPassword = findViewById(R.id.txtPassword);
         TextView txtPort = findViewById(R.id.txtPort);
         TextView txtAddress = findViewById(R.id.txtAddress);
+        String password = txtPassword.getText().toString();
+        String port = txtPort.getText().toString();
+        String address = txtAddress.getText().toString();
 
-        String password = null;
+        if (password.length() < 6) {
+            Toast.makeText(this, R.string.password_invalid, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!isInteger(port)) {
+            Toast.makeText(this, R.string.port_invalid, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (address.length() < 7) {
+            Toast.makeText(this, R.string.address_invalid, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         try {
             password = CryptoHelper.encrypt(txtPassword.getText().toString());
         } catch (Exception e) {
@@ -74,11 +116,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (password == null) {
-            Log.d("GIC", "startApp: Password Encryption Failure");
+            Toast.makeText(this, R.string.password_invalid, Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        String port = txtPort.getText().toString();
-        String address = txtAddress.getText().toString();
         port = port.replaceFirst("\\s++$", "");
         address = address.replaceFirst("\\s++$", "");
 
@@ -121,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String address = prefs.getString("address", "");
-        String port = prefs.getString("port", "");
+        String port = prefs.getString("port", "8091");
         txtPassword.setText(password);
         txtPort.setText(port);
         txtAddress.setText(address);
