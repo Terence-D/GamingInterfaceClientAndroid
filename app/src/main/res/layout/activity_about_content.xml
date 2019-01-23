@@ -58,6 +58,12 @@
             android:layout_height="wrap_content"
             android:autoLink="web"
             android:text="@string/website_apache" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:text="@string/website_git" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

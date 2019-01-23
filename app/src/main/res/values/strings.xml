@@ -38,6 +38,7 @@
     <string name="legal_crypto">This software makes use of the cross platform encryption library by Mataprasad licensed under the MIT License.  See below for details</string>
     <string name="website_crypto">https://github.com/mataprasad/Cross-platform-AES-encryption-128bit/blob/master/LICENSE</string>
     <string name="website_apache">http://www.apache.org/licenses/LICENSE-2.0</string>
+    <string name="website_git">https://github.com/Terence-D/GamingInterfaceClientAndroid</string>
     <string name="legal_contents">This software and the GIC Server are open source products used to act as a remote control style device for your PC.  Copyright 2019 Terry Doerksen</string>
     <string name="legal">Legal</string>
     <string name="version">Version: %1$s (build %2$d)</string>
