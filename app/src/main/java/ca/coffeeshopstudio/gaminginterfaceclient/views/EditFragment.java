@@ -1,5 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -20,6 +22,7 @@ import java.util.List;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
+import top.defaults.colorpicker.ColorPickerPopup;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -42,6 +45,9 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     private Spinner spinner;
     private Command commandToLoad = null;
     private String commandName;
+    private int font;
+    private int primary;
+    private int secondary;
     private CheckBox lShift;
     private CheckBox rShift;
     private CheckBox lCtrl;
@@ -50,12 +56,19 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     private CheckBox rAlt;
     private TextView text;
 
+    private Button btnFont;
+    private Button btnPrimary;
+    private Button btnSecondary;
 
-    public static EditFragment newInstance(String title, String text, Command command) {
+
+    public static EditFragment newInstance(String title, String text, Command command, int primary, int secondary, int font) {
         EditFragment frag = new EditFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putString("text", text);
+        args.putInt("font", font);
+        args.putInt("primary", primary);
+        args.putInt("secondary", secondary);
         frag.setArguments(args);
         if (command != null)
             frag.loadCommand(command);
@@ -74,6 +87,9 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
         // Fetch arguments from bundle and set title
         String title = getArguments().getString("title", "Enter Name");
         commandName = getArguments().getString("text", "");
+        font = getArguments().getInt("font", Color.BLACK);
+        primary = getArguments().getInt("primary", Color.GRAY);
+        secondary = getArguments().getInt("secondary", Color.WHITE);
         getDialog().setTitle(title);
         // Show soft keyboard automatically and request focus to field
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -118,6 +134,20 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
                     lShift.setChecked(false);
             }
         }
+
+        btnFont = view.findViewById(R.id.btnFontColor);
+        btnPrimary = view.findViewById(R.id.btnButtonColor1);
+        btnSecondary = view.findViewById(R.id.btnButtonColor2);
+
+        btnFont.setOnClickListener(this);
+        btnFont.setTextColor(font);
+        btnPrimary.setOnClickListener(this);
+        btnPrimary.setTextColor(primary);
+        btnSecondary.setOnClickListener(this);
+        btnSecondary.setTextColor(secondary);
+
+        view.findViewById(R.id.btnButtonColor1).setOnClickListener(this);
+        view.findViewById(R.id.btnButtonColor2).setOnClickListener(this);
 
         view.findViewById(R.id.btnSave).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
@@ -190,19 +220,50 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
 //                if (rAlt.isChecked()) {
 //                    savedCommand.addModifier("ALT");
 //                }
-
+                listener.onFinishEditDialog(savedCommand, title, btnPrimary.getTextColors().getDefaultColor(), btnSecondary.getTextColors().getDefaultColor(), btnFont.getTextColors().getDefaultColor());
+                dismiss();
                 break;
-            default:
             case R.id.btnDelete:
                 title = "DELETE";
+                listener.onFinishEditDialog(savedCommand, title, btnPrimary.getTextColors().getDefaultColor(), btnSecondary.getTextColors().getDefaultColor(), btnFont.getTextColors().getDefaultColor());
+                dismiss();
+                break;
+            case R.id.btnButtonColor1:
+                displayColorPicker(view);
+                break;
+            case R.id.btnButtonColor2:
+                displayColorPicker(view);
+                break;
+            case R.id.btnFontColor:
+                displayColorPicker(view);
+                break;
+            default:
                 break;
         }
-        listener.onFinishEditDialog(savedCommand, title);
-        dismiss();
     }
 
-public interface EditDialogListener {
-        void onFinishEditDialog(Command command, String text);
+    private void displayColorPicker(final View view) {
+        int color = ((Button) view).getTextColors().getDefaultColor();
+        new ColorPickerPopup.Builder(getActivity())
+                .initialColor(color) // Set initial color
+                .enableBrightness(true) // Enable brightness slider or not
+                //.enableAlpha(true) // Enable alpha slider or not
+                .okTitle(getString(R.string.color_picker_title))
+                .cancelTitle(getString(android.R.string.cancel))
+                .showIndicator(true)
+                .showValue(true)
+                .build()
+                .show(view, new ColorPickerPopup.ColorPickerObserver() {
+                    @Override
+                    public void onColorPicked(int color) {
+                        ((Button) view).setTextColor(color);
+                    }
+                });
+    }
+
+
+    public interface EditDialogListener {
+        void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor);
     }
 
 }
