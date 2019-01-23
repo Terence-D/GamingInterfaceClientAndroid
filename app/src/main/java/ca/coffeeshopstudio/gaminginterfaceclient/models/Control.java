@@ -20,7 +20,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "height",
         "fontColor",
         "primaryColor",
-        "secondaryColor"
+        "secondaryColor",
+        "fontSize"
 })
 public class Control {
     @JsonProperty("command")
@@ -41,6 +42,8 @@ public class Control {
     private int primaryColor = Color.GRAY;
     @JsonProperty("secondaryColor")
     private int secondaryColor = Color.WHITE;
+    @JsonProperty("fontSize")
+    private int fontSize = 24;
 
 
     @JsonProperty("command")
@@ -136,4 +139,15 @@ public class Control {
     public void setSecondaryColor(int secondaryColor) {
         this.secondaryColor = secondaryColor;
     }
+
+    @JsonProperty("fontSize")
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    @JsonProperty("fontSize")
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+    }
+
 }

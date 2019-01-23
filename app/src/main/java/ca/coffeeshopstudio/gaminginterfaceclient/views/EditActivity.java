@@ -10,6 +10,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -51,9 +52,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private int currentApiVersion;
     private SeekBar width;
     private SeekBar height;
+    private SeekBar fontSize;
     private boolean mode = false;
     private int minControlSize = 48;
     private int maxControlSize = 800;
+    private int maxFontSize = 256;
 
     @SuppressLint("NewApi")
     @Override
@@ -84,11 +87,13 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private void toggleEditControls(int visibility) {
         findViewById(R.id.seekHeight).setVisibility(visibility);
         findViewById(R.id.seekWidth).setVisibility(visibility);
+        findViewById(R.id.seekFont).setVisibility(visibility);
     }
 
     private void setupControls() {
         width = findViewById(R.id.seekWidth);
         height = findViewById(R.id.seekHeight);
+        fontSize = findViewById(R.id.seekFont);
 
         findViewById(R.id.topLayout).setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -114,8 +119,10 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
         width.setMax(maxControlSize);
         height.setMax(maxControlSize);
+        fontSize.setMax(maxFontSize);
         width.setOnSeekBarChangeListener(this);
         height.setOnSeekBarChangeListener(this);
+        fontSize.setOnSeekBarChangeListener(this);
 
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +181,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 control.setCommand((Command) aview.getTag());
                 control.setWidth(aview.getWidth());
                 control.setLeft(aview.getX());
+                control.setFontSize((int) ((Button) aview).getTextSize());
                 control.setText(((Button)aview).getText().toString());
                 control.setTop(aview.getY());
                 control.setHeight(aview.getBottom());
@@ -259,6 +267,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         myButton.setId(controls.size());
         //myButton.setOnClickListener(this);
         myButton.setOnTouchListener(new MyTouchListener());
+        myButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, 20);
 
         controls.add(myButton);
         primaryColors.add(Color.WHITE);
@@ -266,6 +275,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         activeControl = controls.size() - 1;
         width.setProgress(myButton.getWidth());
         height.setProgress(myButton.getHeight());
+        fontSize.setProgress((int) myButton.getTextSize());
         toggleEditControls(View.VISIBLE);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layout.addView(myButton, lp);
@@ -303,9 +313,16 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 controls.get(activeControl).setBackgroundResource(R.drawable.button_standard);
             }
             activeControl = view.getId();
-            view.setBackgroundResource(R.drawable.selected_button);
+            GradientDrawable gd = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{primaryColors.get(activeControl), secondaryColors.get(activeControl)});
+            gd.setCornerRadius(3f);
+            view.setBackground(gd);
+
+            //view.setBackgroundResource(R.drawable.selected_button);
             width.setProgress(view.getWidth());
             height.setProgress(view.getHeight());
+            fontSize.setProgress((int) ((Button) view).getTextSize());
             toggleEditControls(View.VISIBLE);
         }
     }
@@ -343,6 +360,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         if (activeControl >= 0) {
             int newWidth = controls.get(activeControl).getWidth();
             int newHeight = controls.get(activeControl).getHeight();
+            int newFont = (int) ((Button) controls.get(activeControl)).getTextSize();
             switch (seekBar.getId()) {
                 case R.id.seekHeight:
                     newHeight = value;
@@ -350,9 +368,12 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 case R.id.seekWidth:
                     newWidth = value;
                     break;
+                case R.id.seekFont:
+                    newFont = value;
             }
             if (newWidth >= minControlSize && newHeight >= minControlSize)
                 controls.get(activeControl).setLayoutParams(new FrameLayout.LayoutParams(newWidth, newHeight));
+            ((Button) controls.get(activeControl)).setTextSize(TypedValue.COMPLEX_UNIT_PX, newFont);
         }
     }
 

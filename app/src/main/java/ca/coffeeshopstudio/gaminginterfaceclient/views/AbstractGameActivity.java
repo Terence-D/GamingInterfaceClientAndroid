@@ -1,10 +1,10 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -45,7 +45,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
 
         ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
-        int backgroundColor = prefs.getInt("background", Color.BLUE);
+        int backgroundColor = prefs.getInt("background", 0xFF0099CC);
         color.setColor(backgroundColor);
 
         final ObjectMapper mapper = new ObjectMapper();
@@ -77,6 +77,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                     new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
             gd.setCornerRadius(3f);
 
+            button.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
             button.setBackground(gd);
             button.setTag(control.getCommand());
             button.setText(control.getText());
