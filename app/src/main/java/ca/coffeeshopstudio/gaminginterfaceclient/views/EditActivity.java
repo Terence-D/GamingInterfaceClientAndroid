@@ -251,7 +251,12 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private void addButton(Context context) {
         FrameLayout layout = findViewById(R.id.topLayout);
         if (activeControl >= 0) {
-            findViewById(controls.get(activeControl).getId()).setBackgroundResource(R.drawable.button_standard);
+            GradientDrawable gd = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{primaryColors.get(activeControl), secondaryColors.get(activeControl)});
+            gd.setCornerRadius(3f);
+
+            findViewById(controls.get(activeControl).getId()).setBackground(gd);
         }
 
         Button myButton = new Button(context);
@@ -312,7 +317,12 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             displayEditDialog();
         } else {
             if (activeControl >= 0) {
-                controls.get(activeControl).setBackgroundResource(R.drawable.button_standard);
+                GradientDrawable gd = new GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM,
+                        new int[]{primaryColors.get(activeControl), secondaryColors.get(activeControl)});
+                gd.setCornerRadius(3f);
+
+                controls.get(activeControl).setBackground(gd);
             }
             activeControl = view.getId();
             GradientDrawable gd = new GradientDrawable(
