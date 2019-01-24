@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.List;
@@ -34,7 +36,7 @@ import retrofit2.Response;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class GameActivity extends AbstractGameActivity {
+public class GameActivity extends AbstractGameActivity implements View.OnTouchListener {
     private String password;
     private String port;
     private String address;
@@ -68,6 +70,11 @@ public class GameActivity extends AbstractGameActivity {
 
         setupFullScreen();
         loadControls();
+    }
+
+    @Override
+    protected void setClick(Button button) {
+        button.setOnTouchListener(this);
     }
 
     private void setupFullScreen() {
@@ -122,6 +129,23 @@ public class GameActivity extends AbstractGameActivity {
 
     @Override
     public void onClick(View view) {
-        makeCall((Command) view.getTag());
+//        makeCall((Command) view.getTag());
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        Command command = (Command) view.getTag();
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                command.setActivatorType(Command.KEY_DOWN);
+                makeCall((Command) view.getTag());
+                break;
+            case MotionEvent.ACTION_UP:
+                command.setActivatorType(Command.KEY_UP);
+                makeCall((Command) view.getTag());
+                break;
+        }
+
+        return false;
     }
 }
