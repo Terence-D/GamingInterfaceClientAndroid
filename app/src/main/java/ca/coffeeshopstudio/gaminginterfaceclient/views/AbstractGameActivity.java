@@ -100,8 +100,10 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             button.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
             button.setTag(control.getCommand());
             button.setText(control.getText());
-            button.setOnClickListener(this);
-                addDragDrop(button);
+
+            setClick(button);
+
+            addDragDrop(button);
             FrameLayout layout = findViewById(R.id.topLayout);
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
             layout.addView(button, lp);
@@ -112,6 +114,10 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
         //activeControl = controls.size()-1;
 
+    }
+
+    protected void setClick(Button button) {
+        button.setOnClickListener(this);
     }
 
     @Override
