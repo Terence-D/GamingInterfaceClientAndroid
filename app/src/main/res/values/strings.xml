@@ -51,4 +51,7 @@
     <string name="password_invalid">Please enter a password of at least 6 characters</string>
     <string name="port_invalid">Invalid Port number</string>
     <string name="address_invalid">Please enter a valid address pointing to your computer running GIC Server</string>
+    <string name="legal_color">This software uses the Color Picker located below under the Apache 2.0 license</string>
+    <string name="website_color"><![CDATA[https://github.com/duanhong169/ColorPicker?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=7068]]></string>
+    <string name="activity_main_help_button">Help (Website)</string>
 </resources>

@@ -2,6 +2,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -50,6 +51,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 MainActivity.this.startActivity(new Intent(MainActivity.this, AboutActivity.class));
+            }
+        });
+        findViewById(R.id.btnHelp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = "https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }
         });
 
