@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient;
+package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Result;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.CommandService;
@@ -112,6 +113,11 @@ public class GameActivity extends AbstractGameActivity {
                 Toast.makeText(GameActivity.this, "Something went wrong...Please try later! " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    protected void addDragDrop(View view) {
+        //unused
     }
 
     @Override

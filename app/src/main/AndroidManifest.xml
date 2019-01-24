@@ -8,26 +8,27 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".views.AboutActivity"></activity>
         <activity
-            android:name=".EditActivity"
+            android:name=".views.EditActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_edit"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
         <activity
-            android:name=".GameActivity"
+            android:name=".views.GameActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game_interface"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".views.MainActivity"
             android:theme="@style/FullscreenTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.coffeeshopstudio.gaminginterfaceclient.MainActivity" />
+                android:value="ca.coffeeshopstudio.gaminginterfaceclient.views.MainActivity" />
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".views.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

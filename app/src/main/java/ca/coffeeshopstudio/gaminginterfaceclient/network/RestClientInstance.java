@@ -28,6 +28,12 @@ public class RestClientInstance {
                     .baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
+        } else {
+            if (!retrofit.baseUrl().url().toString().equals(baseUrl))
+                retrofit = new retrofit2.Retrofit.Builder()
+                        .baseUrl(baseUrl)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
         }
         return retrofit;
     }}
