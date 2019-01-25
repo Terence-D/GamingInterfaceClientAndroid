@@ -5,11 +5,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -94,7 +94,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     }
 
     private void buildText(Control control) {
-        TextView view = new TextView(AbstractGameActivity.this);
+        AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
 
         view.setX(control.getLeft());
         view.setY(control.getTop());

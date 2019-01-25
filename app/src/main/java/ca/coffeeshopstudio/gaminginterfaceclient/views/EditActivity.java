@@ -25,6 +25,7 @@ import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -192,11 +193,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 control.setCommand((Command) aview.getTag());
                 control.setWidth(aview.getWidth());
                 control.setLeft(aview.getX());
-                control.setFontSize((int) ((AppCompatTextView) aview).getTextSize());
-                control.setText(((AppCompatTextView) aview).getText().toString());
+                control.setFontSize((int) ((TextView) aview).getTextSize());
+                control.setText(((TextView) aview).getText().toString());
                 control.setTop(aview.getY());
                 control.setHeight(aview.getBottom());
-                control.setFontColor(((AppCompatTextView) aview).getTextColors().getDefaultColor());
+                control.setFontColor(((TextView) aview).getTextColors().getDefaultColor());
                 control.setPrimaryColor(primaryColors.get(i));
                 control.setSecondaryColor(secondaryColors.get(i));
                 if (aview instanceof Button)
@@ -375,10 +376,10 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         int secondaryColor = Color.WHITE;
         int primaryColor = Color.GRAY;
         if (activeControl >= 0) {
-            fontColor = ((AppCompatTextView) controls.get(activeControl)).getTextColors().getDefaultColor();
+            fontColor = ((TextView) controls.get(activeControl)).getTextColors().getDefaultColor();
             primaryColor = primaryColors.get(activeControl);
             secondaryColor = secondaryColors.get(activeControl);
-            buttonText = (String) ((AppCompatTextView) controls.get(activeControl)).getText();
+            buttonText = (String) ((TextView) controls.get(activeControl)).getText();
             commandToSend = ((Command) controls.get(activeControl).getTag());
         }
         EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, controls.get(activeControl));
@@ -411,7 +412,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
             width.setProgress(view.getWidth());
             height.setProgress(view.getHeight());
-            fontSize.setProgress((int) ((AppCompatTextView) view).getTextSize());
+            fontSize.setProgress((int) ((TextView) view).getTextSize());
             toggleEditControls(View.VISIBLE);
         }
     }
@@ -438,8 +439,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             if (view instanceof Button)
                 view.setBackground(setButtonBackground(primaryColor, secondaryColor));
 
-            ((AppCompatTextView) view).setText(text);
-            ((AppCompatTextView) view).setTextColor(fontColor);
+            ((TextView) view).setText(text);
+            ((TextView) view).setTextColor(fontColor);
             view.setTag(command);
         }
     }
@@ -447,7 +448,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
         if (activeControl >= 0) {
-            AppCompatTextView view = ((AppCompatTextView) controls.get(activeControl));
+            TextView view = ((TextView) controls.get(activeControl));
 
             int newWidth = view.getWidth();
             int newHeight = view.getHeight();
