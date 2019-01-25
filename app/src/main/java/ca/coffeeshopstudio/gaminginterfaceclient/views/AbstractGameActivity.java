@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.TypedValue;
@@ -40,6 +41,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected List<View> controls = new ArrayList<>();
     protected List<Integer> primaryColors = new ArrayList<>();
     protected List<Integer> secondaryColors = new ArrayList<>();
+    protected int maxControlSize = 800;
 
     protected int activeControl = -1;
 
@@ -95,6 +97,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     private void buildText(Control control) {
         AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, maxControlSize, 2, TypedValue.COMPLEX_UNIT_SP);
 
         view.setX(control.getLeft());
         view.setY(control.getTop());
