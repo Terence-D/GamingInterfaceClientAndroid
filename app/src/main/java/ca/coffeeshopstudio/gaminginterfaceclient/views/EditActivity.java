@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.TextViewCompat;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.GestureDetector;
@@ -60,7 +61,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private SeekBar fontSize;
     private boolean mode = false;
     private int minControlSize = 48;
-    private int maxControlSize = 800;
     private int maxFontSize = 256;
 
     @SuppressLint("NewApi")
@@ -304,7 +304,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             }
         }
 
-        TextView text = new TextView(context);
+        AppCompatTextView text = new AppCompatTextView(context);
 
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(text, 24, maxControlSize, 2, TypedValue.COMPLEX_UNIT_SP);
         text.setText("New");

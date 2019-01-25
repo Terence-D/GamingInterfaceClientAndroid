@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.List;
@@ -133,16 +134,18 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        Command command = (Command) view.getTag();
-        switch (motionEvent.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                command.setActivatorType(Command.KEY_DOWN);
-                makeCall((Command) view.getTag());
-                break;
-            case MotionEvent.ACTION_UP:
-                command.setActivatorType(Command.KEY_UP);
-                makeCall((Command) view.getTag());
-                break;
+        if (view instanceof Button) {
+            Command command = (Command) view.getTag();
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    command.setActivatorType(Command.KEY_DOWN);
+                    makeCall((Command) view.getTag());
+                    break;
+                case MotionEvent.ACTION_UP:
+                    command.setActivatorType(Command.KEY_UP);
+                    makeCall((Command) view.getTag());
+                    break;
+            }
         }
 
         return false;
