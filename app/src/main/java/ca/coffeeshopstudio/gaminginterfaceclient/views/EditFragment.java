@@ -42,6 +42,7 @@ import top.defaults.colorpicker.ColorPickerPopup;
 public class EditFragment extends DialogFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private AutoItKeyMap map = new AutoItKeyMap();
+    private View incomingView;
     private Spinner spinner;
     private Command commandToLoad = null;
     private String commandName;
@@ -61,7 +62,7 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     private Button btnSecondary;
 
 
-    public static EditFragment newInstance(String title, String text, Command command, int primary, int secondary, int font) {
+    public static EditFragment newInstance(String title, String text, Command command, int primary, int secondary, int font, View view) {
         EditFragment frag = new EditFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
@@ -72,6 +73,8 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
         frag.setArguments(args);
         if (command != null)
             frag.loadCommand(command);
+        if (view != null)
+            frag.loadView(view);
         return frag;
     }
 
@@ -98,6 +101,10 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
 
     public void loadCommand(Command command) {
         commandToLoad = command;
+    }
+
+    public void loadView(View view) {
+        incomingView = view;
     }
 
     @Override
@@ -151,6 +158,16 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
 
         view.findViewById(R.id.btnSave).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
+
+        if (incomingView != null && !(incomingView instanceof Button)) {
+            view.findViewById(R.id.btnButtonColor2).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.btnButtonColor1).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.lblInstructions).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.spinner).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.chkLShift).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.chkLAlt).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.chkLCtrl).setVisibility(View.INVISIBLE);
+        }
     }
 
     private void buildCommandSpinner(View view) {

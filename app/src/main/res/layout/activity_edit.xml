@@ -11,8 +11,11 @@
         android:id="@+id/seekWidth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
         android:layout_gravity="top"
-        android:layout_margin="@dimen/seekbar_margin"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="128dp"
         android:visibility="gone" />
 
     <SeekBar
@@ -21,19 +24,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginStart="64dp"
-        android:layout_marginLeft="64dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="64dp"
-        android:layout_marginRight="64dp"
         android:layout_marginBottom="128dp"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <android.widget.VerticalSeekBar
         android:id="@+id/seekHeight"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:layout_margin="@dimen/seekbar_margin"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="48dp"
         android:visibility="gone" />
 
     <Button

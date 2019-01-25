@@ -9,6 +9,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -85,39 +86,76 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
 
         for (Control control : customControls) {
-            Button button = new Button(AbstractGameActivity.this);
-
-            //button.setBackgroundResource(R.drawable.button_selector);
-            button.setX(control.getLeft());
-            button.setY(control.getTop());
-            button.setWidth(control.getWidth());
-            button.setHeight(control.getHeight());
-            button.setTextColor(control.getFontColor());
-
-            button.setBackground(makeSelector(control));
-            //button.setBackground(gd);
-
-            button.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
-            button.setTag(control.getCommand());
-            button.setText(control.getText());
-
-            setClick(button);
-
-            addDragDrop(button);
-            FrameLayout layout = findViewById(R.id.topLayout);
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-            layout.addView(button, lp);
-            controls.add(button);
-            primaryColors.add(control.getPrimaryColor());
-            secondaryColors.add(control.getSecondaryColor());
-            button.setId(controls.size()-1);
+            if (control.getViewType() == 0)
+                buildButton(control);
+            else
+                buildText(control);
         }
-        //activeControl = controls.size()-1;
-
     }
 
-    protected void setClick(Button button) {
-        button.setOnClickListener(this);
+    private void buildText(Control control) {
+        TextView view = new TextView(AbstractGameActivity.this);
+
+        view.setX(control.getLeft());
+        view.setY(control.getTop());
+        view.setWidth(control.getWidth());
+        view.setHeight(control.getHeight());
+        view.setTextColor(control.getFontColor());
+
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
+        view.setTag(control.getCommand());
+        view.setText(control.getText());
+
+        setClick(view);
+
+        addDragDrop(view);
+        FrameLayout layout = findViewById(R.id.topLayout);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        layout.addView(view, lp);
+        controls.add(view);
+        primaryColors.add(control.getPrimaryColor());
+        secondaryColors.add(control.getSecondaryColor());
+        view.setId(controls.size() - 1);
+    }
+
+    protected void buildButton(Control control) {
+        Button button = new Button(AbstractGameActivity.this);
+
+        button.setX(control.getLeft());
+        button.setY(control.getTop());
+        button.setWidth(control.getWidth());
+        button.setHeight(control.getHeight());
+        button.setTextColor(control.getFontColor());
+
+        button.setBackground(makeSelector(control));
+
+        button.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
+        button.setTag(control.getCommand());
+        button.setText(control.getText());
+
+        setClick(button);
+
+        addDragDrop(button);
+        FrameLayout layout = findViewById(R.id.topLayout);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        layout.addView(button, lp);
+        controls.add(button);
+        primaryColors.add(control.getPrimaryColor());
+        secondaryColors.add(control.getSecondaryColor());
+        button.setId(controls.size() - 1);
+    }
+
+    protected GradientDrawable setButtonBackground(int primaryColor, int secondaryColor) {
+        GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{secondaryColor, primaryColor});
+        gd.setCornerRadius(3f);
+
+        return gd;
+    }
+
+    protected void setClick(View view) {
+        view.setOnClickListener(this);
     }
 
     @Override

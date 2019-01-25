@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.List;
@@ -73,7 +72,7 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
     }
 
     @Override
-    protected void setClick(Button button) {
+    protected void setClick(View button) {
         button.setOnTouchListener(this);
     }
 
