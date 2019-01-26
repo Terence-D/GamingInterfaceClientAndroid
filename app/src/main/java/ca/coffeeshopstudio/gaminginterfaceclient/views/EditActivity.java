@@ -501,6 +501,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         }
     }
 
+    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     private final class DragDropListener implements View.OnDragListener {
         @Override
         public boolean onDrag(View v, DragEvent event) {
