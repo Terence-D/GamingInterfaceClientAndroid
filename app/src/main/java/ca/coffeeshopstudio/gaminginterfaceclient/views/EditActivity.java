@@ -109,10 +109,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         findViewById(R.id.topLayout).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                v.performClick();
                 return gd.onTouchEvent(event);
             }
         });
-        findViewById(R.id.topLayout).setOnDragListener(new MyDragListener());
+        findViewById(R.id.topLayout).setOnDragListener(new DragDropListener());
 
         ((Switch) findViewById(R.id.toggleMode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -294,6 +295,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         builderSingle.show();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void addTextView(Context context) {
         FrameLayout layout = findViewById(R.id.topLayout);
         if (activeControl >= 0) {
@@ -307,7 +309,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         AppCompatTextView text = new AppCompatTextView(context);
 
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(text, 24, maxControlSize, 2, TypedValue.COMPLEX_UNIT_SP);
-        text.setText("New");
+        text.setText(R.string.default_control_text);
         text.setId(controls.size());
         text.setX(140);
         text.setY(200);
@@ -317,7 +319,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         secondaryColors.add(Color.WHITE);
 
         text.setOnClickListener(this);
-        text.setOnTouchListener(new MyTouchListener());
+        text.setOnTouchListener(new TouchListener());
         controls.add(text);
         activeControl = controls.size() - 1;
         width.setProgress(200);
@@ -327,6 +329,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         layout.addView(text, lp);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void addButton(Context context) {
         FrameLayout layout = findViewById(R.id.topLayout);
         if (activeControl >= 0) {
@@ -347,10 +350,10 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         myButton.setBackground(gd);
 
         //myButton.setBackgroundResource(R.drawable.selected_button);
-        myButton.setText("New");
+        myButton.setText(R.string.default_control_text);
         myButton.setId(controls.size());
         //myButton.setOnClickListener(this);
-        myButton.setOnTouchListener(new MyTouchListener());
+        myButton.setOnTouchListener(new TouchListener());
         myButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, 48);
 
         myButton.setX(140);
@@ -387,7 +390,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
     @Override
     protected void addDragDrop(View view) {
-        view.setOnTouchListener(new MyTouchListener());
+        view.setOnTouchListener(new TouchListener());
     }
 
     @Override
@@ -479,7 +482,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
     }
 
-    private final class MyTouchListener implements View.OnTouchListener {
+    private final class TouchListener implements View.OnTouchListener {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && mode) {
                 ClipData data = ClipData.newPlainText("", "");
@@ -487,18 +490,18 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                         view);
                 view.startDrag(data, shadowBuilder, view, 0);
                 view.setVisibility(View.INVISIBLE);
+                view.performClick();
                 return true;
             } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 onClick(view);
                 return true;
             } else {
-                //Log.d("drag", "onTouch: " + motionEvent.toString());
                 return false;
             }
         }
     }
 
-    private final class MyDragListener implements View.OnDragListener {
+    private final class DragDropListener implements View.OnDragListener {
         @Override
         public boolean onDrag(View v, DragEvent event) {
             switch (event.getAction()) {
