@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+@SuppressWarnings("SuspiciousNameCombination")
 public class VerticalSeekBar extends android.support.v7.widget.AppCompatSeekBar {
 
     public VerticalSeekBar(Context context) {
@@ -30,6 +31,7 @@ public class VerticalSeekBar extends android.support.v7.widget.AppCompatSeekBar 
         super.setProgress(progress);
         onSizeChanged(getWidth(), getHeight(), 0, 0);
     }
+
     @Override
     protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(heightMeasureSpec, widthMeasureSpec);

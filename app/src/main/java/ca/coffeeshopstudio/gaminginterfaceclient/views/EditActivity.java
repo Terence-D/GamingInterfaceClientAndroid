@@ -60,8 +60,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private SeekBar height;
     private SeekBar fontSize;
     private boolean mode = false;
-    private int minControlSize = 48;
-    private int maxFontSize = 256;
+    private final int minControlSize = 48;
+    private final int maxFontSize = 256;
 
     @SuppressLint("NewApi")
     @Override

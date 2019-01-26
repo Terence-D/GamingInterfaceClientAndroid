@@ -3,6 +3,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.utils;
 import android.org.apache.commons.codec.binary.Base64;
 
 import java.security.NoSuchAlgorithmException;
+
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
@@ -68,7 +69,7 @@ public class CryptoHelper {
             throw new Exception("Empty string");
         }
 
-        byte[] encrypted = null;
+        byte[] encrypted;
         try {
             cipher.init(Cipher.ENCRYPT_MODE, keyspec, ivspec);
             encrypted = cipher.doFinal(text.getBytes());
@@ -83,7 +84,7 @@ public class CryptoHelper {
             throw new Exception("Empty string");
         }
 
-        byte[] decrypted = null;
+        byte[] decrypted;
         try {
             cipher.init(Cipher.DECRYPT_MODE, keyspec, ivspec);
             //decrypted = cipher.doFinal(Base64.decode(code,Base64.DEFAULT));
