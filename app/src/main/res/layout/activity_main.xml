@@ -26,7 +26,9 @@
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPort" />
+        android:importantForAutofill="no"
+        app:layout_constraintTop_toBottomOf="@+id/txtPort"
+        tools:ignore="UnusedAttribute" />
 
     <EditText
         android:id="@+id/txtAddress"
@@ -38,7 +40,9 @@
         android:hint="@string/hint_url"
         android:inputType="textWebEditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:importantForAutofill="no"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnusedAttribute" />
 
     <EditText
         android:id="@+id/txtPort"
@@ -50,7 +54,9 @@
         android:hint="@string/hint_port"
         android:inputType="number"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtAddress" />
+        android:importantForAutofill="no"
+        app:layout_constraintTop_toBottomOf="@+id/txtAddress"
+        tools:ignore="UnusedAttribute" />
 
     <Button
         android:id="@+id/btnEdit"
