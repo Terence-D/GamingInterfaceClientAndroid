@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
         android:layout_margin="120dp"
-        android:text="@string/edit_helpmsg"
+        android:text="@string/edit_help_message"
         android:textSize="18sp" />
 
     <View

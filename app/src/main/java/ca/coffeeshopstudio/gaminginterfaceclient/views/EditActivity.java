@@ -188,19 +188,19 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         prefsEditor.putInt("background", color.getColor());
         try {
             int i = 0;
-            for (View aview : controls ) {
+            for (View view : controls) {
                 Control control = new Control();
-                control.setCommand((Command) aview.getTag());
-                control.setWidth(aview.getWidth());
-                control.setLeft(aview.getX());
-                control.setFontSize((int) ((TextView) aview).getTextSize());
-                control.setText(((TextView) aview).getText().toString());
-                control.setTop(aview.getY());
-                control.setHeight(aview.getBottom());
-                control.setFontColor(((TextView) aview).getTextColors().getDefaultColor());
+                control.setCommand((Command) view.getTag());
+                control.setWidth(view.getWidth());
+                control.setLeft(view.getX());
+                control.setFontSize((int) ((TextView) view).getTextSize());
+                control.setText(((TextView) view).getText().toString());
+                control.setTop(view.getY());
+                control.setHeight(view.getBottom());
+                control.setFontColor(((TextView) view).getTextColors().getDefaultColor());
                 control.setPrimaryColor(primaryColors.get(i));
                 control.setSecondaryColor(secondaryColors.get(i));
-                if (aview instanceof Button)
+                if (view instanceof Button)
                     control.setViewType(0);
                 else
                     control.setViewType(1);
