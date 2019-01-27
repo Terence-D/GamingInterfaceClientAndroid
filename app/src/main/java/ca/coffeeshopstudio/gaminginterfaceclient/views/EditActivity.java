@@ -6,9 +6,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
@@ -318,21 +316,14 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
     private void displayEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        Command commandToSend = null;
-        String buttonText = null;
-        int fontColor = Color.BLACK;
-        int secondaryColor = Color.WHITE;
-        int primaryColor = Color.GRAY;
-        if (activeControl >= 0) {
-            TextView view = (TextView) findControl(activeControl);
-            fontColor = view.getTextColors().getDefaultColor();
-            primaryColor = primaryColors.get(activeControl);
-            secondaryColor = secondaryColors.get(activeControl);
-            buttonText = (String) view.getText();
-            commandToSend = ((Command) views.get(activeControl).getTag());
-            EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, view);
-            editNameDialogFragment.show(fm, "fragment_edit_name");
-        }
+        TextView view = (TextView) findControl(activeControl);
+        int fontColor = view.getTextColors().getDefaultColor();
+        int primaryColor = primaryColors.get(activeControl);
+        int secondaryColor = secondaryColors.get(activeControl);
+        String buttonText = (String) view.getText();
+        Command commandToSend = ((Command) findControl(activeControl).getTag());
+        EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, view);
+        editNameDialogFragment.show(fm, "fragment_edit_name");
     }
 
     @Override
@@ -346,11 +337,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             displayEditDialog();
         } else {
             if (activeControl >= 0) {
-                GradientDrawable gd = new GradientDrawable(
-                        GradientDrawable.Orientation.TOP_BOTTOM,
-                        new int[]{primaryColors.get(activeControl), secondaryColors.get(activeControl)});
-                gd.setCornerRadius(3f);
-                findViewById(activeControl).setBackground(gd);
+                if (findControl(activeControl) instanceof Button)
+                    findControl(activeControl).setBackground(setButtonBackground(primaryColors.get(activeControl), secondaryColors.get(activeControl)));
             }
             activeControl = view.getId();
 
@@ -369,8 +357,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         if (command == null && text.equals("DELETE")) {
             if (activeControl >= 0) {
                 FrameLayout layout = findViewById(R.id.topLayout);
-                layout.removeView(findViewById(activeControl));
-                views.remove(activeControl);
+                layout.removeView(findControl(activeControl));
+                views.remove(findControl(activeControl));
                 //primaryColors.remove(activeControl);
                 //secondaryColors.remove(activeControl);
                 activeControl = -1;
@@ -380,7 +368,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             primaryColors.set(activeControl, primaryColor);
             secondaryColors.set(activeControl, secondaryColor);
 
-            View view = findViewById(activeControl);
+            View view = findControl(activeControl);
 
             if (view instanceof Button)
                 view.setBackground(setButtonBackground(primaryColor, secondaryColor));
@@ -434,9 +422,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                         view);
                 view.startDrag(data, shadowBuilder, view, 0);
                 view.setVisibility(View.INVISIBLE);
-                view.performClick();
                 return true;
             } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                view.performClick();
                 onClick(view);
                 return true;
             } else {

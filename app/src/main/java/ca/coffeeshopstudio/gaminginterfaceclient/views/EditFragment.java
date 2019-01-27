@@ -130,19 +130,16 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
         text.setText(commandName);
         //load in any data we brought in
         if (commandToLoad != null) {
+            lAlt.setChecked(false);
+            lCtrl.setChecked(false);
+            lShift.setChecked(false);
             for (int i = 0; i < commandToLoad.getModifiers().size(); i++) {
                 if (commandToLoad.getModifiers().get(i).equals("ALT"))
                     lAlt.setChecked(true);
-                else
-                    lAlt.setChecked(false);
                 if (commandToLoad.getModifiers().get(i).equals("CTRL"))
                     lCtrl.setChecked(true);
-                else
-                    lCtrl.setChecked(false);
                 if (commandToLoad.getModifiers().get(i).equals("SHIFT"))
                     lShift.setChecked(true);
-                else
-                    lShift.setChecked(false);
             }
         }
 

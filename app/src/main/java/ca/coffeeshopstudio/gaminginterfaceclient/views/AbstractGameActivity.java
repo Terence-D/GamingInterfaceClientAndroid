@@ -49,6 +49,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     protected int activeControl = -1;
 
+    private int newId = 0;
+
     @SuppressLint("NewApi")
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -147,7 +149,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         views.add(view);
         primaryColors.add(control.getPrimaryColor());
         secondaryColors.add(control.getSecondaryColor());
-        view.setId(views.size() - 1);
+        view.setId(newId);
+        newId++;
     }
 
     protected GradientDrawable setButtonBackground(int primaryColor, int secondaryColor) {
