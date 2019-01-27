@@ -6,7 +6,9 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
@@ -31,7 +33,6 @@ import java.util.Map;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
-import top.defaults.colorpicker.ColorPickerPopup;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -48,7 +49,7 @@ import top.defaults.colorpicker.ColorPickerPopup;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditActivity extends AbstractGameActivity implements EditFragment.EditDialogListener, SeekBar.OnSeekBarChangeListener {
+public class EditActivity extends AbstractGameActivity implements EditFragment.EditDialogListener, SeekBar.OnSeekBarChangeListener, EditBackgroundFragment.EditDialogListener {
     private GestureDetector gd;
     private SeekBar width;
     private SeekBar height;
@@ -134,28 +135,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         findViewById(R.id.btnSettings).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                displayColorPicker(findViewById(R.id.topLayout));
+                displayEditBackgroundDialog();
             }
         });
-    }
-
-    private void displayColorPicker(final View view) {
-        ColorDrawable color = (ColorDrawable) view.getBackground();
-        new ColorPickerPopup.Builder(this)
-                .initialColor(color.getColor()) // Set initial color
-                .enableBrightness(true) // Enable brightness slider or not
-                //.enableAlpha(true) // Enable alpha slider or not
-                .okTitle(getString(R.string.color_picker_title))
-                .cancelTitle(getString(android.R.string.cancel))
-                .showIndicator(true)
-                .showValue(true)
-                .build()
-                .show(view, new ColorPickerPopup.ColorPickerObserver() {
-                    @Override
-                    public void onColorPicked(int color) {
-                        view.setBackgroundColor(color);
-                    }
-                });
     }
 
     private void saveScreen() {
@@ -314,6 +296,21 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         toggleEditControls(View.VISIBLE);
     }
 
+    private void displayEditBackgroundDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+
+        int color = Color.BLACK;
+        Drawable background = findViewById(R.id.topLayout).getBackground();
+        if (background instanceof ColorDrawable)
+            color = ((ColorDrawable) background).getColor();
+
+        int primaryColor = color;
+        //int secondaryColor = secondaryColors.get(activeControl);
+
+        EditBackgroundFragment editNameDialogFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor);
+        editNameDialogFragment.show(fm, "fragment_edit_background_name");
+    }
+
     private void displayEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
         TextView view = (TextView) findControl(activeControl);
@@ -350,6 +347,11 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             fontSize.setProgress((int) ((TextView) view).getTextSize());
             toggleEditControls(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onFinishEditBackgroundDialog(Command command, int primaryColor) {
+        findViewById(R.id.topLayout).setBackgroundColor(primaryColor);
     }
 
     @Override

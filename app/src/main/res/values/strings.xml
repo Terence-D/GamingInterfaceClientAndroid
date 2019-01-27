@@ -52,4 +52,7 @@
     <string name="main_activity_warning">PLEASE USE GIC SERVER VERSION 1.1 OR HIGHER</string>
     <string name="main_activity_server_link">https://github.com/Terence-D/GameInputCommandServer</string>
     <string name="default_control_text">New</string>
+    <string name="edit_fragment_background_image">Background Image</string>
+    <string name="edit_fragment_background_color_1">Primary Color</string>
+    <string name="edit_fragment_backgrouond_color_2">Secondary Color</string>
 </resources>
