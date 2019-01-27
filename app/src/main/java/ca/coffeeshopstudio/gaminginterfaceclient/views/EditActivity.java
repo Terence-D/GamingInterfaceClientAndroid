@@ -9,11 +9,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.TextViewCompat;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.GestureDetector;
@@ -55,28 +52,12 @@ import top.defaults.colorpicker.ColorPickerPopup;
  */
 public class EditActivity extends AbstractGameActivity implements EditFragment.EditDialogListener, SeekBar.OnSeekBarChangeListener {
     private GestureDetector gd;
-    private int currentApiVersion;
     private SeekBar width;
     private SeekBar height;
     private SeekBar fontSize;
     private boolean mode = false;
     private final int minControlSize = 48;
     private final int maxFontSize = 256;
-
-    @SuppressLint("NewApi")
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (currentApiVersion >= Build.VERSION_CODES.KITKAT && hasFocus) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +70,18 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         toggleEditControls(View.GONE);
     }
 
+    private View findControl(int id) {
+        for (View view : views) {
+            if (view.getId() == id)
+                return view;
+        }
+        return null;
+    }
+
     private void toggleEditControls(int visibility) {
         if (activeControl >= 0) {
-            if (controls.get(activeControl) instanceof Button) {
+            View view = findControl(activeControl);
+            if (view instanceof Button) {
                 findViewById(R.id.seekFont).setVisibility(visibility);
             } else {
                 findViewById(R.id.seekFont).setVisibility(View.GONE);
@@ -176,7 +166,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
         ObjectMapper mapper = new ObjectMapper();
 
-        //first we need to remove all existing controls
+        //first we need to remove all existing views
         Map<String,?> keys = prefs.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
             if (entry.getKey().contains("control_")) {
@@ -188,7 +178,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         prefsEditor.putInt("background", color.getColor());
         try {
             int i = 0;
-            for (View view : controls) {
+            for (View view : views) {
                 Control control = new Control();
                 control.setCommand((Command) view.getTag());
                 control.setWidth(view.getWidth());
@@ -216,35 +206,12 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         }
     }
 
-    private void setupFullScreen() {
-        currentApiVersion = Build.VERSION.SDK_INT;
-        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        if (currentApiVersion >= Build.VERSION_CODES.KITKAT) {
-            getWindow().getDecorView().setSystemUiVisibility(flags);
-            final View decorView = getWindow().getDecorView();
-            decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-                @Override
-                public void onSystemUiVisibilityChange(int visibility) {
-                    if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
-                        decorView.setSystemUiVisibility(flags);
-                    }
-                }
-            });
-        }
-    }
-
     private void setupDoubleTap(final Context context) {
         gd = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener(){
             //here is the method for double tap
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 showControlPopup();
-                //addButton(context);
                 return true;
             }
 
@@ -284,10 +251,10 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case 0:
-                        addButton(EditActivity.this);
+                        addButton();
                         break;
                     case 1:
-                        addTextView(EditActivity.this);
+                        addTextView();
                         break;
                 }
             }
@@ -296,78 +263,57 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void addTextView(Context context) {
-        FrameLayout layout = findViewById(R.id.topLayout);
-        if (activeControl >= 0) {
-            View previous = findViewById(controls.get(activeControl).getId());
-            //reset the button color scheme to default if going away from one
-            if (previous instanceof Button) {
-                previous.setBackground(setButtonBackground(primaryColors.get(activeControl), secondaryColors.get(activeControl)));
-            }
-        }
+    private void addTextView() {
+        //unselect any previous button
+        unselectedPreviousView();
 
-        AppCompatTextView text = new AppCompatTextView(context);
+        Control control = new Control();
+        control.setText(getString(R.string.default_control_text));
 
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(text, 24, maxControlSize, 2, TypedValue.COMPLEX_UNIT_SP);
-        text.setText(R.string.default_control_text);
-        text.setId(controls.size());
-        text.setX(140);
-        text.setY(200);
+        width.setProgress(control.getWidth());
+        height.setProgress(control.getHeight());
 
-        //these do nothing, but necessary to prevent crashes
-        primaryColors.add(Color.WHITE);
-        secondaryColors.add(Color.WHITE);
+        buildText(control);
 
-        text.setOnClickListener(this);
-        text.setOnTouchListener(new TouchListener());
-        controls.add(text);
-        activeControl = controls.size() - 1;
-        width.setProgress(200);
-        height.setProgress(120);
+        View view = views.get(views.size()-1);
+
+        view.setOnClickListener(this);
+        view.setOnTouchListener(new TouchListener());
+        activeControl = views.size() - 1;
         toggleEditControls(View.VISIBLE);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(text, lp);
+    }
+
+    private void unselectedPreviousView() {
+//        if (activeControl >= 0) {
+//            View previous = findViewById(views.get(activeControl).getId());
+//            if (previous instanceof Button) {
+//                previous.setBackground(setButtonBackground(primaryColors.get(activeControl), secondaryColors.get(activeControl)));
+//            }
+//        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void addButton(Context context) {
-        FrameLayout layout = findViewById(R.id.topLayout);
-        if (activeControl >= 0) {
-            GradientDrawable gd = new GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM,
-                    new int[]{primaryColors.get(activeControl), secondaryColors.get(activeControl)});
-            gd.setCornerRadius(3f);
+    private void addButton() {
+        //unselect any previous button
+        unselectedPreviousView();
 
-            findViewById(controls.get(activeControl).getId()).setBackground(gd);
-        }
+        Control control = new Control();
+        control.setText(getString(R.string.default_control_text));
 
-        Button myButton = new Button(context);
-        GradientDrawable gd = new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{Color.WHITE, Color.GRAY}
-        );
-        gd.setCornerRadius(3f);
-        myButton.setBackground(gd);
+        width.setProgress(control.getWidth());
+        height.setProgress(control.getHeight());
 
-        //myButton.setBackgroundResource(R.drawable.selected_button);
-        myButton.setText(R.string.default_control_text);
-        myButton.setId(controls.size());
-        //myButton.setOnClickListener(this);
-        myButton.setOnTouchListener(new TouchListener());
-        myButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, 48);
+        buildButton(control);
 
-        myButton.setX(140);
-        myButton.setY(200);
-        controls.add(myButton);
-        primaryColors.add(Color.WHITE);
-        secondaryColors.add(Color.GRAY);
-        activeControl = controls.size() - 1;
-        width.setProgress(myButton.getWidth());
-        height.setProgress(myButton.getHeight());
-        fontSize.setProgress((int) myButton.getTextSize());
+        View view = views.get(views.size()-1);
+        ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, 48);
+
+        fontSize.setProgress((int) ((Button) view).getTextSize());
+
+        view.setOnClickListener(this);
+        view.setOnTouchListener(new TouchListener());
+        activeControl = views.size() - 1;
         toggleEditControls(View.VISIBLE);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(myButton, lp);
     }
 
     private void displayEditDialog() {
@@ -378,14 +324,15 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         int secondaryColor = Color.WHITE;
         int primaryColor = Color.GRAY;
         if (activeControl >= 0) {
-            fontColor = ((TextView) controls.get(activeControl)).getTextColors().getDefaultColor();
+            TextView view = (TextView) findControl(activeControl);
+            fontColor = view.getTextColors().getDefaultColor();
             primaryColor = primaryColors.get(activeControl);
             secondaryColor = secondaryColors.get(activeControl);
-            buttonText = (String) ((TextView) controls.get(activeControl)).getText();
-            commandToSend = ((Command) controls.get(activeControl).getTag());
+            buttonText = (String) view.getText();
+            commandToSend = ((Command) views.get(activeControl).getTag());
+            EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, view);
+            editNameDialogFragment.show(fm, "fragment_edit_name");
         }
-        EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, controls.get(activeControl));
-        editNameDialogFragment.show(fm, "fragment_edit_name");
     }
 
     @Override
@@ -403,11 +350,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                         GradientDrawable.Orientation.TOP_BOTTOM,
                         new int[]{primaryColors.get(activeControl), secondaryColors.get(activeControl)});
                 gd.setCornerRadius(3f);
-
-                controls.get(activeControl).setBackground(gd);
+                findViewById(activeControl).setBackground(gd);
             }
             activeControl = view.getId();
-
 
             if (view instanceof Button)
                 view.setBackground(setButtonBackground(secondaryColors.get(activeControl), primaryColors.get(activeControl)));
@@ -424,19 +369,18 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         if (command == null && text.equals("DELETE")) {
             if (activeControl >= 0) {
                 FrameLayout layout = findViewById(R.id.topLayout);
-                layout.removeView(controls.get(activeControl));
-                controls.remove(activeControl);
-                primaryColors.remove(activeControl);
-                secondaryColors.remove(activeControl);
+                layout.removeView(findViewById(activeControl));
+                views.remove(activeControl);
+                //primaryColors.remove(activeControl);
+                //secondaryColors.remove(activeControl);
                 activeControl = -1;
                 toggleEditControls(View.GONE);
             }
         } else {
-
             primaryColors.set(activeControl, primaryColor);
             secondaryColors.set(activeControl, secondaryColor);
 
-            View view = controls.get(activeControl);
+            View view = findViewById(activeControl);
 
             if (view instanceof Button)
                 view.setBackground(setButtonBackground(primaryColor, secondaryColor));
@@ -450,7 +394,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
         if (activeControl >= 0) {
-            TextView view = ((TextView) controls.get(activeControl));
+            TextView view = (TextView) findControl(activeControl);
 
             int newWidth = view.getWidth();
             int newHeight = view.getHeight();

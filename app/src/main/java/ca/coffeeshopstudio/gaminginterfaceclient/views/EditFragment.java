@@ -88,7 +88,7 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Fetch arguments from bundle and set title
-        String title = null;
+        String title;
         if (getArguments() != null) {
             title = getArguments().getString("title", "Enter Name");
         } else
