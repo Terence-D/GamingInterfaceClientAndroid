@@ -1,9 +1,15 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.os.Build;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
@@ -11,6 +17,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,12 +45,30 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
  limitations under the License.
  */
 public abstract class AbstractGameActivity extends AppCompatActivity implements View.OnClickListener {
-    protected List<View> controls = new ArrayList<>();
+    protected List<View> views = new ArrayList<>();
     protected List<Integer> primaryColors = new ArrayList<>();
     protected List<Integer> secondaryColors = new ArrayList<>();
     protected int maxControlSize = 800;
+    protected int currentApiVersion;
 
     protected int activeControl = -1;
+
+    private int newId = 0;
+
+    @SuppressLint("NewApi")
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (currentApiVersion >= Build.VERSION_CODES.KITKAT && hasFocus) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
 
     private static StateListDrawable makeSelector(Control control) {
         GradientDrawable gd = new GradientDrawable(
@@ -57,21 +82,19 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         gd.setCornerRadius(3f);
 
         StateListDrawable res = new StateListDrawable();
-        //res.setExitFadeDuration(400);
-        //res.setAlpha(45);
         res.addState(new int[]{android.R.attr.state_pressed}, gdPressed);
         res.addState(new int[]{}, gd);
         return res;
     }
 
-    protected abstract void addDragDrop(View view);
+    protected void addDragDrop(View view) {
+        //unused
+    }
 
     protected void loadControls() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
 
-        ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
-        int backgroundColor = prefs.getInt("background", 0xFF0099CC);
-        color.setColor(backgroundColor);
+        setBackground(prefs);
 
         final ObjectMapper mapper = new ObjectMapper();
         List<Control> customControls = new ArrayList<>();
@@ -95,9 +118,37 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
     }
 
-    private void buildText(Control control) {
+    private void setBackground(SharedPreferences prefs) {
+        int backgroundColor = prefs.getInt("background", 0xFF0099CC);
+        if (backgroundColor == -1) {
+            String backgroundPath = "background" + ".jpg";
+            View topLayout = findViewById(R.id.topLayout);
+
+            Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir() + "/" + backgroundPath);
+            Drawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
+            topLayout.setBackground(bitmapDrawable);
+        } else {
+            ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
+            color.setColor(backgroundColor);
+        }
+    }
+
+    protected void buildText(Control control) {
         AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, maxControlSize, 2, TypedValue.COMPLEX_UNIT_SP);
+        buildControl(control, view);
+    }
+
+    protected void buildButton(Control control) {
+        Button view = new Button(AbstractGameActivity.this);
+        buildControl(control, view);
+        view.setBackground(makeSelector(control));
+    }
+
+    private void buildControl(Control control, TextView view) {
+        FrameLayout layout = findViewById(R.id.topLayout);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        layout.addView(view, lp);
 
         view.setX(control.getLeft());
         view.setY(control.getTop());
@@ -112,40 +163,11 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         setClick(view);
 
         addDragDrop(view);
-        FrameLayout layout = findViewById(R.id.topLayout);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(view, lp);
-        controls.add(view);
+        views.add(view);
         primaryColors.add(control.getPrimaryColor());
         secondaryColors.add(control.getSecondaryColor());
-        view.setId(controls.size() - 1);
-    }
-
-    protected void buildButton(Control control) {
-        Button button = new Button(AbstractGameActivity.this);
-
-        button.setX(control.getLeft());
-        button.setY(control.getTop());
-        button.setWidth(control.getWidth());
-        button.setHeight(control.getHeight());
-        button.setTextColor(control.getFontColor());
-
-        button.setBackground(makeSelector(control));
-
-        button.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
-        button.setTag(control.getCommand());
-        button.setText(control.getText());
-
-        setClick(button);
-
-        addDragDrop(button);
-        FrameLayout layout = findViewById(R.id.topLayout);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(button, lp);
-        controls.add(button);
-        primaryColors.add(control.getPrimaryColor());
-        secondaryColors.add(control.getSecondaryColor());
-        button.setId(controls.size() - 1);
+        view.setId(newId);
+        newId++;
     }
 
     protected GradientDrawable setButtonBackground(int primaryColor, int secondaryColor) {
@@ -165,4 +187,27 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     public void onClick(View view) {
 
     }
+
+    protected void setupFullScreen() {
+        currentApiVersion = Build.VERSION.SDK_INT;
+        final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        if (currentApiVersion >= Build.VERSION_CODES.KITKAT) {
+            getWindow().getDecorView().setSystemUiVisibility(flags);
+            final View decorView = getWindow().getDecorView();
+            decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+                @Override
+                public void onSystemUiVisibilityChange(int visibility) {
+                    if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                        decorView.setSystemUiVisibility(flags);
+                    }
+                }
+            });
+        }
+    }
+
 }
