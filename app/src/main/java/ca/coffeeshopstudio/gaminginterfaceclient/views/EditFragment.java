@@ -50,11 +50,11 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     private int primary;
     private int secondary;
     private CheckBox lShift;
-    private CheckBox rShift;
+    //private CheckBox rShift;
     private CheckBox lCtrl;
-    private CheckBox rCtrl;
+    //private CheckBox rCtrl;
     private CheckBox lAlt;
-    private CheckBox rAlt;
+    //private CheckBox rAlt;
     private TextView text;
 
     private Button btnFont;
@@ -88,7 +88,11 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Fetch arguments from bundle and set title
-        String title = getArguments().getString("title", "Enter Name");
+        String title;
+        if (getArguments() != null) {
+            title = getArguments().getString("title", "Enter Name");
+        } else
+            title = getString(R.string.default_control_text);
         commandName = getArguments().getString("text", "");
         font = getArguments().getInt("font", Color.BLACK);
         primary = getArguments().getInt("primary", Color.GRAY);
@@ -115,30 +119,27 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     private void setupControls(View view) {
         text = view.findViewById(R.id.txtText);
         lShift = view.findViewById(R.id.chkLShift);
-        rShift = view.findViewById(R.id.chkRShift);
+        //rShift = view.findViewById(R.id.chkRShift);
         lCtrl = view.findViewById(R.id.chkLCtrl);
-        rCtrl = view.findViewById(R.id.chkRCtrl);
+        //rCtrl = view.findViewById(R.id.chkRCtrl);
         lAlt = view.findViewById(R.id.chkLAlt);
-        rAlt = view.findViewById(R.id.chkRAlt);
+        //rAlt = view.findViewById(R.id.chkRAlt);
 
         buildCommandSpinner(view);
 
         text.setText(commandName);
         //load in any data we brought in
         if (commandToLoad != null) {
+            lAlt.setChecked(false);
+            lCtrl.setChecked(false);
+            lShift.setChecked(false);
             for (int i = 0; i < commandToLoad.getModifiers().size(); i++) {
                 if (commandToLoad.getModifiers().get(i).equals("ALT"))
                     lAlt.setChecked(true);
-                else
-                    lAlt.setChecked(false);
                 if (commandToLoad.getModifiers().get(i).equals("CTRL"))
                     lCtrl.setChecked(true);
-                else
-                    lCtrl.setChecked(false);
                 if (commandToLoad.getModifiers().get(i).equals("SHIFT"))
                     lShift.setChecked(true);
-                else
-                    lShift.setChecked(false);
             }
         }
 

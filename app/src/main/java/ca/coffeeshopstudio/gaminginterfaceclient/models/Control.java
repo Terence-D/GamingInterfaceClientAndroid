@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 /**
- * stores our controls information for saving / loading the interface
+ * stores our views information for saving / loading the interface
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -27,17 +27,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 public class Control {
     @JsonProperty("command")
-    private Command command;
+    private Command command = new Command();
     @JsonProperty("text")
-    private String text;
+    private String text = "NONE";
     @JsonProperty("left")
-    private float left;
+    private float left = 140;
     @JsonProperty("width")
-    private int width;
+    private int width = 200;
     @JsonProperty("top")
-    private float top;
+    private float top = 200;
     @JsonProperty("height")
-    private int height;
+    private int height = 120;
     @JsonProperty("fontColor")
     private int fontColor = Color.BLACK;
     @JsonProperty("primaryColor")

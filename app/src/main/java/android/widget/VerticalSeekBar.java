@@ -1,10 +1,12 @@
 package android.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+@SuppressWarnings("SuspiciousNameCombination")
 public class VerticalSeekBar extends android.support.v7.widget.AppCompatSeekBar {
 
     public VerticalSeekBar(Context context) {
@@ -29,6 +31,7 @@ public class VerticalSeekBar extends android.support.v7.widget.AppCompatSeekBar 
         super.setProgress(progress);
         onSizeChanged(getWidth(), getHeight(), 0, 0);
     }
+
     @Override
     protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(heightMeasureSpec, widthMeasureSpec);
@@ -43,6 +46,7 @@ public class VerticalSeekBar extends android.support.v7.widget.AppCompatSeekBar 
     }
 
     @Override
+    @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) {
             return false;
@@ -50,6 +54,7 @@ public class VerticalSeekBar extends android.support.v7.widget.AppCompatSeekBar 
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                break;
             case MotionEvent.ACTION_MOVE:
             case MotionEvent.ACTION_UP:
                 setProgress(getMax() - (int) (getMax() * event.getY() / getHeight()));
