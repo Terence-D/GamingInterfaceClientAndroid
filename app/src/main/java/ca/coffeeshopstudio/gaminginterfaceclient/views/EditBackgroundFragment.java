@@ -1,6 +1,9 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -11,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import top.defaults.colorpicker.ColorPickerPopup;
 
 /**
@@ -32,6 +34,9 @@ import top.defaults.colorpicker.ColorPickerPopup;
 public class EditBackgroundFragment extends DialogFragment implements View.OnClickListener {
     private int primary;
     private Button btnPrimary;
+    private Uri currentUri;
+
+    private static final int OPEN_REQUEST_CODE = 41;
 
     public static EditBackgroundFragment newInstance(String title, int primary) {
         EditBackgroundFragment frag = new EditBackgroundFragment();
@@ -74,20 +79,26 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
         btnPrimary.setOnClickListener(this);
         btnPrimary.setTextColor(primary);
 
+        view.findViewById(R.id.btnBackgroundImage).setOnClickListener(this);
         view.findViewById(R.id.btnSave).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         EditDialogListener listener = (EditDialogListener) getActivity();
-        Command savedCommand = null;
         switch (view.getId()) {
             case R.id.btnSave:
-                listener.onFinishEditBackgroundDialog(savedCommand, btnPrimary.getTextColors().getDefaultColor());
+                listener.onFinishEditBackgroundDialog(btnPrimary.getTextColors().getDefaultColor(), null);
                 dismiss();
                 break;
             case R.id.btnColor1:
                 displayColorPicker(view);
+                break;
+            case R.id.btnBackgroundImage:
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(intent, OPEN_REQUEST_CODE);
                 break;
             default:
                 break;
@@ -114,7 +125,25 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
 
 
     public interface EditDialogListener {
-        void onFinishEditBackgroundDialog(Command command, int primaryColor);
+        void onFinishEditBackgroundDialog(int primaryColor, Uri background);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
+        if (resultCode == Activity.RESULT_OK)
+        {
+            if (requestCode == OPEN_REQUEST_CODE) {
+                if (resultData != null) {
+                    currentUri = resultData.getData();
+                    EditDialogListener listener = (EditDialogListener) getActivity();
+                    listener.onFinishEditBackgroundDialog(-1, currentUri);
+                    dismiss();
+
+                    //String content = readFileContent(currentUri);
+                    //textView.setText(content);
+                }
+            }
+        }
+    }
 }

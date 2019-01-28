@@ -6,10 +6,14 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -27,6 +31,8 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
@@ -57,6 +63,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private boolean mode = false;
     private final int minControlSize = 48;
     private final int maxFontSize = 256;
+    private static final int OPEN_REQUEST_CODE = 41;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,8 +148,20 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     private void saveScreen() {
+        View topLayout = findViewById(R.id.topLayout);
+
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
+
+        //save the images
+        if (topLayout.getBackground() instanceof ColorDrawable) {
+            ColorDrawable color = (ColorDrawable) topLayout.getBackground();
+            prefsEditor.putInt("background", color.getColor());
+        } else {
+            BitmapDrawable bitmap = (BitmapDrawable) topLayout.getBackground();
+            saveBitmapIntoSDCardImage(bitmap.getBitmap());
+            prefsEditor.putInt("background", -1);
+        }
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -154,8 +173,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             }
         }
 
-        ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
-        prefsEditor.putInt("background", color.getColor());
         try {
             int i = 0;
             for (View view : views) {
@@ -297,6 +314,10 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     private void displayEditBackgroundDialog() {
+//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        intent.setType("image/*");
+//        startActivityForResult(intent, OPEN_REQUEST_CODE);
         FragmentManager fm = getSupportFragmentManager();
 
         int color = Color.BLACK;
@@ -350,8 +371,18 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     @Override
-    public void onFinishEditBackgroundDialog(Command command, int primaryColor) {
-        findViewById(R.id.topLayout).setBackgroundColor(primaryColor);
+    public void onFinishEditBackgroundDialog(int primaryColor, Uri image) {
+        if (image == null)
+            findViewById(R.id.topLayout).setBackgroundColor(primaryColor);
+        else {
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image);
+                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                findViewById(R.id.topLayout).setBackground(drawable);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -461,6 +492,22 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                     break;
             }
             return true;
+        }
+    }
+
+    public boolean saveBitmapIntoSDCardImage(Bitmap finalBitmap) {
+        String fname = "background" + ".jpg";
+        File file = new File (getFilesDir(), fname);
+
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

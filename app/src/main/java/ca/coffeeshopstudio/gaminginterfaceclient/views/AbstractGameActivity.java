@@ -2,7 +2,11 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
@@ -90,9 +94,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected void loadControls() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
 
-        ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
-        int backgroundColor = prefs.getInt("background", 0xFF0099CC);
-        color.setColor(backgroundColor);
+        setBackground(prefs);
 
         final ObjectMapper mapper = new ObjectMapper();
         List<Control> customControls = new ArrayList<>();
@@ -113,6 +115,21 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                 buildButton(control);
             else
                 buildText(control);
+        }
+    }
+
+    private void setBackground(SharedPreferences prefs) {
+        int backgroundColor = prefs.getInt("background", 0xFF0099CC);
+        if (backgroundColor == -1) {
+            String backgroundPath = "background" + ".jpg";
+            View topLayout = findViewById(R.id.topLayout);
+
+            Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir() + "/" + backgroundPath);
+            Drawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
+            topLayout.setBackground(bitmapDrawable);
+        } else {
+            ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
+            color.setColor(backgroundColor);
         }
     }
 
