@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -41,6 +42,8 @@ public class Screen {
     private int activeControl = -1;
     private int newId = 0;
 
+    private int screenId;
+
     public Screen(Context context) {
         this.context = context;
     }
@@ -52,11 +55,11 @@ public class Screen {
         //save the images
         if (background instanceof ColorDrawable) {
             ColorDrawable color = (ColorDrawable) background;
-            prefsEditor.putInt("background", color.getColor());
+            prefsEditor.putInt(screenId + "_background", color.getColor());
         } else {
             BitmapDrawable bitmap = (BitmapDrawable) background;
-            saveBitmap("background.jpg", bitmap.getBitmap());
-            prefsEditor.putInt("background", -1);
+            saveBitmap(screenId + "_background.jpg", bitmap.getBitmap());
+            prefsEditor.putInt(screenId + "_background", -1);
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -64,7 +67,7 @@ public class Screen {
         //first we need to remove all existing views
         Map<String, ?> keys = prefs.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            if (entry.getKey().contains("control_")) {
+            if (entry.getKey().contains(screenId + "_control_")) {
                 prefsEditor.remove(entry.getKey());
             }
         }
@@ -88,7 +91,7 @@ public class Screen {
                     // simple try/catch
                     try {
                         BitmapDrawable bitmap = (BitmapDrawable) ((ImageView) view).getDrawable();
-                        String imageName = "control" + i + ".jpg";
+                        String imageName = screenId + "_control" + i + ".jpg";
                         saveBitmap(imageName, bitmap.getBitmap());
                         control.setPrimaryImage(imageName);
                     } catch (Exception e) {
@@ -108,7 +111,7 @@ public class Screen {
                 }
 
                 String json = mapper.writeValueAsString(control);
-                prefsEditor.putString("control_" + i, json);
+                prefsEditor.putString(screenId + "_control_" + i, json);
                 i++;
             }
             prefsEditor.apply();
@@ -119,14 +122,55 @@ public class Screen {
         }
     }
 
+    //TODO remove this after next big release
+    private void convertLegacyControls() {
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+
+        Map<String, ?> keys = prefs.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            if (entry.getKey().startsWith("control_")) {
+                prefsEditor.remove(entry.getKey());
+
+                if (entry.getValue() instanceof Integer) {
+                    prefsEditor.putInt(screenId + "_" + entry.getKey(), (Integer) entry.getValue());
+                } else if (entry.getValue() instanceof String) {
+                    prefsEditor.putString(screenId + "_" + entry.getKey(), (String) entry.getValue());
+                } else {
+                    Log.d("GICS", "convertLegacyControls: unknown type of pref " + entry.getValue());
+                }
+            }
+        }
+        prefsEditor.apply();
+    }
+
+    private void convertLegacyBackground() {
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
+        if (prefs.contains("background")) {
+            SharedPreferences.Editor prefsEditor = prefs.edit();
+            int backgroundColor = prefs.getInt("background", -1);
+            prefsEditor.putInt(screenId + "_background", backgroundColor);
+            prefsEditor.remove("background");
+            prefsEditor.apply();
+        }
+        String backgroundPath = "background" + ".jpg";
+        File file = new File(context.getFilesDir() + "/" + backgroundPath);
+        if (file.exists()) {
+            String newBackgroundPath = screenId + "_background" + ".jpg";
+            File newFile = new File(context.getFilesDir() + "/" + newBackgroundPath);
+            file.renameTo(newFile);
+        }
+    }
+
     public void loadControls() {
+        convertLegacyControls();
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
 
         final ObjectMapper mapper = new ObjectMapper();
 
         Map<String, ?> keys = prefs.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            if (entry.getKey().contains("control_")) {
+            if (entry.getKey().contains(screenId + "_control_")) {
                 try {
                     customControls.add(mapper.readValue(prefs.getString(entry.getKey(), ""), Control.class));
                 } catch (IOException e) {
@@ -137,10 +181,11 @@ public class Screen {
     }
 
     public Drawable loadBackground() {
+        convertLegacyBackground();
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
-        int backgroundColor = prefs.getInt("background", 0xFF0099CC);
+        int backgroundColor = prefs.getInt(screenId + "_background", 0xFF0099CC);
         if (backgroundColor == -1) {
-            String backgroundPath = "background" + ".jpg";
+            String backgroundPath = screenId + "_background" + ".jpg";
 
             Bitmap bitmap = BitmapFactory.decodeFile(context.getFilesDir() + "/" + backgroundPath);
             Drawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
@@ -154,7 +199,7 @@ public class Screen {
     }
 
     public Drawable loadImage(String fileName) {
-        if (fileName.startsWith("control")) {
+        if (fileName.startsWith(screenId + "_control")) {
             Bitmap bitmap = BitmapFactory.decodeFile(context.getFilesDir() + "/" + fileName);
             Drawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
             return bitmapDrawable;
