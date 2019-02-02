@@ -32,6 +32,8 @@ import static android.content.Context.MODE_PRIVATE;
  * TODO: HEADER COMMENT HERE.
  */
 public class Screen {
+    private final String PREFS_NAME = "gicsScreen";
+    
     private Context context;
     //private View layoutView;
     private List<Control> customControls = new ArrayList<>();
@@ -49,7 +51,7 @@ public class Screen {
     }
 
     public void saveScreen(Drawable background) {
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
         //save the images
@@ -124,7 +126,7 @@ public class Screen {
 
     //TODO remove this after next big release
     private void convertLegacyControls() {
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
         Map<String, ?> keys = prefs.getAll();
@@ -145,7 +147,7 @@ public class Screen {
     }
 
     private void convertLegacyBackground() {
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         if (prefs.contains("background")) {
             SharedPreferences.Editor prefsEditor = prefs.edit();
             int backgroundColor = prefs.getInt("background", -1);
@@ -164,7 +166,7 @@ public class Screen {
 
     public void loadControls() {
         convertLegacyControls();
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         final ObjectMapper mapper = new ObjectMapper();
 
@@ -182,7 +184,7 @@ public class Screen {
 
     public Drawable loadBackground() {
         convertLegacyBackground();
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         int backgroundColor = prefs.getInt(screenId + "_background", 0xFF0099CC);
         if (backgroundColor == -1) {
             String backgroundPath = screenId + "_background.png";
