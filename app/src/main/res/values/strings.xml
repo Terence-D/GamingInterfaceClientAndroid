@@ -55,4 +55,7 @@
     <string name="edit_fragment_background_image">Background Image</string>
     <string name="edit_fragment_background_color_1">Primary Color</string>
     <string name="edit_fragment_backgrouond_color_2">Secondary Color</string>
+    <string name="control_type_button">Button</string>
+    <string name="control_type_text">Text</string>
+    <string name="control_type_image">Image</string>
 </resources>

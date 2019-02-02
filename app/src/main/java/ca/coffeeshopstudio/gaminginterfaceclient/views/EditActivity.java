@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -63,12 +64,16 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private boolean mode = false;
     private final int minControlSize = 48;
     private final int maxFontSize = 256;
+    private ControlTypes controlTypes;
 
     protected static final int OPEN_REQUEST_CODE_BACKGROUND = 41;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        controlTypes = new ControlTypes(getApplicationContext());
+
         setContentView(R.layout.activity_edit);
         setupFullScreen();
         setupDoubleTap(EditActivity.this);
@@ -233,9 +238,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private void showControlPopup() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(EditActivity.this);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(EditActivity.this, android.R.layout.simple_list_item_1);
-        arrayAdapter.add("Button");
-        arrayAdapter.add("Text");
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(EditActivity.this, android.R.layout.simple_list_item_1, controlTypes.getStringValues());
 
         builderSingle.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -247,38 +250,56 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        addButton();
-                        break;
-                    case 1:
-                        addTextView();
-                        break;
-                }
+                if (controlTypes.getValue(which) == getString(R.string.control_type_button))
+                    addButton();
+                if (controlTypes.getValue(which) == getString(R.string.control_type_text))
+                    addTextView();
+                if (controlTypes.getValue(which) == getString(R.string.control_type_image))
+                    addImage();
             }
         });
         builderSingle.show();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    private void addImage() {
+        Control control = initNewControl();
+
+        buildImage(control);
+
+        updateDisplay();
+    }
+
     private void addTextView() {
-        //unselect any previous button
-        unselectedPreviousView();
-
-        Control control = new Control();
+        //un select any previous button
+        Control control = initNewControl();
         control.setText(getString(R.string.default_control_text));
-
-        width.setProgress(control.getWidth());
-        height.setProgress(control.getHeight());
 
         buildText(control);
 
-        View view = views.get(views.size()-1);
+        updateDisplay();
+    }
 
-        view.setOnClickListener(this);
-        view.setOnTouchListener(new TouchListener());
-        activeControl = views.size() - 1;
-        toggleEditControls(View.VISIBLE);
+    private void addButton() {
+        //unselect any previous button
+        Control control = initNewControl();
+        control.setText(getString(R.string.default_control_text));
+
+        buildButton(control);
+
+        View view = updateDisplay();
+
+        ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, 48);
+        fontSize.setProgress((int) ((Button) view).getTextSize());
+    }
+
+    private Control initNewControl() {
+        //un select any previous view visually
+        unselectedPreviousView();
+        Control control = new Control();
+        width.setProgress(control.getWidth());
+        height.setProgress(control.getHeight());
+
+        return control;
     }
 
     private void unselectedPreviousView() {
@@ -290,28 +311,16 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 //        }
     }
 
+    //called after addControlType style methods
     @SuppressLint("ClickableViewAccessibility")
-    private void addButton() {
-        //unselect any previous button
-        unselectedPreviousView();
-
-        Control control = new Control();
-        control.setText(getString(R.string.default_control_text));
-
-        width.setProgress(control.getWidth());
-        height.setProgress(control.getHeight());
-
-        buildButton(control);
-
-        View view = views.get(views.size()-1);
-        ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, 48);
-
-        fontSize.setProgress((int) ((Button) view).getTextSize());
-
+    private View updateDisplay() {
+        View view = views.get(views.size() - 1);
         view.setOnClickListener(this);
         view.setOnTouchListener(new TouchListener());
         activeControl = views.size() - 1;
         toggleEditControls(View.VISIBLE);
+
+        return view;
     }
 
     private void displayEditBackgroundDialog() {
@@ -333,7 +342,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         editNameDialogFragment.show(fm, "fragment_edit_background_name");
     }
 
-    private void displayEditDialog() {
+    private void displayTextEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
         TextView view = (TextView) findControl(activeControl);
         int fontColor = view.getTextColors().getDefaultColor();
@@ -353,7 +362,10 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onClick(View view) {
         if (activeControl == view.getId()) {
-            displayEditDialog();
+            if (view instanceof TextView)
+                displayTextEditDialog();
+            if (view instanceof ImageView)
+                displayImageEditDialog();
         } else {
             if (activeControl >= 0) {
                 if (findControl(activeControl) instanceof Button)
@@ -369,6 +381,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             fontSize.setProgress((int) ((TextView) view).getTextSize());
             toggleEditControls(View.VISIBLE);
         }
+    }
+
+    private void displayImageEditDialog() {
     }
 
     @Override

@@ -17,6 +17,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -137,28 +138,42 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, maxControlSize, 2, TypedValue.COMPLEX_UNIT_SP);
         buildControl(control, view);
+        initText(view, control);
     }
 
     protected void buildButton(Control control) {
         Button view = new Button(AbstractGameActivity.this);
         buildControl(control, view);
+        initText(view, control);
         view.setBackground(makeSelector(control));
     }
 
-    private void buildControl(Control control, TextView view) {
+    protected void buildImage(Control control) {
+        ImageView view = new ImageView(AbstractGameActivity.this);
+        buildControl(control, view);
+        view.setBackgroundResource(R.mipmap.ic_launcher);
+    }
+
+    //initializations related to textview based controls (AppCompatTextView, Button, etc)
+    private void initText(TextView view, Control control) {
+        view.setWidth(control.getWidth());
+        view.setHeight(control.getHeight());
+        view.setTextColor(control.getFontColor());
+
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
+        view.setText(control.getText());
+    }
+
+    //init generic to all view types
+    private void buildControl(Control control, View view) {
         FrameLayout layout = findViewById(R.id.topLayout);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layout.addView(view, lp);
 
         view.setX(control.getLeft());
         view.setY(control.getTop());
-        view.setWidth(control.getWidth());
-        view.setHeight(control.getHeight());
-        view.setTextColor(control.getFontColor());
 
-        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
         view.setTag(control.getCommand());
-        view.setText(control.getText());
 
         setClick(view);
 
