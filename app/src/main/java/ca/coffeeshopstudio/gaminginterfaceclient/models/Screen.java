@@ -7,8 +7,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +55,7 @@ public class Screen {
             prefsEditor.putInt("background", color.getColor());
         } else {
             BitmapDrawable bitmap = (BitmapDrawable) background;
-            saveBitmapIntoSDCardImage(bitmap.getBitmap());
+            saveBitmap("background.jpg", bitmap.getBitmap());
             prefsEditor.putInt("background", -1);
         }
 
@@ -74,17 +76,37 @@ public class Screen {
                 control.setCommand((Command) view.getTag());
                 control.setWidth(view.getWidth());
                 control.setLeft(view.getX());
-                control.setFontSize((int) ((TextView) view).getTextSize());
-                control.setText(((TextView) view).getText().toString());
                 control.setTop(view.getY());
                 control.setHeight(view.getBottom());
-                control.setFontColor(((TextView) view).getTextColors().getDefaultColor());
                 control.setPrimaryColor(primaryColors.get(i));
                 control.setSecondaryColor(secondaryColors.get(i));
-                if (view instanceof Button)
+
+                if (view instanceof ImageView) {
+                    control.setViewType(2);
+                    //in newer version of android, if this is an adaptive icon, it might crash.
+                    //so instead of dealing with different code / different versions -
+                    // simple try/catch
+                    try {
+                        BitmapDrawable bitmap = (BitmapDrawable) ((ImageView) view).getDrawable();
+                        String imageName = "control" + i + ".jpg";
+                        saveBitmap(imageName, bitmap.getBitmap());
+                        control.setPrimaryImage(imageName);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        //no big, it'll just load the default
+                    }
+                } else if (view instanceof Button)
                     control.setViewType(0);
-                else
+                else if (view instanceof AppCompatTextView)
                     control.setViewType(1);
+
+                //common between Button and AppCompatTextView above
+                if (view instanceof TextView) {
+                    control.setFontSize((int) ((TextView) view).getTextSize());
+                    control.setText(((TextView) view).getText().toString());
+                    control.setFontColor(((TextView) view).getTextColors().getDefaultColor());
+                }
+
                 String json = mapper.writeValueAsString(control);
                 prefsEditor.putString("control_" + i, json);
                 i++;
@@ -131,17 +153,25 @@ public class Screen {
         }
     }
 
+    public Drawable loadImage(String fileName) {
+        if (fileName.startsWith("control")) {
+            Bitmap bitmap = BitmapFactory.decodeFile(context.getFilesDir() + "/" + fileName);
+            Drawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
+            return bitmapDrawable;
+        }
+        return null;
+    }
+
     public int getMaxControlSize() {
         return maxControlSize;
     }
 
-    private boolean saveBitmapIntoSDCardImage(Bitmap finalBitmap) {
-        String fname = "background" + ".jpg";
-        File file = new File(context.getFilesDir(), fname);
+    private boolean saveBitmap(String fileName, Bitmap image) {
+        File file = new File(context.getFilesDir(), fileName);
 
         try {
             FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            image.compress(Bitmap.CompressFormat.PNG, 90, out);
             out.flush();
             out.close();
             return true;

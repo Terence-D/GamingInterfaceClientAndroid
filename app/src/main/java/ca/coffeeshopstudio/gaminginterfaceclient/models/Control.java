@@ -22,7 +22,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "primaryColor",
         "secondaryColor",
         "fontSize",
-        "viewType"
+        "viewType",
+        "primaryImage",
+        "secondaryImage"
 })
 
 public class Control {
@@ -48,6 +50,10 @@ public class Control {
     private int fontSize = 24;
     @JsonProperty("viewType")
     private int viewType = 0;
+    @JsonProperty("primaryImage")
+    private String primaryImage = "";
+    @JsonProperty("secondaryImage")
+    private String secondaryImage = "";
 
     @JsonProperty("command")
     public Command getCommand() {
@@ -163,4 +169,23 @@ public class Control {
         this.viewType = viewType;
     }
 
+    @JsonProperty("primaryImage")
+    public String getPrimaryImage() {
+        return primaryImage;
+    }
+
+    @JsonProperty("primaryImage")
+    public void setPrimaryImage(String image) {
+        this.primaryImage = image;
+    }
+
+    @JsonProperty("secondaryImage")
+    public String getSecondaryImage() {
+        return secondaryImage;
+    }
+
+    @JsonProperty("secondaryImage")
+    public void setSecondaryImage(String image) {
+        this.secondaryImage = image;
+    }
 }

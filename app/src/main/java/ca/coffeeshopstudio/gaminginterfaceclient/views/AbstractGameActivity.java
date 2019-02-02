@@ -87,10 +87,17 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected void loadScreen() {
         currentScreen.loadControls();
         for (Control control : currentScreen.getCustomControls()) {
-            if (control.getViewType() == 0)
-                buildButton(control);
-            else
-                buildText(control);
+            switch (control.getViewType()) {
+                case 0:
+                    buildButton(control);
+                    break;
+                case 1:
+                    buildText(control);
+                    break;
+                case 2:
+                    buildImage(control);
+                    break;
+            }
         }
 
         View topLayout = findViewById(R.id.topLayout);
@@ -115,7 +122,13 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected void buildImage(Control control) {
         ImageView view = new ImageView(AbstractGameActivity.this);
         buildControl(control, view);
-        view.setImageResource(R.mipmap.ic_launcher);
+        if (control.getPrimaryImage().isEmpty())
+            view.setImageResource(R.mipmap.ic_launcher);
+        else {
+            Drawable image = currentScreen.loadImage(control.getPrimaryImage());
+            view.setImageDrawable(image);
+            resizeImageView(view, control.getWidth(), control.getHeight());
+        }
     }
 
     //initializations related to textview based controls (AppCompatTextView, Button, etc)
@@ -186,6 +199,12 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                 }
             });
         }
+    }
+
+    protected void resizeImageView(ImageView view, int newWidth, int newHeight) {
+        FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(newWidth, newHeight);
+        view.setLayoutParams(layout);
+        view.invalidate();
     }
 
 }

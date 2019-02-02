@@ -309,10 +309,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             if (view instanceof ImageView)
                 displayImageEditDialog();
         } else {
-            if (currentScreen.getActiveControlId() >= 0) {
-                if (currentScreen.getActiveView() instanceof Button)
-                    currentScreen.getActiveView().setBackground(setButtonBackground(currentScreen.getActiveControlPrimaryColor(), currentScreen.getActiveControlSecondaryColor()));
-            }
+            unselectedPreviousView();
             currentScreen.setActiveControl(view.getId());
 
             if (view instanceof Button)
@@ -320,7 +317,10 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
             width.setProgress(view.getWidth());
             height.setProgress(view.getHeight());
-            fontSize.setProgress((int) ((TextView) view).getTextSize());
+
+            if (view instanceof TextView)
+                fontSize.setProgress((int) ((TextView) view).getTextSize());
+
             toggleEditControls(View.VISIBLE);
         }
     }
@@ -376,12 +376,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         }
     }
 
-    private void resizeImageView(ImageView view, int newWidth, int newHeight) {
-        FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(newWidth, newHeight);
-        view.setLayoutParams(layout);
-        view.invalidate();
-    }
-
     private void resizeImageView(int seekBarId, int value) {
         ImageView view = (ImageView) currentScreen.getActiveView();
 
@@ -400,7 +394,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         }
     }
 
-    //textview based controls including buttons
+    //TextView based controls including buttons
     private void resizeTextView(int seekBarId, int value) {
         TextView view = (TextView) currentScreen.getActiveView();
 
