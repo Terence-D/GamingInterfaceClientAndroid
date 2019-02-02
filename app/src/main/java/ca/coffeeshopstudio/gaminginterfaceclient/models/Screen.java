@@ -58,7 +58,7 @@ public class Screen {
             prefsEditor.putInt(screenId + "_background", color.getColor());
         } else {
             BitmapDrawable bitmap = (BitmapDrawable) background;
-            saveBitmap(screenId + "_background.jpg", bitmap.getBitmap());
+            saveBitmap(screenId + "_background.png", bitmap.getBitmap());
             prefsEditor.putInt(screenId + "_background", -1);
         }
 
@@ -91,7 +91,7 @@ public class Screen {
                     // simple try/catch
                     try {
                         BitmapDrawable bitmap = (BitmapDrawable) ((ImageView) view).getDrawable();
-                        String imageName = screenId + "_control" + i + ".jpg";
+                        String imageName = screenId + "_control" + i + ".png";
                         saveBitmap(imageName, bitmap.getBitmap());
                         control.setPrimaryImage(imageName);
                     } catch (Exception e) {
@@ -156,7 +156,7 @@ public class Screen {
         String backgroundPath = "background" + ".jpg";
         File file = new File(context.getFilesDir() + "/" + backgroundPath);
         if (file.exists()) {
-            String newBackgroundPath = screenId + "_background" + ".jpg";
+            String newBackgroundPath = screenId + "_background" + ".png";
             File newFile = new File(context.getFilesDir() + "/" + newBackgroundPath);
             file.renameTo(newFile);
         }
@@ -185,7 +185,7 @@ public class Screen {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
         int backgroundColor = prefs.getInt(screenId + "_background", 0xFF0099CC);
         if (backgroundColor == -1) {
-            String backgroundPath = screenId + "_background" + ".jpg";
+            String backgroundPath = screenId + "_background.png";
 
             Bitmap bitmap = BitmapFactory.decodeFile(context.getFilesDir() + "/" + backgroundPath);
             Drawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
