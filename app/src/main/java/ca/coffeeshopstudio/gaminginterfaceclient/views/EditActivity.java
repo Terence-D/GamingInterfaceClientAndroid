@@ -1,10 +1,12 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -13,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -297,8 +300,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         view.setOnTouchListener(new TouchListener());
     }
 
-    @Override
-    public void onClick(View view) {
+    //to fix a case of the onClick firing twice
+    private void clickHandler(View view) {
         if (currentScreen.getActiveControl() == view.getId()) {
             if (view instanceof TextView)
                 displayTextEditDialog();
@@ -321,7 +324,16 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        clickHandler(view);
+    }
+
     private void displayImageEditDialog() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_IMAGE);
     }
 
     @Override
@@ -334,7 +346,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                 findViewById(R.id.topLayout).setBackground(drawable);
             } catch (IOException e) {
-                e.printStackTrace();
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -398,21 +410,16 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
     }
 
-    private final class TouchListener implements View.OnTouchListener {
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && mode) {
-                ClipData data = ClipData.newPlainText("", "");
-                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
-                        view);
-                view.startDrag(data, shadowBuilder, view, 0);
-                view.setVisibility(View.INVISIBLE);
-                return true;
-            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                view.performClick();
-                onClick(view);
-                return true;
-            } else {
-                return false;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == EditActivity.OPEN_REQUEST_CODE_IMAGE) {
+                if (resultData != null) {
+                    Uri currentUri = resultData.getData();
+                    currentScreen.findActiveControl().setBackgroundResource(android.R.color.transparent);
+                    ((ImageView) currentScreen.findActiveControl()).setImageURI(currentUri);
+                }
             }
         }
     }
@@ -443,6 +450,25 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                     break;
             }
             return true;
+        }
+    }
+
+    private final class TouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && mode) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                        view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+                return true;
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                view.performClick();
+                //clickHandler(view);
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }

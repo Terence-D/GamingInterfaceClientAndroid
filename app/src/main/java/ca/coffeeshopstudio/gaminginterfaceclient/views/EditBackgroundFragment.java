@@ -34,7 +34,6 @@ import top.defaults.colorpicker.ColorPickerPopup;
 public class EditBackgroundFragment extends DialogFragment implements View.OnClickListener {
     private int primary;
     private Button btnPrimary;
-    private Uri currentUri;
 
     public static EditBackgroundFragment newInstance(String title, int primary) {
         EditBackgroundFragment frag = new EditBackgroundFragment();
@@ -133,7 +132,7 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
         {
             if (requestCode == EditActivity.OPEN_REQUEST_CODE_BACKGROUND) {
                 if (resultData != null) {
-                    currentUri = resultData.getData();
+                    Uri currentUri = resultData.getData();
                     EditDialogListener listener = (EditDialogListener) getActivity();
                     listener.onFinishEditBackgroundDialog(-1, currentUri);
                     dismiss();
