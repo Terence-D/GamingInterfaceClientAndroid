@@ -1,12 +1,10 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -15,7 +13,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -53,7 +50,10 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditActivity extends AbstractGameActivity implements EditFragment.EditDialogListener, SeekBar.OnSeekBarChangeListener, EditBackgroundFragment.EditDialogListener {
+public class EditActivity extends AbstractGameActivity implements EditTextStyleFragment.EditDialogListener,
+        SeekBar.OnSeekBarChangeListener,
+        EditImageFragment.EditImageDialogListener,
+        EditBackgroundFragment.EditDialogListener {
     private GestureDetector gd;
     private SeekBar width;
     private SeekBar height;
@@ -268,7 +268,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     private void displayEditBackgroundDialog() {
-        FragmentManager fm = getSupportFragmentManager();
 
         int color = Color.BLACK;
         Drawable background = findViewById(R.id.topLayout).getBackground();
@@ -278,8 +277,15 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         int primaryColor = color;
         //int secondaryColor = secondaryColors.get(activeControl);
 
-        EditBackgroundFragment editNameDialogFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor);
-        editNameDialogFragment.show(fm, "fragment_edit_background_name");
+        FragmentManager fm = getSupportFragmentManager();
+        EditBackgroundFragment editBackgroundFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor);
+        editBackgroundFragment.show(fm, "fragment_edit_background_name");
+    }
+
+    private void displayImageEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        EditImageFragment editFragment = EditImageFragment.newInstance();
+        editFragment.show(fm, "fragment_edit_image_name");
     }
 
     private void displayTextEditDialog() {
@@ -292,8 +298,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
         String buttonText = (String) view.getText();
         Command commandToSend = ((Command) currentScreen.getActiveView().getTag());
-        EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, view);
-        editNameDialogFragment.show(fm, "fragment_edit_name");
+        EditTextStyleFragment editTextDialog = EditTextStyleFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, view);
+        editTextDialog.show(fm, "fragment_edit_name");
     }
 
     @Override
@@ -330,13 +336,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         clickHandler(view);
     }
 
-    private void displayImageEditDialog() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_IMAGE);
-    }
-
     @Override
     public void onFinishEditBackgroundDialog(int primaryColor, Uri image) {
         if (image == null)
@@ -352,14 +351,31 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         }
     }
 
+    private void deleteView() {
+        FrameLayout layout = findViewById(R.id.topLayout);
+        layout.removeView(currentScreen.getActiveView());
+        currentScreen.removeCurrentView();
+        toggleEditControls(View.GONE);
+    }
+
+    @Override
+    public void onFinishEditImageDialog(Uri newImageUri) {
+        if (newImageUri == null) {
+            if (currentScreen.getActiveControlId() >= 0) {
+                deleteView();
+            }
+        } else {
+            ImageView image = ((ImageView) currentScreen.getActiveView());
+            image.setImageURI(newImageUri);
+            resizeImageView(image, width.getProgress(), height.getProgress());
+        }
+    }
+
     @Override
     public void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor) {
         if (command == null && text.equals("DELETE")) {
             if (currentScreen.getActiveControlId() >= 0) {
-                FrameLayout layout = findViewById(R.id.topLayout);
-                layout.removeView(currentScreen.getActiveView());
-                currentScreen.removeCurrentView();
-                toggleEditControls(View.GONE);
+                deleteView();
             }
         } else {
             currentScreen.setActiveControlPrimaryColor(primaryColor);
@@ -437,21 +453,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
-        super.onActivityResult(requestCode, resultCode, resultData);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == EditActivity.OPEN_REQUEST_CODE_IMAGE) {
-                if (resultData != null) {
-                    Uri currentUri = resultData.getData();
-                    ImageView image = ((ImageView) currentScreen.getActiveView());
-                    image.setImageURI(currentUri);
-                    resizeImageView(image, width.getProgress(), height.getProgress());
-                }
-            }
-        }
     }
 
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")

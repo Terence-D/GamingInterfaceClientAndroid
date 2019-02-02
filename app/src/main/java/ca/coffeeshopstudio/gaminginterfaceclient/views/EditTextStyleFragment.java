@@ -39,7 +39,7 @@ import top.defaults.colorpicker.ColorPickerPopup;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditFragment extends DialogFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class EditTextStyleFragment extends DialogFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private AutoItKeyMap map = new AutoItKeyMap();
     private View incomingView;
@@ -62,8 +62,14 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     private Button btnSecondary;
 
 
-    public static EditFragment newInstance(String title, String text, Command command, int primary, int secondary, int font, View view) {
-        EditFragment frag = new EditFragment();
+    // Empty constructor is required for DialogFragment
+    // Make sure not to add arguments to the constructor
+    // Use `newInstance` instead as shown below
+    public EditTextStyleFragment() {
+    }
+
+    public static EditTextStyleFragment newInstance(String title, String text, Command command, int primary, int secondary, int font, View view) {
+        EditTextStyleFragment frag = new EditTextStyleFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putString("text", text);
@@ -76,12 +82,6 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
         if (view != null)
             frag.loadView(view);
         return frag;
-    }
-
-    // Empty constructor is required for DialogFragment
-    // Make sure not to add arguments to the constructor
-    // Use `newInstance` instead as shown below
-    public EditFragment() {
     }
 
     @Override
