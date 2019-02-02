@@ -172,7 +172,7 @@ public class Screen {
         return views;
     }
 
-    public int getActiveControl() {
+    public int getActiveControlId() {
         return activeControl;
     }
 
@@ -189,7 +189,7 @@ public class Screen {
         activeControl = -1;
     }
 
-    public View findActiveControl() {
+    public View getActiveView() {
         return findControl(activeControl);
     }
 
@@ -218,7 +218,7 @@ public class Screen {
     }
 
     public void removeCurrentView() {
-        getViews().remove(findActiveControl());
+        getViews().remove(getActiveView());
         //primaryColors.remove(activeControl);
         //secondaryColors.remove(activeControl);
         unsetActiveControl();

@@ -60,6 +60,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private SeekBar fontSize;
     private boolean mode = false;
     private final int minControlSize = 48;
+    private final int minFontSize = 4;
     private final int maxFontSize = 256;
     private ControlTypes controlTypes;
 
@@ -81,8 +82,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     }
 
     private void toggleEditControls(int visibility) {
-        if (currentScreen.getActiveControl() >= 0) {
-            View view = currentScreen.findActiveControl();
+        if (currentScreen.getActiveControlId() >= 0) {
+            View view = currentScreen.getActiveView();
             if (view instanceof Button) {
                 findViewById(R.id.seekFontSize).setVisibility(visibility);
             } else {
@@ -143,7 +144,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 if (mode) {
                     toggleEditControls(View.GONE);
                     Toast.makeText(EditActivity.this, R.string.edit_activity_drag_mode, Toast.LENGTH_SHORT).show();
-                } else if (currentScreen.getActiveControl() > -1) {
+                } else if (currentScreen.getActiveControlId() > -1) {
                     toggleEditControls(View.VISIBLE);
                     Toast.makeText(EditActivity.this, R.string.edit_activity_detail_edit_mode, Toast.LENGTH_SHORT).show();
                 }
@@ -283,14 +284,14 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
     private void displayTextEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        TextView view = (TextView) currentScreen.findActiveControl();
+        TextView view = (TextView) currentScreen.getActiveView();
 
         int fontColor = view.getTextColors().getDefaultColor();
         int primaryColor = currentScreen.getActiveControlPrimaryColor();
         int secondaryColor = currentScreen.getActiveControlSecondaryColor();
 
         String buttonText = (String) view.getText();
-        Command commandToSend = ((Command) currentScreen.findActiveControl().getTag());
+        Command commandToSend = ((Command) currentScreen.getActiveView().getTag());
         EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, view);
         editNameDialogFragment.show(fm, "fragment_edit_name");
     }
@@ -302,15 +303,15 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 
     //to fix a case of the onClick firing twice
     private void clickHandler(View view) {
-        if (currentScreen.getActiveControl() == view.getId()) {
+        if (currentScreen.getActiveControlId() == view.getId()) {
             if (view instanceof TextView)
                 displayTextEditDialog();
             if (view instanceof ImageView)
                 displayImageEditDialog();
         } else {
-            if (currentScreen.getActiveControl() >= 0) {
-                if (currentScreen.findActiveControl() instanceof Button)
-                    currentScreen.findActiveControl().setBackground(setButtonBackground(currentScreen.getActiveControlPrimaryColor(), currentScreen.getActiveControlSecondaryColor()));
+            if (currentScreen.getActiveControlId() >= 0) {
+                if (currentScreen.getActiveView() instanceof Button)
+                    currentScreen.getActiveView().setBackground(setButtonBackground(currentScreen.getActiveControlPrimaryColor(), currentScreen.getActiveControlSecondaryColor()));
             }
             currentScreen.setActiveControl(view.getId());
 
@@ -354,9 +355,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor) {
         if (command == null && text.equals("DELETE")) {
-            if (currentScreen.getActiveControl() >= 0) {
+            if (currentScreen.getActiveControlId() >= 0) {
                 FrameLayout layout = findViewById(R.id.topLayout);
-                layout.removeView(currentScreen.findActiveControl());
+                layout.removeView(currentScreen.getActiveView());
                 currentScreen.removeCurrentView();
                 toggleEditControls(View.GONE);
             }
@@ -364,7 +365,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             currentScreen.setActiveControlPrimaryColor(primaryColor);
             currentScreen.setActiveControlSecondaryColor(primaryColor);
 
-            View view = currentScreen.findActiveControl();
+            View view = currentScreen.getActiveView();
 
             if (view instanceof Button)
                 view.setBackground(setButtonBackground(primaryColor, secondaryColor));
@@ -375,28 +376,62 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         }
     }
 
+    private void resizeImageView(ImageView view, int newWidth, int newHeight) {
+        FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(newWidth, newHeight);
+        view.setLayoutParams(layout);
+        view.invalidate();
+    }
+
+    private void resizeImageView(int seekBarId, int value) {
+        ImageView view = (ImageView) currentScreen.getActiveView();
+
+        int newWidth = view.getWidth();
+        int newHeight = view.getHeight();
+        switch (seekBarId) {
+            case R.id.seekHeight:
+                newHeight = value;
+                break;
+            case R.id.seekWidth:
+                newWidth = value;
+                break;
+        }
+        if (newWidth >= minControlSize && newHeight >= minControlSize) {
+            resizeImageView(view, newWidth, newHeight);
+        }
+    }
+
+    //textview based controls including buttons
+    private void resizeTextView(int seekBarId, int value) {
+        TextView view = (TextView) currentScreen.getActiveView();
+
+        int newWidth = view.getWidth();
+        int newHeight = view.getHeight();
+        int newFont = (int) view.getTextSize();
+        switch (seekBarId) {
+            case R.id.seekHeight:
+                newHeight = value;
+                break;
+            case R.id.seekWidth:
+                newWidth = value;
+                break;
+            case R.id.seekFontSize:
+                newFont = value;
+                break;
+        }
+        if (newWidth >= minControlSize && newHeight >= minControlSize && newFont >= minFontSize) {
+            view.setLayoutParams(new FrameLayout.LayoutParams(newWidth, newHeight));
+            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, newFont);
+        }
+    }
+
     @Override
     public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-        if (currentScreen.getActiveControl() >= 0) {
-            TextView view = (TextView) currentScreen.findActiveControl();
-
-            int newWidth = view.getWidth();
-            int newHeight = view.getHeight();
-            int newFont = (int) view.getTextSize();
-            switch (seekBar.getId()) {
-                case R.id.seekHeight:
-                    newHeight = value;
-                    break;
-                case R.id.seekWidth:
-                    newWidth = value;
-                    break;
-                case R.id.seekFontSize:
-                    newFont = value;
-                    break;
+        if (currentScreen.getActiveControlId() >= 0) {
+            if (currentScreen.getActiveView() instanceof TextView) {
+                resizeTextView(seekBar.getId(), value);
+            } else if (currentScreen.getActiveView() instanceof ImageView) {
+                resizeImageView(seekBar.getId(), value);
             }
-            if (newWidth >= minControlSize && newHeight >= minControlSize)
-                view.setLayoutParams(new FrameLayout.LayoutParams(newWidth, newHeight));
-            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, newFont);
         }
     }
 
@@ -417,8 +452,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
             if (requestCode == EditActivity.OPEN_REQUEST_CODE_IMAGE) {
                 if (resultData != null) {
                     Uri currentUri = resultData.getData();
-                    currentScreen.findActiveControl().setBackgroundResource(android.R.color.transparent);
-                    ((ImageView) currentScreen.findActiveControl()).setImageURI(currentUri);
+                    ImageView image = ((ImageView) currentScreen.getActiveView());
+                    image.setImageURI(currentUri);
+                    resizeImageView(image, width.getProgress(), height.getProgress());
                 }
             }
         }

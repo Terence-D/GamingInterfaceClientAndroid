@@ -115,7 +115,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected void buildImage(Control control) {
         ImageView view = new ImageView(AbstractGameActivity.this);
         buildControl(control, view);
-        view.setBackgroundResource(R.mipmap.ic_launcher);
+        view.setImageResource(R.mipmap.ic_launcher);
     }
 
     //initializations related to textview based controls (AppCompatTextView, Button, etc)
