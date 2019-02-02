@@ -36,8 +36,6 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
     private Button btnPrimary;
     private Uri currentUri;
 
-    private static final int OPEN_REQUEST_CODE = 41;
-
     public static EditBackgroundFragment newInstance(String title, int primary) {
         EditBackgroundFragment frag = new EditBackgroundFragment();
         Bundle args = new Bundle();
@@ -98,7 +96,7 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
-                startActivityForResult(intent, OPEN_REQUEST_CODE);
+                startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_BACKGROUND);
                 break;
             default:
                 break;
@@ -133,15 +131,12 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
         super.onActivityResult(requestCode, resultCode, resultData);
         if (resultCode == Activity.RESULT_OK)
         {
-            if (requestCode == OPEN_REQUEST_CODE) {
+            if (requestCode == EditActivity.OPEN_REQUEST_CODE_BACKGROUND) {
                 if (resultData != null) {
                     currentUri = resultData.getData();
                     EditDialogListener listener = (EditDialogListener) getActivity();
                     listener.onFinishEditBackgroundDialog(-1, currentUri);
                     dismiss();
-
-                    //String content = readFileContent(currentUri);
-                    //textView.setText(content);
                 }
             }
         }

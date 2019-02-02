@@ -63,7 +63,8 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private boolean mode = false;
     private final int minControlSize = 48;
     private final int maxFontSize = 256;
-    private static final int OPEN_REQUEST_CODE = 41;
+
+    protected static final int OPEN_REQUEST_CODE_BACKGROUND = 41;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +89,9 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         if (activeControl >= 0) {
             View view = findControl(activeControl);
             if (view instanceof Button) {
-                findViewById(R.id.seekFont).setVisibility(visibility);
+                findViewById(R.id.seekFontSize).setVisibility(visibility);
             } else {
-                findViewById(R.id.seekFont).setVisibility(View.GONE);
+                findViewById(R.id.seekFontSize).setVisibility(View.GONE);
             }
             findViewById(R.id.seekHeight).setVisibility(visibility);
             findViewById(R.id.seekWidth).setVisibility(visibility);
@@ -100,7 +101,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private void setupControls() {
         width = findViewById(R.id.seekWidth);
         height = findViewById(R.id.seekHeight);
-        fontSize = findViewById(R.id.seekFont);
+        fontSize = findViewById(R.id.seekFontSize);
 
         findViewById(R.id.topLayout).setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -317,7 +318,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
 //        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
 //        intent.addCategory(Intent.CATEGORY_OPENABLE);
 //        intent.setType("image/*");
-//        startActivityForResult(intent, OPEN_REQUEST_CODE);
+//        startActivityForResult(intent, OPEN_REQUEST_CODE_BACKGROUND);
         FragmentManager fm = getSupportFragmentManager();
 
         int color = Color.BLACK;
@@ -427,7 +428,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 case R.id.seekWidth:
                     newWidth = value;
                     break;
-                case R.id.seekFont:
+                case R.id.seekFontSize:
                     newFont = value;
                     break;
             }
