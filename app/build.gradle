@@ -74,5 +74,5 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
     implementation files('libs/commons-codec-1.10-rep.jar')
-    implementation 'com.github.duanhong169:colorpicker:1.1.6' //https://android-arsenal.com/details/1/7068
+    implementation 'com.github.QuadFlask:colorpicker:0.0.13' //https://android-arsenal.com/details/1/1693
 }

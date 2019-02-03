@@ -47,7 +47,7 @@
     <string name="port_invalid">Invalid Port number</string>
     <string name="address_invalid">Please enter a valid address pointing to your computer running GIC Server</string>
     <string name="legal_color">This software uses the Color Picker located below under the Apache 2.0 license</string>
-    <string name="website_color"><![CDATA[https://github.com/duanhong169/ColorPicker?utm_source=android-arsenal.com&utm_medium=referral&utm_campaign=7068]]></string>
+    <string name="website_color"><![CDATA[https://android-arsenal.com/details/1/1693]]></string>
     <string name="activity_main_help_button">Help (Website)</string>
     <string name="main_activity_warning">PLEASE USE GIC SERVER VERSION 1.1 OR HIGHER</string>
     <string name="main_activity_server_link">https://github.com/Terence-D/GameInputCommandServer</string>

@@ -9,7 +9,6 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
@@ -46,8 +45,6 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
         super.onViewCreated(view, savedInstanceState);
         // Fetch arguments from bundle and set title
         getDialog().setTitle(R.string.edit_fragment_image_title);
-        // Show soft keyboard automatically and request focus to field
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         setupControls(view);
     }
 
