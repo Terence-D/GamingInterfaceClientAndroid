@@ -19,25 +19,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    productFlavors {
-        // When building a variant that uses this flavor, the following configurations
-        // override those in the defaultConfig block.
-        dev {
-            versionNameSuffix "-dev"
-            applicationIdSuffix '.dev'
-            // The following configuration limits the "dev" flavor to using
-            // English string resources and xxhdpi screen-density resources.
-            resConfigs "en", "xxhdpi"
-        }
-
-        prod {
-            // If you've configured the defaultConfig block for the release version of
-            // your app, you can leave this block empty and Gradle uses configurations in
-            // the defaultConfig block instead. You still need to create this flavor.
-            // Otherwise, all variants use the "dev" flavor configurations.
-
-        }
-    }
+//    productFlavors {
+//        // When building a variant that uses this flavor, the following configurations
+//        // override those in the defaultConfig block.
+//        dev {
+//            versionNameSuffix "-dev"
+//            applicationIdSuffix '.dev'
+//            // The following configuration limits the "dev" flavor to using
+//            // English string resources and xxhdpi screen-density resources.
+//            resConfigs "en", "xxhdpi"
+//        }
+//
+//        prod {
+//            // If you've configured the defaultConfig block for the release version of
+//            // your app, you can leave this block empty and Gradle uses configurations in
+//            // the defaultConfig block instead. You still need to create this flavor.
+//            // Otherwise, all variants use the "dev" flavor configurations.
+//
+//        }
+//    }
     // The defaultConfig values above are fixed, so your incremental builds don't
     // need to rebuild the manifest (and therefore the whole APK, slowing build times).
     // But for release builds, it's okay. So the following script iterates through
