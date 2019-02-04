@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -10,11 +11,13 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
-import top.defaults.colorpicker.ColorPickerPopup;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -34,9 +37,6 @@ import top.defaults.colorpicker.ColorPickerPopup;
 public class EditBackgroundFragment extends DialogFragment implements View.OnClickListener {
     private int primary;
     private Button btnPrimary;
-    private Uri currentUri;
-
-    private static final int OPEN_REQUEST_CODE = 41;
 
     public static EditBackgroundFragment newInstance(String title, int primary) {
         EditBackgroundFragment frag = new EditBackgroundFragment();
@@ -64,8 +64,6 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
             title = getString(R.string.default_control_text);
         primary = getArguments().getInt("primary", Color.BLACK);
         getDialog().setTitle(title);
-        // Show soft keyboard automatically and request focus to field
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         setupControls(view);
     }
 
@@ -98,7 +96,7 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
-                startActivityForResult(intent, OPEN_REQUEST_CODE);
+                startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_BACKGROUND);
                 break;
             default:
                 break;
@@ -106,21 +104,31 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
     }
 
     private void displayColorPicker(final View view) {
-        int color = ((Button) view).getTextColors().getDefaultColor();
-        new ColorPickerPopup.Builder(getActivity())
-                .initialColor(color) // Set initial color
-                .enableBrightness(true) // Enable brightness slider or not
-                .okTitle(getString(R.string.color_picker_title))
-                .cancelTitle(getString(android.R.string.cancel))
-                .showIndicator(true)
-                .showValue(true)
-                .build()
-                .show(view, new ColorPickerPopup.ColorPickerObserver() {
+        ColorPickerDialogBuilder
+                .with(getContext())
+                .setTitle(getString(R.string.color_picker_title))
+                .initialColor(((Button) view).getCurrentTextColor())
+                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                .density(12)
+//                .setOnColorSelectedListener(new OnColorSelectedListener() {
+//                    @Override
+//                    public void onColorSelected(int selectedColor) {
+//                        //toast("onColorSelected: 0x" + Integer.toHexString(selectedColor));
+//                    }
+//                })
+                .setPositiveButton(getString(android.R.string.ok), new ColorPickerClickListener() {
                     @Override
-                    public void onColorPicked(int color) {
-                        ((Button) view).setTextColor(color);
+                    public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                        ((Button) view).setTextColor(selectedColor);
                     }
-                });
+                })
+                .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .build()
+                .show();
     }
 
 
@@ -133,15 +141,12 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
         super.onActivityResult(requestCode, resultCode, resultData);
         if (resultCode == Activity.RESULT_OK)
         {
-            if (requestCode == OPEN_REQUEST_CODE) {
+            if (requestCode == EditActivity.OPEN_REQUEST_CODE_BACKGROUND) {
                 if (resultData != null) {
-                    currentUri = resultData.getData();
+                    Uri currentUri = resultData.getData();
                     EditDialogListener listener = (EditDialogListener) getActivity();
                     listener.onFinishEditBackgroundDialog(-1, currentUri);
                     dismiss();
-
-                    //String content = readFileContent(currentUri);
-                    //textView.setText(content);
                 }
             }
         }

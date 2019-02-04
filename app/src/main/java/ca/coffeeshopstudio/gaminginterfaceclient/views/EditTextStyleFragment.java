@@ -1,5 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,13 +8,16 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +26,6 @@ import java.util.List;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
-import top.defaults.colorpicker.ColorPickerPopup;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -39,7 +42,7 @@ import top.defaults.colorpicker.ColorPickerPopup;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditFragment extends DialogFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class EditTextStyleFragment extends DialogFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private AutoItKeyMap map = new AutoItKeyMap();
     private View incomingView;
@@ -62,8 +65,14 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     private Button btnSecondary;
 
 
-    public static EditFragment newInstance(String title, String text, Command command, int primary, int secondary, int font, View view) {
-        EditFragment frag = new EditFragment();
+    // Empty constructor is required for DialogFragment
+    // Make sure not to add arguments to the constructor
+    // Use `newInstance` instead as shown below
+    public EditTextStyleFragment() {
+    }
+
+    public static EditTextStyleFragment newInstance(String title, String text, Command command, int primary, int secondary, int font, View view) {
+        EditTextStyleFragment frag = new EditTextStyleFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putString("text", text);
@@ -76,12 +85,6 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
         if (view != null)
             frag.loadView(view);
         return frag;
-    }
-
-    // Empty constructor is required for DialogFragment
-    // Make sure not to add arguments to the constructor
-    // Use `newInstance` instead as shown below
-    public EditFragment() {
     }
 
     @Override
@@ -98,8 +101,6 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
         primary = getArguments().getInt("primary", Color.GRAY);
         secondary = getArguments().getInt("secondary", Color.WHITE);
         getDialog().setTitle(title);
-        // Show soft keyboard automatically and request focus to field
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         setupControls(view);
     }
 
@@ -261,22 +262,25 @@ public class EditFragment extends DialogFragment implements AdapterView.OnItemSe
     }
 
     private void displayColorPicker(final View view) {
-        int color = ((Button) view).getTextColors().getDefaultColor();
-        new ColorPickerPopup.Builder(getActivity())
-                .initialColor(color) // Set initial color
-                .enableBrightness(true) // Enable brightness slider or not
-                //.enableAlpha(true) // Enable alpha slider or not
-                .okTitle(getString(R.string.color_picker_title))
-                .cancelTitle(getString(android.R.string.cancel))
-                .showIndicator(true)
-                .showValue(true)
-                .build()
-                .show(view, new ColorPickerPopup.ColorPickerObserver() {
+        ColorPickerDialogBuilder
+                .with(getContext())
+                .setTitle(getString(R.string.color_picker_title))
+                .initialColor(((Button) view).getCurrentTextColor())
+                .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                .density(12)
+                .setPositiveButton(getString(android.R.string.ok), new ColorPickerClickListener() {
                     @Override
-                    public void onColorPicked(int color) {
-                        ((Button) view).setTextColor(color);
+                    public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                        ((Button) view).setTextColor(selectedColor);
                     }
-                });
+                })
+                .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .build()
+                .show();
     }
 
 

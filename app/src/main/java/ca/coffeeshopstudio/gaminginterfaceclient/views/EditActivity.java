@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,21 +23,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Map;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -55,52 +51,83 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditActivity extends AbstractGameActivity implements EditFragment.EditDialogListener, SeekBar.OnSeekBarChangeListener, EditBackgroundFragment.EditDialogListener {
+public class EditActivity extends AbstractGameActivity implements EditTextStyleFragment.EditDialogListener,
+        SeekBar.OnSeekBarChangeListener,
+        EditImageFragment.EditImageDialogListener,
+        EditBackgroundFragment.EditDialogListener {
     private GestureDetector gd;
-    private SeekBar width;
-    private SeekBar height;
-    private SeekBar fontSize;
+    private SeekBar seekWidth;
+    private SeekBar seekHeight;
+    private SeekBar seekFontSize;
     private boolean mode = false;
     private final int minControlSize = 48;
+    private final int minFontSize = 4;
     private final int maxFontSize = 256;
-    private static final int OPEN_REQUEST_CODE = 41;
+    private ControlTypes controlTypes;
+
+    private ControlDefaults defaults;
+
+    protected static final int OPEN_REQUEST_CODE_BACKGROUND = 41;
+    protected static final int OPEN_REQUEST_CODE_IMAGE = 42;
+
+    @Override
+    protected void onStop() {
+        defaults.saveDefaults(this, currentScreen.getScreenId());
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        controlTypes = new ControlTypes(getApplicationContext());
+
         setContentView(R.layout.activity_edit);
+
         setupFullScreen();
         setupDoubleTap(EditActivity.this);
         setupControls();
-        loadControls();
-        toggleEditControls(View.GONE);
+        loadScreen();
+
+        defaults = new ControlDefaults(this, currentScreen.getScreenId());
+
+        toggleEditControls(View.GONE, null);
     }
 
-    private View findControl(int id) {
-        for (View view : views) {
-            if (view.getId() == id)
-                return view;
-        }
-        return null;
-    }
-
-    private void toggleEditControls(int visibility) {
-        if (activeControl >= 0) {
-            View view = findControl(activeControl);
+    private void toggleEditControls(int visibility, GICControl control) {
+        //always hide on demand OR if in drag/drop mode
+        if (visibility == View.GONE || mode) {
+            seekFontSize.setVisibility(View.GONE);
+            seekHeight.setVisibility(View.GONE);
+            seekWidth.setVisibility(View.GONE);
+        } else if (currentScreen.getActiveControlId() >= 0) {
+            View view = currentScreen.getActiveView();
+            //font size only applies for buttons
             if (view instanceof Button) {
-                findViewById(R.id.seekFont).setVisibility(visibility);
+                seekFontSize.setVisibility(visibility);
             } else {
-                findViewById(R.id.seekFont).setVisibility(View.GONE);
+                seekFontSize.setVisibility(View.GONE);
             }
-            findViewById(R.id.seekHeight).setVisibility(visibility);
-            findViewById(R.id.seekWidth).setVisibility(visibility);
+            seekHeight.setVisibility(visibility);
+            seekWidth.setVisibility(visibility);
+            if (visibility == View.VISIBLE && control != null) {
+                seekFontSize.setOnSeekBarChangeListener(null);
+                seekHeight.setOnSeekBarChangeListener(null);
+                seekWidth.setOnSeekBarChangeListener(null);
+                seekHeight.setProgress(control.getHeight());
+                seekWidth.setProgress(control.getWidth());
+                seekFontSize.setProgress(control.getFontSize());
+                seekFontSize.setOnSeekBarChangeListener(this);
+                seekHeight.setOnSeekBarChangeListener(this);
+                seekWidth.setOnSeekBarChangeListener(this);
+            }
         }
     }
 
     private void setupControls() {
-        width = findViewById(R.id.seekWidth);
-        height = findViewById(R.id.seekHeight);
-        fontSize = findViewById(R.id.seekFont);
+        seekWidth = findViewById(R.id.seekWidth);
+        seekHeight = findViewById(R.id.seekHeight);
+        seekFontSize = findViewById(R.id.seekFontSize);
 
         findViewById(R.id.topLayout).setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -111,31 +138,23 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         });
         findViewById(R.id.topLayout).setOnDragListener(new DragDropListener());
 
-        ((Switch) findViewById(R.id.toggleMode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                mode = b;
-                if (mode) {
-                    toggleEditControls(View.GONE);
-                    Toast.makeText(EditActivity.this, R.string.edit_activity_drag_mode, Toast.LENGTH_SHORT).show();
-                } else if (activeControl > -1) {
-                    toggleEditControls(View.VISIBLE);
-                    Toast.makeText(EditActivity.this, R.string.edit_activity_detail_edit_mode, Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        setupToggleSwitch();
 
-        width.setMax(maxControlSize);
-        height.setMax(maxControlSize);
-        fontSize.setMax(maxFontSize);
-        width.setOnSeekBarChangeListener(this);
-        height.setOnSeekBarChangeListener(this);
-        fontSize.setOnSeekBarChangeListener(this);
+        seekWidth.setMax(currentScreen.getMaxControlSize());
+        seekHeight.setMax(currentScreen.getMaxControlSize());
+        seekFontSize.setMax(maxFontSize);
+        seekWidth.setOnSeekBarChangeListener(this);
+        seekHeight.setOnSeekBarChangeListener(this);
+        seekFontSize.setOnSeekBarChangeListener(this);
 
+        setupButtons();
+    }
+
+    private void setupButtons() {
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveScreen();
+                currentScreen.saveScreen(findViewById(R.id.topLayout).getBackground());
             }
         });
 
@@ -147,60 +166,20 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         });
     }
 
-    private void saveScreen() {
-        View topLayout = findViewById(R.id.topLayout);
-
-        SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
-
-        //save the images
-        if (topLayout.getBackground() instanceof ColorDrawable) {
-            ColorDrawable color = (ColorDrawable) topLayout.getBackground();
-            prefsEditor.putInt("background", color.getColor());
-        } else {
-            BitmapDrawable bitmap = (BitmapDrawable) topLayout.getBackground();
-            saveBitmapIntoSDCardImage(bitmap.getBitmap());
-            prefsEditor.putInt("background", -1);
-        }
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        //first we need to remove all existing views
-        Map<String,?> keys = prefs.getAll();
-        for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            if (entry.getKey().contains("control_")) {
-                prefsEditor.remove(entry.getKey());
+    private void setupToggleSwitch() {
+        ((Switch) findViewById(R.id.toggleMode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mode = b;
+                if (mode) {
+                    toggleEditControls(View.GONE, null);
+                    Toast.makeText(EditActivity.this, R.string.edit_activity_drag_mode, Toast.LENGTH_SHORT).show();
+                } else if (currentScreen.getActiveControlId() > -1) {
+                    //toggleEditControls(View.VISIBLE);
+                    Toast.makeText(EditActivity.this, R.string.edit_activity_detail_edit_mode, Toast.LENGTH_SHORT).show();
+                }
             }
-        }
-
-        try {
-            int i = 0;
-            for (View view : views) {
-                Control control = new Control();
-                control.setCommand((Command) view.getTag());
-                control.setWidth(view.getWidth());
-                control.setLeft(view.getX());
-                control.setFontSize((int) ((TextView) view).getTextSize());
-                control.setText(((TextView) view).getText().toString());
-                control.setTop(view.getY());
-                control.setHeight(view.getBottom());
-                control.setFontColor(((TextView) view).getTextColors().getDefaultColor());
-                control.setPrimaryColor(primaryColors.get(i));
-                control.setSecondaryColor(secondaryColors.get(i));
-                if (view instanceof Button)
-                    control.setViewType(0);
-                else
-                    control.setViewType(1);
-                String json = mapper.writeValueAsString(control);
-                prefsEditor.putString("control_" + i, json);
-                i++;
-            }
-            prefsEditor.apply();
-            Toast.makeText(EditActivity.this, R.string.edit_activity_saved, Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(EditActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-        }
+        });
     }
 
     private void setupDoubleTap(final Context context) {
@@ -232,9 +211,7 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     private void showControlPopup() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(EditActivity.this);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(EditActivity.this, android.R.layout.simple_list_item_1);
-        arrayAdapter.add("Button");
-        arrayAdapter.add("Text");
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(EditActivity.this, android.R.layout.simple_list_item_1, controlTypes.getStringValues());
 
         builderSingle.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -246,80 +223,93 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case 0:
-                        addButton();
-                        break;
-                    case 1:
-                        addTextView();
-                        break;
-                }
+                if (controlTypes.getValue(which).equals(getString(R.string.control_type_button)))
+                    addButton();
+                if (controlTypes.getValue(which).equals(getString(R.string.control_type_text)))
+                    addTextView();
+                if (controlTypes.getValue(which).equals(getString(R.string.control_type_image)))
+                    addImage();
             }
         });
         builderSingle.show();
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    private void addImage() {
+        GICControl control = initNewControl();
+
+        control.setWidth(defaults.getImageDefaults().getWidth());
+        control.setHeight(defaults.getImageDefaults().getHeight());
+
+        buildImage(control);
+
+        updateDisplay(control);
+    }
+
     private void addTextView() {
-        //unselect any previous button
-        unselectedPreviousView();
+        //un select any previous button
+        GICControl control = initNewControl();
 
-        Control control = new Control();
+        control.setWidth(defaults.getTextDefaults().getWidth());
+        control.setHeight(defaults.getTextDefaults().getHeight());
+        control.setFontColor(defaults.getTextDefaults().getFontColor());
+
         control.setText(getString(R.string.default_control_text));
-
-        width.setProgress(control.getWidth());
-        height.setProgress(control.getHeight());
 
         buildText(control);
 
-        View view = views.get(views.size()-1);
+        updateDisplay(control);
+    }
 
-        view.setOnClickListener(this);
-        view.setOnTouchListener(new TouchListener());
-        activeControl = views.size() - 1;
-        toggleEditControls(View.VISIBLE);
+    private void addButton() {
+        //unselect any previous button
+        GICControl control = initNewControl();
+
+        control.setWidth(defaults.getButtonDefaults().getWidth());
+        control.setHeight(defaults.getButtonDefaults().getHeight());
+        control.setFontSize(defaults.getButtonDefaults().getFontSize());
+        control.setFontColor(defaults.getButtonDefaults().getFontColor());
+        control.setPrimaryColor(defaults.getButtonDefaults().getPrimaryColor());
+        control.setSecondaryColor(defaults.getButtonDefaults().getSecondaryColor());
+
+        control.setText(getString(R.string.default_control_text));
+
+        buildButton(control);
+
+        View view = updateDisplay(control);
+
+        ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getButtonDefaults().getFontSize());
+    }
+
+    private GICControl initNewControl() {
+        //un select any previous view visually
+        unselectedPreviousView();
+
+        return new GICControl();
     }
 
     private void unselectedPreviousView() {
 //        if (activeControl >= 0) {
 //            View previous = findViewById(views.get(activeControl).getId());
 //            if (previous instanceof Button) {
-//                previous.setBackground(setButtonBackground(primaryColors.get(activeControl), secondaryColors.get(activeControl)));
+//                previous.loadBackground(setButtonBackground(primaryColors.get(activeControl), secondaryColors.get(activeControl)));
 //            }
 //        }
     }
 
+    //called after addControlType style methods
     @SuppressLint("ClickableViewAccessibility")
-    private void addButton() {
-        //unselect any previous button
-        unselectedPreviousView();
-
-        Control control = new Control();
-        control.setText(getString(R.string.default_control_text));
-
-        width.setProgress(control.getWidth());
-        height.setProgress(control.getHeight());
-
-        buildButton(control);
-
-        View view = views.get(views.size()-1);
-        ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, 48);
-
-        fontSize.setProgress((int) ((Button) view).getTextSize());
-
+    private View updateDisplay(GICControl control) {
+        View view = currentScreen.getViews().get(currentScreen.getViews().size() - 1);
         view.setOnClickListener(this);
         view.setOnTouchListener(new TouchListener());
-        activeControl = views.size() - 1;
-        toggleEditControls(View.VISIBLE);
+        currentScreen.resetActiveControl();
+
+        toggleEditControls(View.GONE, null);
+
+        return view;
     }
 
     private void displayEditBackgroundDialog() {
-//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        intent.setType("image/*");
-//        startActivityForResult(intent, OPEN_REQUEST_CODE);
-        FragmentManager fm = getSupportFragmentManager();
-
         int color = Color.BLACK;
         Drawable background = findViewById(R.id.topLayout).getBackground();
         if (background instanceof ColorDrawable)
@@ -328,20 +318,29 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         int primaryColor = color;
         //int secondaryColor = secondaryColors.get(activeControl);
 
-        EditBackgroundFragment editNameDialogFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor);
-        editNameDialogFragment.show(fm, "fragment_edit_background_name");
+        FragmentManager fm = getSupportFragmentManager();
+        EditBackgroundFragment editBackgroundFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor);
+        editBackgroundFragment.show(fm, "fragment_edit_background_name");
     }
 
-    private void displayEditDialog() {
+    private void displayImageEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        TextView view = (TextView) findControl(activeControl);
+        EditImageFragment editFragment = EditImageFragment.newInstance();
+        editFragment.show(fm, "fragment_edit_image_name");
+    }
+
+    private void displayTextEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        TextView view = (TextView) currentScreen.getActiveView();
+
         int fontColor = view.getTextColors().getDefaultColor();
-        int primaryColor = primaryColors.get(activeControl);
-        int secondaryColor = secondaryColors.get(activeControl);
+        int primaryColor = currentScreen.getActiveControlPrimaryColor();
+        int secondaryColor = currentScreen.getActiveControlSecondaryColor();
+
         String buttonText = (String) view.getText();
-        Command commandToSend = ((Command) findControl(activeControl).getTag());
-        EditFragment editNameDialogFragment = EditFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, view);
-        editNameDialogFragment.show(fm, "fragment_edit_name");
+        Command commandToSend = ((Command) currentScreen.getActiveView().getTag());
+        EditTextStyleFragment editTextDialog = EditTextStyleFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, view);
+        editTextDialog.show(fm, "fragment_edit_name");
     }
 
     @Override
@@ -349,25 +348,32 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         view.setOnTouchListener(new TouchListener());
     }
 
-    @Override
-    public void onClick(View view) {
-        if (activeControl == view.getId()) {
-            displayEditDialog();
+    //to fix a case of the onClick firing twice
+    private void clickHandler(View view) {
+        if (currentScreen.getActiveControlId() == view.getId()) {
+            if (view instanceof TextView)
+                displayTextEditDialog();
+            if (view instanceof ImageView)
+                displayImageEditDialog();
         } else {
-            if (activeControl >= 0) {
-                if (findControl(activeControl) instanceof Button)
-                    findControl(activeControl).setBackground(setButtonBackground(primaryColors.get(activeControl), secondaryColors.get(activeControl)));
-            }
-            activeControl = view.getId();
+            unselectedPreviousView();
+            currentScreen.setActiveControl(view.getId());
 
             if (view instanceof Button)
-                view.setBackground(setButtonBackground(secondaryColors.get(activeControl), primaryColors.get(activeControl)));
+                view.setBackground(setButtonBackground(currentScreen.getActiveControlSecondaryColor(), currentScreen.getActiveControlPrimaryColor()));
 
-            width.setProgress(view.getWidth());
-            height.setProgress(view.getHeight());
-            fontSize.setProgress((int) ((TextView) view).getTextSize());
-            toggleEditControls(View.VISIBLE);
+            GICControl control = new GICControl();
+            control.setWidth(view.getWidth());
+            control.setHeight(view.getHeight());
+            if (view instanceof Button)
+                control.setFontSize((int) ((Button) view).getTextSize());
+            toggleEditControls(View.VISIBLE, control);
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        clickHandler(view);
     }
 
     @Override
@@ -380,60 +386,107 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                 findViewById(R.id.topLayout).setBackground(drawable);
             } catch (IOException e) {
-                e.printStackTrace();
+                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
+        }
+    }
+
+    private void deleteView() {
+        FrameLayout layout = findViewById(R.id.topLayout);
+        layout.removeView(currentScreen.getActiveView());
+        currentScreen.removeCurrentView();
+        toggleEditControls(View.GONE, null);
+    }
+
+    @Override
+    public void onFinishEditImageDialog(Uri newImageUri) {
+        if (newImageUri == null) {
+            if (currentScreen.getActiveControlId() >= 0) {
+                deleteView();
+            }
+        } else {
+            ImageView image = ((ImageView) currentScreen.getActiveView());
+            image.setImageURI(newImageUri);
+            resizeImageView(image, seekWidth.getProgress(), seekHeight.getProgress());
         }
     }
 
     @Override
     public void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor) {
         if (command == null && text.equals("DELETE")) {
-            if (activeControl >= 0) {
-                FrameLayout layout = findViewById(R.id.topLayout);
-                layout.removeView(findControl(activeControl));
-                views.remove(findControl(activeControl));
-                //primaryColors.remove(activeControl);
-                //secondaryColors.remove(activeControl);
-                activeControl = -1;
-                toggleEditControls(View.GONE);
+            if (currentScreen.getActiveControlId() >= 0) {
+                deleteView();
             }
         } else {
-            primaryColors.set(activeControl, primaryColor);
-            secondaryColors.set(activeControl, secondaryColor);
+            currentScreen.setActiveControlPrimaryColor(primaryColor);
+            currentScreen.setActiveControlSecondaryColor(primaryColor);
 
-            View view = findControl(activeControl);
+            View view = currentScreen.getActiveView();
 
-            if (view instanceof Button)
+            if (view instanceof Button) {
                 view.setBackground(setButtonBackground(primaryColor, secondaryColor));
+            }
 
             ((TextView) view).setText(text);
             ((TextView) view).setTextColor(fontColor);
             view.setTag(command);
+
+            defaults.saveControl(view, primaryColor, secondaryColor);
+        }
+    }
+
+    private void resizeImageView(int seekBarId, int value) {
+        ImageView view = (ImageView) currentScreen.getActiveView();
+
+        int newWidth = view.getWidth();
+        int newHeight = view.getHeight();
+        switch (seekBarId) {
+            case R.id.seekHeight:
+                newHeight = value;
+                break;
+            case R.id.seekWidth:
+                newWidth = value;
+                break;
+        }
+        if (newWidth >= minControlSize && newHeight >= minControlSize) {
+            resizeImageView(view, newWidth, newHeight);
+            defaults.saveControl(view);
+        }
+    }
+
+    //TextView based controls including buttons
+    private void resizeTextView(int seekBarId, int value) {
+        TextView view = (TextView) currentScreen.getActiveView();
+
+        int newWidth = view.getWidth();
+        int newHeight = view.getHeight();
+        int newFont = (int) view.getTextSize();
+        switch (seekBarId) {
+            case R.id.seekHeight:
+                newHeight = value;
+                break;
+            case R.id.seekWidth:
+                newWidth = value;
+                break;
+            case R.id.seekFontSize:
+                newFont = value;
+                break;
+        }
+        if (newWidth >= minControlSize && newHeight >= minControlSize && newFont >= minFontSize) {
+            view.setLayoutParams(new FrameLayout.LayoutParams(newWidth, newHeight));
+            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, newFont);
+            defaults.saveControl(view);
         }
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
-        if (activeControl >= 0) {
-            TextView view = (TextView) findControl(activeControl);
-
-            int newWidth = view.getWidth();
-            int newHeight = view.getHeight();
-            int newFont = (int) view.getTextSize();
-            switch (seekBar.getId()) {
-                case R.id.seekHeight:
-                    newHeight = value;
-                    break;
-                case R.id.seekWidth:
-                    newWidth = value;
-                    break;
-                case R.id.seekFont:
-                    newFont = value;
-                    break;
+        if (currentScreen.getActiveControlId() >= 0) {
+            if (currentScreen.getActiveView() instanceof TextView) {
+                resizeTextView(seekBar.getId(), value);
+            } else if (currentScreen.getActiveView() instanceof ImageView) {
+                resizeImageView(seekBar.getId(), value);
             }
-            if (newWidth >= minControlSize && newHeight >= minControlSize)
-                view.setLayoutParams(new FrameLayout.LayoutParams(newWidth, newHeight));
-            view.setTextSize(TypedValue.COMPLEX_UNIT_PX, newFont);
         }
     }
 
@@ -445,25 +498,6 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
-    }
-
-    private final class TouchListener implements View.OnTouchListener {
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && mode) {
-                ClipData data = ClipData.newPlainText("", "");
-                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
-                        view);
-                view.startDrag(data, shadowBuilder, view, 0);
-                view.setVisibility(View.INVISIBLE);
-                return true;
-            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                view.performClick();
-                onClick(view);
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
@@ -495,19 +529,22 @@ public class EditActivity extends AbstractGameActivity implements EditFragment.E
         }
     }
 
-    public boolean saveBitmapIntoSDCardImage(Bitmap finalBitmap) {
-        String fname = "background" + ".jpg";
-        File file = new File (getFilesDir(), fname);
-
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            out.flush();
-            out.close();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+    private final class TouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && mode) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                        view);
+                view.startDrag(data, shadowBuilder, view, 0);
+                view.setVisibility(View.INVISIBLE);
+                return true;
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                view.performClick();
+                //clickHandler(view);
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }
