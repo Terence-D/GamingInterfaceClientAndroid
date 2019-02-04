@@ -34,6 +34,7 @@ import java.io.IOException;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -64,8 +65,16 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     private final int maxFontSize = 256;
     private ControlTypes controlTypes;
 
+    private ControlDefaults defaults;
+
     protected static final int OPEN_REQUEST_CODE_BACKGROUND = 41;
     protected static final int OPEN_REQUEST_CODE_IMAGE = 42;
+
+    @Override
+    protected void onStop() {
+        defaults.saveDefaults(this, currentScreen.getScreenId());
+        super.onStop();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +83,14 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         controlTypes = new ControlTypes(getApplicationContext());
 
         setContentView(R.layout.activity_edit);
+
         setupFullScreen();
         setupDoubleTap(EditActivity.this);
         setupControls();
         loadScreen();
+
+        defaults = new ControlDefaults(this, currentScreen.getScreenId());
+
         toggleEditControls(View.GONE);
     }
 
@@ -91,6 +104,13 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             }
             findViewById(R.id.seekHeight).setVisibility(visibility);
             findViewById(R.id.seekWidth).setVisibility(visibility);
+        }
+
+        //if edit mode is drag/drop, NEVER show size
+        if (mode) {
+            findViewById(R.id.seekFontSize).setVisibility(View.GONE);
+            findViewById(R.id.seekHeight).setVisibility(View.GONE);
+            findViewById(R.id.seekWidth).setVisibility(View.GONE);
         }
     }
 
@@ -207,6 +227,9 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     private void addImage() {
         Control control = initNewControl();
 
+        control.setWidth(defaults.getImageDefaults().getWidth());
+        control.setHeight(defaults.getImageDefaults().getHeight());
+
         buildImage(control);
 
         updateDisplay();
@@ -215,6 +238,11 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     private void addTextView() {
         //un select any previous button
         Control control = initNewControl();
+
+        control.setWidth(defaults.getTextDefaults().getWidth());
+        control.setHeight(defaults.getTextDefaults().getHeight());
+        control.setFontColor(defaults.getTextDefaults().getFontColor());
+
         control.setText(getString(R.string.default_control_text));
 
         buildText(control);
@@ -225,24 +253,29 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     private void addButton() {
         //unselect any previous button
         Control control = initNewControl();
+
+        control.setWidth(defaults.getButtonDefaults().getWidth());
+        control.setHeight(defaults.getButtonDefaults().getHeight());
+        control.setFontSize(defaults.getButtonDefaults().getFontSize());
+        control.setFontColor(defaults.getButtonDefaults().getFontColor());
+        control.setPrimaryColor(defaults.getButtonDefaults().getPrimaryColor());
+        control.setSecondaryColor(defaults.getButtonDefaults().getSecondaryColor());
+
         control.setText(getString(R.string.default_control_text));
 
         buildButton(control);
 
         View view = updateDisplay();
 
-        ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, 48);
+        ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getButtonDefaults().getFontSize());
         fontSize.setProgress((int) ((Button) view).getTextSize());
     }
 
     private Control initNewControl() {
         //un select any previous view visually
         unselectedPreviousView();
-        Control control = new Control();
-        width.setProgress(control.getWidth());
-        height.setProgress(control.getHeight());
 
-        return control;
+        return new Control();
     }
 
     private void unselectedPreviousView() {
@@ -268,7 +301,6 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     private void displayEditBackgroundDialog() {
-
         int color = Color.BLACK;
         Drawable background = findViewById(R.id.topLayout).getBackground();
         if (background instanceof ColorDrawable)
@@ -383,12 +415,15 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
             View view = currentScreen.getActiveView();
 
-            if (view instanceof Button)
+            if (view instanceof Button) {
                 view.setBackground(setButtonBackground(primaryColor, secondaryColor));
+            }
 
             ((TextView) view).setText(text);
             ((TextView) view).setTextColor(fontColor);
             view.setTag(command);
+
+            defaults.saveControl(view, primaryColor, secondaryColor);
         }
     }
 
@@ -407,6 +442,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         }
         if (newWidth >= minControlSize && newHeight >= minControlSize) {
             resizeImageView(view, newWidth, newHeight);
+            defaults.saveControl(view);
         }
     }
 
@@ -431,6 +467,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         if (newWidth >= minControlSize && newHeight >= minControlSize && newFont >= minFontSize) {
             view.setLayoutParams(new FrameLayout.LayoutParams(newWidth, newHeight));
             view.setTextSize(TypedValue.COMPLEX_UNIT_PX, newFont);
+            defaults.saveControl(view);
         }
     }
 

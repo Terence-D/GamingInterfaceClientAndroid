@@ -262,8 +262,6 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
     }
 
     private void displayColorPicker(final View view) {
-        int color = ((Button) view).getTextColors().getDefaultColor();
-
         ColorPickerDialogBuilder
                 .with(getContext())
                 .setTitle(getString(R.string.color_picker_title))

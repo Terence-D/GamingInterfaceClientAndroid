@@ -122,8 +122,10 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected void buildImage(Control control) {
         ImageView view = new ImageView(AbstractGameActivity.this);
         buildControl(control, view);
-        if (control.getPrimaryImage().isEmpty())
+        if (control.getPrimaryImage().isEmpty()) {
             view.setImageResource(R.mipmap.ic_launcher);
+            resizeImageView(view, control.getWidth(), control.getHeight());
+        }
         else {
             Drawable image = currentScreen.loadImage(control.getPrimaryImage());
             view.setImageDrawable(image);

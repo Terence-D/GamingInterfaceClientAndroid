@@ -304,4 +304,8 @@ public class Screen {
     public List<Control> getCustomControls() {
         return customControls;
     }
+
+    public int getScreenId() {
+        return screenId;
+    }
 }
