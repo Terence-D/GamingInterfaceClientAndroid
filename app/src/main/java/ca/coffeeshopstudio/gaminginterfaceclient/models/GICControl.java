@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "secondaryImage"
 })
 
-public class Control {
+public class GICControl {
     @JsonProperty("command")
     private Command command = new Command();
     @JsonProperty("text")

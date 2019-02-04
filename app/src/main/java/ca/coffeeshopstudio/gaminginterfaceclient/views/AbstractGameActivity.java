@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Screen;
 
 /**
@@ -63,7 +63,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
     }
 
-    private static StateListDrawable makeSelector(Control control) {
+    private static StateListDrawable makeSelector(GICControl control) {
         GradientDrawable gd = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
                 new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
@@ -86,7 +86,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     protected void loadScreen() {
         currentScreen.loadControls();
-        for (Control control : currentScreen.getCustomControls()) {
+        for (GICControl control : currentScreen.getCustomControls()) {
             switch (control.getViewType()) {
                 case 0:
                     buildButton(control);
@@ -105,23 +105,23 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         topLayout.setBackground(background);
     }
 
-    protected void buildText(Control control) {
+    protected void buildText(GICControl control) {
         AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, currentScreen.getMaxControlSize(), 2, TypedValue.COMPLEX_UNIT_SP);
-        buildControl(control, view);
+        buildView(control, view);
         initText(view, control);
     }
 
-    protected void buildButton(Control control) {
+    protected void buildButton(GICControl control) {
         Button view = new Button(AbstractGameActivity.this);
-        buildControl(control, view);
+        buildView(control, view);
         initText(view, control);
         view.setBackground(makeSelector(control));
     }
 
-    protected void buildImage(Control control) {
+    protected void buildImage(GICControl control) {
         ImageView view = new ImageView(AbstractGameActivity.this);
-        buildControl(control, view);
+        buildView(control, view);
         if (control.getPrimaryImage().isEmpty()) {
             view.setImageResource(R.mipmap.ic_launcher);
             resizeImageView(view, control.getWidth(), control.getHeight());
@@ -134,7 +134,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     }
 
     //initializations related to textview based controls (AppCompatTextView, Button, etc)
-    private void initText(TextView view, Control control) {
+    private void initText(TextView view, GICControl control) {
         view.setWidth(control.getWidth());
         view.setHeight(control.getHeight());
         view.setTextColor(control.getFontColor());
@@ -144,7 +144,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     }
 
     //init generic to all view types
-    private void buildControl(Control control, View view) {
+    private void buildView(GICControl control, View view) {
         FrameLayout layout = findViewById(R.id.topLayout);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layout.addView(view, lp);

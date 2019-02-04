@@ -32,9 +32,9 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class ControlDefaults {
     private final String PREFS_NAME = "gicsScreen";
-    private Control defaultImageControl;
-    private Control defaultButtonControl;
-    private Control defaultTextControl;
+    private GICControl defaultImageControl;
+    private GICControl defaultButtonControl;
+    private GICControl defaultTextControl;
 
     public ControlDefaults(Context context, int screenId) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -47,15 +47,15 @@ public class ControlDefaults {
         defaultTextControl = loadControl(context, prefs, prefString);
     }
 
-    public Control getImageDefaults() {
+    public GICControl getImageDefaults() {
         return defaultImageControl;
     }
 
-    public Control getButtonDefaults() {
+    public GICControl getButtonDefaults() {
         return defaultButtonControl;
     }
 
-    public Control getTextDefaults() {
+    public GICControl getTextDefaults() {
         return defaultTextControl;
     }
 
@@ -83,14 +83,14 @@ public class ControlDefaults {
         }
     }
 
-    private Control loadControl(Context context, SharedPreferences prefs, String prefString) {
-        Control defaultControl = new Control();
+    private GICControl loadControl(Context context, SharedPreferences prefs, String prefString) {
+        GICControl defaultControl = new GICControl();
         final ObjectMapper mapper = new ObjectMapper();
         if (prefs.contains(prefString)) {
             String raw = prefs.getString(prefString, "");
             if (raw != null && !raw.isEmpty()) {
                 try {
-                    defaultControl = mapper.readValue(raw, Control.class);
+                    defaultControl = mapper.readValue(raw, GICControl.class);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();

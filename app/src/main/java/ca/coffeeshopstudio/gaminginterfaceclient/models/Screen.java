@@ -36,7 +36,7 @@ public class Screen {
     
     private Context context;
     //private View layoutView;
-    private List<Control> customControls = new ArrayList<>();
+    private List<GICControl> customControls = new ArrayList<>();
     private List<View> views = new ArrayList<>();
     private List<Integer> primaryColors = new ArrayList<>();
     private List<Integer> secondaryColors = new ArrayList<>();
@@ -77,7 +77,7 @@ public class Screen {
         try {
             int i = 0;
             for (View view : views) {
-                Control control = new Control();
+                GICControl control = new GICControl();
                 control.setCommand((Command) view.getTag());
                 control.setWidth(view.getWidth());
                 control.setLeft(view.getX());
@@ -174,7 +174,7 @@ public class Screen {
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
             if (entry.getKey().contains(screenId + "_control_")) {
                 try {
-                    customControls.add(mapper.readValue(prefs.getString(entry.getKey(), ""), Control.class));
+                    customControls.add(mapper.readValue(prefs.getString(entry.getKey(), ""), GICControl.class));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -242,6 +242,7 @@ public class Screen {
 
     public int getNewId() {
         newId++;
+        //activeControl = newId - 1;
         return newId - 1;
     }
 
@@ -259,7 +260,7 @@ public class Screen {
 
     //resets what our current active control is to the last added one
     public void resetActiveControl() {
-        activeControl = views.size() - 1;
+        activeControl = -1;//views.size() - 1;
     }
 
     public void unsetActiveControl() {
@@ -301,7 +302,7 @@ public class Screen {
         unsetActiveControl();
     }
 
-    public List<Control> getCustomControls() {
+    public List<GICControl> getCustomControls() {
         return customControls;
     }
 
