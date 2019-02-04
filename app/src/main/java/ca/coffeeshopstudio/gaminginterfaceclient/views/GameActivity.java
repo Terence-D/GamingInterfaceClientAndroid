@@ -51,7 +51,7 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
         address = intent.getStringExtra("address"); //if it's a string you stored.
 
         setupFullScreen();
-        loadControls();
+        loadScreen();
     }
 
     @Override
@@ -101,4 +101,5 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
 
         return false;
     }
+
 }

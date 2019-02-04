@@ -1,15 +1,12 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatTextView;
@@ -17,17 +14,12 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.Screen;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -45,15 +37,16 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Control;
  limitations under the License.
  */
 public abstract class AbstractGameActivity extends AppCompatActivity implements View.OnClickListener {
-    protected List<View> views = new ArrayList<>();
-    protected List<Integer> primaryColors = new ArrayList<>();
-    protected List<Integer> secondaryColors = new ArrayList<>();
-    protected int maxControlSize = 800;
+    protected Screen currentScreen;
+
     protected int currentApiVersion;
 
-    protected int activeControl = -1;
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    private int newId = 0;
+        currentScreen = new Screen(this);
+    }
 
     @SuppressLint("NewApi")
     @Override
@@ -70,7 +63,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
     }
 
-    private static StateListDrawable makeSelector(Control control) {
+    private static StateListDrawable makeSelector(GICControl control) {
         GradientDrawable gd = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
                 new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
@@ -91,83 +84,83 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         //unused
     }
 
-    protected void loadControls() {
-        SharedPreferences prefs = getApplicationContext().getSharedPreferences("gicsScreen", MODE_PRIVATE);
-
-        setBackground(prefs);
-
-        final ObjectMapper mapper = new ObjectMapper();
-        List<Control> customControls = new ArrayList<>();
-
-        Map<String,?> keys = prefs.getAll();
-        for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            if (entry.getKey().contains("control_")) {
-                try {
-                    customControls.add(mapper.readValue(prefs.getString(entry.getKey(), ""), Control.class));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    protected void loadScreen() {
+        currentScreen.loadControls();
+        for (GICControl control : currentScreen.getCustomControls()) {
+            switch (control.getViewType()) {
+                case 0:
+                    buildButton(control);
+                    break;
+                case 1:
+                    buildText(control);
+                    break;
+                case 2:
+                    buildImage(control);
+                    break;
             }
         }
 
-        for (Control control : customControls) {
-            if (control.getViewType() == 0)
-                buildButton(control);
-            else
-                buildText(control);
-        }
+        View topLayout = findViewById(R.id.topLayout);
+        Drawable background = currentScreen.loadBackground();
+        topLayout.setBackground(background);
     }
 
-    private void setBackground(SharedPreferences prefs) {
-        int backgroundColor = prefs.getInt("background", 0xFF0099CC);
-        if (backgroundColor == -1) {
-            String backgroundPath = "background" + ".jpg";
-            View topLayout = findViewById(R.id.topLayout);
-
-            Bitmap bitmap = BitmapFactory.decodeFile(getFilesDir() + "/" + backgroundPath);
-            Drawable bitmapDrawable = new BitmapDrawable(getResources(), bitmap);
-            topLayout.setBackground(bitmapDrawable);
-        } else {
-            ColorDrawable color = (ColorDrawable) findViewById(R.id.topLayout).getBackground();
-            color.setColor(backgroundColor);
-        }
-    }
-
-    protected void buildText(Control control) {
+    protected void buildText(GICControl control) {
         AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, maxControlSize, 2, TypedValue.COMPLEX_UNIT_SP);
-        buildControl(control, view);
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, currentScreen.getMaxControlSize(), 2, TypedValue.COMPLEX_UNIT_SP);
+        buildView(control, view);
+        initText(view, control);
     }
 
-    protected void buildButton(Control control) {
+    protected void buildButton(GICControl control) {
         Button view = new Button(AbstractGameActivity.this);
-        buildControl(control, view);
+        buildView(control, view);
+        initText(view, control);
         view.setBackground(makeSelector(control));
     }
 
-    private void buildControl(Control control, TextView view) {
+    protected void buildImage(GICControl control) {
+        ImageView view = new ImageView(AbstractGameActivity.this);
+        buildView(control, view);
+        if (control.getPrimaryImage().isEmpty()) {
+            view.setImageResource(R.mipmap.ic_launcher);
+            resizeImageView(view, control.getWidth(), control.getHeight());
+        }
+        else {
+            Drawable image = currentScreen.loadImage(control.getPrimaryImage());
+            view.setImageDrawable(image);
+            resizeImageView(view, control.getWidth(), control.getHeight());
+        }
+    }
+
+    //initializations related to textview based controls (AppCompatTextView, Button, etc)
+    private void initText(TextView view, GICControl control) {
+        view.setWidth(control.getWidth());
+        view.setHeight(control.getHeight());
+        view.setTextColor(control.getFontColor());
+
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
+        view.setText(control.getText());
+    }
+
+    //init generic to all view types
+    private void buildView(GICControl control, View view) {
         FrameLayout layout = findViewById(R.id.topLayout);
         FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         layout.addView(view, lp);
 
         view.setX(control.getLeft());
         view.setY(control.getTop());
-        view.setWidth(control.getWidth());
-        view.setHeight(control.getHeight());
-        view.setTextColor(control.getFontColor());
 
-        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
         view.setTag(control.getCommand());
-        view.setText(control.getText());
 
         setClick(view);
 
         addDragDrop(view);
-        views.add(view);
-        primaryColors.add(control.getPrimaryColor());
-        secondaryColors.add(control.getSecondaryColor());
-        view.setId(newId);
-        newId++;
+        currentScreen.addView(view);
+        currentScreen.addPrimaryColor(control.getPrimaryColor());
+        currentScreen.addSecondaryColor(control.getSecondaryColor());
+        view.setId(currentScreen.getNewId());
     }
 
     protected GradientDrawable setButtonBackground(int primaryColor, int secondaryColor) {
@@ -208,6 +201,12 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                 }
             });
         }
+    }
+
+    protected void resizeImageView(ImageView view, int newWidth, int newHeight) {
+        FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(newWidth, newHeight);
+        view.setLayoutParams(layout);
+        view.invalidate();
     }
 
 }
