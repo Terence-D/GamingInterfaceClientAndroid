@@ -34,6 +34,7 @@ import java.io.IOException;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 
 /**
