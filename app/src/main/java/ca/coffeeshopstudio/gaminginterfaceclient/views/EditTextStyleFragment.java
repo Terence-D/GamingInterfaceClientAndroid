@@ -12,7 +12,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -42,7 +44,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditTextStyleFragment extends DialogFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class EditTextStyleFragment extends DialogFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private AutoItKeyMap map = new AutoItKeyMap();
     private View incomingView;
@@ -63,6 +65,9 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
     private Button btnFont;
     private Button btnPrimary;
     private Button btnSecondary;
+
+    private Spinner spnButton;
+    private Spinner spnButtonPressed;
 
 
     // Empty constructor is required for DialogFragment
@@ -148,6 +153,9 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
         btnPrimary = view.findViewById(R.id.btnButtonColor1);
         btnSecondary = view.findViewById(R.id.btnButtonColor2);
 
+        spnButton = view.findViewById(R.id.spnButtonImage);
+        spnButtonPressed = view.findViewById(R.id.spnButtonPressedImage);
+
         btnFont.setOnClickListener(this);
         btnFont.setTextColor(font);
         btnPrimary.setOnClickListener(this);
@@ -160,6 +168,8 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
 
         view.findViewById(R.id.btnSave).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
+
+        ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
 
         if (incomingView != null && !(incomingView instanceof Button)) {
             view.findViewById(R.id.btnButtonColor2).setVisibility(View.INVISIBLE);
@@ -283,6 +293,20 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
                 .show();
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        if (checked) {
+            spnButtonPressed.setVisibility(View.VISIBLE);
+            spnButton.setVisibility(View.VISIBLE);
+            btnPrimary.setVisibility(View.INVISIBLE);
+            btnSecondary.setVisibility(View.INVISIBLE);
+        } else {
+            spnButtonPressed.setVisibility(View.INVISIBLE);
+            spnButton.setVisibility(View.INVISIBLE);
+            btnPrimary.setVisibility(View.VISIBLE);
+            btnSecondary.setVisibility(View.VISIBLE);
+        }
+    }
 
     public interface EditDialogListener {
         void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor);
