@@ -1,7 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -18,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -35,7 +33,6 @@ import java.util.List;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.ImageAdapter;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -313,32 +310,26 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1337);
             }
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            GridView gridView = new GridView(getActivity());
-            gridView.setAdapter(new ImageAdapter(getContext()));
+            ImageGridDialog gridView = new ImageGridDialog(getContext());
+            gridView.show();
+//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            //builder.setTitle("Select an icon");
 
-//        ArrayList<GridViewItem>  mList = new ArrayList<>();
+//            GridView gridView = new GridView(getActivity());
+//            gridView.setAdapter(new ImageAdapter(getContext()));
 //
-//        mList.add(new GridViewItem(R.drawable.neon_button));
-//        mList.add(new GridViewItem(R.drawable.neon_button));
-//        mList.add(new GridViewItem(R.drawable.neon_button));
-//
-//        ImageAdapter iconItems = new ImageAdapter(getActivity(), mList);
-//
-//        gridView.setAdapter(iconItems);
-            gridView.setNumColumns(2);               // Number of columns
-            gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);       // Choice mode
-//        iconDialog = builder.create();
-            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    // do something here
-                    Toast.makeText(getActivity(), "Position: " + position, Toast.LENGTH_SHORT).show();
-                }
-            });
-            builder.setView(gridView);
-            builder.setTitle("Select an icon");
-            builder.create().show();
+//            gridView.setNumColumns(2);               // Number of columns
+//            gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);       // Choice mode
+//            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    // do something here
+//                    Toast.makeText(getActivity(), "Position: " + position, Toast.LENGTH_SHORT).show();
+//                    dimiss();
+//                }
+//            });
+//            builder.setView(gridView);
+//            builder.create().show();
         }
     }
 
