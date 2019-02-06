@@ -142,7 +142,7 @@
         app:layout_constraintTop_toBottomOf="@+id/chkRCtrl" />
 
     <Button
-        android:id="@+id/btnButtonColor1"
+        android:id="@+id/btnPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -154,7 +154,7 @@
         app:layout_constraintTop_toBottomOf="@+id/btnFontColor" />
 
     <Button
-        android:id="@+id/btnButtonColor2"
+        android:id="@+id/btnSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -163,7 +163,7 @@
         android:text="@string/edit_fragment_button_color_2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnButtonColor1" />
+        app:layout_constraintTop_toBottomOf="@+id/btnPrimary" />
 
     <Switch
         android:id="@+id/switchType"
@@ -175,29 +175,32 @@
         android:text="@string/fragment_edit_control_switch_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/btnSave"
-        app:layout_constraintTop_toBottomOf="@+id/btnButtonColor2" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSecondary" />
 
-    <Spinner
-        android:id="@+id/spnButtonImage"
-        android:layout_width="395dp"
-        android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/btnNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Button"
         android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnButtonColor1" />
+        app:layout_constraintTop_toTopOf="@+id/btnPrimary" />
 
-    <Spinner
-        android:id="@+id/spnButtonPressedImage"
-        android:layout_width="395dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+    <Button
+        android:id="@+id/btnPressed"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:visibility="invisible"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnButtonColor1" />
+        app:layout_constraintTop_toTopOf="@+id/btnPrimary" />
+
 </android.support.constraint.ConstraintLayout>

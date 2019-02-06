@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -63,7 +64,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
     }
 
-    private static StateListDrawable makeSelector(GICControl control) {
+    private static StateListDrawable makeSelector(GICControl control, Context context) {
         GradientDrawable gd = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
                 new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
@@ -75,8 +76,9 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         gd.setCornerRadius(3f);
 
         StateListDrawable res = new StateListDrawable();
-        res.addState(new int[]{android.R.attr.state_pressed}, gdPressed);
-        res.addState(new int[]{}, gd);
+        Drawable d = context.getDrawable(R.drawable.neon_button);
+        res.addState(new int[]{android.R.attr.state_pressed}, d);
+        res.addState(new int[]{}, d);
         return res;
     }
 
@@ -116,7 +118,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         Button view = new Button(AbstractGameActivity.this);
         buildView(control, view);
         initText(view, control);
-        view.setBackground(makeSelector(control));
+        view.setBackground(makeSelector(control, this));
     }
 
     protected void buildImage(GICControl control) {

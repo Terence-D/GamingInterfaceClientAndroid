@@ -1,10 +1,15 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +18,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.GridView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
@@ -28,6 +35,7 @@ import java.util.List;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ImageAdapter;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -65,9 +73,10 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
     private Button btnFont;
     private Button btnPrimary;
     private Button btnSecondary;
+    private Button btnNormal;
+    private Button btnPressed;
 
-    private Spinner spnButton;
-    private Spinner spnButtonPressed;
+    private boolean imageBased = false;
 
 
     // Empty constructor is required for DialogFragment
@@ -150,11 +159,10 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
         }
 
         btnFont = view.findViewById(R.id.btnFontColor);
-        btnPrimary = view.findViewById(R.id.btnButtonColor1);
-        btnSecondary = view.findViewById(R.id.btnButtonColor2);
-
-        spnButton = view.findViewById(R.id.spnButtonImage);
-        spnButtonPressed = view.findViewById(R.id.spnButtonPressedImage);
+        btnPrimary = view.findViewById(R.id.btnPrimary);
+        btnSecondary = view.findViewById(R.id.btnSecondary);
+        btnNormal = view.findViewById(R.id.btnNormal);
+        btnPressed = view.findViewById(R.id.btnPressed);
 
         btnFont.setOnClickListener(this);
         btnFont.setTextColor(font);
@@ -162,9 +170,11 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
         btnPrimary.setTextColor(primary);
         btnSecondary.setOnClickListener(this);
         btnSecondary.setTextColor(secondary);
+        btnPressed.setOnClickListener(this);
+        btnNormal.setOnClickListener(this);
 
-        view.findViewById(R.id.btnButtonColor1).setOnClickListener(this);
-        view.findViewById(R.id.btnButtonColor2).setOnClickListener(this);
+        view.findViewById(R.id.btnPrimary).setOnClickListener(this);
+        view.findViewById(R.id.btnSecondary).setOnClickListener(this);
 
         view.findViewById(R.id.btnSave).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
@@ -172,8 +182,8 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
         ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
 
         if (incomingView != null && !(incomingView instanceof Button)) {
-            view.findViewById(R.id.btnButtonColor2).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.btnButtonColor1).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.btnSecondary).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.btnPrimary).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.lblInstructions).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.spinner).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.chkLShift).setVisibility(View.INVISIBLE);
@@ -257,17 +267,78 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
                 listener.onFinishEditDialog(savedCommand, title, btnPrimary.getTextColors().getDefaultColor(), btnSecondary.getTextColors().getDefaultColor(), btnFont.getTextColors().getDefaultColor());
                 dismiss();
                 break;
-            case R.id.btnButtonColor1:
+            case R.id.btnPrimary:
                 displayColorPicker(view);
                 break;
-            case R.id.btnButtonColor2:
+            case R.id.btnSecondary:
                 displayColorPicker(view);
                 break;
             case R.id.btnFontColor:
                 displayColorPicker(view);
                 break;
+            case R.id.btnPressed:
+            case R.id.btnNormal:
+                displayImageLoader();
+                break;
             default:
                 break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1337: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    displayImageLoader();
+                }
+            }
+            break;
+        }
+    }
+
+    private void displayImageLoader() {
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                Toast.makeText(getActivity(), "test", Toast.LENGTH_SHORT).show();
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1337);
+            }
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            GridView gridView = new GridView(getActivity());
+            gridView.setAdapter(new ImageAdapter(getContext()));
+
+//        ArrayList<GridViewItem>  mList = new ArrayList<>();
+//
+//        mList.add(new GridViewItem(R.drawable.neon_button));
+//        mList.add(new GridViewItem(R.drawable.neon_button));
+//        mList.add(new GridViewItem(R.drawable.neon_button));
+//
+//        ImageAdapter iconItems = new ImageAdapter(getActivity(), mList);
+//
+//        gridView.setAdapter(iconItems);
+            gridView.setNumColumns(2);               // Number of columns
+            gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);       // Choice mode
+//        iconDialog = builder.create();
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // do something here
+                    Toast.makeText(getActivity(), "Position: " + position, Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.setView(gridView);
+            builder.setTitle("Select an icon");
+            builder.create().show();
         }
     }
 
@@ -295,16 +366,17 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        imageBased = checked;
         if (checked) {
-            spnButtonPressed.setVisibility(View.VISIBLE);
-            spnButton.setVisibility(View.VISIBLE);
-            btnPrimary.setVisibility(View.INVISIBLE);
             btnSecondary.setVisibility(View.INVISIBLE);
+            btnPrimary.setVisibility(View.INVISIBLE);
+            btnNormal.setVisibility(View.VISIBLE);
+            btnPressed.setVisibility(View.VISIBLE);
         } else {
-            spnButtonPressed.setVisibility(View.INVISIBLE);
-            spnButton.setVisibility(View.INVISIBLE);
-            btnPrimary.setVisibility(View.VISIBLE);
             btnSecondary.setVisibility(View.VISIBLE);
+            btnPrimary.setVisibility(View.VISIBLE);
+            btnNormal.setVisibility(View.INVISIBLE);
+            btnPressed.setVisibility(View.INVISIBLE);
         }
     }
 
