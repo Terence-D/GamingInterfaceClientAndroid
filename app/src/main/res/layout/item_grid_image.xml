@@ -6,8 +6,16 @@
     <ImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
-        android:layout_height="120dip"
+        android:layout_height="120dp"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="gone"
+        android:gravity="center|center_horizontal|center_vertical"
+        android:text="@string/item_grid_text" />
 
 </FrameLayout>
