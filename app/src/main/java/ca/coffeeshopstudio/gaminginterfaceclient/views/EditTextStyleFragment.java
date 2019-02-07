@@ -41,7 +41,6 @@ import java.util.List;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 
 /**
@@ -68,7 +67,6 @@ public class EditTextStyleFragment extends DialogFragment implements
     private AutoItKeyMap map = new AutoItKeyMap();
     private View incomingView;
     private Spinner spinner;
-    private Command commandToLoad = null;
     private GICControl controlToLoad;
 
     private CheckBox lShift;
@@ -94,12 +92,10 @@ public class EditTextStyleFragment extends DialogFragment implements
     public EditTextStyleFragment() {
     }
 
-    public static EditTextStyleFragment newInstance(Command command, GICControl control, View view) {
+    public static EditTextStyleFragment newInstance(GICControl control, View view) {
         EditTextStyleFragment frag = new EditTextStyleFragment();
         Bundle args = new Bundle();
         frag.setArguments(args);
-        if (command != null)
-            frag.loadCommand(command);
         if (view != null)
             frag.loadView(view);
         if (control != null)
@@ -115,10 +111,6 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     public void loadControl(GICControl control) {
         controlToLoad = control;
-    }
-
-    public void loadCommand(Command command) {
-        commandToLoad = command;
     }
 
     public void loadView(View view) {
@@ -143,16 +135,16 @@ public class EditTextStyleFragment extends DialogFragment implements
 
         text.setText(controlToLoad.getText());
         //load in any data we brought in
-        if (commandToLoad != null) {
+        if (controlToLoad.getCommand() != null) {
             lAlt.setChecked(false);
             lCtrl.setChecked(false);
             lShift.setChecked(false);
-            for (int i = 0; i < commandToLoad.getModifiers().size(); i++) {
-                if (commandToLoad.getModifiers().get(i).equals("ALT"))
+            for (int i = 0; i < controlToLoad.getCommand().getModifiers().size(); i++) {
+                if (controlToLoad.getCommand().getModifiers().get(i).equals("ALT"))
                     lAlt.setChecked(true);
-                if (commandToLoad.getModifiers().get(i).equals("CTRL"))
+                if (controlToLoad.getCommand().getModifiers().get(i).equals("CTRL"))
                     lCtrl.setChecked(true);
-                if (commandToLoad.getModifiers().get(i).equals("SHIFT"))
+                if (controlToLoad.getCommand().getModifiers().get(i).equals("SHIFT"))
                     lShift.setChecked(true);
             }
         }
@@ -210,8 +202,8 @@ public class EditTextStyleFragment extends DialogFragment implements
         dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(dataAdapter);
 
-        if (commandToLoad != null) {
-            String key = commandToLoad.getKey();
+        if (controlToLoad.getCommand() != null) {
+            String key = controlToLoad.getCommand().getKey();
             List<String> keys = new ArrayList<>(map.getKeys().keySet());
 
             for (int i = 0; i < keys.size(); i++) {
@@ -236,22 +228,19 @@ public class EditTextStyleFragment extends DialogFragment implements
     @Override
     public void onClick(View view) {
         EditDialogListener listener = (EditDialogListener) getActivity();
-        Command savedCommand = null;
-        String title;
         switch (view.getId()) {
             case R.id.btnSave:
-                savedCommand = new Command();
                 List<String> keys = new ArrayList<>(map.getKeys().keySet());
-                savedCommand.setKey(keys.get(spinner.getSelectedItemPosition()));
+                controlToLoad.getCommand().setKey(keys.get(spinner.getSelectedItemPosition()));
 
                 if (lShift.isChecked()) {
-                    savedCommand.addModifier("SHIFT");
+                    controlToLoad.getCommand().addModifier("SHIFT");
                 }
                 if (lCtrl.isChecked()) {
-                    savedCommand.addModifier("CTRL");
+                    controlToLoad.getCommand().addModifier("CTRL");
                 }
                 if (lAlt.isChecked()) {
-                    savedCommand.addModifier("ALT");
+                    controlToLoad.getCommand().addModifier("ALT");
                 }
                 //for now disabling "right" handed modifiers.  AutoIt seems to have a bug
                 //where it won't properly release them.
@@ -264,11 +253,11 @@ public class EditTextStyleFragment extends DialogFragment implements
 //                if (rAlt.isChecked()) {
 //                    savedCommand.addModifier("ALT");
 //                }
-                listener.onFinishEditDialog(savedCommand, true, controlToLoad);
+                listener.onFinishEditDialog(true, controlToLoad);
                 dismiss();
                 break;
             case R.id.btnDelete:
-                listener.onFinishEditDialog(savedCommand, false, controlToLoad);
+                listener.onFinishEditDialog(false, controlToLoad);
                 dismiss();
                 break;
             case R.id.btnPrimary:
@@ -468,7 +457,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     }
 
     public interface EditDialogListener {
-        void onFinishEditDialog(Command command, boolean toSave, GICControl control);
+        void onFinishEditDialog(boolean toSave, GICControl control);
     }
 
 }

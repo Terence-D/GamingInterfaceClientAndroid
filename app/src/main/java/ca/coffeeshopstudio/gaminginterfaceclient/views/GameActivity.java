@@ -11,6 +11,7 @@ import java.util.List;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Result;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.CommandService;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.RestClientInstance;
@@ -85,15 +86,15 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (view instanceof Button) {
-            Command command = (Command) view.getTag();
+            GICControl control = (GICControl) view.getTag();
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    command.setActivatorType(Command.KEY_DOWN);
+                    control.getCommand().setActivatorType(Command.KEY_DOWN);
                     makeCall((Command) view.getTag());
                     view.performClick();
                     break;
                 case MotionEvent.ACTION_UP:
-                    command.setActivatorType(Command.KEY_UP);
+                    control.getCommand().setActivatorType(Command.KEY_UP);
                     makeCall((Command) view.getTag());
                     break;
             }

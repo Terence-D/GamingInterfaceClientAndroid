@@ -87,7 +87,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     protected void loadScreen() {
         currentScreen.loadControls();
-        for (GICControl control : currentScreen.getCustomControls()) {
+        for (GICControl control : currentScreen.getControls()) {
             switch (control.getViewType()) {
                 case 0:
                     buildButton(control);
@@ -106,21 +106,23 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         topLayout.setBackground(background);
     }
 
-    protected void buildText(GICControl control) {
+    protected View buildText(GICControl control) {
         AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, currentScreen.getMaxControlSize(), 2, TypedValue.COMPLEX_UNIT_SP);
         buildView(control, view);
         initText(view, control);
+        return view;
     }
 
-    protected void buildButton(GICControl control) {
+    protected View buildButton(GICControl control) {
         Button view = new Button(AbstractGameActivity.this);
         buildView(control, view);
         initText(view, control);
         view.setBackground(buildButton(control, this));
+        return view;
     }
 
-    protected void buildImage(GICControl control) {
+    protected View buildImage(GICControl control) {
         ImageView view = new ImageView(AbstractGameActivity.this);
         buildView(control, view);
         if (control.getPrimaryImage().isEmpty()) {
@@ -132,16 +134,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             view.setImageDrawable(image);
             resizeImageView(view, control.getWidth(), control.getHeight());
         }
-    }
 
-    //initializations related to textview based controls (AppCompatTextView, Button, etc)
-    private void initText(TextView view, GICControl control) {
-        view.setWidth(control.getWidth());
-        view.setHeight(control.getHeight());
-        view.setTextColor(control.getFontColor());
-
-        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
-        view.setText(control.getText());
+        return view;
     }
 
     //init generic to all view types
@@ -153,15 +147,24 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         view.setX(control.getLeft());
         view.setY(control.getTop());
 
-        view.setTag(control.getCommand());
+        view.setTag(control);
+        //currentScreen.addControl(control);
 
         setClick(view);
 
         addDragDrop(view);
-        currentScreen.addView(view);
-        currentScreen.addPrimaryColor(control.getPrimaryColor());
-        currentScreen.addSecondaryColor(control.getSecondaryColor());
+
         view.setId(currentScreen.getNewId());
+    }
+
+    //initializations related to textview based controls (AppCompatTextView, Button, etc)
+    private void initText(TextView view, GICControl control) {
+        view.setWidth(control.getWidth());
+        view.setHeight(control.getHeight());
+        view.setTextColor(control.getFontColor());
+
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
+        view.setText(control.getText());
     }
 
     protected GradientDrawable setButtonBackground(int primaryColor, int secondaryColor) {
