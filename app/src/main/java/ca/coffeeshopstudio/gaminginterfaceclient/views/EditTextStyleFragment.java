@@ -1,10 +1,15 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -26,6 +31,9 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -310,7 +318,7 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1337);
             }
         } else {
-            ImageGridDialog gridView = new ImageGridDialog(getContext());
+            ImageGridDialog gridView = new ImageGridDialog(this);
             gridView.show();
 //            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             //builder.setTitle("Select an icon");
@@ -373,6 +381,48 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
 
     public interface EditDialogListener {
         void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == EditActivity.OPEN_REQUEST_CODE_IMPORT_BUTTON) {
+                if (resultData != null) {
+                    Uri currentUri = resultData.getData();
+                    if (currentUri != null) {
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), currentUri);
+                            File file = null;
+                            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                                file = new File(getContext().getFilesDir(), "button_" + i + ".png");
+                                if (!file.exists())
+                                    break;
+                            }
+                            FileOutputStream out = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                            out.flush();
+                            out.close();
+                        } catch (IOException e) {
+                            Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+        }
+//                            try {
+//                                FileOutputStream out = new FileOutputStream(file);
+//                                image.compress(Bitmap.CompressFormat.PNG, 90, out);
+//                                out.flush();
+//                                out.close();
+//                                return true;
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                                return false;
+//                            }
+
+        /*
+         */
     }
 
 }

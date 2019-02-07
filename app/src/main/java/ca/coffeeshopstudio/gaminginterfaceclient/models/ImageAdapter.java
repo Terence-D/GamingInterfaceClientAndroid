@@ -8,6 +8,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
 /**
@@ -15,17 +20,19 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
  */
 public class ImageAdapter extends BaseAdapter {
     private static final int[] builtIn = Constants.buttons;
-    Context context;
+    private int customButtonCount = 0;
+    private Context context;
     private LayoutInflater inflater;
 
-    public ImageAdapter(Context context) {
+    public ImageAdapter(Context context, int customButtonCount) {
         inflater = LayoutInflater.from(context);
+        this.customButtonCount = customButtonCount;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return builtIn.length + 1;
+        return builtIn.length + 1 + customButtonCount;
     }
 
     @Override
@@ -57,20 +64,34 @@ public class ImageAdapter extends BaseAdapter {
         }
 
 
-        //Picasso.get().setLoggingEnabled(true);
         if (position == 0) {
             holder.textView.setVisibility(View.VISIBLE);
             holder.imageView.setVisibility(View.GONE);
             //show "add" item
-        } else if (position <= builtIn.length) {
+        } else if (position <= customButtonCount) {
+            holder.textView.setVisibility(View.GONE);
+            String path = context.getFilesDir() + "/button_" + (position - 1) + ".png";
+            Picasso.get().setLoggingEnabled(true);
+            Picasso.get()
+                    .load(new File(path))
+                    .error(R.mipmap.ic_launcher)
+                    .fit().centerInside()
+                    .into(holder.imageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.imageView.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            holder.imageView.setVisibility(View.INVISIBLE);
+                        }
+                    });
+        } else if (position - customButtonCount <= builtIn.length) {
             holder.textView.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
-            holder.imageView.setImageResource(builtIn[position-1]);
+            holder.imageView.setImageResource(builtIn[position - customButtonCount - 1]);
             holder.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        } else {
-            //show user generated images
-            holder.textView.setVisibility(View.GONE);
-            holder.imageView.setVisibility(View.VISIBLE);
         }
 
         return view;

@@ -70,6 +70,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
     protected static final int OPEN_REQUEST_CODE_BACKGROUND = 41;
     protected static final int OPEN_REQUEST_CODE_IMAGE = 42;
+    public static final int OPEN_REQUEST_CODE_IMPORT_BUTTON = 43;
 
     @Override
     protected void onStop() {
