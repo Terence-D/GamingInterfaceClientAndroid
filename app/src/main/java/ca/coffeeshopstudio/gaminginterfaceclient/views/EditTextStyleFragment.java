@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
@@ -43,6 +42,7 @@ import java.util.List;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -69,15 +69,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     private View incomingView;
     private Spinner spinner;
     private Command commandToLoad = null;
-    private String commandName;
-
-    private int font;
-    private int primary;
-    private int secondary;
-    private int normalResource = R.drawable.neon_button;
-    private int pressedResource = R.drawable.neon_button_pressed;
-    private String normalPath = "";
-    private String pressedPath = "";
+    private GICControl controlToLoad;
 
     private CheckBox lShift;
     //private CheckBox rShift;
@@ -94,9 +86,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     private Button btnPressed;
     private Button preview;
 
-    private boolean imageBased = false;
-
-    private int state = 0; //are we looking at normal or pressed for button
+    private int state = 0; //are we looking at normal (0) or secondary (1) for button
 
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
@@ -104,37 +94,27 @@ public class EditTextStyleFragment extends DialogFragment implements
     public EditTextStyleFragment() {
     }
 
-    public static EditTextStyleFragment newInstance(String title, String text, Command command, int primary, int secondary, int font, View view) {
+    public static EditTextStyleFragment newInstance(Command command, GICControl control, View view) {
         EditTextStyleFragment frag = new EditTextStyleFragment();
         Bundle args = new Bundle();
-        args.putString("title", title);
-        args.putString("text", text);
-        args.putInt("font", font);
-        args.putInt("primary", primary);
-        args.putInt("secondary", secondary);
         frag.setArguments(args);
         if (command != null)
             frag.loadCommand(command);
         if (view != null)
             frag.loadView(view);
+        if (control != null)
+            frag.loadControl(control);
         return frag;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        // Fetch arguments from bundle and set title
-        String title;
-        if (getArguments() != null) {
-            title = getArguments().getString("title", "Enter Name");
-        } else
-            title = getString(R.string.default_control_text);
-        commandName = getArguments().getString("text", "");
-        font = getArguments().getInt("font", Color.BLACK);
-        primary = getArguments().getInt("primary", Color.GRAY);
-        secondary = getArguments().getInt("secondary", Color.WHITE);
-        getDialog().setTitle(title);
         setupControls(view);
+    }
+
+    public void loadControl(GICControl control) {
+        controlToLoad = control;
     }
 
     public void loadCommand(Command command) {
@@ -161,7 +141,7 @@ public class EditTextStyleFragment extends DialogFragment implements
 
         buildCommandSpinner(view);
 
-        text.setText(commandName);
+        text.setText(controlToLoad.getText());
         //load in any data we brought in
         if (commandToLoad != null) {
             lAlt.setChecked(false);
@@ -184,18 +164,19 @@ public class EditTextStyleFragment extends DialogFragment implements
         btnPressed = view.findViewById(R.id.btnPressed);
 
         btnFont.setOnClickListener(this);
-        btnFont.setTextColor(font);
+        btnFont.setTextColor(controlToLoad.getFontColor());
+
         btnPrimary.setOnClickListener(this);
-        btnPrimary.setTextColor(primary);
+        btnPrimary.setTextColor(controlToLoad.getPrimaryColor());
+
         btnSecondary.setOnClickListener(this);
-        btnSecondary.setTextColor(secondary);
+        btnSecondary.setTextColor(controlToLoad.getSecondaryColor());
+
         btnPressed.setOnClickListener(this);
         btnNormal.setOnClickListener(this);
 
         preview = view.findViewById(R.id.preview);
-
-        view.findViewById(R.id.btnPrimary).setOnClickListener(this);
-        view.findViewById(R.id.btnSecondary).setOnClickListener(this);
+        preview.setBackground(buildStatePreview());
 
         view.findViewById(R.id.btnSave).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
@@ -205,6 +186,11 @@ public class EditTextStyleFragment extends DialogFragment implements
         if (incomingView != null && !(incomingView instanceof Button)) {
             view.findViewById(R.id.btnSecondary).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.btnPrimary).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.btnPressed).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.btnNormal).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.switchType).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.preview).setVisibility(View.INVISIBLE);
+
             view.findViewById(R.id.lblInstructions).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.spinner).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.chkLShift).setVisibility(View.INVISIBLE);
@@ -258,8 +244,6 @@ public class EditTextStyleFragment extends DialogFragment implements
                 List<String> keys = new ArrayList<>(map.getKeys().keySet());
                 savedCommand.setKey(keys.get(spinner.getSelectedItemPosition()));
 
-                title = text.getText().toString();
-
                 if (lShift.isChecked()) {
                     savedCommand.addModifier("SHIFT");
                 }
@@ -280,12 +264,11 @@ public class EditTextStyleFragment extends DialogFragment implements
 //                if (rAlt.isChecked()) {
 //                    savedCommand.addModifier("ALT");
 //                }
-                listener.onFinishEditDialog(savedCommand, title, btnPrimary.getTextColors().getDefaultColor(), btnSecondary.getTextColors().getDefaultColor(), btnFont.getTextColors().getDefaultColor());
+                listener.onFinishEditDialog(savedCommand, true, controlToLoad);
                 dismiss();
                 break;
             case R.id.btnDelete:
-                title = "DELETE";
-                listener.onFinishEditDialog(savedCommand, title, btnPrimary.getTextColors().getDefaultColor(), btnSecondary.getTextColors().getDefaultColor(), btnFont.getTextColors().getDefaultColor());
+                listener.onFinishEditDialog(savedCommand, false, controlToLoad);
                 dismiss();
                 break;
             case R.id.btnPrimary:
@@ -353,15 +336,15 @@ public class EditTextStyleFragment extends DialogFragment implements
                 .setPositiveButton(getString(android.R.string.ok), new ColorPickerClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                        normalPath = "";
-                        normalResource = -1;
-                        pressedPath = "";
-                        pressedResource = -1;
+                        controlToLoad.setPrimaryImage("");
+                        controlToLoad.setPrimaryImageResource(-1);
+                        controlToLoad.setSecondaryImage("");
+                        controlToLoad.setSecondaryImageResource(-1);
                         if (state == 0) {
-                            primary = selectedColor;
+                            controlToLoad.setPrimaryColor(selectedColor);
                         }
                         if (state == 1) {
-                            secondary = selectedColor;
+                            controlToLoad.setSecondaryColor(selectedColor);
                         }
                         ((Button) view).setTextColor(selectedColor);
                     }
@@ -377,13 +360,18 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        imageBased = checked;
         if (checked) {
             btnSecondary.setVisibility(View.INVISIBLE);
             btnPrimary.setVisibility(View.INVISIBLE);
             preview.setVisibility(View.VISIBLE);
             btnNormal.setVisibility(View.VISIBLE);
             btnPressed.setVisibility(View.VISIBLE);
+            if (controlToLoad.getPrimaryImageResource() == -1 && controlToLoad.getPrimaryImage().isEmpty()) {
+                controlToLoad.setPrimaryImageResource(R.drawable.neon_button);
+            }
+            if (controlToLoad.getSecondaryImageResource() == -1 && controlToLoad.getSecondaryImage().isEmpty()) {
+                controlToLoad.setSecondaryImageResource(R.drawable.neon_button_pressed);
+            }
             preview.setBackground(buildStatePreview());
         } else {
             btnSecondary.setVisibility(View.VISIBLE);
@@ -426,60 +414,61 @@ public class EditTextStyleFragment extends DialogFragment implements
     @Override
     public void onImageSelected(String custom) {
         if (state == 0) {
-            normalResource = -1;
-            normalPath = custom;
+            controlToLoad.setPrimaryImage(custom);
+            controlToLoad.setPrimaryImageResource(-1);
         }
         if (state == 1) {
-            pressedResource = -1;
-            pressedPath = custom;
+            controlToLoad.setSecondaryImage(custom);
+            controlToLoad.setSecondaryImageResource(-1);
         }
-        primary = -1;
-        secondary = -1;
+        controlToLoad.setPrimaryColor(-1);
+        controlToLoad.setSecondaryColor(-1);
         preview.setBackground(buildStatePreview());
     }
 
     @Override
     public void onImageSelected(int builtIn) {
         if (state == 0) {
-            normalResource = builtIn;
-            normalPath = "";
+            controlToLoad.setPrimaryImage("");
+            controlToLoad.setPrimaryImageResource(builtIn);
         }
         if (state == 1) {
-            pressedResource = builtIn;
-            pressedPath = "";
+            controlToLoad.setSecondaryImage("");
+            controlToLoad.setSecondaryImageResource(builtIn);
         }
-        primary = -1;
-        secondary = -1;
+        controlToLoad.setPrimaryColor(-1);
+        controlToLoad.setSecondaryColor(-1);
         preview.setBackground(buildStatePreview());
-    }
-
-    public interface EditDialogListener {
-        void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor);
     }
 
     private StateListDrawable buildStatePreview() {
         Drawable normal = null;
-        Drawable pressed = null;
+        Drawable secondary = null;
 
-        if (normalResource > -1) {
-            normal = getResources().getDrawable(normalResource);
+        if (controlToLoad.getPrimaryImageResource() > -1) {
+            normal = getResources().getDrawable(controlToLoad.getPrimaryImageResource());
         }
-        if (!normalPath.isEmpty()) {
-            normal = Drawable.createFromPath(normalPath);
+        if (!controlToLoad.getPrimaryImage().isEmpty()) {
+            normal = Drawable.createFromPath(controlToLoad.getPrimaryImage());
         }
 
-        if (pressedResource > -1) {
-            pressed = getResources().getDrawable(pressedResource);
+        if (controlToLoad.getSecondaryImageResource() > -1) {
+            secondary = getResources().getDrawable(controlToLoad.getSecondaryImageResource());
         }
-        if (!pressedPath.isEmpty()) {
-            pressed = Drawable.createFromPath(pressedPath);
+        if (!controlToLoad.getSecondaryImage().isEmpty()) {
+            secondary = Drawable.createFromPath(controlToLoad.getSecondaryImage());
         }
 
         StateListDrawable res = new StateListDrawable();
-        if (normal != null && pressed != null) {
-            res.addState(new int[]{android.R.attr.state_pressed}, pressed);
+        if (normal != null && secondary != null) {
+            res.addState(new int[]{android.R.attr.state_pressed}, secondary);
             res.addState(new int[]{}, normal);
         }
         return res;
     }
+
+    public interface EditDialogListener {
+        void onFinishEditDialog(Command command, boolean toSave, GICControl control);
+    }
+
 }

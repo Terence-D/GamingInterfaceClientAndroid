@@ -335,13 +335,18 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         FragmentManager fm = getSupportFragmentManager();
         TextView view = (TextView) currentScreen.getActiveView();
 
+        GICControl control = new GICControl();
         int fontColor = view.getTextColors().getDefaultColor();
         int primaryColor = currentScreen.getActiveControlPrimaryColor();
         int secondaryColor = currentScreen.getActiveControlSecondaryColor();
-
         String buttonText = (String) view.getText();
+        control.setFontColor(fontColor);
+        control.setPrimaryColor(primaryColor);
+        control.setSecondaryColor(secondaryColor);
+        control.setText(buttonText);
+
         Command commandToSend = ((Command) currentScreen.getActiveView().getTag());
-        EditTextStyleFragment editTextDialog = EditTextStyleFragment.newInstance(getString(R.string.title_fragment_edit), buttonText, commandToSend, primaryColor, secondaryColor, fontColor, view);
+        EditTextStyleFragment editTextDialog = EditTextStyleFragment.newInstance(commandToSend, control, view);
         editTextDialog.show(fm, "fragment_edit_name");
     }
 
@@ -414,26 +419,26 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     @Override
-    public void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor) {
-        if (command == null && text.equals("DELETE")) {
+    public void onFinishEditDialog(Command command, boolean toSave, GICControl control) {
+        if (!toSave) {
             if (currentScreen.getActiveControlId() >= 0) {
                 deleteView();
             }
         } else {
-            currentScreen.setActiveControlPrimaryColor(primaryColor);
-            currentScreen.setActiveControlSecondaryColor(primaryColor);
+            currentScreen.setActiveControlPrimaryColor(control.getPrimaryColor());
+            currentScreen.setActiveControlSecondaryColor(control.getSecondaryColor());
 
             View view = currentScreen.getActiveView();
 
             if (view instanceof Button) {
-                view.setBackground(setButtonBackground(primaryColor, secondaryColor));
+                view.setBackground(setButtonBackground(control.getPrimaryColor(), control.getSecondaryColor()));
             }
 
-            ((TextView) view).setText(text);
-            ((TextView) view).setTextColor(fontColor);
+            ((TextView) view).setText(control.getText());
+            ((TextView) view).setTextColor(control.getFontColor());
             view.setTag(command);
 
-            defaults.saveControl(view, primaryColor, secondaryColor);
+            defaults.saveControl(view, control.getPrimaryColor(), control.getSecondaryColor());
         }
     }
 
