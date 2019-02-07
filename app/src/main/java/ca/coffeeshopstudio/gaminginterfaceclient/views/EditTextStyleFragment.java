@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -57,7 +59,11 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditTextStyleFragment extends DialogFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class EditTextStyleFragment extends DialogFragment implements
+        ImageGridDialog.ImageGridDialogListener,
+        AdapterView.OnItemSelectedListener,
+        View.OnClickListener,
+        CompoundButton.OnCheckedChangeListener {
 
     private AutoItKeyMap map = new AutoItKeyMap();
     private View incomingView;
@@ -80,6 +86,7 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
     private Button btnSecondary;
     private Button btnNormal;
     private Button btnPressed;
+    private ImageView preview;
 
     private boolean imageBased = false;
 
@@ -177,6 +184,8 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
         btnSecondary.setTextColor(secondary);
         btnPressed.setOnClickListener(this);
         btnNormal.setOnClickListener(this);
+
+        preview = view.findViewById(R.id.preview);
 
         view.findViewById(R.id.btnPrimary).setOnClickListener(this);
         view.findViewById(R.id.btnSecondary).setOnClickListener(this);
@@ -379,10 +388,6 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
         }
     }
 
-    public interface EditDialogListener {
-        void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
@@ -410,19 +415,21 @@ public class EditTextStyleFragment extends DialogFragment implements AdapterView
                 }
             }
         }
-//                            try {
-//                                FileOutputStream out = new FileOutputStream(file);
-//                                image.compress(Bitmap.CompressFormat.PNG, 90, out);
-//                                out.flush();
-//                                out.close();
-//                                return true;
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                                return false;
-//                            }
+    }
 
-        /*
-         */
+    @Override
+    public void onImageSelected(String custom) {
+        Drawable drawable = Drawable.createFromPath(custom);
+        preview.setImageDrawable(drawable);
+    }
+
+    @Override
+    public void onImageSelected(Drawable builtIn) {
+        preview.setImageDrawable(builtIn);
+    }
+
+    public interface EditDialogListener {
+        void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor);
     }
 
 }

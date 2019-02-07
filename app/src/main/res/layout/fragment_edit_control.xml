@@ -10,9 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="@string/fragment_edit_button_save"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchType" />
+        app:layout_constraintTop_toBottomOf="@+id/preview" />
 
     <EditText
         android:id="@+id/txtText"
@@ -38,7 +39,7 @@
         android:layout_marginEnd="8dp"
         android:text="@string/fragment_edit_button_delete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switchType" />
+        app:layout_constraintTop_toBottomOf="@+id/preview" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -184,7 +185,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Button"
+        android:scaleType="fitXY"
+        android:text="@string/fragment_edit_button_normal"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
         app:layout_constraintStart_toStartOf="parent"
@@ -198,9 +200,22 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:visibility="invisible"
-        android:text="Button"
+        android:scaleType="fitXY"
+        android:text="@string/fragment_edit_button_pressed"
         app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnPrimary" />
+
+    <ImageView
+        android:id="@+id/preview"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switchType"
+        app:srcCompat="@drawable/neon_button" />
 
 </android.support.constraint.ConstraintLayout>

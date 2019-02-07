@@ -64,7 +64,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
     }
 
-    private static StateListDrawable makeSelector(GICControl control, Context context) {
+    private static StateListDrawable buildButton(GICControl control, Context context) {
         GradientDrawable gd = new GradientDrawable(
                 GradientDrawable.Orientation.TOP_BOTTOM,
                 new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
@@ -76,9 +76,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         gd.setCornerRadius(3f);
 
         StateListDrawable res = new StateListDrawable();
-        Drawable d = context.getDrawable(R.drawable.neon_button);
-        res.addState(new int[]{android.R.attr.state_pressed}, d);
-        res.addState(new int[]{}, d);
+        res.addState(new int[]{android.R.attr.state_pressed}, gdPressed);
+        res.addState(new int[]{}, gd);
         return res;
     }
 
@@ -118,7 +117,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         Button view = new Button(AbstractGameActivity.this);
         buildView(control, view);
         initText(view, control);
-        view.setBackground(makeSelector(control, this));
+        view.setBackground(buildButton(control, this));
     }
 
     protected void buildImage(GICControl control) {

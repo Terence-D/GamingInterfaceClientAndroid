@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -29,10 +30,11 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.ImageAdapter;
  * limitations under the License.
  */
 public class ImageGridDialog extends AlertDialog {
+    private int customCount = 0;
+
     public ImageGridDialog(final Fragment fragment) {
         super(Objects.requireNonNull(fragment.getActivity()));
         File file;
-        int customCount = 0;
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             file = new File(getContext().getFilesDir(), "button_" + i + ".png");
             if (!file.exists()) {
@@ -52,13 +54,19 @@ public class ImageGridDialog extends AlertDialog {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
+                if (position == 0) { //import
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("image/*");
                     fragment.startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_IMPORT_BUTTON);
                     dismiss();
-                } else {
+                } else if (position <= customCount) {
+                    String path = fragment.getActivity().getFilesDir() + "/button_" + (position - 1) + ".png";
+                    ((ImageGridDialogListener) fragment).onImageSelected(path);
+                    dismiss();
+                } else if (position - customCount <= ImageAdapter.builtIn.length) {
+                    Drawable drawable = fragment.getResources().getDrawable(ImageAdapter.builtIn[position - customCount - 1]);
+                    ((ImageGridDialogListener) fragment).onImageSelected(drawable);
                     dismiss();
                 }
             }
@@ -66,4 +74,9 @@ public class ImageGridDialog extends AlertDialog {
         setView(gridView);
     }
 
+    public interface ImageGridDialogListener {
+        void onImageSelected(String custom);
+
+        void onImageSelected(Drawable builtIn);
+    }
 }
