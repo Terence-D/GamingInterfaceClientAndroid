@@ -90,12 +90,12 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     control.getCommand().setActivatorType(Command.KEY_DOWN);
-                    makeCall((Command) view.getTag());
+                    makeCall(control.getCommand());
                     view.performClick();
                     break;
                 case MotionEvent.ACTION_UP:
                     control.getCommand().setActivatorType(Command.KEY_UP);
-                    makeCall((Command) view.getTag());
+                    makeCall(control.getCommand());
                     break;
             }
         }

@@ -1,7 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -64,20 +63,39 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
     }
 
-    private static StateListDrawable buildButton(GICControl control, Context context) {
-        GradientDrawable gd = new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
-        gd.setCornerRadius(3f);
+    private StateListDrawable buildButtonDrawable(GICControl control) {
+        Drawable primary;
+        Drawable secondary;
 
-        GradientDrawable gdPressed = new GradientDrawable(
-                GradientDrawable.Orientation.BOTTOM_TOP,
-                new int[]{0x880f0f10, 0x885d5d5e});
-        gd.setCornerRadius(3f);
-
+        if (!control.getPrimaryImage().isEmpty()) {
+            //build drawable based on path
+            primary = Drawable.createFromPath(control.getPrimaryImage());
+        } else if (control.getPrimaryImageResource() > -1) {
+            //build based on built in resource
+            primary = getResources().getDrawable(control.getPrimaryImageResource());
+        } else {
+            //color gradients
+            primary = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
+            ((GradientDrawable) primary).setCornerRadius(3f);
+        }
+        if (!control.getSecondaryImage().isEmpty()) {
+            //build drawable based on path
+            secondary = Drawable.createFromPath(control.getSecondaryImage());
+        } else if (control.getSecondaryImageResource() > -1) {
+            //build based on built in resource
+            secondary = getResources().getDrawable(control.getSecondaryImageResource());
+        } else {
+            //color gradients
+            secondary = new GradientDrawable(
+                    GradientDrawable.Orientation.BOTTOM_TOP,
+                    new int[]{control.getPrimaryColor(), control.getSecondaryColor()});
+            ((GradientDrawable) secondary).setCornerRadius(3f);
+        }
         StateListDrawable res = new StateListDrawable();
-        res.addState(new int[]{android.R.attr.state_pressed}, gdPressed);
-        res.addState(new int[]{}, gd);
+        res.addState(new int[]{android.R.attr.state_pressed}, secondary);
+        res.addState(new int[]{}, primary);
         return res;
     }
 
@@ -118,7 +136,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         Button view = new Button(AbstractGameActivity.this);
         buildView(control, view);
         initText(view, control);
-        view.setBackground(buildButton(control, this));
+        view.setBackground(buildButtonDrawable(control));
         return view;
     }
 
