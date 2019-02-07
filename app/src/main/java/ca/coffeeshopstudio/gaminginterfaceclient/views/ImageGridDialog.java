@@ -1,7 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -65,8 +64,7 @@ public class ImageGridDialog extends AlertDialog {
                     ((ImageGridDialogListener) fragment).onImageSelected(path);
                     dismiss();
                 } else if (position - customCount <= ImageAdapter.builtIn.length) {
-                    Drawable drawable = fragment.getResources().getDrawable(ImageAdapter.builtIn[position - customCount - 1]);
-                    ((ImageGridDialogListener) fragment).onImageSelected(drawable);
+                    ((ImageGridDialogListener) fragment).onImageSelected(ImageAdapter.builtIn[position - customCount - 1]);
                     dismiss();
                 }
             }
@@ -77,6 +75,6 @@ public class ImageGridDialog extends AlertDialog {
     public interface ImageGridDialogListener {
         void onImageSelected(String custom);
 
-        void onImageSelected(Drawable builtIn);
+        void onImageSelected(int builtIn);
     }
 }

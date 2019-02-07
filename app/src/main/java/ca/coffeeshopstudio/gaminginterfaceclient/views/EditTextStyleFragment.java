@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,7 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -70,9 +70,15 @@ public class EditTextStyleFragment extends DialogFragment implements
     private Spinner spinner;
     private Command commandToLoad = null;
     private String commandName;
+
     private int font;
     private int primary;
     private int secondary;
+    private int normalResource = R.drawable.neon_button;
+    private int pressedResource = R.drawable.neon_button_pressed;
+    private String normalPath = "";
+    private String pressedPath = "";
+
     private CheckBox lShift;
     //private CheckBox rShift;
     private CheckBox lCtrl;
@@ -86,10 +92,11 @@ public class EditTextStyleFragment extends DialogFragment implements
     private Button btnSecondary;
     private Button btnNormal;
     private Button btnPressed;
-    private ImageView preview;
+    private Button preview;
 
     private boolean imageBased = false;
 
+    private int state = 0; //are we looking at normal or pressed for button
 
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
@@ -291,7 +298,11 @@ public class EditTextStyleFragment extends DialogFragment implements
                 displayColorPicker(view);
                 break;
             case R.id.btnPressed:
+                state = 1;
+                displayImageLoader();
+                break;
             case R.id.btnNormal:
+                state = 0;
                 displayImageLoader();
                 break;
             default:
@@ -329,24 +340,6 @@ public class EditTextStyleFragment extends DialogFragment implements
         } else {
             ImageGridDialog gridView = new ImageGridDialog(this);
             gridView.show();
-//            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            //builder.setTitle("Select an icon");
-
-//            GridView gridView = new GridView(getActivity());
-//            gridView.setAdapter(new ImageAdapter(getContext()));
-//
-//            gridView.setNumColumns(2);               // Number of columns
-//            gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);       // Choice mode
-//            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    // do something here
-//                    Toast.makeText(getActivity(), "Position: " + position, Toast.LENGTH_SHORT).show();
-//                    dimiss();
-//                }
-//            });
-//            builder.setView(gridView);
-//            builder.create().show();
         }
     }
 
@@ -360,6 +353,16 @@ public class EditTextStyleFragment extends DialogFragment implements
                 .setPositiveButton(getString(android.R.string.ok), new ColorPickerClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
+                        normalPath = "";
+                        normalResource = -1;
+                        pressedPath = "";
+                        pressedResource = -1;
+                        if (state == 0) {
+                            primary = selectedColor;
+                        }
+                        if (state == 1) {
+                            secondary = selectedColor;
+                        }
                         ((Button) view).setTextColor(selectedColor);
                     }
                 })
@@ -378,11 +381,14 @@ public class EditTextStyleFragment extends DialogFragment implements
         if (checked) {
             btnSecondary.setVisibility(View.INVISIBLE);
             btnPrimary.setVisibility(View.INVISIBLE);
+            preview.setVisibility(View.VISIBLE);
             btnNormal.setVisibility(View.VISIBLE);
             btnPressed.setVisibility(View.VISIBLE);
+            preview.setBackground(buildStatePreview());
         } else {
             btnSecondary.setVisibility(View.VISIBLE);
             btnPrimary.setVisibility(View.VISIBLE);
+            preview.setVisibility(View.INVISIBLE);
             btnNormal.setVisibility(View.INVISIBLE);
             btnPressed.setVisibility(View.INVISIBLE);
         }
@@ -419,17 +425,61 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     @Override
     public void onImageSelected(String custom) {
-        Drawable drawable = Drawable.createFromPath(custom);
-        preview.setImageDrawable(drawable);
+        if (state == 0) {
+            normalResource = -1;
+            normalPath = custom;
+        }
+        if (state == 1) {
+            pressedResource = -1;
+            pressedPath = custom;
+        }
+        primary = -1;
+        secondary = -1;
+        preview.setBackground(buildStatePreview());
     }
 
     @Override
-    public void onImageSelected(Drawable builtIn) {
-        preview.setImageDrawable(builtIn);
+    public void onImageSelected(int builtIn) {
+        if (state == 0) {
+            normalResource = builtIn;
+            normalPath = "";
+        }
+        if (state == 1) {
+            pressedResource = builtIn;
+            pressedPath = "";
+        }
+        primary = -1;
+        secondary = -1;
+        preview.setBackground(buildStatePreview());
     }
 
     public interface EditDialogListener {
         void onFinishEditDialog(Command command, String text, int primaryColor, int secondaryColor, int fontColor);
     }
 
+    private StateListDrawable buildStatePreview() {
+        Drawable normal = null;
+        Drawable pressed = null;
+
+        if (normalResource > -1) {
+            normal = getResources().getDrawable(normalResource);
+        }
+        if (!normalPath.isEmpty()) {
+            normal = Drawable.createFromPath(normalPath);
+        }
+
+        if (pressedResource > -1) {
+            pressed = getResources().getDrawable(pressedResource);
+        }
+        if (!pressedPath.isEmpty()) {
+            pressed = Drawable.createFromPath(pressedPath);
+        }
+
+        StateListDrawable res = new StateListDrawable();
+        if (normal != null && pressed != null) {
+            res.addState(new int[]{android.R.attr.state_pressed}, pressed);
+            res.addState(new int[]{}, normal);
+        }
+        return res;
+    }
 }
