@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -67,32 +68,46 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         Drawable primary;
         Drawable secondary;
 
-        if (!control.getPrimaryImage().isEmpty()) {
-            //build drawable based on path
-            primary = Drawable.createFromPath(control.getPrimaryImage());
-        } else if (control.getPrimaryImageResource() > -1) {
-            //build based on built in resource
-            primary = getResources().getDrawable(control.getPrimaryImageResource());
-        } else {
+        if (control.getPrimaryColor() > -1) {
             //color gradients
             primary = new GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
             ((GradientDrawable) primary).setCornerRadius(3f);
-        }
-        if (!control.getSecondaryImage().isEmpty()) {
+        } else if (!control.getPrimaryImage().isEmpty()) {
             //build drawable based on path
-            secondary = Drawable.createFromPath(control.getSecondaryImage());
-        } else if (control.getSecondaryImageResource() > -1) {
+            primary = Drawable.createFromPath(control.getPrimaryImage());
+        } else if (control.getPrimaryImageResource() > -1) {
             //build based on built in resource
-            secondary = getResources().getDrawable(control.getSecondaryImageResource());
-        } else {
+            primary = getResources().getDrawable(control.getPrimaryImageResource());
+        } else { //fallback
+            //color gradients
+            primary = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{Color.BLACK, Color.WHITE});
+            ((GradientDrawable) primary).setCornerRadius(3f);
+        }
+
+        if (control.getSecondaryColor() > -1) {
             //color gradients
             secondary = new GradientDrawable(
                     GradientDrawable.Orientation.BOTTOM_TOP,
                     new int[]{control.getPrimaryColor(), control.getSecondaryColor()});
             ((GradientDrawable) secondary).setCornerRadius(3f);
+        } else if (!control.getSecondaryImage().isEmpty()) {
+            //build drawable based on path
+            secondary = Drawable.createFromPath(control.getSecondaryImage());
+        } else if (control.getSecondaryImageResource() > -1) {
+            //build based on built in resource
+            secondary = getResources().getDrawable(control.getSecondaryImageResource());
+        } else { //fallback
+            //color gradients
+            secondary = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{Color.WHITE, Color.BLACK});
+            ((GradientDrawable) secondary).setCornerRadius(3f);
         }
+
         StateListDrawable res = new StateListDrawable();
         res.addState(new int[]{android.R.attr.state_pressed}, secondary);
         res.addState(new int[]{}, primary);
