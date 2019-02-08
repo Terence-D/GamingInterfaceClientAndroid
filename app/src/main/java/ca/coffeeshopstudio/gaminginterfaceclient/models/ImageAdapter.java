@@ -117,9 +117,9 @@ class ViewHolder {
 
 
 class Constants {
-
     static final int[] buttons = new int[]{
         R.drawable.neon_button,
+        R.drawable.neon_button_pressed
     };
 
 
