@@ -98,9 +98,19 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     private void toggleEditControls(int visibility) {
-        seekFontSize.setVisibility(visibility);
+        seekFontSize.setVisibility(View.GONE);
         seekHeight.setVisibility(visibility);
         seekWidth.setVisibility(visibility);
+
+        //now if displaying, update the seek progress bars
+        if (visibility == View.VISIBLE) {
+            seekWidth.setProgress(selectedView.getWidth());
+            seekHeight.setProgress(selectedView.getHeight());
+            if (selectedView instanceof Button) {
+                seekFontSize.setProgress((int) ((Button) selectedView).getTextSize());
+                seekFontSize.setVisibility(visibility);
+            }
+        }
     }
 
     private void setupControls() {
