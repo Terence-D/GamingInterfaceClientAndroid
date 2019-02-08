@@ -232,7 +232,7 @@ public class EditTextStyleFragment extends DialogFragment implements
             case R.id.btnSave:
                 List<String> keys = new ArrayList<>(map.getKeys().keySet());
                 controlToLoad.getCommand().setKey(keys.get(spinner.getSelectedItemPosition()));
-
+                controlToLoad.setText(text.getText().toString());
                 if (lShift.isChecked()) {
                     controlToLoad.getCommand().addModifier("SHIFT");
                 }

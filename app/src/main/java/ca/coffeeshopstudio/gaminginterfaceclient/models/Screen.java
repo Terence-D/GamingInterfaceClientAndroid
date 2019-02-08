@@ -142,7 +142,7 @@ public class Screen {
     public Drawable loadBackground() {
         convertLegacyBackground();
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        int backgroundColor = prefs.getInt(screenId + "_background", 0xFF0099CC);
+        int backgroundColor = prefs.getInt(screenId + "_background", context.getResources().getColor(R.color.default_background) );
         if (backgroundColor == -1) {
             String backgroundPath = screenId + "_background.png";
 

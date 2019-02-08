@@ -95,6 +95,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         defaults = new ControlDefaults(this, currentScreen.getScreenId());
 
         toggleEditControls(View.GONE);
+        if (currentScreen.getControls().size() > 0)
+            findViewById(R.id.txtHelp).setVisibility(View.GONE);
     }
 
     private void toggleEditControls(int visibility) {
@@ -290,6 +292,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         view.setOnTouchListener(new TouchListener());
         toggleEditControls(View.GONE);
         currentScreen.addControl((GICControl) view.getTag());
+        findViewById(R.id.txtHelp).setVisibility(View.GONE);
 
         return view;
     }
@@ -330,6 +333,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     private void clickHandler(View view) {
         //we already tapped once on this, lets open
         if (selectedView != null && selectedView.equals(view)) {
+            toggleEditControls(View.VISIBLE);
             if (view instanceof TextView)
                 displayTextEditDialog();
             if (view instanceof ImageView)
