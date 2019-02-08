@@ -216,6 +216,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         GICControl control = initNewControl();
         control.setWidth(defaults.getImageDefaults().getWidth());
         control.setHeight(defaults.getImageDefaults().getHeight());
+        control.setViewType(GICControl.TYPE_IMAGE);
 
         View view = buildImage(control);
 
@@ -230,6 +231,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         control.setFontColor(defaults.getTextDefaults().getFontColor());
         control.setText(getString(R.string.default_control_text));
+        control.setViewType(GICControl.TYPE_TEXT);
 
         View view = buildText(control);
 
@@ -244,7 +246,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         control.setFontColor(defaults.getButtonDefaults().getFontColor());
         control.setText(getString(R.string.default_control_text));
-
+        control.setViewType(GICControl.TYPE_BUTTON);
         control.setFontSize(defaults.getButtonDefaults().getFontSize());
         control.setPrimaryColor(defaults.getButtonDefaults().getPrimaryColor());
         control.setSecondaryColor(defaults.getButtonDefaults().getSecondaryColor());

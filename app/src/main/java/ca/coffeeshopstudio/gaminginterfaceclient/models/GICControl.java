@@ -32,6 +32,10 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
 })
 
 public class GICControl {
+    public static final int TYPE_BUTTON = 0;
+    public static final int TYPE_TEXT = 1;
+    public static final int TYPE_IMAGE = 2;
+
     @JsonProperty("command")
     private Command command = new Command();
     @JsonProperty("text")
