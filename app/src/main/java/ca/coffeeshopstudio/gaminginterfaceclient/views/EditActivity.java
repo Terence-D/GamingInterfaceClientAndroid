@@ -389,7 +389,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             selectedView.setTag(control);
 
             if (selectedView instanceof Button) {
-                selectedView.setBackground(setButtonBackground(control.getPrimaryColor(), control.getSecondaryColor()));
+                selectedView.setBackground(buildButtonDrawable(control));
             }
 
             ((TextView) selectedView).setText(control.getText());

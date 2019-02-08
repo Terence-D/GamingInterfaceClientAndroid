@@ -325,15 +325,16 @@ public class EditTextStyleFragment extends DialogFragment implements
                 .setPositiveButton(getString(android.R.string.ok), new ColorPickerClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                        controlToLoad.setPrimaryImage("");
-                        controlToLoad.setPrimaryImageResource(-1);
-                        controlToLoad.setSecondaryImage("");
-                        controlToLoad.setSecondaryImageResource(-1);
-                        if (state == 0) {
+                        if (view.getId() == R.id.btnColor1) {
+                            controlToLoad.setPrimaryImage("");
+                            controlToLoad.setPrimaryImageResource(-1);
                             controlToLoad.setPrimaryColor(selectedColor);
-                        }
-                        if (state == 1) {
+                        } else if (view.getId() == R.id.btnColor2) {
+                            controlToLoad.setSecondaryImage("");
+                            controlToLoad.setSecondaryImageResource(-1);
                             controlToLoad.setSecondaryColor(selectedColor);
+                        } else {
+                            controlToLoad.setFontColor(selectedColor);
                         }
                         ((Button) view).setTextColor(selectedColor);
                     }

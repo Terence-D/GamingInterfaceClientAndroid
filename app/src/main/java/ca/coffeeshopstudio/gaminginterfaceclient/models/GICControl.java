@@ -49,7 +49,7 @@ public class GICControl {
     @JsonProperty("height")
     private int height = 120;
     @JsonProperty("fontColor")
-    private int fontColor = Color.BLACK;
+    private int fontColor = Color.BLUE;
     @JsonProperty("primaryColor")
     private int primaryColor = Color.GRAY;
     @JsonProperty("secondaryColor")

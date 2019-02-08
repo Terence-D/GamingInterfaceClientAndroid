@@ -63,7 +63,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
     }
 
-    private StateListDrawable buildButtonDrawable(GICControl control) {
+    protected StateListDrawable buildButtonDrawable(GICControl control) {
         Drawable primary;
         Drawable secondary;
 
@@ -183,15 +183,6 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
         view.setText(control.getText());
-    }
-
-    protected GradientDrawable setButtonBackground(int primaryColor, int secondaryColor) {
-        GradientDrawable gd = new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{secondaryColor, primaryColor});
-        gd.setCornerRadius(3f);
-
-        return gd;
     }
 
     protected void setClick(View view) {
