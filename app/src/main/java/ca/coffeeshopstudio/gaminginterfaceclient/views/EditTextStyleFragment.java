@@ -171,8 +171,6 @@ public class EditTextStyleFragment extends DialogFragment implements
         view.findViewById(R.id.btnSave).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
 
-        ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
-
         if (incomingView != null && !(incomingView instanceof Button)) {
             btnSecondary.setVisibility(View.INVISIBLE);
             btnPrimary.setVisibility(View.INVISIBLE);
@@ -187,6 +185,23 @@ public class EditTextStyleFragment extends DialogFragment implements
             view.findViewById(R.id.chkLAlt).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.chkLCtrl).setVisibility(View.INVISIBLE);
         }
+        if (incomingView instanceof Button) {
+            if (controlToLoad.getPrimaryImageResource() != -1 || !controlToLoad.getPrimaryImage().isEmpty()) {
+                btnSecondary.setVisibility(View.INVISIBLE);
+                btnPrimary.setVisibility(View.INVISIBLE);
+                btnPressed.setVisibility(View.VISIBLE);
+                btnNormal.setVisibility(View.VISIBLE);
+                preview.setVisibility(View.VISIBLE);
+            } else {
+                btnSecondary.setVisibility(View.VISIBLE);
+                btnPrimary.setVisibility(View.VISIBLE);
+                btnPressed.setVisibility(View.INVISIBLE);
+                btnNormal.setVisibility(View.INVISIBLE);
+                preview.setVisibility(View.INVISIBLE);
+                ((Switch) view.findViewById(R.id.switchType)).setChecked(false);
+            }
+        }
+        ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
     }
 
     private void buildCommandSpinner(View view) {
@@ -372,6 +387,7 @@ public class EditTextStyleFragment extends DialogFragment implements
             preview.setVisibility(View.INVISIBLE);
             btnNormal.setVisibility(View.INVISIBLE);
             btnPressed.setVisibility(View.INVISIBLE);
+
         }
     }
 
