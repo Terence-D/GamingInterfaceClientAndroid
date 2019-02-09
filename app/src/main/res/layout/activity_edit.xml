@@ -4,15 +4,15 @@
     android:id="@+id/topLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:background="@color/default_background"
     tools:context=".views.EditActivity">
 
     <SeekBar
         android:id="@+id/seekWidth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
         android:layout_gravity="top"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="64dp"
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="128dp"
@@ -40,11 +40,13 @@
         android:visibility="gone" />
 
     <TextView
+        android:id="@+id/txtHelp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|center_vertical"
         android:layout_margin="120dp"
         android:text="@string/edit_help_message"
+        android:textColor="@color/color_bottom_bar"
         android:textSize="18sp" />
 
     <View
