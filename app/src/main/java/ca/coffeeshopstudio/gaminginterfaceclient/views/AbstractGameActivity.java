@@ -70,6 +70,10 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
         if (control.getPrimaryColor() != -1) {
             //color gradients
+            //we don't support mixing color and otherwise
+            //so if secondary is -1, make it match primary (replicate 1.3 bug)
+            if (control.getSecondaryColor() == -1)
+                control.setSecondaryColor(control.getPrimaryColor());
             primary = new GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
