@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient.views;
+package ca.coffeeshopstudio.gaminginterfaceclient.models;
 
 import android.content.Context;
 

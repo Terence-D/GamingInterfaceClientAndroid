@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -63,20 +64,57 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
     }
 
-    private static StateListDrawable makeSelector(GICControl control) {
-        GradientDrawable gd = new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
-        gd.setCornerRadius(3f);
+    protected StateListDrawable buildButtonDrawable(GICControl control) {
+        Drawable primary;
+        Drawable secondary;
 
-        GradientDrawable gdPressed = new GradientDrawable(
-                GradientDrawable.Orientation.BOTTOM_TOP,
-                new int[]{0x880f0f10, 0x885d5d5e});
-        gd.setCornerRadius(3f);
+        if (control.getPrimaryColor() != -1) {
+            //color gradients
+            //we don't support mixing color and otherwise
+            //so if secondary is -1, make it match primary (replicate 1.3 bug)
+            if (control.getSecondaryColor() == -1)
+                control.setSecondaryColor(control.getPrimaryColor());
+            primary = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{control.getSecondaryColor(), control.getPrimaryColor()});
+            ((GradientDrawable) primary).setCornerRadius(3f);
+        } else if (!control.getPrimaryImage().isEmpty()) {
+            //build drawable based on path
+            primary = Drawable.createFromPath(control.getPrimaryImage());
+        } else if (control.getPrimaryImageResource() != -1) {
+            //build based on built in resource
+            primary = getResources().getDrawable(control.getPrimaryImageResource());
+        } else { //fallback
+            //color gradients
+            primary = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{Color.BLACK, Color.WHITE});
+            ((GradientDrawable) primary).setCornerRadius(3f);
+        }
+
+        if (control.getSecondaryColor() != -1) {
+            //color gradients
+            secondary = new GradientDrawable(
+                    GradientDrawable.Orientation.BOTTOM_TOP,
+                    new int[]{control.getPrimaryColor(), control.getSecondaryColor()});
+            ((GradientDrawable) secondary).setCornerRadius(3f);
+        } else if (!control.getSecondaryImage().isEmpty()) {
+            //build drawable based on path
+            secondary = Drawable.createFromPath(control.getSecondaryImage());
+        } else if (control.getSecondaryImageResource() != -1) {
+            //build based on built in resource
+            secondary = getResources().getDrawable(control.getSecondaryImageResource());
+        } else { //fallback
+            //color gradients
+            secondary = new GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    new int[]{Color.WHITE, Color.BLACK});
+            ((GradientDrawable) secondary).setCornerRadius(3f);
+        }
 
         StateListDrawable res = new StateListDrawable();
-        res.addState(new int[]{android.R.attr.state_pressed}, gdPressed);
-        res.addState(new int[]{}, gd);
+        res.addState(new int[]{android.R.attr.state_pressed}, secondary);
+        res.addState(new int[]{}, primary);
         return res;
     }
 
@@ -86,7 +124,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     protected void loadScreen() {
         currentScreen.loadControls();
-        for (GICControl control : currentScreen.getCustomControls()) {
+        for (GICControl control : currentScreen.getControls()) {
             switch (control.getViewType()) {
                 case 0:
                     buildButton(control);
@@ -105,21 +143,23 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         topLayout.setBackground(background);
     }
 
-    protected void buildText(GICControl control) {
+    protected View buildText(GICControl control) {
         AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
         TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, currentScreen.getMaxControlSize(), 2, TypedValue.COMPLEX_UNIT_SP);
         buildView(control, view);
         initText(view, control);
+        return view;
     }
 
-    protected void buildButton(GICControl control) {
+    protected View buildButton(GICControl control) {
         Button view = new Button(AbstractGameActivity.this);
-        buildView(control, view);
+        view.setBackground(buildButtonDrawable(control));
         initText(view, control);
-        view.setBackground(makeSelector(control));
+        buildView(control, view);
+        return view;
     }
 
-    protected void buildImage(GICControl control) {
+    protected View buildImage(GICControl control) {
         ImageView view = new ImageView(AbstractGameActivity.this);
         buildView(control, view);
         if (control.getPrimaryImage().isEmpty()) {
@@ -131,6 +171,27 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             view.setImageDrawable(image);
             resizeImageView(view, control.getWidth(), control.getHeight());
         }
+
+        return view;
+    }
+
+    //init generic to all view types
+    private void buildView(GICControl control, View view) {
+        FrameLayout layout = findViewById(R.id.topLayout);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(control.getWidth(), control.getHeight());
+        layout.addView(view, lp);
+
+        view.setX(control.getLeft());
+        view.setY(control.getTop());
+
+        view.setTag(control);
+        //currentScreen.addControl(control);
+
+        setClick(view);
+
+        addDragDrop(view);
+
+        view.setId(currentScreen.getNewId());
     }
 
     //initializations related to textview based controls (AppCompatTextView, Button, etc)
@@ -141,35 +202,6 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
         view.setText(control.getText());
-    }
-
-    //init generic to all view types
-    private void buildView(GICControl control, View view) {
-        FrameLayout layout = findViewById(R.id.topLayout);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(view, lp);
-
-        view.setX(control.getLeft());
-        view.setY(control.getTop());
-
-        view.setTag(control.getCommand());
-
-        setClick(view);
-
-        addDragDrop(view);
-        currentScreen.addView(view);
-        currentScreen.addPrimaryColor(control.getPrimaryColor());
-        currentScreen.addSecondaryColor(control.getSecondaryColor());
-        view.setId(currentScreen.getNewId());
-    }
-
-    protected GradientDrawable setButtonBackground(int primaryColor, int secondaryColor) {
-        GradientDrawable gd = new GradientDrawable(
-                GradientDrawable.Orientation.TOP_BOTTOM,
-                new int[]{secondaryColor, primaryColor});
-        gd.setCornerRadius(3f);
-
-        return gd;
     }
 
     protected void setClick(View view) {

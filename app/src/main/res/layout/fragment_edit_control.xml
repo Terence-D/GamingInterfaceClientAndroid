@@ -13,7 +13,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/fragment_edit_button_save"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnButtonColor2" />
+        app:layout_constraintTop_toBottomOf="@+id/preview" />
 
     <EditText
         android:id="@+id/txtText"
@@ -39,7 +39,7 @@
         android:layout_marginEnd="8dp"
         android:text="@string/fragment_edit_button_delete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnButtonColor2" />
+        app:layout_constraintTop_toBottomOf="@+id/preview" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -143,26 +143,83 @@
         app:layout_constraintTop_toBottomOf="@+id/chkRCtrl" />
 
     <Button
-        android:id="@+id/btnButtonColor1"
+        android:id="@+id/btnPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/edit_fragment_button_color_1"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnFontColor" />
 
     <Button
-        android:id="@+id/btnButtonColor2"
+        android:id="@+id/btnSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/edit_fragment_button_color_2"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnButtonColor1" />
+        app:layout_constraintTop_toBottomOf="@+id/btnPrimary" />
+
+    <Switch
+        android:id="@+id/switchType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:checked="true"
+        android:text="@string/fragment_edit_control_switch_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/btnSave"
+        app:layout_constraintTop_toBottomOf="@+id/btnSecondary" />
+
+    <Button
+        android:id="@+id/btnNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitXY"
+        android:text="@string/fragment_edit_button_normal"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnPrimary" />
+
+    <Button
+        android:id="@+id/btnPressed"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitXY"
+        android:text="@string/fragment_edit_button_pressed"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnPrimary" />
+
+    <Button
+        android:id="@+id/preview"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switchType"
+        app:srcCompat="@drawable/neon_button" />
+
 </android.support.constraint.ConstraintLayout>

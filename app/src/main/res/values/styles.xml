@@ -20,4 +20,6 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <style name="ProgressBarStyle" parent="@android:style/Widget.ProgressBar.Horizontal" />
+
 </resources>

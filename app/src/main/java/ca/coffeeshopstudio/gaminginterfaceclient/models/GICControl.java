@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.R;
+
 /**
  * stores our views information for saving / loading the interface
  */
@@ -23,11 +25,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "secondaryColor",
         "fontSize",
         "viewType",
+        "primaryImageResource",
+        "secondaryImageResource",
         "primaryImage",
         "secondaryImage"
 })
 
 public class GICControl {
+    public static final int TYPE_BUTTON = 0;
+    public static final int TYPE_TEXT = 1;
+    public static final int TYPE_IMAGE = 2;
+
     @JsonProperty("command")
     private Command command = new Command();
     @JsonProperty("text")
@@ -35,21 +43,25 @@ public class GICControl {
     @JsonProperty("left")
     private float left = 140;
     @JsonProperty("width")
-    private int width = 200;
+    private int width = 320;
     @JsonProperty("top")
     private float top = 200;
     @JsonProperty("height")
-    private int height = 120;
+    private int height = 240;
     @JsonProperty("fontColor")
-    private int fontColor = Color.BLACK;
+    private int fontColor = Color.WHITE;
     @JsonProperty("primaryColor")
-    private int primaryColor = Color.GRAY;
+    private int primaryColor = -1;
     @JsonProperty("secondaryColor")
-    private int secondaryColor = Color.WHITE;
+    private int secondaryColor = -1;
     @JsonProperty("fontSize")
-    private int fontSize = 24;
+    private int fontSize = 36;
     @JsonProperty("viewType")
     private int viewType = 0;
+    @JsonProperty("primaryImageResource")
+    private int primaryImageResource = R.drawable.neon_button;
+    @JsonProperty("secondaryImageResource")
+    private int secondaryImageResource = R.drawable.neon_button_pressed;
     @JsonProperty("primaryImage")
     private String primaryImage = "";
     @JsonProperty("secondaryImage")
@@ -169,14 +181,34 @@ public class GICControl {
         this.viewType = viewType;
     }
 
+    @JsonProperty("primaryImageResource")
+    public int getPrimaryImageResource() {
+        return primaryImageResource;
+    }
+
+    @JsonProperty("primaryImageResource")
+    public void setPrimaryImageResource(int primaryImageResource) {
+        this.primaryImageResource = primaryImageResource;
+    }
+
+    @JsonProperty("secondaryImageResource")
+    public int getSecondaryImageResource() {
+        return secondaryImageResource;
+    }
+
+    @JsonProperty("secondaryImageResource")
+    public void setSecondaryImageResource(int secondaryImageResource) {
+        this.secondaryImageResource = secondaryImageResource;
+    }
+
     @JsonProperty("primaryImage")
     public String getPrimaryImage() {
         return primaryImage;
     }
 
     @JsonProperty("primaryImage")
-    public void setPrimaryImage(String image) {
-        this.primaryImage = image;
+    public void setPrimaryImage(String primaryImage) {
+        this.primaryImage = primaryImage;
     }
 
     @JsonProperty("secondaryImage")
@@ -185,7 +217,7 @@ public class GICControl {
     }
 
     @JsonProperty("secondaryImage")
-    public void setSecondaryImage(String image) {
-        this.secondaryImage = image;
+    public void setSecondaryImage(String secondaryImage) {
+        this.secondaryImage = secondaryImage;
     }
 }
