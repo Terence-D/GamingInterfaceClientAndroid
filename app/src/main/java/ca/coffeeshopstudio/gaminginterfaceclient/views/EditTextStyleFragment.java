@@ -199,6 +199,7 @@ public class EditTextStyleFragment extends DialogFragment implements
                 btnNormal.setVisibility(View.INVISIBLE);
                 preview.setVisibility(View.INVISIBLE);
                 ((Switch) view.findViewById(R.id.switchType)).setChecked(false);
+                mode = false;
             }
         }
         ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
@@ -288,6 +289,7 @@ public class EditTextStyleFragment extends DialogFragment implements
         List<String> keys = new ArrayList<>(map.getKeys().keySet());
         controlToLoad.setText(text.getText().toString());
         controlToLoad.getCommand().setKey(keys.get(spinner.getSelectedItemPosition()));
+        controlToLoad.setFontColor(btnFont.getTextColors().getDefaultColor());
 
         if (lShift.isChecked()) {
             controlToLoad.getCommand().addModifier("SHIFT");
