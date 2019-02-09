@@ -43,17 +43,17 @@ public class GICControl {
     @JsonProperty("left")
     private float left = 140;
     @JsonProperty("width")
-    private int width = 200;
+    private int width = 320;
     @JsonProperty("top")
     private float top = 200;
     @JsonProperty("height")
-    private int height = 120;
+    private int height = 240;
     @JsonProperty("fontColor")
-    private int fontColor = Color.LTGRAY;
+    private int fontColor = Color.WHITE;
     @JsonProperty("primaryColor")
-    private int primaryColor = Color.GRAY;
+    private int primaryColor = -1;
     @JsonProperty("secondaryColor")
-    private int secondaryColor = Color.WHITE;
+    private int secondaryColor = -1;
     @JsonProperty("fontSize")
     private int fontSize = 36;
     @JsonProperty("viewType")

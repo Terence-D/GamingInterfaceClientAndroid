@@ -2,10 +2,6 @@ package ca.coffeeshopstudio.gaminginterfaceclient.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.v7.widget.AppCompatTextView;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -59,27 +55,13 @@ public class ControlDefaults {
         return defaultTextControl;
     }
 
-    public void saveControl(View view) {
-        if (view instanceof AppCompatTextView) {
-            defaultTextControl.setWidth(view.getWidth());
-            defaultTextControl.setHeight(view.getHeight());
-            defaultTextControl.setFontColor(((AppCompatTextView) view).getCurrentTextColor());
-        } else if (view instanceof Button) {
-            defaultButtonControl.setWidth(view.getWidth());
-            defaultButtonControl.setHeight(view.getHeight());
-            defaultButtonControl.setFontColor(((Button) view).getCurrentTextColor());
-            defaultButtonControl.setFontSize((int) ((Button) view).getTextSize());
-        } else if (view instanceof ImageView) {
-            defaultImageControl.setWidth(view.getWidth());
-            defaultImageControl.setHeight(view.getHeight());
-        }
-    }
-
-    public void saveControl(View view, int primaryColor, int secondaryColor) {
-        saveControl(view);
-        if (view instanceof Button) {
-            defaultButtonControl.setPrimaryColor(primaryColor);
-            defaultButtonControl.setSecondaryColor(secondaryColor);
+    public void saveControl(GICControl control) {
+        if (control.getViewType() == GICControl.TYPE_TEXT) {
+            defaultTextControl = control;
+        } else if (control.getViewType() == GICControl.TYPE_BUTTON) {
+            defaultButtonControl = control;
+        } else if (control.getViewType() == GICControl.TYPE_IMAGE) {
+            defaultImageControl = control;
         }
     }
 

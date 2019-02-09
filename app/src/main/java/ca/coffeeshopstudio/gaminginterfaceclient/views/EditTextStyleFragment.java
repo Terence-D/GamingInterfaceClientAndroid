@@ -3,6 +3,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
@@ -81,6 +82,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     private Button preview;
 
     private int state = 0; //are we looking at normal (0) or secondary (1) for button
+    private boolean mode = true;
 
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
@@ -172,13 +174,13 @@ public class EditTextStyleFragment extends DialogFragment implements
         ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
 
         if (incomingView != null && !(incomingView instanceof Button)) {
-            view.findViewById(R.id.btnSecondary).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.btnPrimary).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.btnPressed).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.btnNormal).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.switchType).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.preview).setVisibility(View.INVISIBLE);
+            btnSecondary.setVisibility(View.INVISIBLE);
+            btnPrimary.setVisibility(View.INVISIBLE);
+            btnPressed.setVisibility(View.INVISIBLE);
+            btnNormal.setVisibility(View.INVISIBLE);
+            preview.setVisibility(View.INVISIBLE);
 
+            view.findViewById(R.id.switchType).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.lblInstructions).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.spinner).setVisibility(View.INVISIBLE);
             view.findViewById(R.id.chkLShift).setVisibility(View.INVISIBLE);
@@ -226,18 +228,7 @@ public class EditTextStyleFragment extends DialogFragment implements
         EditDialogListener listener = (EditDialogListener) getActivity();
         switch (view.getId()) {
             case R.id.btnSave:
-                List<String> keys = new ArrayList<>(map.getKeys().keySet());
-                controlToLoad.getCommand().setKey(keys.get(spinner.getSelectedItemPosition()));
-                controlToLoad.setText(text.getText().toString());
-                if (lShift.isChecked()) {
-                    controlToLoad.getCommand().addModifier("SHIFT");
-                }
-                if (lCtrl.isChecked()) {
-                    controlToLoad.getCommand().addModifier("CTRL");
-                }
-                if (lAlt.isChecked()) {
-                    controlToLoad.getCommand().addModifier("ALT");
-                }
+                saveControl();
                 //for now disabling "right" handed modifiers.  AutoIt seems to have a bug
                 //where it won't properly release them.
 //                if (rShift.isChecked()) {
@@ -275,6 +266,49 @@ public class EditTextStyleFragment extends DialogFragment implements
                 break;
             default:
                 break;
+        }
+    }
+
+    private void saveControl() {
+        List<String> keys = new ArrayList<>(map.getKeys().keySet());
+        controlToLoad.setText(text.getText().toString());
+        controlToLoad.getCommand().setKey(keys.get(spinner.getSelectedItemPosition()));
+
+        if (lShift.isChecked()) {
+            controlToLoad.getCommand().addModifier("SHIFT");
+        }
+        if (lCtrl.isChecked()) {
+            controlToLoad.getCommand().addModifier("CTRL");
+        }
+        if (lAlt.isChecked()) {
+            controlToLoad.getCommand().addModifier("ALT");
+        }
+
+        if (incomingView instanceof Button) {
+            if (mode) {
+                controlToLoad.setSecondaryColor(-1);
+                controlToLoad.setPrimaryColor(-1);
+            } else {
+                controlToLoad.setSecondaryColor(btnSecondary.getTextColors().getDefaultColor());
+                controlToLoad.setPrimaryColor(btnPrimary.getTextColors().getDefaultColor());
+                controlToLoad.setPrimaryImage("");
+                controlToLoad.setSecondaryImage("");
+                controlToLoad.setPrimaryImageResource(-1);
+                controlToLoad.setSecondaryImageResource(-1);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1337: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    displayImageLoader();
+                }
+            }
+            break;
         }
     }
 
@@ -318,6 +352,7 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        mode = checked;
         if (checked) {
             btnSecondary.setVisibility(View.INVISIBLE);
             btnPrimary.setVisibility(View.INVISIBLE);
@@ -403,14 +438,14 @@ public class EditTextStyleFragment extends DialogFragment implements
         Drawable normal = null;
         Drawable secondary = null;
 
-        if (controlToLoad.getPrimaryImageResource() > -1) {
+        if (controlToLoad.getPrimaryImageResource() != -1) {
             normal = getResources().getDrawable(controlToLoad.getPrimaryImageResource());
         }
         if (!controlToLoad.getPrimaryImage().isEmpty()) {
             normal = Drawable.createFromPath(controlToLoad.getPrimaryImage());
         }
 
-        if (controlToLoad.getSecondaryImageResource() > -1) {
+        if (controlToLoad.getSecondaryImageResource() != -1) {
             secondary = getResources().getDrawable(controlToLoad.getSecondaryImageResource());
         }
         if (!controlToLoad.getSecondaryImage().isEmpty()) {

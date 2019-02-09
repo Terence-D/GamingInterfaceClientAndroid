@@ -253,8 +253,6 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     private void addButton() {
         //unselect any previous button
         GICControl control = initNewControl();
-        control.setWidth(defaults.getButtonDefaults().getWidth());
-        control.setHeight(defaults.getButtonDefaults().getHeight());
 
         control.setFontColor(defaults.getButtonDefaults().getFontColor());
         control.setText(getString(R.string.default_control_text));
@@ -262,6 +260,12 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         control.setFontSize(defaults.getButtonDefaults().getFontSize());
         control.setPrimaryColor(defaults.getButtonDefaults().getPrimaryColor());
         control.setSecondaryColor(defaults.getButtonDefaults().getSecondaryColor());
+        control.setPrimaryImageResource(defaults.getButtonDefaults().getPrimaryImageResource());
+        control.setSecondaryImageResource(defaults.getButtonDefaults().getSecondaryImageResource());
+        control.setPrimaryImage(defaults.getButtonDefaults().getPrimaryImage());
+        control.setSecondaryImage(defaults.getButtonDefaults().getSecondaryImage());
+        control.setWidth(defaults.getButtonDefaults().getWidth());
+        control.setHeight(defaults.getButtonDefaults().getHeight());
 
         View view = buildButton(control);
 
@@ -399,7 +403,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             ((TextView) selectedView).setText(control.getText());
             ((TextView) selectedView).setTextColor(control.getFontColor());
 
-            defaults.saveControl(selectedView);
+            defaults.saveControl(control);
 
             selectedView.setTag(control);
         }
@@ -422,7 +426,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             resizeImageView(view, newWidth, newHeight);
             ((GICControl) view.getTag()).setWidth(newWidth);
             ((GICControl) view.getTag()).setHeight(newHeight);
-            defaults.saveControl(view);
+            defaults.saveControl((GICControl) view.getTag());
         }
     }
 
@@ -450,7 +454,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             ((GICControl) view.getTag()).setWidth(newWidth);
             ((GICControl) view.getTag()).setHeight(newHeight);
             ((GICControl) view.getTag()).setFontSize(newFont);
-            defaults.saveControl(view);
+            defaults.saveControl((GICControl) view.getTag());
         }
     }
 

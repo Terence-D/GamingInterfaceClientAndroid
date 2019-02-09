@@ -68,7 +68,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         Drawable primary;
         Drawable secondary;
 
-        if (control.getPrimaryColor() > -1) {
+        if (control.getPrimaryColor() != -1) {
             //color gradients
             primary = new GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM,
@@ -77,7 +77,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         } else if (!control.getPrimaryImage().isEmpty()) {
             //build drawable based on path
             primary = Drawable.createFromPath(control.getPrimaryImage());
-        } else if (control.getPrimaryImageResource() > -1) {
+        } else if (control.getPrimaryImageResource() != -1) {
             //build based on built in resource
             primary = getResources().getDrawable(control.getPrimaryImageResource());
         } else { //fallback
@@ -88,7 +88,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             ((GradientDrawable) primary).setCornerRadius(3f);
         }
 
-        if (control.getSecondaryColor() > -1) {
+        if (control.getSecondaryColor() != -1) {
             //color gradients
             secondary = new GradientDrawable(
                     GradientDrawable.Orientation.BOTTOM_TOP,
@@ -97,7 +97,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         } else if (!control.getSecondaryImage().isEmpty()) {
             //build drawable based on path
             secondary = Drawable.createFromPath(control.getSecondaryImage());
-        } else if (control.getSecondaryImageResource() > -1) {
+        } else if (control.getSecondaryImageResource() != -1) {
             //build based on built in resource
             secondary = getResources().getDrawable(control.getSecondaryImageResource());
         } else { //fallback
@@ -149,9 +149,9 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     protected View buildButton(GICControl control) {
         Button view = new Button(AbstractGameActivity.this);
-        buildView(control, view);
-        initText(view, control);
         view.setBackground(buildButtonDrawable(control));
+        initText(view, control);
+        buildView(control, view);
         return view;
     }
 
@@ -174,7 +174,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     //init generic to all view types
     private void buildView(GICControl control, View view) {
         FrameLayout layout = findViewById(R.id.topLayout);
-        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(control.getWidth(), control.getHeight());
         layout.addView(view, lp);
 
         view.setX(control.getLeft());

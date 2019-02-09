@@ -28,6 +28,13 @@
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_crypto_title"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/legal_crypto" />
@@ -40,6 +47,13 @@
             android:text="@string/website_crypto" />
 
         <TextView
+            android:id="@+id/textView9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_color_picker"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/legal_color" />
@@ -50,6 +64,13 @@
             android:autoLink="web"
             android:padding="6dp"
             android:text="@string/website_color" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_art_free_ui_elements"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1" />
 
         <TextView
             android:id="@+id/textView2"
@@ -88,15 +109,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:autoLink="web"
-            android:text="@string/website_apache" />
+            android:text="@string/website_git" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:autoLink="web"
-            android:text="@string/website_git" />
+            android:text="@string/website_apache" />
+
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
