@@ -76,4 +76,5 @@
     <string name="item_grid_text">Import</string>
     <string name="fragment_edit_button_normal">Normal</string>
     <string name="fragment_edit_button_pressed">Pressed</string>
+    <string name="fragment_edit_font_typeface">Font</string>
 </resources>

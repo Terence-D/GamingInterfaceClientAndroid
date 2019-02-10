@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -165,6 +166,8 @@ public class EditTextStyleFragment extends DialogFragment implements
         btnPressed.setOnClickListener(this);
         btnNormal.setOnClickListener(this);
 
+        view.findViewById(R.id.btnFont).setOnClickListener(this);
+
         preview = view.findViewById(R.id.preview);
         preview.setBackground(buildStatePreview());
 
@@ -280,9 +283,38 @@ public class EditTextStyleFragment extends DialogFragment implements
                 state = 0;
                 displayImageLoader();
                 break;
+            case R.id.btnFont:
+                showFontPopup();
+                break;
             default:
                 break;
         }
+    }
+
+    private void showFontPopup() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(getContext());
+
+//        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, controlTypes.getStringValues());
+//
+//        builderSingle.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();
+//            }
+//        });
+//
+//        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                if (controlTypes.getValue(which).equals(getString(R.string.control_type_button)))
+//                    addButton();
+//                if (controlTypes.getValue(which).equals(getString(R.string.control_type_text)))
+//                    addTextView();
+//                if (controlTypes.getValue(which).equals(getString(R.string.control_type_image)))
+//                    addImage();
+//            }
+//        });
+        builderSingle.show();
     }
 
     private void saveControl() {
