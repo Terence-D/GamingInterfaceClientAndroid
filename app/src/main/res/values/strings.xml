@@ -79,4 +79,7 @@
     <string name="fragment_edit_button_normal">Normal</string>
     <string name="fragment_edit_button_pressed">Pressed</string>
     <string name="fragment_edit_font_typeface">Font</string>
+    <string name="fragment_toggle_on">Toggle On Command</string>
+    <string name="fragment_toggle_off">Toggle Off Command</string>
+    <string name="fragment_toggle_text">Switch Text</string>
 </resources>

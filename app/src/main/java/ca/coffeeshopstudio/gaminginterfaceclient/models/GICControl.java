@@ -14,7 +14,6 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "command",
-        "modifiers",
         "text",
         "left",
         "width",
@@ -28,13 +27,15 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
         "primaryImageResource",
         "secondaryImageResource",
         "primaryImage",
-        "secondaryImage"
+        "secondaryImage",
+        "commandSecondary"
 })
 
 public class GICControl {
     public static final int TYPE_BUTTON = 0;
     public static final int TYPE_TEXT = 1;
     public static final int TYPE_IMAGE = 2;
+    public static final int TYPE_SWITCH = 3;
 
     @JsonProperty("command")
     private Command command = new Command();
@@ -70,6 +71,8 @@ public class GICControl {
     private String fontName = "";
     @JsonProperty("fontType")
     private int fontType = 0;
+    @JsonProperty("commandSecondary")
+    private Command commandSecondary = new Command();
 
     @JsonProperty("command")
     public Command getCommand() {
@@ -244,4 +247,15 @@ public class GICControl {
     public void setFontType(int fontType) {
         this.fontType = fontType;
     }
+
+    @JsonProperty("commandSecondary")
+    public Command getCommandSecondary() {
+        return commandSecondary;
+    }
+
+    @JsonProperty("commandSecondary")
+    public void setCommandSecondary(Command commandSecondary) {
+        this.commandSecondary = commandSecondary;
+    }
+
 }
