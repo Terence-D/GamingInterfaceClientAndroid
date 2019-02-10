@@ -82,4 +82,5 @@
     <string name="fragment_toggle_on">Toggle On Command</string>
     <string name="fragment_toggle_off">Toggle Off Command</string>
     <string name="fragment_toggle_text">Switch Text</string>
+    <string name="control_type_switch">Switch</string>
 </resources>
