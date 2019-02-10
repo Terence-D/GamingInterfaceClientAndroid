@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Screen;
 
@@ -47,6 +48,12 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
 
         currentScreen = new Screen(this);
+
+        buildFontCache();
+    }
+
+    private void buildFontCache() {
+        FontCache.buildCache(this);
     }
 
     @SuppressLint("NewApi")

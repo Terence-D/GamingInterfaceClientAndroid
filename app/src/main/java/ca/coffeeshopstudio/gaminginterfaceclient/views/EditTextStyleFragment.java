@@ -39,6 +39,7 @@ import java.util.List;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 
 /**
@@ -294,26 +295,19 @@ public class EditTextStyleFragment extends DialogFragment implements
     private void showFontPopup() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getContext());
 
-//        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, controlTypes.getStringValues());
-//
-//        builderSingle.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//            }
-//        });
-//
-//        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                if (controlTypes.getValue(which).equals(getString(R.string.control_type_button)))
-//                    addButton();
-//                if (controlTypes.getValue(which).equals(getString(R.string.control_type_text)))
-//                    addTextView();
-//                if (controlTypes.getValue(which).equals(getString(R.string.control_type_image)))
-//                    addImage();
-//            }
-//        });
+        builderSingle.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builderSingle.setAdapter(new FontAdapter(getContext(), android.R.layout.simple_list_item_1), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
+            }
+        });
         builderSingle.show();
     }
 
