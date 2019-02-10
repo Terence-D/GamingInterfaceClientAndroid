@@ -66,6 +66,10 @@ public class GICControl {
     private String primaryImage = "";
     @JsonProperty("secondaryImage")
     private String secondaryImage = "";
+    @JsonProperty("fontName")
+    private String fontName = "";
+    @JsonProperty("fontType")
+    private int fontType = 0;
 
     @JsonProperty("command")
     public Command getCommand() {
@@ -219,5 +223,25 @@ public class GICControl {
     @JsonProperty("secondaryImage")
     public void setSecondaryImage(String secondaryImage) {
         this.secondaryImage = secondaryImage;
+    }
+
+    @JsonProperty("fontName")
+    public String getFontName() {
+        return fontName;
+    }
+
+    @JsonProperty("fontName")
+    public void setFontName(String fontName) {
+        this.fontName = fontName;
+    }
+
+    @JsonProperty("fontType")
+    public int getFontType() {
+        return fontType;
+    }
+
+    @JsonProperty("fontType")
+    public void setFontType(int fontType) {
+        this.fontType = fontType;
     }
 }

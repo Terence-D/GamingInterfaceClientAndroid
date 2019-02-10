@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
@@ -40,6 +41,7 @@ import java.util.List;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 
 /**
@@ -76,11 +78,12 @@ public class EditTextStyleFragment extends DialogFragment implements
     //private CheckBox rAlt;
     private TextView text;
 
-    private Button btnFont;
+    private Button btnFontColor;
     private Button btnPrimary;
     private Button btnSecondary;
     private Button btnNormal;
     private Button btnPressed;
+    private Button btnFont;
     private Button preview;
 
     private int state = 0; //are we looking at normal (0) or secondary (1) for button
@@ -149,14 +152,15 @@ public class EditTextStyleFragment extends DialogFragment implements
             }
         }
 
-        btnFont = view.findViewById(R.id.btnFontColor);
+        btnFontColor = view.findViewById(R.id.btnFontColor);
         btnPrimary = view.findViewById(R.id.btnPrimary);
         btnSecondary = view.findViewById(R.id.btnSecondary);
         btnNormal = view.findViewById(R.id.btnNormal);
         btnPressed = view.findViewById(R.id.btnPressed);
+        btnFont = view.findViewById(R.id.btnFont);
 
-        btnFont.setOnClickListener(this);
-        btnFont.setTextColor(controlToLoad.getFontColor());
+        btnFontColor.setOnClickListener(this);
+        btnFontColor.setTextColor(controlToLoad.getFontColor());
 
         btnPrimary.setOnClickListener(this);
         btnPrimary.setTextColor(controlToLoad.getPrimaryColor());
@@ -167,7 +171,9 @@ public class EditTextStyleFragment extends DialogFragment implements
         btnPressed.setOnClickListener(this);
         btnNormal.setOnClickListener(this);
 
-        view.findViewById(R.id.btnFont).setOnClickListener(this);
+        btnFont.setOnClickListener(this);
+
+        setFontTypeface();
 
         preview = view.findViewById(R.id.preview);
         preview.setBackground(buildStatePreview());
@@ -305,17 +311,33 @@ public class EditTextStyleFragment extends DialogFragment implements
         builderSingle.setAdapter(new FontAdapter(getContext(), android.R.layout.simple_list_item_1), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getContext(), "test", Toast.LENGTH_SHORT).show();
+                if (which < 2)
+                    controlToLoad.setFontName("");
+                else
+                    controlToLoad.setFontName(FontCache.getFontName(which - 2));
+                setFontTypeface();
             }
         });
         builderSingle.show();
+    }
+
+    private void setFontTypeface() {
+        if (controlToLoad.getFontName().isEmpty()) {
+            btnFont.setTypeface(Typeface.DEFAULT);
+        } else {
+            if (controlToLoad.getFontType() == 0) {
+                btnFont.setTypeface(FontCache.get(controlToLoad.getFontName(), getContext()));
+            } else {
+                btnFont.setTypeface(FontCache.get(controlToLoad.getFontName(), getContext()));
+            }
+        }
     }
 
     private void saveControl() {
         List<String> keys = new ArrayList<>(map.getKeys().keySet());
         controlToLoad.setText(text.getText().toString());
         controlToLoad.getCommand().setKey(keys.get(spinner.getSelectedItemPosition()));
-        controlToLoad.setFontColor(btnFont.getTextColors().getDefaultColor());
+        controlToLoad.setFontColor(btnFontColor.getTextColors().getDefaultColor());
 
         if (lShift.isChecked()) {
             controlToLoad.getCommand().addModifier("SHIFT");

@@ -31,7 +31,7 @@ public class FontCache {
             "ShareTech-Regular"
     };
 
-    static String getFontName(int i) {
+    public static String getFontName(int i) {
         return fontList[i];
     }
 
@@ -45,7 +45,7 @@ public class FontCache {
         }
     }
 
-    static Typeface get(String name, Context context) {
+    public static Typeface get(String name, Context context) {
         Typeface tf = fontCache.get(name);
         if(tf == null) {
             try {

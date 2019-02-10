@@ -2,6 +2,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.models;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,7 @@ public class FontAdapter extends ArrayAdapter<String> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    public View getView(int position, View convertView, @NonNull ViewGroup parent)
     {
         final FontViewHolder holder;
         View view = convertView;
@@ -50,12 +51,19 @@ public class FontAdapter extends ArrayAdapter<String> {
             holder = (FontViewHolder) view.getTag();
         }
 
-        if (position == 0) {
-            holder.textView.setText(holder.getFontName(position));
-            holder.textView.setTypeface(holder.getFont(position, context));
-        } else {
-            holder.textView.setText(holder.getFontName(position));
-            holder.textView.setTypeface(holder.getFont(position, context));
+        switch (position) {
+            case 0:
+                holder.textView.setText(R.string.item_text_import);
+                holder.textView.setTypeface(Typeface.DEFAULT);
+                break;
+            case 1:
+                holder.textView.setText(R.string.item_text_default);
+                holder.textView.setTypeface(Typeface.DEFAULT);
+                break;
+            default:
+                holder.textView.setText(holder.getFontName(position - 2));
+                holder.textView.setTypeface(holder.getFont(position - 2, context));
+                break;
         }
 
         return view;
@@ -63,7 +71,7 @@ public class FontAdapter extends ArrayAdapter<String> {
 
     @Override
     public int getCount() {
-        return FontCache.getFontListSize();
+        return FontCache.getFontListSize() + 2;
     }
 
     @Override

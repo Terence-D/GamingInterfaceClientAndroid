@@ -2,6 +2,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -209,6 +210,19 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
         view.setText(control.getText());
+        setFontTypeface(view, control);
+    }
+
+    protected void setFontTypeface(TextView textView, GICControl control) {
+        if (control.getFontName().isEmpty()) {
+            textView.setTypeface(Typeface.DEFAULT);
+        } else {
+            if (control.getFontType() == 0) {
+                textView.setTypeface(FontCache.get(control.getFontName(), this));
+            } else {
+                textView.setTypeface(FontCache.get(control.getFontName(), this));
+            }
+        }
     }
 
     protected void setClick(View view) {

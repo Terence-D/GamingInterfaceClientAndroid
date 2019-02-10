@@ -403,6 +403,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             ((TextView) selectedView).setText(control.getText());
             ((TextView) selectedView).setTextColor(control.getFontColor());
 
+            setFontTypeface((TextView) selectedView, control);
+
             defaults.saveControl(control);
 
             selectedView.setTag(control);
