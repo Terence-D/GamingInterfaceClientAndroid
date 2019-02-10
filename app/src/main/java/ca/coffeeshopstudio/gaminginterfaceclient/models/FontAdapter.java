@@ -61,8 +61,8 @@ public class FontAdapter extends ArrayAdapter<String> {
                 holder.textView.setTypeface(Typeface.DEFAULT);
                 break;
             default:
-                holder.textView.setText(holder.getFontName(position - 2));
-                holder.textView.setTypeface(holder.getFont(position - 2, context));
+                holder.textView.setText(holder.getFontName(position - 1)); //IMPORT FONT MAKE THIS 2
+                holder.textView.setTypeface(holder.getFont(position - 1, context)); //IMPORT FONT MAKE THIS 2
                 break;
         }
 
@@ -71,7 +71,7 @@ public class FontAdapter extends ArrayAdapter<String> {
 
     @Override
     public int getCount() {
-        return FontCache.getFontListSize() + 2;
+        return FontCache.getFontListSize() + 1; //IMPORT FONT MAKE THIS 2
     }
 
     @Override

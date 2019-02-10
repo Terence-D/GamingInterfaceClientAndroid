@@ -25,7 +25,7 @@ public class FontCache {
     private static Hashtable<String, Typeface> fontCache = new Hashtable<>();
 
     private static String[] fontList = new String[] {
-            "Cabin-Regular",
+            "Lobster-Regular",
             "Nunito-Regular",
             "Righteous-Regular",
             "ShareTech-Regular"
@@ -52,7 +52,7 @@ public class FontCache {
                 tf = Typeface.createFromAsset(context.getAssets(), "fonts/" + name + ".ttf");
             }
             catch (Exception e) {
-                return null;
+                return Typeface.DEFAULT;
             }
             fontCache.put(name, tf);
         }
