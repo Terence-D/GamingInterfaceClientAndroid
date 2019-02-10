@@ -314,13 +314,13 @@ public class EditTextStyleFragment extends DialogFragment implements
         builderSingle.setAdapter(new FontAdapter(getContext(), android.R.layout.simple_list_item_1), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (which == 1) {
+                if (which == 10) {
                     controlToLoad.setFontName("");
-                } else if (which == 0) {
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("*/*");
-                    startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_FONT);
+//                } else if (which == 0) {
+//                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+//                    intent.setType("*/*");
+//                    startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_FONT);
                 } else
                     controlToLoad.setFontName(FontCache.getFontName(which - 2));
                 setFontTypeface();

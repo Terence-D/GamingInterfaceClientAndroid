@@ -53,10 +53,10 @@ public class FontAdapter extends ArrayAdapter<String> {
 
         switch (position) {
             case 0:
-                holder.textView.setText(R.string.item_text_import);
-                holder.textView.setTypeface(Typeface.DEFAULT);
-                break;
-            case 1:
+//                holder.textView.setText(R.string.item_text_import);
+//                holder.textView.setTypeface(Typeface.DEFAULT);
+//                break;
+//            case 1:
                 holder.textView.setText(R.string.item_text_default);
                 holder.textView.setTypeface(Typeface.DEFAULT);
                 break;
