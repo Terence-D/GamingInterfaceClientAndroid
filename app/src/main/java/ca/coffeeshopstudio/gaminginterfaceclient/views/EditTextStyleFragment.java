@@ -31,7 +31,10 @@ import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -311,9 +314,14 @@ public class EditTextStyleFragment extends DialogFragment implements
         builderSingle.setAdapter(new FontAdapter(getContext(), android.R.layout.simple_list_item_1), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (which < 2)
+                if (which == 1) {
                     controlToLoad.setFontName("");
-                else
+                } else if (which == 0) {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("*/*");
+                    startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_FONT);
+                } else
                     controlToLoad.setFontName(FontCache.getFontName(which - 2));
                 setFontTypeface();
             }
@@ -466,7 +474,37 @@ public class EditTextStyleFragment extends DialogFragment implements
                         }
                     }
                 }
+            } else if (requestCode == EditActivity.OPEN_REQUEST_CODE_FONT) {
+                Uri currentUri = resultData.getData();
+                if (currentUri != null) {
+
+                    String sourceFilename = currentUri.getPath();
+                    String destinationFilename = getContext().getFilesDir() + currentUri.getLastPathSegment();
+
+                    BufferedInputStream bis = null;
+                    BufferedOutputStream bos = null;
+
+                    try {
+                        bis = new BufferedInputStream(new FileInputStream(sourceFilename));
+                        bos = new BufferedOutputStream(new FileOutputStream(destinationFilename, false));
+                        byte[] buf = new byte[1024];
+                        bis.read(buf);
+                        do {
+                            bos.write(buf);
+                        } while (bis.read(buf) != -1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        try {
+                            if (bis != null) bis.close();
+                            if (bos != null) bos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
+
         }
     }
 
