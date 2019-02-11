@@ -6,6 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.util.List;
 
@@ -85,7 +86,30 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-        if (view instanceof Button) {
+        if (view instanceof ToggleButton) {
+            GICControl control = (GICControl) view.getTag();
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (((ToggleButton) view).isChecked()) {
+                        control.getCommand().setActivatorType(Command.KEY_DOWN);
+                        makeCall(control.getCommand());
+                    } else {
+                        control.getCommandSecondary().setActivatorType(Command.KEY_DOWN);
+                        makeCall(control.getCommandSecondary());
+                    }
+                    view.performClick();
+                    return false;
+                case MotionEvent.ACTION_UP:
+                    if (((ToggleButton) view).isChecked()) {
+                        control.getCommand().setActivatorType(Command.KEY_UP);
+                        makeCall(control.getCommand());
+                    } else {
+                        control.getCommandSecondary().setActivatorType(Command.KEY_UP);
+                        makeCall(control.getCommandSecondary());
+                    }
+                    return true;
+            }
+        } else if (view instanceof Button) {
             GICControl control = (GICControl) view.getTag();
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -98,8 +122,8 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
                     makeCall(control.getCommand());
                     break;
             }
+            return false;
         }
-
         return false;
     }
 
