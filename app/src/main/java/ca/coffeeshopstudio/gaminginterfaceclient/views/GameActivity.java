@@ -84,29 +84,37 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
         });
     }
 
+    private boolean toggleDown = false;
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (view instanceof ToggleButton) {
             GICControl control = (GICControl) view.getTag();
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    if (((ToggleButton) view).isChecked()) {
-                        control.getCommand().setActivatorType(Command.KEY_DOWN);
+                    control.getCommand().setActivatorType(Command.KEY_DOWN);
+                    makeCall(control.getCommand());
+/*                    if (((ToggleButton) view).isChecked()) {
+                        Log.d("GIC", "onTouch: action down" +((ToggleButton) view).isChecked() );
+                        control.getCommandSecondary().setActivatorType(Command.KEY_DOWN);
                         makeCall(control.getCommandSecondary());
                     } else {
-                        control.getCommandSecondary().setActivatorType(Command.KEY_DOWN);
+                        control.getCommand().setActivatorType(Command.KEY_DOWN);
                         makeCall(control.getCommand());
                     }
+*/
                     view.performClick();
                     return false;
                 case MotionEvent.ACTION_UP:
-                    if (((ToggleButton) view).isChecked()) {
-                        control.getCommand().setActivatorType(Command.KEY_UP);
+                    control.getCommand().setActivatorType(Command.KEY_UP);
+                    makeCall(control.getCommand());
+/*                    if (!((ToggleButton) view).isChecked()) {
+                        Log.d("GIC", "onTouch: action up" +((ToggleButton) view).isChecked() );
+                        control.getCommandSecondary().setActivatorType(Command.KEY_UP);
                         makeCall(control.getCommandSecondary());
                     } else {
-                        control.getCommandSecondary().setActivatorType(Command.KEY_UP);
+                        control.getCommand().setActivatorType(Command.KEY_UP);
                         makeCall(control.getCommand());
-                    }
+                    }*/
                     return true;
             }
         } else if (view instanceof Button) {
@@ -122,7 +130,6 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
                     makeCall(control.getCommand());
                     break;
             }
-            return false;
         }
         return false;
     }
