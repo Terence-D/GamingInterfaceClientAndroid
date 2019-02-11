@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
@@ -215,6 +216,9 @@ public class EditToggleFragment extends DialogFragment implements
             btnPressed.setVisibility(View.VISIBLE);
             btnNormal.setVisibility(View.VISIBLE);
             preview.setVisibility(View.VISIBLE);
+            ((ToggleButton) preview).setTextOff("");
+            preview.setText("");
+            ((ToggleButton) preview).setTextOn("");
         } else {
             btnSecondary.setVisibility(View.VISIBLE);
             btnPrimary.setVisibility(View.VISIBLE);
@@ -224,6 +228,9 @@ public class EditToggleFragment extends DialogFragment implements
             ((Switch) view.findViewById(R.id.switchType)).setChecked(false);
             mode = false;
         }
+        ((ToggleButton) preview).setTextOff("");
+        ((ToggleButton) preview).setTextOn("");
+        preview.setText("");
         ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
     }
 
@@ -461,7 +468,7 @@ public class EditToggleFragment extends DialogFragment implements
         } else {
             btnSecondary.setVisibility(View.VISIBLE);
             btnPrimary.setVisibility(View.VISIBLE);
-            preview.setVisibility(View.INVISIBLE);
+            preview.setVisibility(View.GONE);
             btnNormal.setVisibility(View.INVISIBLE);
             btnPressed.setVisibility(View.INVISIBLE);
 
@@ -548,7 +555,7 @@ public class EditToggleFragment extends DialogFragment implements
 
         StateListDrawable res = new StateListDrawable();
         if (normal != null && secondary != null) {
-            res.addState(new int[]{android.R.attr.state_pressed}, secondary);
+            res.addState(new int[]{android.R.attr.state_checked}, secondary);
             res.addState(new int[]{}, normal);
         }
         return res;

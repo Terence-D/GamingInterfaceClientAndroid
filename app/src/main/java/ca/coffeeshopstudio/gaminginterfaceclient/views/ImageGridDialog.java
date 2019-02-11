@@ -64,6 +64,7 @@ public class ImageGridDialog extends AlertDialog {
                     ((ImageGridDialogListener) fragment).onImageSelected(path);
                     dismiss();
                 } else if (position - customCount <= ImageAdapter.builtIn.length) {
+                } else if (position - customCount <= ImageAdapter.builtIn.length) {
                     ((ImageGridDialogListener) fragment).onImageSelected(ImageAdapter.builtIn[position - customCount - 1]);
                     dismiss();
                 }

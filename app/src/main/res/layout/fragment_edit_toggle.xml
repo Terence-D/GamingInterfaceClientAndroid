@@ -271,12 +271,12 @@
         <Button
             android:id="@+id/btnNormal"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:scaleType="fitXY"
-            android:text="@string/fragment_edit_button_normal"
+            android:text="@string/fragment_edit_toggle_off"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
             app:layout_constraintStart_toStartOf="parent"
@@ -285,12 +285,12 @@
         <Button
             android:id="@+id/btnPressed"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:scaleType="fitXY"
-            android:text="@string/fragment_edit_button_pressed"
+            android:text="@string/fragment_edit_toggle_on"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
             app:layout_constraintEnd_toEndOf="parent"
@@ -298,7 +298,7 @@
 
         <ToggleButton
             android:id="@+id/preview"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
