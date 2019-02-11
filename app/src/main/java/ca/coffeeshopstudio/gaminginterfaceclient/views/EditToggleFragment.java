@@ -220,7 +220,7 @@ public class EditToggleFragment extends DialogFragment implements
             btnPrimary.setVisibility(View.VISIBLE);
             btnPressed.setVisibility(View.INVISIBLE);
             btnNormal.setVisibility(View.INVISIBLE);
-            preview.setVisibility(View.INVISIBLE);
+            preview.setVisibility(View.GONE);
             ((Switch) view.findViewById(R.id.switchType)).setChecked(false);
             mode = false;
         }

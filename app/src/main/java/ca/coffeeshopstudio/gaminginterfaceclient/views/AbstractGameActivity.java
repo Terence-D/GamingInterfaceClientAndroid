@@ -179,6 +179,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
         view.setBackground(buildButtonDrawable(control));
         initText(view, control);
+        view.setTextOff(view.getText());
+        view.setTextOn(view.getText());
         buildView(control, view);
         return view;
     }
@@ -242,8 +244,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     }
 
     protected void setClick(View view) {
-        if (!(view instanceof ToggleButton))
-            view.setOnClickListener(this);
+        view.setOnClickListener(this);
     }
 
     @Override
