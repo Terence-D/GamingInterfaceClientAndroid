@@ -92,20 +92,20 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
                 case MotionEvent.ACTION_DOWN:
                     if (((ToggleButton) view).isChecked()) {
                         control.getCommand().setActivatorType(Command.KEY_DOWN);
-                        makeCall(control.getCommand());
+                        makeCall(control.getCommandSecondary());
                     } else {
                         control.getCommandSecondary().setActivatorType(Command.KEY_DOWN);
-                        makeCall(control.getCommandSecondary());
+                        makeCall(control.getCommand());
                     }
                     view.performClick();
                     return false;
                 case MotionEvent.ACTION_UP:
                     if (((ToggleButton) view).isChecked()) {
                         control.getCommand().setActivatorType(Command.KEY_UP);
-                        makeCall(control.getCommand());
+                        makeCall(control.getCommandSecondary());
                     } else {
                         control.getCommandSecondary().setActivatorType(Command.KEY_UP);
-                        makeCall(control.getCommandSecondary());
+                        makeCall(control.getCommand());
                     }
                     return true;
             }

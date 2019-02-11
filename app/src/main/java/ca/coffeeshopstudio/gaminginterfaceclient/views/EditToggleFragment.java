@@ -248,7 +248,7 @@ public class EditToggleFragment extends DialogFragment implements
             for (int i = 0; i < keys.size(); i++) {
                 if (keys.get(i).equals(key)) {
                     spinner.setSelection(i);
-                    return;
+                    break;
                 }
             }
         }
@@ -259,7 +259,7 @@ public class EditToggleFragment extends DialogFragment implements
             for (int i = 0; i < keys.size(); i++) {
                 if (keys.get(i).equals(key)) {
                     spinnerOff.setSelection(i);
-                    return;
+                    break;
                 }
             }
         }
