@@ -122,7 +122,11 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
 
         StateListDrawable res = new StateListDrawable();
-        res.addState(new int[]{android.R.attr.state_pressed}, secondary);
+        if (control.getViewType() == GICControl.TYPE_BUTTON) {
+            res.addState(new int[]{android.R.attr.state_pressed}, secondary);
+        } else {
+            res.addState(new int[]{android.R.attr.state_checked}, secondary);
+        }
         res.addState(new int[]{}, primary);
         return res;
     }
@@ -172,6 +176,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     protected View buildSwitch(GICControl control) {
         ToggleButton view = new ToggleButton(AbstractGameActivity.this);
+
         view.setBackground(buildButtonDrawable(control));
         initText(view, control);
         buildView(control, view);
@@ -237,7 +242,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     }
 
     protected void setClick(View view) {
-        view.setOnClickListener(this);
+        if (!(view instanceof ToggleButton))
+            view.setOnClickListener(this);
     }
 
     @Override
@@ -272,5 +278,4 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         view.setLayoutParams(layout);
         view.invalidate();
     }
-
 }
