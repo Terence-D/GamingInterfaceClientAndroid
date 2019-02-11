@@ -60,7 +60,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
  * limitations under the License.
  */
 public class EditToggleFragment extends DialogFragment implements
-        ImageGridDialog.ImageGridDialogListener,
+        ToggleGridDialog.ToggleGridDialogListener,
         AdapterView.OnItemSelectedListener,
         View.OnClickListener,
         CompoundButton.OnCheckedChangeListener {
@@ -412,7 +412,7 @@ public class EditToggleFragment extends DialogFragment implements
     }
 
     private void displayImageLoader() {
-        ImageGridDialog gridView = new ImageGridDialog(this);
+        ToggleGridDialog gridView = new ToggleGridDialog(this);
         gridView.show();
     }
 
@@ -459,10 +459,10 @@ public class EditToggleFragment extends DialogFragment implements
             btnNormal.setVisibility(View.VISIBLE);
             btnPressed.setVisibility(View.VISIBLE);
             if (controlToLoad.getPrimaryImageResource() == -1 && controlToLoad.getPrimaryImage().isEmpty()) {
-                controlToLoad.setPrimaryImageResource(R.drawable.neon_button);
+                controlToLoad.setPrimaryImageResource(R.drawable.neon_toggle_off);
             }
             if (controlToLoad.getSecondaryImageResource() == -1 && controlToLoad.getSecondaryImage().isEmpty()) {
-                controlToLoad.setSecondaryImageResource(R.drawable.neon_button_pressed);
+                controlToLoad.setSecondaryImageResource(R.drawable.neon_toggle_on);
             }
             preview.setBackground(buildStatePreview());
         } else {
