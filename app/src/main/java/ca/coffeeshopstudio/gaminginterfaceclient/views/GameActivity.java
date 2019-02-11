@@ -84,7 +84,6 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
         });
     }
 
-    private boolean toggleDown = false;
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (view instanceof ToggleButton) {
