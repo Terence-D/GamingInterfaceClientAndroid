@@ -37,6 +37,14 @@ public class GICControl {
     public static final int TYPE_IMAGE = 2;
     public static final int TYPE_SWITCH = 3;
 
+    //this is required for the toggle button, there are 4 stages to track:
+    //0 - switched off ready for mouse down
+    //1 - switched off, ready for mouse up
+    //2 - switched on, ready for mouse down,
+    //3 - switched on, ready for mouse up
+    //after 3, we reset back to 0
+    public int stage = 0;
+
     @JsonProperty("command")
     private Command command = new Command();
     @JsonProperty("text")

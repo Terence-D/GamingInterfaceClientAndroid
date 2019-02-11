@@ -87,35 +87,7 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         if (view instanceof ToggleButton) {
-            GICControl control = (GICControl) view.getTag();
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    control.getCommand().setActivatorType(Command.KEY_DOWN);
-                    makeCall(control.getCommand());
-/*                    if (((ToggleButton) view).isChecked()) {
-                        Log.d("GIC", "onTouch: action down" +((ToggleButton) view).isChecked() );
-                        control.getCommandSecondary().setActivatorType(Command.KEY_DOWN);
-                        makeCall(control.getCommandSecondary());
-                    } else {
-                        control.getCommand().setActivatorType(Command.KEY_DOWN);
-                        makeCall(control.getCommand());
-                    }
-*/
-                    view.performClick();
-                    return false;
-                case MotionEvent.ACTION_UP:
-                    control.getCommand().setActivatorType(Command.KEY_UP);
-                    makeCall(control.getCommand());
-/*                    if (!((ToggleButton) view).isChecked()) {
-                        Log.d("GIC", "onTouch: action up" +((ToggleButton) view).isChecked() );
-                        control.getCommandSecondary().setActivatorType(Command.KEY_UP);
-                        makeCall(control.getCommandSecondary());
-                    } else {
-                        control.getCommand().setActivatorType(Command.KEY_UP);
-                        makeCall(control.getCommand());
-                    }*/
-                    return true;
-            }
+            return toggleAction(view, motionEvent);
         } else if (view instanceof Button) {
             GICControl control = (GICControl) view.getTag();
             switch (motionEvent.getAction()) {
@@ -129,6 +101,36 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
                     makeCall(control.getCommand());
                     break;
             }
+        }
+        return false;
+    }
+
+    private boolean toggleAction(View view, MotionEvent motionEvent) {
+        GICControl control = (GICControl) view.getTag();
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (control.stage == 0) {
+                    control.getCommand().setActivatorType(Command.KEY_DOWN);
+                    makeCall(control.getCommand());
+                    view.performClick();
+                    control.stage++;
+                } else if (control.stage == 2) {
+                    control.getCommandSecondary().setActivatorType(Command.KEY_DOWN);
+                    makeCall(control.getCommandSecondary());
+                    view.performClick();
+                    control.stage++;
+                }
+            case MotionEvent.ACTION_UP:
+                if (control.stage == 1) {
+                    control.getCommand().setActivatorType(Command.KEY_UP);
+                    makeCall(control.getCommand());
+                    control.stage++;
+                } else if (control.stage == 3) {
+                    control.getCommandSecondary().setActivatorType(Command.KEY_UP);
+                    makeCall(control.getCommandSecondary());
+                    control.stage = 0;
+                }
+                return true;
         }
         return false;
     }
