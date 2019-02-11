@@ -378,6 +378,7 @@ public class EditToggleFragment extends DialogFragment implements
         controlToLoad.getCommandSecondary().setKey(keys.get(spinnerOff.getSelectedItemPosition()));
         controlToLoad.setFontColor(btnFontColor.getTextColors().getDefaultColor());
 
+        controlToLoad.getCommand().removeAllModifiers();
         if (lShift.isChecked()) {
             controlToLoad.getCommand().addModifier("SHIFT");
         }
@@ -388,6 +389,7 @@ public class EditToggleFragment extends DialogFragment implements
             controlToLoad.getCommand().addModifier("ALT");
         }
 
+        controlToLoad.getCommandSecondary().removeAllModifiers();
         if (lShiftOff.isChecked()) {
             controlToLoad.getCommandSecondary().addModifier("SHIFT");
         }

@@ -347,6 +347,7 @@ public class EditTextStyleFragment extends DialogFragment implements
         controlToLoad.getCommand().setKey(keys.get(spinner.getSelectedItemPosition()));
         controlToLoad.setFontColor(btnFontColor.getTextColors().getDefaultColor());
 
+        controlToLoad.getCommand().removeAllModifiers();
         if (lShift.isChecked()) {
             controlToLoad.getCommand().addModifier("SHIFT");
         }
