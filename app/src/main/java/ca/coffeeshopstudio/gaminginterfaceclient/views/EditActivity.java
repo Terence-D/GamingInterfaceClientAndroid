@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.IOException;
 
@@ -54,7 +55,9 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 public class EditActivity extends AbstractGameActivity implements EditTextStyleFragment.EditDialogListener,
         SeekBar.OnSeekBarChangeListener,
         EditImageFragment.EditImageDialogListener,
+        EditToggleFragment.EditToggleListener,
         EditBackgroundFragment.EditDialogListener {
+
     private GestureDetector gd;
     private SeekBar seekWidth;
     private SeekBar seekHeight;
@@ -72,6 +75,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     protected static final int OPEN_REQUEST_CODE_BACKGROUND = 41;
     protected static final int OPEN_REQUEST_CODE_IMAGE = 42;
     public static final int OPEN_REQUEST_CODE_IMPORT_BUTTON = 43;
+    public static final int OPEN_REQUEST_CODE_IMPORT_SWITCH = 43;
     public static final int OPEN_REQUEST_CODE_FONT = 44;
 
     @Override
@@ -109,7 +113,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         if (visibility == View.VISIBLE) {
             seekWidth.setProgress(selectedView.getWidth());
             seekHeight.setProgress(selectedView.getHeight());
-            if (selectedView instanceof Button) {
+            if (selectedView instanceof Button || selectedView instanceof ToggleButton) {
                 seekFontSize.setProgress((int) ((Button) selectedView).getTextSize());
                 seekFontSize.setVisibility(visibility);
             }
@@ -220,6 +224,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
                     addTextView();
                 if (controlTypes.getValue(which).equals(getString(R.string.control_type_image)))
                     addImage();
+                if (controlTypes.getValue(which).equals(getString(R.string.control_type_switch)))
+                    addSwitch();
             }
         });
         builderSingle.show();
@@ -277,6 +283,29 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getButtonDefaults().getFontSize());
     }
 
+    private void addSwitch() {
+        //unselect any previous button
+        GICControl control = initNewControl();
+
+        control.setFontColor(defaults.getSwitchDefaults().getFontColor());
+        control.setText(getString(R.string.default_control_text));
+        control.setViewType(GICControl.TYPE_SWITCH);
+        control.setFontSize(defaults.getSwitchDefaults().getFontSize());
+        control.setPrimaryColor(defaults.getSwitchDefaults().getPrimaryColor());
+        control.setSecondaryColor(defaults.getSwitchDefaults().getSecondaryColor());
+        control.setPrimaryImageResource(defaults.getSwitchDefaults().getPrimaryImageResource());
+        control.setSecondaryImageResource(defaults.getSwitchDefaults().getSecondaryImageResource());
+        control.setPrimaryImage(defaults.getSwitchDefaults().getPrimaryImage());
+        control.setSecondaryImage(defaults.getSwitchDefaults().getSecondaryImage());
+        control.setWidth(defaults.getSwitchDefaults().getWidth());
+        control.setHeight(defaults.getSwitchDefaults().getHeight());
+        control.setFontName(defaults.getSwitchDefaults().getFontName());
+
+        View view = buildSwitch(control);
+        updateDisplay(view);
+        ((ToggleButton) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getSwitchDefaults().getFontSize());
+    }
+
     private GICControl initNewControl() {
         //un select any previous view visually
         unselectedPreviousView();
@@ -331,6 +360,14 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         editTextDialog.show(fm, "fragment_edit_name");
     }
 
+    private void displayToggleEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        ToggleButton view = (ToggleButton) selectedView;
+
+        EditToggleFragment editToggleDialog = EditToggleFragment.newInstance((GICControl) view.getTag(), view);
+        editToggleDialog.show(fm, "fragment_edit_toggle");
+    }
+
     @Override
     protected void addDragDrop(View view) {
         view.setOnTouchListener(new TouchListener());
@@ -341,9 +378,11 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         //we already tapped once on this, lets open
         if (selectedView != null && selectedView.equals(view)) {
             toggleEditControls(View.VISIBLE);
-            if (view instanceof TextView)
+            if (view instanceof ToggleButton)
+                displayToggleEditDialog();
+            else if (view instanceof TextView)
                 displayTextEditDialog();
-            if (view instanceof ImageView)
+            else if (view instanceof ImageView)
                 displayImageEditDialog();
         } else {
             unselectedPreviousView();
@@ -399,7 +438,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         } else {
             selectedView.setTag(control);
 
-            if (selectedView instanceof Button) {
+            if (selectedView instanceof Button || selectedView instanceof ToggleButton) {
                 selectedView.setBackground(buildButtonDrawable(control));
             }
 

@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
@@ -143,6 +144,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                 case 2:
                     buildImage(control);
                     break;
+                case 3:
+                    buildSwitch(control);
             }
         }
 
@@ -161,6 +164,14 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     protected View buildButton(GICControl control) {
         Button view = new Button(AbstractGameActivity.this);
+        view.setBackground(buildButtonDrawable(control));
+        initText(view, control);
+        buildView(control, view);
+        return view;
+    }
+
+    protected View buildSwitch(GICControl control) {
+        ToggleButton view = new ToggleButton(AbstractGameActivity.this);
         view.setBackground(buildButtonDrawable(control));
         initText(view, control);
         buildView(control, view);
