@@ -69,6 +69,8 @@ public class ControlDefaults {
             defaultButtonControl = control;
         } else if (control.getViewType() == GICControl.TYPE_IMAGE) {
             defaultImageControl = control;
+        } else if (control.getViewType() == GICControl.TYPE_SWITCH) {
+            defaultSwitchControl = control;
         }
     }
 
