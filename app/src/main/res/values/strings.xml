@@ -29,7 +29,7 @@
     <string name="edit_activity_detail_edit_mode">Detail Edit mode</string>
     <string name="edit_activity_saved">Saved Successfully!</string>
     <string name="activity_main_about">About</string>
-    <string name="main_activity_warning">PLEASE USE GIC SERVER VERSION 1.1 OR HIGHER</string>
+    <string name="main_activity_warning">PLEASE USE GIC SERVER VERSION 1.2 OR HIGHER</string>
     <string name="main_activity_server_link">https://github.com/Terence-D/GameInputCommandServer</string>
 
     <!-- About View -->
@@ -85,4 +85,6 @@
     <string name="control_type_switch">Switch</string>
     <string name="fragment_edit_toggle_off">Off</string>
     <string name="fragment_edit_toggle_on">On</string>
+    <string name="activity_main_server_upgrade_title">Server Mismatch</string>
+    <string name="activity_main_server_upgrade_text">The GIC Server appears to be out of date - please upgrade to the latest version by clicking on the \"Website\" link on the server.  If you did not yet install the server, click the Help link below,</string>
 </resources>

@@ -1,9 +1,11 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -11,7 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.network.CommandService;
+import ca.coffeeshopstudio.gaminginterfaceclient.network.RestClientInstance;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -97,6 +104,45 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void checkServerVersion(String address, String port, final Intent myIntent) {
+        String url = "http://" + address + ":" + port + "/";
+
+        CommandService routeMap = RestClientInstance.getRetrofitInstance(url).create(CommandService.class);
+        Call<String> version = routeMap.getVersion();
+        version.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    if (response.body().equals("1.2.0.0")) {
+                        MainActivity.this.startActivity(myIntent);
+                        return;
+                    }
+                    displayUpgradeWarning();
+                } else {
+                    Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Something went wrong...Please try later! " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void displayUpgradeWarning() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(R.string.activity_main_server_upgrade_title);
+        alertDialog.setMessage(getString(R.string.activity_main_server_upgrade_text));
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
     private void startApp() {
         TextView txtPassword = findViewById(R.id.txtPassword);
         TextView txtPort = findViewById(R.id.txtPort);
@@ -139,7 +185,8 @@ public class MainActivity extends AppCompatActivity {
         myIntent.putExtra("password", password);
 
         saveSettings(password, port, address);
-        MainActivity.this.startActivity(myIntent);
+
+        checkServerVersion(address, port, myIntent);
     }
 
     private void saveSettings(String password, String port, String address) {

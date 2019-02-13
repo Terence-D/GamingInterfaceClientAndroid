@@ -182,7 +182,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             //here is the method for double tap
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                showControlPopup();
+                showControlPopup(e);
                 return true;
             }
 
@@ -203,7 +203,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         });
     }
 
-    private void showControlPopup() {
+    private void showControlPopup(final MotionEvent e) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(EditActivity.this);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(EditActivity.this, android.R.layout.simple_list_item_1, controlTypes.getStringValues());
@@ -219,30 +219,31 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (controlTypes.getValue(which).equals(getString(R.string.control_type_button)))
-                    addButton();
+                    addButton(e.getX(), e.getY());
                 if (controlTypes.getValue(which).equals(getString(R.string.control_type_text)))
-                    addTextView();
+                    addTextView(e.getX(), e.getY());
                 if (controlTypes.getValue(which).equals(getString(R.string.control_type_image)))
-                    addImage();
+                    addImage(e.getX(), e.getY());
                 if (controlTypes.getValue(which).equals(getString(R.string.control_type_switch)))
-                    addSwitch();
+                    addSwitch(e.getX(), e.getY());
             }
         });
         builderSingle.show();
     }
 
-    private void addImage() {
+    private void addImage(float x, float y) {
         GICControl control = initNewControl();
         control.setWidth(defaults.getImageDefaults().getWidth());
         control.setHeight(defaults.getImageDefaults().getHeight());
         control.setViewType(GICControl.TYPE_IMAGE);
 
+        control.setLeft((x - (control.getWidth() / 2)));
+        control.setTop((y - (control.getHeight() / 2)));
         View view = buildImage(control);
-
         updateDisplay(view);
     }
 
-    private void addTextView() {
+    private void addTextView(float x, float y) {
         //un select any previous button
         GICControl control = initNewControl();
         control.setWidth(defaults.getTextDefaults().getWidth());
@@ -253,12 +254,14 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         control.setFontName(defaults.getTextDefaults().getFontName());
         control.setViewType(GICControl.TYPE_TEXT);
 
+        control.setLeft((x - (control.getWidth() / 2)));
+        control.setTop((y - (control.getHeight() / 2)));
         View view = buildText(control);
 
         updateDisplay(view);
     }
 
-    private void addButton() {
+    private void addButton(float x, float y) {
         //unselect any previous button
         GICControl control = initNewControl();
 
@@ -276,6 +279,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         control.setHeight(defaults.getButtonDefaults().getHeight());
         control.setFontName(defaults.getButtonDefaults().getFontName());
 
+        control.setLeft((x - (control.getWidth() / 2)));
+        control.setTop((y - (control.getHeight() / 2)));
         View view = buildButton(control);
 
         updateDisplay(view);
@@ -283,7 +288,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getButtonDefaults().getFontSize());
     }
 
-    private void addSwitch() {
+    private void addSwitch(float x, float y) {
         //unselect any previous button
         GICControl control = initNewControl();
 
@@ -305,6 +310,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         control.setSecondaryImageResource(R.drawable.neon_toggle_on);
         control.setText("");
 
+        control.setLeft((x - (control.getWidth() / 2)));
+        control.setTop((y - (control.getHeight() / 2)));
         View view = buildSwitch(control);
         updateDisplay(view);
         ((ToggleButton) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getSwitchDefaults().getFontSize());

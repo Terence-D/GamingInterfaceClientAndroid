@@ -27,6 +27,9 @@ import retrofit2.http.Path;
  limitations under the License.
  */
 public interface CommandService {
+    @GET("/api/Version")
+    Call<String> getVersion();
+
     @GET("/api/key/{key}")
     Call<List<Result>> getSimpleCommand(@Header("Authorization") String auth, @Path("key") String command);
 
