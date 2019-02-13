@@ -87,4 +87,10 @@
     <string name="fragment_edit_toggle_on">On</string>
     <string name="activity_main_server_upgrade_title">Server Mismatch</string>
     <string name="activity_main_server_upgrade_text">The GIC Server appears to be out of date - please upgrade to the latest version by clicking on the \"Website\" link on the server.  If you did not yet install the server, click the Help link below,</string>
+    <string name="title_activity_screen_manager">ScreenManager</string>
+    <string name="activity_screens_new">New</string>
+    <string name="activity_screens_update">Update</string>
+    <string name="activity_screens_import">Import</string>
+    <string name="activity_screens_export">Export</string>
+    <string name="activity_screens_delete">Delete</string>
 </resources>

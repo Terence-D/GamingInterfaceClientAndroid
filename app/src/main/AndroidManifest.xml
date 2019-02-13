@@ -14,6 +14,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute">
+        <activity
+            android:name=".views.ScreenManager"
+            android:label="@string/title_activity_screen_manager"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".views.AboutActivity" />
         <activity
             android:name=".views.EditActivity"
@@ -34,10 +38,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>
