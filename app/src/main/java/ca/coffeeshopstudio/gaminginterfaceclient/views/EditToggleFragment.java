@@ -526,11 +526,17 @@ public class EditToggleFragment extends DialogFragment implements
     public void onImageSelected(int builtIn) {
         if (state == 0) {
             controlToLoad.setPrimaryImage("");
-            controlToLoad.setPrimaryImageResource(builtIn);
+            if (builtIn == R.drawable.neon_toggle_off)
+                controlToLoad.setPrimaryImageResource(0);
+            else
+                controlToLoad.setPrimaryImageResource(1);
         }
         if (state == 1) {
             controlToLoad.setSecondaryImage("");
-            controlToLoad.setSecondaryImageResource(builtIn);
+            if (builtIn == R.drawable.neon_toggle_off)
+                controlToLoad.setSecondaryImageResource(0);
+            else
+                controlToLoad.setSecondaryImageResource(1);
         }
         controlToLoad.setPrimaryColor(-1);
         controlToLoad.setSecondaryColor(-1);
@@ -542,14 +548,14 @@ public class EditToggleFragment extends DialogFragment implements
         Drawable secondary = null;
 
         if (controlToLoad.getPrimaryImageResource() != -1) {
-            normal = getResources().getDrawable(controlToLoad.getPrimaryImageResource());
+            normal = getButtonResource(controlToLoad.getPrimaryImageResource(), true);
         }
         if (!controlToLoad.getPrimaryImage().isEmpty()) {
             normal = Drawable.createFromPath(controlToLoad.getPrimaryImage());
         }
 
         if (controlToLoad.getSecondaryImageResource() != -1) {
-            secondary = getResources().getDrawable(controlToLoad.getSecondaryImageResource());
+            secondary = getButtonResource(controlToLoad.getSecondaryImageResource(), false);
         }
         if (!controlToLoad.getSecondaryImage().isEmpty()) {
             secondary = Drawable.createFromPath(controlToLoad.getSecondaryImage());
@@ -561,6 +567,21 @@ public class EditToggleFragment extends DialogFragment implements
             res.addState(new int[]{}, normal);
         }
         return res;
+    }
+
+    //primary is used for backwards compatability
+    private Drawable getButtonResource(int resourceId, boolean primary) {
+        switch (resourceId) {
+            case 0:
+                return getResources().getDrawable(R.drawable.neon_toggle_off);
+            case 1:
+                return getResources().getDrawable(R.drawable.neon_toggle_on);
+            default:
+                if (primary)
+                    return getResources().getDrawable(R.drawable.neon_toggle_off);
+                else
+                    return getResources().getDrawable(R.drawable.neon_toggle_on);
+        }
     }
 
     public interface EditToggleListener {

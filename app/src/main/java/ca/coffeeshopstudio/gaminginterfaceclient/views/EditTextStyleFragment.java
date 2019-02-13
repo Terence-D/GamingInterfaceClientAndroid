@@ -434,10 +434,10 @@ public class EditTextStyleFragment extends DialogFragment implements
             btnNormal.setVisibility(View.VISIBLE);
             btnPressed.setVisibility(View.VISIBLE);
             if (controlToLoad.getPrimaryImageResource() == -1 && controlToLoad.getPrimaryImage().isEmpty()) {
-                controlToLoad.setPrimaryImageResource(R.drawable.neon_button);
+                controlToLoad.setPrimaryImageResource(0);
             }
             if (controlToLoad.getSecondaryImageResource() == -1 && controlToLoad.getSecondaryImage().isEmpty()) {
-                controlToLoad.setSecondaryImageResource(R.drawable.neon_button_pressed);
+                controlToLoad.setSecondaryImageResource(1);
             }
             preview.setBackground(buildStatePreview());
         } else {
@@ -528,11 +528,17 @@ public class EditTextStyleFragment extends DialogFragment implements
     public void onImageSelected(int builtIn) {
         if (state == 0) {
             controlToLoad.setPrimaryImage("");
-            controlToLoad.setPrimaryImageResource(builtIn);
+            if (builtIn == R.drawable.neon_button)
+                controlToLoad.setPrimaryImageResource(0);
+            else
+                controlToLoad.setPrimaryImageResource(1);
         }
         if (state == 1) {
             controlToLoad.setSecondaryImage("");
-            controlToLoad.setSecondaryImageResource(builtIn);
+            if (builtIn == R.drawable.neon_button)
+                controlToLoad.setSecondaryImageResource(0);
+            else
+                controlToLoad.setSecondaryImageResource(1);
         }
         controlToLoad.setPrimaryColor(-1);
         controlToLoad.setSecondaryColor(-1);
@@ -544,14 +550,14 @@ public class EditTextStyleFragment extends DialogFragment implements
         Drawable secondary = null;
 
         if (controlToLoad.getPrimaryImageResource() != -1) {
-            normal = getResources().getDrawable(controlToLoad.getPrimaryImageResource());
+            normal = getButtonResource(controlToLoad.getPrimaryImageResource(), true);
         }
         if (!controlToLoad.getPrimaryImage().isEmpty()) {
             normal = Drawable.createFromPath(controlToLoad.getPrimaryImage());
         }
 
         if (controlToLoad.getSecondaryImageResource() != -1) {
-            secondary = getResources().getDrawable(controlToLoad.getSecondaryImageResource());
+            secondary = getButtonResource(controlToLoad.getSecondaryImageResource(), false);
         }
         if (!controlToLoad.getSecondaryImage().isEmpty()) {
             secondary = Drawable.createFromPath(controlToLoad.getSecondaryImage());
@@ -563,6 +569,21 @@ public class EditTextStyleFragment extends DialogFragment implements
             res.addState(new int[]{}, normal);
         }
         return res;
+    }
+
+    //primary is used for backwards compatability
+    private Drawable getButtonResource(int resourceId, boolean primary) {
+        switch (resourceId) {
+            case 0:
+                return getResources().getDrawable(R.drawable.neon_button);
+            case 1:
+                return getResources().getDrawable(R.drawable.neon_button_pressed);
+            default:
+                if (primary)
+                    return getResources().getDrawable(R.drawable.neon_button);
+                else
+                    return getResources().getDrawable(R.drawable.neon_button_pressed);
+        }
     }
 
     public interface EditDialogListener {

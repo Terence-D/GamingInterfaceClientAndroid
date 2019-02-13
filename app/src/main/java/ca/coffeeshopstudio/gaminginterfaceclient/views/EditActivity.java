@@ -306,8 +306,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         control.setHeight(defaults.getSwitchDefaults().getHeight());
         control.setFontName(defaults.getSwitchDefaults().getFontName());
 
-        control.setPrimaryImageResource(R.drawable.neon_toggle_off);
-        control.setSecondaryImageResource(R.drawable.neon_toggle_on);
+        control.setPrimaryImageResource(0);
+        control.setSecondaryImageResource(1);
         control.setText("");
 
         control.setLeft((x - (control.getWidth() / 2)));

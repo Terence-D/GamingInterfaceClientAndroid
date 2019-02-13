@@ -92,7 +92,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             primary = Drawable.createFromPath(control.getPrimaryImage());
         } else if (control.getPrimaryImageResource() != -1) {
             //build based on built in resource
-            primary = getResources().getDrawable(control.getPrimaryImageResource());
+            primary = getButtonResource(control.getPrimaryImageResource(), control.getViewType(), true);
         } else { //fallback
             //color gradients
             primary = new GradientDrawable(
@@ -112,7 +112,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             secondary = Drawable.createFromPath(control.getSecondaryImage());
         } else if (control.getSecondaryImageResource() != -1) {
             //build based on built in resource
-            secondary = getResources().getDrawable(control.getSecondaryImageResource());
+            secondary = getButtonResource(control.getSecondaryImageResource(), control.getViewType(), false);
         } else { //fallback
             //color gradients
             secondary = new GradientDrawable(
@@ -129,6 +129,35 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
         res.addState(new int[]{}, primary);
         return res;
+    }
+
+    //primary is used for backwards compatability
+    private Drawable getButtonResource(int resourceId, int type, boolean primary) {
+        if (type == GICControl.TYPE_BUTTON) {
+            switch (resourceId) {
+                case 0:
+                    return getResources().getDrawable(R.drawable.neon_button);
+                case 1:
+                    return getResources().getDrawable(R.drawable.neon_button_pressed);
+                default:
+                    if (primary)
+                        return getResources().getDrawable(R.drawable.neon_button);
+                    else
+                        return getResources().getDrawable(R.drawable.neon_button_pressed);
+            }
+        } else {
+            switch (resourceId) {
+                case 0:
+                    return getResources().getDrawable(R.drawable.neon_toggle_off);
+                case 1:
+                    return getResources().getDrawable(R.drawable.neon_toggle_on);
+                default:
+                    if (primary)
+                        return getResources().getDrawable(R.drawable.neon_toggle_off);
+                    else
+                        return getResources().getDrawable(R.drawable.neon_toggle_on);
+            }
+        }
     }
 
     protected void addDragDrop(View view) {
