@@ -40,6 +40,16 @@ android {
             // Otherwise, all variants use the "dev" flavor configurations.
 
         }
+
+        amazon {
+            dimension "version"
+            minSdkVersion 21
+            // If you've configured the defaultConfig block for the release version of
+            // your app, you can leave this block empty and Gradle uses configurations in
+            // the defaultConfig block instead. You still need to create this flavor.
+            // Otherwise, all variants use the "dev" flavor configurations.
+
+        }
     }
     // The defaultConfig values above are fixed, so your incremental builds don't
     // need to rebuild the manifest (and therefore the whole APK, slowing build times).
