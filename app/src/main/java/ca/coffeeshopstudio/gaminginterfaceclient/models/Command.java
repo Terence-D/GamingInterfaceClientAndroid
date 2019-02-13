@@ -41,4 +41,8 @@ public class Command {
     public void setActivatorType(int activatorType) {
         this.activatorType = activatorType;
     }
+
+    public void removeAllModifiers() {
+        modifiers = new ArrayList<>();
+    }
 }

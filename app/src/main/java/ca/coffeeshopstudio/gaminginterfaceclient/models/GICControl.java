@@ -14,7 +14,6 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "command",
-        "modifiers",
         "text",
         "left",
         "width",
@@ -28,13 +27,23 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
         "primaryImageResource",
         "secondaryImageResource",
         "primaryImage",
-        "secondaryImage"
+        "secondaryImage",
+        "commandSecondary"
 })
 
 public class GICControl {
     public static final int TYPE_BUTTON = 0;
     public static final int TYPE_TEXT = 1;
     public static final int TYPE_IMAGE = 2;
+    public static final int TYPE_SWITCH = 3;
+
+    //this is required for the toggle button, there are 4 stages to track:
+    //0 - switched off ready for mouse down
+    //1 - switched off, ready for mouse up
+    //2 - switched on, ready for mouse down,
+    //3 - switched on, ready for mouse up
+    //after 3, we reset back to 0
+    public int stage = 0;
 
     @JsonProperty("command")
     private Command command = new Command();
@@ -66,6 +75,12 @@ public class GICControl {
     private String primaryImage = "";
     @JsonProperty("secondaryImage")
     private String secondaryImage = "";
+    @JsonProperty("fontName")
+    private String fontName = "";
+    @JsonProperty("fontType")
+    private int fontType = 0;
+    @JsonProperty("commandSecondary")
+    private Command commandSecondary = new Command();
 
     @JsonProperty("command")
     public Command getCommand() {
@@ -220,4 +235,35 @@ public class GICControl {
     public void setSecondaryImage(String secondaryImage) {
         this.secondaryImage = secondaryImage;
     }
+
+    @JsonProperty("fontName")
+    public String getFontName() {
+        return fontName;
+    }
+
+    @JsonProperty("fontName")
+    public void setFontName(String fontName) {
+        this.fontName = fontName;
+    }
+
+    @JsonProperty("fontType")
+    public int getFontType() {
+        return fontType;
+    }
+
+    @JsonProperty("fontType")
+    public void setFontType(int fontType) {
+        this.fontType = fontType;
+    }
+
+    @JsonProperty("commandSecondary")
+    public Command getCommandSecondary() {
+        return commandSecondary;
+    }
+
+    @JsonProperty("commandSecondary")
+    public void setCommandSecondary(Command commandSecondary) {
+        this.commandSecondary = commandSecondary;
+    }
+
 }
