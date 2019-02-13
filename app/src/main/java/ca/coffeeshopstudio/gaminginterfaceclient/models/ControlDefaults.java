@@ -31,6 +31,7 @@ public class ControlDefaults {
     private GICControl defaultImageControl;
     private GICControl defaultButtonControl;
     private GICControl defaultTextControl;
+    private GICControl defaultSwitchControl;
 
     public ControlDefaults(Context context, int screenId) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -41,6 +42,8 @@ public class ControlDefaults {
         defaultButtonControl = loadControl(context, prefs, prefString);
         prefString = screenId + "_text_defaults";
         defaultTextControl = loadControl(context, prefs, prefString);
+        prefString = screenId + "_switch_defaults";
+        defaultSwitchControl = loadControl(context, prefs, prefString);
     }
 
     public GICControl getImageDefaults() {
@@ -55,6 +58,10 @@ public class ControlDefaults {
         return defaultTextControl;
     }
 
+    public GICControl getSwitchDefaults() {
+        return defaultSwitchControl;
+    }
+
     public void saveControl(GICControl control) {
         if (control.getViewType() == GICControl.TYPE_TEXT) {
             defaultTextControl = control;
@@ -62,6 +69,8 @@ public class ControlDefaults {
             defaultButtonControl = control;
         } else if (control.getViewType() == GICControl.TYPE_IMAGE) {
             defaultImageControl = control;
+        } else if (control.getViewType() == GICControl.TYPE_SWITCH) {
+            defaultSwitchControl = control;
         }
     }
 
@@ -99,6 +108,10 @@ public class ControlDefaults {
 
             prefString = screenId + "_button_defaults";
             json = mapper.writeValueAsString(defaultButtonControl);
+            prefsEditor.putString(prefString, json);
+
+            prefString = screenId + "_switch_defaults";
+            json = mapper.writeValueAsString(defaultSwitchControl);
             prefsEditor.putString(prefString, json);
         } catch (JsonProcessingException e) {
             e.printStackTrace();

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -26,15 +25,13 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,22 +45,22 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 
 /**
- Copyright [2019] [Terence Doerksen]
-
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
- http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+ * Copyright [2019] [Terence Doerksen]
+ * <p>
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-public class EditTextStyleFragment extends DialogFragment implements
-        ImageGridDialog.ImageGridDialogListener,
+public class EditToggleFragment extends DialogFragment implements
+        ToggleGridDialog.ToggleGridDialogListener,
         AdapterView.OnItemSelectedListener,
         View.OnClickListener,
         CompoundButton.OnCheckedChangeListener {
@@ -71,6 +68,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     private AutoItKeyMap map = new AutoItKeyMap();
     private View incomingView;
     private Spinner spinner;
+    private Spinner spinnerOff;
     private GICControl controlToLoad;
 
     private CheckBox lShift;
@@ -79,6 +77,13 @@ public class EditTextStyleFragment extends DialogFragment implements
     //private CheckBox rCtrl;
     private CheckBox lAlt;
     //private CheckBox rAlt;
+    private CheckBox lShiftOff;
+    //private CheckBox rShiftOff;
+    private CheckBox lCtrlOff;
+    //private CheckBox rCtrlOff;
+    private CheckBox lAltOff;
+    //private CheckBox rAltOff;
+
     private TextView text;
 
     private Button btnFontColor;
@@ -95,11 +100,11 @@ public class EditTextStyleFragment extends DialogFragment implements
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
     // Use `newInstance` instead as shown below
-    public EditTextStyleFragment() {
+    public EditToggleFragment() {
     }
 
-    public static EditTextStyleFragment newInstance(GICControl control, View view) {
-        EditTextStyleFragment frag = new EditTextStyleFragment();
+    public static EditToggleFragment newInstance(GICControl control, View view) {
+        EditToggleFragment frag = new EditToggleFragment();
         Bundle args = new Bundle();
         frag.setArguments(args);
         if (view != null)
@@ -125,7 +130,7 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_edit_control, container);
+        return inflater.inflate(R.layout.fragment_edit_toggle, container);
     }
 
     private void setupControls(View view) {
@@ -137,7 +142,14 @@ public class EditTextStyleFragment extends DialogFragment implements
         lAlt = view.findViewById(R.id.chkLAlt);
         //rAlt = view.findViewById(R.id.chkRAlt);
 
-        buildCommandSpinner(view);
+        lShiftOff = view.findViewById(R.id.chkLShiftOff);
+        //rShiftOff = view.findViewById(R.id.chkRShiftOff);
+        lCtrlOff = view.findViewById(R.id.chkLCtrlOff);
+        //rCtrlOff = view.findViewById(R.id.chkRCtrlOff);
+        lAltOff = view.findViewById(R.id.chkLAltOff);
+        //rAltOff = view.findViewById(R.id.chkRAltOff);
+
+        buildCommandSpinners(view);
 
         text.setText(controlToLoad.getText());
         //load in any data we brought in
@@ -152,6 +164,20 @@ public class EditTextStyleFragment extends DialogFragment implements
                     lCtrl.setChecked(true);
                 if (controlToLoad.getCommand().getModifiers().get(i).equals("SHIFT"))
                     lShift.setChecked(true);
+            }
+        }
+
+        if (controlToLoad.getCommandSecondary() != null) {
+            lAltOff.setChecked(false);
+            lCtrlOff.setChecked(false);
+            lShiftOff.setChecked(false);
+            for (int i = 0; i < controlToLoad.getCommandSecondary().getModifiers().size(); i++) {
+                if (controlToLoad.getCommandSecondary().getModifiers().get(i).equals("ALT"))
+                    lAltOff.setChecked(true);
+                if (controlToLoad.getCommandSecondary().getModifiers().get(i).equals("CTRL"))
+                    lCtrlOff.setChecked(true);
+                if (controlToLoad.getCommandSecondary().getModifiers().get(i).equals("SHIFT"))
+                    lShiftOff.setChecked(true);
             }
         }
 
@@ -184,43 +210,35 @@ public class EditTextStyleFragment extends DialogFragment implements
         view.findViewById(R.id.btnSave).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
 
-        if (incomingView != null && !(incomingView instanceof Button)) {
+        if (controlToLoad.getPrimaryImageResource() != -1 || !controlToLoad.getPrimaryImage().isEmpty()) {
             btnSecondary.setVisibility(View.INVISIBLE);
             btnPrimary.setVisibility(View.INVISIBLE);
+            btnPressed.setVisibility(View.VISIBLE);
+            btnNormal.setVisibility(View.VISIBLE);
+            preview.setVisibility(View.VISIBLE);
+            ((ToggleButton) preview).setTextOff("");
+            preview.setText("");
+            ((ToggleButton) preview).setTextOn("");
+        } else {
+            btnSecondary.setVisibility(View.VISIBLE);
+            btnPrimary.setVisibility(View.VISIBLE);
             btnPressed.setVisibility(View.INVISIBLE);
             btnNormal.setVisibility(View.INVISIBLE);
-            preview.setVisibility(View.INVISIBLE);
-
-            view.findViewById(R.id.switchType).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.lblInstructions).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.spinner).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.chkLShift).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.chkLAlt).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.chkLCtrl).setVisibility(View.INVISIBLE);
+            preview.setVisibility(View.GONE);
+            ((Switch) view.findViewById(R.id.switchType)).setChecked(false);
+            mode = false;
         }
-        if (incomingView instanceof Button) {
-            if (controlToLoad.getPrimaryImageResource() != -1 || !controlToLoad.getPrimaryImage().isEmpty()) {
-                btnSecondary.setVisibility(View.INVISIBLE);
-                btnPrimary.setVisibility(View.INVISIBLE);
-                btnPressed.setVisibility(View.VISIBLE);
-                btnNormal.setVisibility(View.VISIBLE);
-                preview.setVisibility(View.VISIBLE);
-            } else {
-                btnSecondary.setVisibility(View.VISIBLE);
-                btnPrimary.setVisibility(View.VISIBLE);
-                btnPressed.setVisibility(View.INVISIBLE);
-                btnNormal.setVisibility(View.INVISIBLE);
-                preview.setVisibility(View.INVISIBLE);
-                ((Switch) view.findViewById(R.id.switchType)).setChecked(false);
-                mode = false;
-            }
-        }
+        ((ToggleButton) preview).setTextOff("");
+        ((ToggleButton) preview).setTextOn("");
+        preview.setText("");
         ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
     }
 
-    private void buildCommandSpinner(View view) {
+    private void buildCommandSpinners(View view) {
         spinner = view.findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
+        spinnerOff = view.findViewById(R.id.spinnerOff);
+        spinnerOff.setOnItemSelectedListener(this);
 
         Collection<String> values = map.getKeys().values();
         String[] spinnerArray = values.toArray(new String[values.size()]);
@@ -228,6 +246,7 @@ public class EditTextStyleFragment extends DialogFragment implements
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(dataAdapter);
+        spinnerOff.setAdapter(dataAdapter);
 
         if (controlToLoad.getCommand() != null) {
             String key = controlToLoad.getCommand().getKey();
@@ -236,7 +255,18 @@ public class EditTextStyleFragment extends DialogFragment implements
             for (int i = 0; i < keys.size(); i++) {
                 if (keys.get(i).equals(key)) {
                     spinner.setSelection(i);
-                    return;
+                    break;
+                }
+            }
+        }
+        if (controlToLoad.getCommandSecondary() != null) {
+            String key = controlToLoad.getCommandSecondary().getKey();
+            List<String> keys = new ArrayList<>(map.getKeys().keySet());
+
+            for (int i = 0; i < keys.size(); i++) {
+                if (keys.get(i).equals(key)) {
+                    spinnerOff.setSelection(i);
+                    break;
                 }
             }
         }
@@ -254,7 +284,7 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     @Override
     public void onClick(View view) {
-        EditDialogListener listener = (EditDialogListener) getActivity();
+        EditToggleListener listener = (EditToggleListener) getActivity();
         switch (view.getId()) {
             case R.id.btnSave:
                 saveControl();
@@ -345,6 +375,7 @@ public class EditTextStyleFragment extends DialogFragment implements
         List<String> keys = new ArrayList<>(map.getKeys().keySet());
         controlToLoad.setText(text.getText().toString());
         controlToLoad.getCommand().setKey(keys.get(spinner.getSelectedItemPosition()));
+        controlToLoad.getCommandSecondary().setKey(keys.get(spinnerOff.getSelectedItemPosition()));
         controlToLoad.setFontColor(btnFontColor.getTextColors().getDefaultColor());
 
         controlToLoad.getCommand().removeAllModifiers();
@@ -358,36 +389,32 @@ public class EditTextStyleFragment extends DialogFragment implements
             controlToLoad.getCommand().addModifier("ALT");
         }
 
-        if (incomingView instanceof Button) {
-            if (mode) {
-                controlToLoad.setSecondaryColor(-1);
-                controlToLoad.setPrimaryColor(-1);
-            } else {
-                controlToLoad.setSecondaryColor(btnSecondary.getTextColors().getDefaultColor());
-                controlToLoad.setPrimaryColor(btnPrimary.getTextColors().getDefaultColor());
-                controlToLoad.setPrimaryImage("");
-                controlToLoad.setSecondaryImage("");
-                controlToLoad.setPrimaryImageResource(-1);
-                controlToLoad.setSecondaryImageResource(-1);
-            }
+        controlToLoad.getCommandSecondary().removeAllModifiers();
+        if (lShiftOff.isChecked()) {
+            controlToLoad.getCommandSecondary().addModifier("SHIFT");
         }
-    }
+        if (lCtrlOff.isChecked()) {
+            controlToLoad.getCommandSecondary().addModifier("CTRL");
+        }
+        if (lAltOff.isChecked()) {
+            controlToLoad.getCommandSecondary().addModifier("ALT");
+        }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1337: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    displayImageLoader();
-                }
-            }
-            break;
+        if (mode) {
+            controlToLoad.setSecondaryColor(-1);
+            controlToLoad.setPrimaryColor(-1);
+        } else {
+            controlToLoad.setSecondaryColor(btnSecondary.getTextColors().getDefaultColor());
+            controlToLoad.setPrimaryColor(btnPrimary.getTextColors().getDefaultColor());
+            controlToLoad.setPrimaryImage("");
+            controlToLoad.setSecondaryImage("");
+            controlToLoad.setPrimaryImageResource(-1);
+            controlToLoad.setSecondaryImageResource(-1);
         }
     }
 
     private void displayImageLoader() {
-        ImageGridDialog gridView = new ImageGridDialog(this);
+        ToggleGridDialog gridView = new ToggleGridDialog(this);
         gridView.show();
     }
 
@@ -434,16 +461,16 @@ public class EditTextStyleFragment extends DialogFragment implements
             btnNormal.setVisibility(View.VISIBLE);
             btnPressed.setVisibility(View.VISIBLE);
             if (controlToLoad.getPrimaryImageResource() == -1 && controlToLoad.getPrimaryImage().isEmpty()) {
-                controlToLoad.setPrimaryImageResource(0);
+                controlToLoad.setPrimaryImageResource(R.drawable.neon_toggle_off);
             }
             if (controlToLoad.getSecondaryImageResource() == -1 && controlToLoad.getSecondaryImage().isEmpty()) {
-                controlToLoad.setSecondaryImageResource(1);
+                controlToLoad.setSecondaryImageResource(R.drawable.neon_toggle_on);
             }
             preview.setBackground(buildStatePreview());
         } else {
             btnSecondary.setVisibility(View.VISIBLE);
             btnPrimary.setVisibility(View.VISIBLE);
-            preview.setVisibility(View.INVISIBLE);
+            preview.setVisibility(View.GONE);
             btnNormal.setVisibility(View.INVISIBLE);
             btnPressed.setVisibility(View.INVISIBLE);
 
@@ -454,7 +481,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == EditActivity.OPEN_REQUEST_CODE_IMPORT_BUTTON) {
+            if (requestCode == EditActivity.OPEN_REQUEST_CODE_IMPORT_SWITCH) {
                 if (resultData != null) {
                     Uri currentUri = resultData.getData();
                     if (currentUri != null) {
@@ -462,7 +489,7 @@ public class EditTextStyleFragment extends DialogFragment implements
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), currentUri);
                             File file = null;
                             for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                                file = new File(getContext().getFilesDir(), "button_" + i + ".png");
+                                file = new File(getContext().getFilesDir(), "switch_" + i + ".png");
                                 if (!file.exists())
                                     break;
                             }
@@ -472,35 +499,6 @@ public class EditTextStyleFragment extends DialogFragment implements
                             out.close();
                         } catch (IOException e) {
                             Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }
-            } else if (requestCode == EditActivity.OPEN_REQUEST_CODE_FONT) {
-                Uri currentUri = resultData.getData();
-                if (currentUri != null) {
-
-                    String sourceFilename = currentUri.getPath();
-                    String destinationFilename = getContext().getFilesDir() + currentUri.getLastPathSegment();
-
-                    BufferedInputStream bis = null;
-                    BufferedOutputStream bos = null;
-
-                    try {
-                        bis = new BufferedInputStream(new FileInputStream(sourceFilename));
-                        bos = new BufferedOutputStream(new FileOutputStream(destinationFilename, false));
-                        byte[] buf = new byte[1024];
-                        bis.read(buf);
-                        do {
-                            bos.write(buf);
-                        } while (bis.read(buf) != -1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        try {
-                            if (bis != null) bis.close();
-                            if (bos != null) bos.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
                     }
                 }
@@ -528,14 +526,14 @@ public class EditTextStyleFragment extends DialogFragment implements
     public void onImageSelected(int builtIn) {
         if (state == 0) {
             controlToLoad.setPrimaryImage("");
-            if (builtIn == R.drawable.neon_button)
+            if (builtIn == R.drawable.neon_toggle_off)
                 controlToLoad.setPrimaryImageResource(0);
             else
                 controlToLoad.setPrimaryImageResource(1);
         }
         if (state == 1) {
             controlToLoad.setSecondaryImage("");
-            if (builtIn == R.drawable.neon_button)
+            if (builtIn == R.drawable.neon_toggle_off)
                 controlToLoad.setSecondaryImageResource(0);
             else
                 controlToLoad.setSecondaryImageResource(1);
@@ -565,7 +563,7 @@ public class EditTextStyleFragment extends DialogFragment implements
 
         StateListDrawable res = new StateListDrawable();
         if (normal != null && secondary != null) {
-            res.addState(new int[]{android.R.attr.state_pressed}, secondary);
+            res.addState(new int[]{android.R.attr.state_checked}, secondary);
             res.addState(new int[]{}, normal);
         }
         return res;
@@ -575,19 +573,18 @@ public class EditTextStyleFragment extends DialogFragment implements
     private Drawable getButtonResource(int resourceId, boolean primary) {
         switch (resourceId) {
             case 0:
-                return getResources().getDrawable(R.drawable.neon_button);
+                return getResources().getDrawable(R.drawable.neon_toggle_off);
             case 1:
-                return getResources().getDrawable(R.drawable.neon_button_pressed);
+                return getResources().getDrawable(R.drawable.neon_toggle_on);
             default:
                 if (primary)
-                    return getResources().getDrawable(R.drawable.neon_button);
+                    return getResources().getDrawable(R.drawable.neon_toggle_off);
                 else
-                    return getResources().getDrawable(R.drawable.neon_button_pressed);
+                    return getResources().getDrawable(R.drawable.neon_toggle_on);
         }
     }
 
-    public interface EditDialogListener {
+    public interface EditToggleListener {
         void onFinishEditDialog(boolean toSave, GICControl control);
     }
-
 }

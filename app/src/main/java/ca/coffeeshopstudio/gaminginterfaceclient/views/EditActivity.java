@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.IOException;
 
@@ -54,7 +55,9 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 public class EditActivity extends AbstractGameActivity implements EditTextStyleFragment.EditDialogListener,
         SeekBar.OnSeekBarChangeListener,
         EditImageFragment.EditImageDialogListener,
+        EditToggleFragment.EditToggleListener,
         EditBackgroundFragment.EditDialogListener {
+
     private GestureDetector gd;
     private SeekBar seekWidth;
     private SeekBar seekHeight;
@@ -72,6 +75,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     protected static final int OPEN_REQUEST_CODE_BACKGROUND = 41;
     protected static final int OPEN_REQUEST_CODE_IMAGE = 42;
     public static final int OPEN_REQUEST_CODE_IMPORT_BUTTON = 43;
+    public static final int OPEN_REQUEST_CODE_IMPORT_SWITCH = 43;
+    public static final int OPEN_REQUEST_CODE_FONT = 44;
 
     @Override
     protected void onStop() {
@@ -108,7 +113,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         if (visibility == View.VISIBLE) {
             seekWidth.setProgress(selectedView.getWidth());
             seekHeight.setProgress(selectedView.getHeight());
-            if (selectedView instanceof Button) {
+            if (selectedView instanceof Button || selectedView instanceof ToggleButton) {
                 seekFontSize.setProgress((int) ((Button) selectedView).getTextSize());
                 seekFontSize.setVisibility(visibility);
             }
@@ -177,7 +182,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             //here is the method for double tap
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                showControlPopup();
+                showControlPopup(e);
                 return true;
             }
 
@@ -198,7 +203,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         });
     }
 
-    private void showControlPopup() {
+    private void showControlPopup(final MotionEvent e) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(EditActivity.this);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(EditActivity.this, android.R.layout.simple_list_item_1, controlTypes.getStringValues());
@@ -214,28 +219,31 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (controlTypes.getValue(which).equals(getString(R.string.control_type_button)))
-                    addButton();
+                    addButton(e.getX(), e.getY());
                 if (controlTypes.getValue(which).equals(getString(R.string.control_type_text)))
-                    addTextView();
+                    addTextView(e.getX(), e.getY());
                 if (controlTypes.getValue(which).equals(getString(R.string.control_type_image)))
-                    addImage();
+                    addImage(e.getX(), e.getY());
+                if (controlTypes.getValue(which).equals(getString(R.string.control_type_switch)))
+                    addSwitch(e.getX(), e.getY());
             }
         });
         builderSingle.show();
     }
 
-    private void addImage() {
+    private void addImage(float x, float y) {
         GICControl control = initNewControl();
         control.setWidth(defaults.getImageDefaults().getWidth());
         control.setHeight(defaults.getImageDefaults().getHeight());
         control.setViewType(GICControl.TYPE_IMAGE);
 
+        control.setLeft((x - (control.getWidth() / 2)));
+        control.setTop((y - (control.getHeight() / 2)));
         View view = buildImage(control);
-
         updateDisplay(view);
     }
 
-    private void addTextView() {
+    private void addTextView(float x, float y) {
         //un select any previous button
         GICControl control = initNewControl();
         control.setWidth(defaults.getTextDefaults().getWidth());
@@ -243,14 +251,17 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         control.setFontColor(defaults.getTextDefaults().getFontColor());
         control.setText(getString(R.string.default_control_text));
+        control.setFontName(defaults.getTextDefaults().getFontName());
         control.setViewType(GICControl.TYPE_TEXT);
 
+        control.setLeft((x - (control.getWidth() / 2)));
+        control.setTop((y - (control.getHeight() / 2)));
         View view = buildText(control);
 
         updateDisplay(view);
     }
 
-    private void addButton() {
+    private void addButton(float x, float y) {
         //unselect any previous button
         GICControl control = initNewControl();
 
@@ -266,12 +277,44 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         control.setSecondaryImage(defaults.getButtonDefaults().getSecondaryImage());
         control.setWidth(defaults.getButtonDefaults().getWidth());
         control.setHeight(defaults.getButtonDefaults().getHeight());
+        control.setFontName(defaults.getButtonDefaults().getFontName());
 
+        control.setLeft((x - (control.getWidth() / 2)));
+        control.setTop((y - (control.getHeight() / 2)));
         View view = buildButton(control);
 
         updateDisplay(view);
 
         ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getButtonDefaults().getFontSize());
+    }
+
+    private void addSwitch(float x, float y) {
+        //unselect any previous button
+        GICControl control = initNewControl();
+
+        control.setFontColor(defaults.getSwitchDefaults().getFontColor());
+        control.setText(getString(R.string.default_control_text));
+        control.setViewType(GICControl.TYPE_SWITCH);
+        control.setFontSize(defaults.getSwitchDefaults().getFontSize());
+        control.setPrimaryColor(defaults.getSwitchDefaults().getPrimaryColor());
+        control.setSecondaryColor(defaults.getSwitchDefaults().getSecondaryColor());
+        control.setPrimaryImageResource(defaults.getSwitchDefaults().getPrimaryImageResource());
+        control.setSecondaryImageResource(defaults.getSwitchDefaults().getSecondaryImageResource());
+        control.setPrimaryImage(defaults.getSwitchDefaults().getPrimaryImage());
+        control.setSecondaryImage(defaults.getSwitchDefaults().getSecondaryImage());
+        control.setWidth(defaults.getSwitchDefaults().getWidth());
+        control.setHeight(defaults.getSwitchDefaults().getHeight());
+        control.setFontName(defaults.getSwitchDefaults().getFontName());
+
+        control.setPrimaryImageResource(0);
+        control.setSecondaryImageResource(1);
+        control.setText("");
+
+        control.setLeft((x - (control.getWidth() / 2)));
+        control.setTop((y - (control.getHeight() / 2)));
+        View view = buildSwitch(control);
+        updateDisplay(view);
+        ((ToggleButton) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getSwitchDefaults().getFontSize());
     }
 
     private GICControl initNewControl() {
@@ -328,6 +371,14 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         editTextDialog.show(fm, "fragment_edit_name");
     }
 
+    private void displayToggleEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        ToggleButton view = (ToggleButton) selectedView;
+
+        EditToggleFragment editToggleDialog = EditToggleFragment.newInstance((GICControl) view.getTag(), view);
+        editToggleDialog.show(fm, "fragment_edit_toggle");
+    }
+
     @Override
     protected void addDragDrop(View view) {
         view.setOnTouchListener(new TouchListener());
@@ -338,9 +389,11 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         //we already tapped once on this, lets open
         if (selectedView != null && selectedView.equals(view)) {
             toggleEditControls(View.VISIBLE);
-            if (view instanceof TextView)
+            if (view instanceof ToggleButton)
+                displayToggleEditDialog();
+            else if (view instanceof TextView)
                 displayTextEditDialog();
-            if (view instanceof ImageView)
+            else if (view instanceof ImageView)
                 displayImageEditDialog();
         } else {
             unselectedPreviousView();
@@ -396,12 +449,14 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         } else {
             selectedView.setTag(control);
 
-            if (selectedView instanceof Button) {
+            if (selectedView instanceof Button || selectedView instanceof ToggleButton) {
                 selectedView.setBackground(buildButtonDrawable(control));
             }
 
             ((TextView) selectedView).setText(control.getText());
             ((TextView) selectedView).setTextColor(control.getFontColor());
+
+            setFontTypeface((TextView) selectedView, control);
 
             defaults.saveControl(control);
 

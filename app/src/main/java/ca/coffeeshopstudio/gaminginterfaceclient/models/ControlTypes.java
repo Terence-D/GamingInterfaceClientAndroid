@@ -29,6 +29,7 @@ public class ControlTypes {
         controls.add(context.getString(R.string.control_type_button));
         controls.add(context.getString(R.string.control_type_text));
         controls.add(context.getString(R.string.control_type_image));
+        controls.add(context.getString(R.string.control_type_switch));
     }
 
     public String[] getStringValues() {

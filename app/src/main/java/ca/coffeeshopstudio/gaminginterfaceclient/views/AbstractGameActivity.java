@@ -2,6 +2,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
@@ -17,8 +18,10 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Screen;
 
@@ -47,6 +50,12 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
 
         currentScreen = new Screen(this);
+
+        buildFontCache();
+    }
+
+    private void buildFontCache() {
+        FontCache.buildCache(this);
     }
 
     @SuppressLint("NewApi")
@@ -83,7 +92,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             primary = Drawable.createFromPath(control.getPrimaryImage());
         } else if (control.getPrimaryImageResource() != -1) {
             //build based on built in resource
-            primary = getResources().getDrawable(control.getPrimaryImageResource());
+            primary = getButtonResource(control.getPrimaryImageResource(), control.getViewType(), true);
         } else { //fallback
             //color gradients
             primary = new GradientDrawable(
@@ -103,7 +112,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             secondary = Drawable.createFromPath(control.getSecondaryImage());
         } else if (control.getSecondaryImageResource() != -1) {
             //build based on built in resource
-            secondary = getResources().getDrawable(control.getSecondaryImageResource());
+            secondary = getButtonResource(control.getSecondaryImageResource(), control.getViewType(), false);
         } else { //fallback
             //color gradients
             secondary = new GradientDrawable(
@@ -113,9 +122,42 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
 
         StateListDrawable res = new StateListDrawable();
-        res.addState(new int[]{android.R.attr.state_pressed}, secondary);
+        if (control.getViewType() == GICControl.TYPE_BUTTON) {
+            res.addState(new int[]{android.R.attr.state_pressed}, secondary);
+        } else {
+            res.addState(new int[]{android.R.attr.state_checked}, secondary);
+        }
         res.addState(new int[]{}, primary);
         return res;
+    }
+
+    //primary is used for backwards compatability
+    private Drawable getButtonResource(int resourceId, int type, boolean primary) {
+        if (type == GICControl.TYPE_BUTTON) {
+            switch (resourceId) {
+                case 0:
+                    return getResources().getDrawable(R.drawable.neon_button);
+                case 1:
+                    return getResources().getDrawable(R.drawable.neon_button_pressed);
+                default:
+                    if (primary)
+                        return getResources().getDrawable(R.drawable.neon_button);
+                    else
+                        return getResources().getDrawable(R.drawable.neon_button_pressed);
+            }
+        } else {
+            switch (resourceId) {
+                case 0:
+                    return getResources().getDrawable(R.drawable.neon_toggle_off);
+                case 1:
+                    return getResources().getDrawable(R.drawable.neon_toggle_on);
+                default:
+                    if (primary)
+                        return getResources().getDrawable(R.drawable.neon_toggle_off);
+                    else
+                        return getResources().getDrawable(R.drawable.neon_toggle_on);
+            }
+        }
     }
 
     protected void addDragDrop(View view) {
@@ -135,6 +177,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                 case 2:
                     buildImage(control);
                     break;
+                case 3:
+                    buildSwitch(control);
             }
         }
 
@@ -155,6 +199,17 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         Button view = new Button(AbstractGameActivity.this);
         view.setBackground(buildButtonDrawable(control));
         initText(view, control);
+        buildView(control, view);
+        return view;
+    }
+
+    protected View buildSwitch(GICControl control) {
+        ToggleButton view = new ToggleButton(AbstractGameActivity.this);
+
+        view.setBackground(buildButtonDrawable(control));
+        initText(view, control);
+        view.setTextOff(view.getText());
+        view.setTextOn(view.getText());
         buildView(control, view);
         return view;
     }
@@ -202,6 +257,19 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX, control.getFontSize());
         view.setText(control.getText());
+        setFontTypeface(view, control);
+    }
+
+    protected void setFontTypeface(TextView textView, GICControl control) {
+        if (control.getFontName().isEmpty()) {
+            textView.setTypeface(Typeface.DEFAULT);
+        } else {
+            if (control.getFontType() == 0) {
+                textView.setTypeface(FontCache.get(control.getFontName(), this));
+            } else {
+                textView.setTypeface(FontCache.get(control.getFontName(), this));
+            }
+        }
     }
 
     protected void setClick(View view) {
@@ -240,5 +308,4 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         view.setLayoutParams(layout);
         view.invalidate();
     }
-
 }
