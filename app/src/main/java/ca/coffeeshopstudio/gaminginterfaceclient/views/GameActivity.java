@@ -61,14 +61,18 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
         button.setOnTouchListener(this);
     }
 
-    private void makeCall(Command command) {
+    private void makeCall(Command command, int viewType) {
         String url = "http://" + address + ":" + port + "/";
 
         CommandService routeMap = RestClientInstance.getRetrofitInstance(url).create(CommandService.class);
 
         String auth = Credentials.basic("gic", password);
 
-        Call<List<Result>> call = routeMap.postComplexCommand(auth, command);
+        Call<List<Result>> call;
+        if (viewType == GICControl.TYPE_BUTTON)
+            call = routeMap.postComplexCommand(auth, command);
+        else
+            call = routeMap.postToggleCommand(auth, command);
 
         call.enqueue(new Callback<List<Result>>() {
             @Override
@@ -93,12 +97,12 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     control.getCommand().setActivatorType(Command.KEY_DOWN);
-                    makeCall(control.getCommand());
+                    makeCall(control.getCommand(), control.getViewType());
                     view.performClick();
                     break;
                 case MotionEvent.ACTION_UP:
                     control.getCommand().setActivatorType(Command.KEY_UP);
-                    makeCall(control.getCommand());
+                    makeCall(control.getCommand(), control.getViewType());
                     break;
             }
         }
@@ -111,23 +115,23 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
             case MotionEvent.ACTION_DOWN:
                 if (control.stage == 0) {
                     control.getCommand().setActivatorType(Command.KEY_DOWN);
-                    makeCall(control.getCommand());
+                    makeCall(control.getCommand(), control.getViewType());
                     view.performClick();
                     control.stage++;
                 } else if (control.stage == 2) {
                     control.getCommandSecondary().setActivatorType(Command.KEY_DOWN);
-                    makeCall(control.getCommandSecondary());
+                    makeCall(control.getCommandSecondary(), control.getViewType());
                     view.performClick();
                     control.stage++;
                 }
             case MotionEvent.ACTION_UP:
                 if (control.stage == 1) {
                     control.getCommand().setActivatorType(Command.KEY_UP);
-                    makeCall(control.getCommand());
+                    makeCall(control.getCommand(), control.getViewType());
                     control.stage++;
                 } else if (control.stage == 3) {
                     control.getCommandSecondary().setActivatorType(Command.KEY_UP);
-                    makeCall(control.getCommandSecondary());
+                    makeCall(control.getCommandSecondary(), control.getViewType());
                     control.stage = 0;
                 }
                 return true;

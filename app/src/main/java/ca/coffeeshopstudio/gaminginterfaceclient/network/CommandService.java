@@ -9,7 +9,6 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -30,8 +29,8 @@ public interface CommandService {
     @GET("/api/Version")
     Call<String> getVersion();
 
-    @GET("/api/key/{key}")
-    Call<List<Result>> getSimpleCommand(@Header("Authorization") String auth, @Path("key") String command);
+    @POST("/api/toggle")
+    Call<List<Result>> postToggleCommand(@Header("Authorization") String auth, @Body Command command);
 
     @POST("/api/key")
     Call<List<Result>> postComplexCommand(@Header("Authorization") String auth, @Body Command command);

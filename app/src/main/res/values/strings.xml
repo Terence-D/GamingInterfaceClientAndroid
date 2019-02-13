@@ -29,7 +29,7 @@
     <string name="edit_activity_detail_edit_mode">Detail Edit mode</string>
     <string name="edit_activity_saved">Saved Successfully!</string>
     <string name="activity_main_about">About</string>
-    <string name="main_activity_warning">PLEASE USE GIC SERVER VERSION 1.2 OR HIGHER</string>
+    <string name="main_activity_warning"> </string>
     <string name="main_activity_server_link">https://github.com/Terence-D/GameInputCommandServer</string>
 
     <!-- About View -->

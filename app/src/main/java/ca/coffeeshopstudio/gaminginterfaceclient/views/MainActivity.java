@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
-                    if (response.body().equals("1.2.0.0")) {
+                    if (response.body().equals("1.3.0.0")) {
                         MainActivity.this.startActivity(myIntent);
                         return;
                     }
