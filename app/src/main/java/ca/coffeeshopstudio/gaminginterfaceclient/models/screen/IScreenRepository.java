@@ -1,5 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
@@ -13,7 +14,7 @@ public interface IScreenRepository {
 
     Screen newScreen();
 
-    void save(IScreen screen);
+    void save(IScreen screen, Drawable drawable);
 
     IScreen getScreen(int id);
 

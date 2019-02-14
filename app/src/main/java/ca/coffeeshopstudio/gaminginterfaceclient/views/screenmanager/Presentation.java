@@ -52,7 +52,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
     @Override
     public void update(int screenId, String newName) {
         repository.getScreen(screenId).setName(newName);
-        repository.save(repository.getScreen(screenId));
+        //repository.save(repository.getScreen(screenId));
     }
 
     @Override

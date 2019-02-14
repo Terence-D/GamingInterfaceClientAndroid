@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
@@ -103,9 +104,11 @@ public class ScreenRepository implements IScreenRepository {
         convertLegacyBackground(screen);
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         int backgroundColor = prefs.getInt(screen.getScreenId() + "_background", context.getResources().getColor(R.color.default_background));
-        String backgroundPath = screen.getScreenId() + "_background.png";
         screen.setBackgroundColor(backgroundColor);
-        screen.setBackgroundFile(backgroundPath);
+
+        String backgroundPath = screen.getScreenId() + "_background.png";
+        if (backgroundColor == -1)
+            screen.setBackgroundFile(backgroundPath);
     }
 
     private void convertLegacyControls(Screen screen) {
@@ -156,7 +159,7 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     @Override
-    public void save(IScreen screen) {
+    public void save(IScreen screen, Drawable image) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
@@ -168,8 +171,9 @@ public class ScreenRepository implements IScreenRepository {
                 ColorDrawable color = (ColorDrawable) screen.getBackground();
                 prefsEditor.putInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, color.getColor());
             } else {
-                BitmapDrawable bitmap = (BitmapDrawable) screen.getBackground();
-                saveBitmap(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, bitmap.getBitmap());
+                //BitmapDrawable bitmap = (BitmapDrawable) screen.getBackground();
+                screen.setBackgroundFile(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX);
+                saveBitmap(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, ((BitmapDrawable) image).getBitmap());
                 prefsEditor.putInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, -1);
             }
         }

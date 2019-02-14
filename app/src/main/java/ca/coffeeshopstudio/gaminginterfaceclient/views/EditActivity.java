@@ -152,7 +152,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             @Override
             public void onClick(View view) {
                 currentScreen.setBackground(findViewById(R.id.topLayout).getBackground());
-                screenRepository.save((Screen) currentScreen);
+                screenRepository.save(currentScreen, findViewById(R.id.topLayout).getBackground());
             }
         });
 
@@ -412,10 +412,13 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
     @Override
     public void onFinishEditBackgroundDialog(int primaryColor, Uri image) {
-        if (image == null)
+        if (image == null) {
+            currentScreen.setBackgroundColor(primaryColor);
             findViewById(R.id.topLayout).setBackgroundColor(primaryColor);
-        else {
+        } else {
             try {
+                currentScreen.setBackgroundColor(-1);
+                //currentScreen.setBackgroundFile(image.getPath()); //invalid path, but at least it's not empty with this data
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image);
                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                 findViewById(R.id.topLayout).setBackground(drawable);
