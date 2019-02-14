@@ -58,14 +58,22 @@ public class ScreenRepository implements IScreenRepository {
             }
             if (cache.size() == 0) {
                 //load in the legacy
-                cache.add(loadLegacyScreen());
+                cache.add(buildInitialScreen());
             }
         }
     }
 
-    private Screen loadLegacyScreen() {
+    //this handles both legacy (1.x) and new builds
+    private Screen buildInitialScreen() {
         Screen screen = new Screen(0, context);
         cache.add(screen);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+
+        prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
+
+        prefsEditor.apply();
+
         loadBackground(screen);
         loadControls(screen);
         return screen;
