@@ -1,7 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
@@ -9,12 +8,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
@@ -93,10 +97,59 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                 Screen screen = (Screen) myReference.get().repository.getScreen(params[0]);
                 String json = mapper.writeValueAsString(screen);
                 Writer output;
-                File file = new File(Environment.getExternalStorageDirectory() + "/test.json");
-                output = new BufferedWriter(new FileWriter(file));
+
+                //setup directory inside cache
+                File cacheDir = new File(myReference.get().view.getContext().getCacheDir() + "/screen" + screen.getScreenId());
+                if (cacheDir.exists()) {
+                    if (cacheDir.isFile()) {
+                        cacheDir.delete();
+                        cacheDir.mkdir();
+                    } else {
+                        for (File child : cacheDir.listFiles())
+                            child.delete();
+                    }
+                } else {
+                    cacheDir.mkdir();
+                }
+                //store the json dat in the directory
+                File jsonData = new File(cacheDir.getAbsolutePath() + "/data.json");
+                output = new BufferedWriter(new FileWriter(jsonData));
                 output.write(json);
                 output.close();
+                //look for any files inside the screen that we need to add
+                if (!screen.getBackgroundFile().isEmpty()) {
+                    File background = new File(myReference.get().view.getContext().getFilesDir() + "/" + screen.getBackgroundFile());
+                    InputStream in = new FileInputStream(background);
+                    OutputStream out = new FileOutputStream(cacheDir.getAbsolutePath() + "/" + screen.getBackgroundFile());
+                    byte[] buffer = new byte[1024];
+                    int read;
+                    while ((read = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, read);
+                    }
+                    in.close();
+
+                    // write the output file
+                    out.flush();
+                    out.close();
+                }
+                for (GICControl control : screen.getControls()) {
+                    if (!control.getPrimaryImage().isEmpty()) {
+                        File image = new File(control.getPrimaryImage());
+                        InputStream in = new FileInputStream(image);
+                        OutputStream out = new FileOutputStream(cacheDir.getAbsolutePath() + "/" + image.getName());
+                        byte[] buffer = new byte[1024];
+                        int read;
+                        while ((read = in.read(buffer)) != -1) {
+                            out.write(buffer, 0, read);
+                        }
+                        in.close();
+
+                        // write the output file
+                        out.flush();
+                        out.close();
+                    }
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

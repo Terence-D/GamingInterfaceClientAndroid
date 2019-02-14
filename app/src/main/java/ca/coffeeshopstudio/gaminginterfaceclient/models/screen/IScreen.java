@@ -16,6 +16,8 @@ public interface IScreen {
 
     int getScreenId();
 
+    String getBackgroundFile();
+
     Drawable getImage(String filename);
 
     void addControl(GICControl control);

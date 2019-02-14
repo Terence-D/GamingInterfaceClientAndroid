@@ -89,6 +89,11 @@ public class Screen implements IScreen {
     }
 
     @Override
+    public String getBackgroundFile() {
+        return backgroundPath;
+    }
+
+    @Override
     public Drawable getImage(String fileName) {
         if (fileName.startsWith(screenId + "_control")) {
             Bitmap bitmap = BitmapFactory.decodeFile(context.getFilesDir() + "/" + fileName);

@@ -73,7 +73,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     @Override
     public Context getContext() {
-        return null;
+        return this;
     }
 
     @Override
