@@ -43,6 +43,8 @@ public interface IContract {
          */
         void showMessage(int messageId);
 
+        void showMessage(String message);
+
         /**
          * Displays / hides loading window
          *
@@ -53,6 +55,7 @@ public interface IContract {
         Context getContext();
 
         void updateSpinner(SparseArray<String> screenList);
+
     }
 
     interface IViewActionListener {

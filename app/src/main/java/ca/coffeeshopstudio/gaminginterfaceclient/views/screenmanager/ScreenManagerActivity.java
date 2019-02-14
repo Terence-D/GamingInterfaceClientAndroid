@@ -60,7 +60,12 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     @Override
     public void showMessage(int messageId) {
-        Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, messageId, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     @Override
