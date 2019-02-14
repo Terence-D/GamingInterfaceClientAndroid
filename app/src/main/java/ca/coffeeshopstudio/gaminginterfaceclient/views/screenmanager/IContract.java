@@ -21,26 +21,13 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
  * limitations under the License.
  */
 public interface IContract {
-    interface IViewActionListener {
-        void load();
-
-        void update(int screenId, String newName);
-
-        void delete(Screen toDelete);
-
-        void importNew(Screen toImport);
-
-        void exportCurrent(Screen toExport);
-
-    }
-
-    interface IView<ViewActionListener> {
+    interface IView {
         /**
          * Our linkage back to the other half of the contract
          *
          * @param listener Action Listener
          */
-        void setViewActionListener(ViewActionListener listener);
+        void setViewActionListener(IViewActionListener listener);
 
         /**
          * Display an error message
@@ -66,5 +53,18 @@ public interface IContract {
         Context getContext();
 
         void updateSpinner(SparseArray<String> screenList);
+    }
+
+    interface IViewActionListener {
+        void load();
+
+        void update(int screenId, String newName);
+
+        void delete(Screen toDelete);
+
+        void importNew(Screen toImport);
+
+        void exportCurrent(Screen toExport);
+
     }
 }

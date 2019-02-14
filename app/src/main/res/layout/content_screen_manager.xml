@@ -9,7 +9,7 @@
     tools:showIn="@layout/activity_screen_manager">
 
     <Spinner
-        android:id="@+id/spinner3"
+        android:id="@+id/spnScreens"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -27,7 +27,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/activity_screens_update"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
     <Button
         android:id="@+id/btnNew"
@@ -57,10 +57,10 @@
         android:layout_marginEnd="8dp"
         android:text="@string/activity_screens_export"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/txtName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -70,7 +70,7 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner3" />
+        app:layout_constraintTop_toBottomOf="@+id/spnScreens" />
 
     <Button
         android:id="@+id/btnDelete"
@@ -82,6 +82,6 @@
         android:text="@string/activity_screens_delete"
         app:layout_constraintEnd_toStartOf="@+id/btnExport"
         app:layout_constraintStart_toEndOf="@+id/btnUpdate"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
 </android.support.constraint.ConstraintLayout>

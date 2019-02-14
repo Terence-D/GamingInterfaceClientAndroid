@@ -6,11 +6,19 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 
-public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView {
+public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener {
     private ProgressDialog dialog;
+    private IContract.IViewActionListener actionListener;
+    private SparseArray<String> screenList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,11 +26,14 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         setContentView(R.layout.activity_screen_manager);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        setViewActionListener(new Presentation(new ScreenRepository(getApplicationContext()), this));
+        actionListener.load();
     }
 
     @Override
-    public void setViewActionListener(Object o) {
-
+    public void setViewActionListener(IContract.IViewActionListener listener) {
+        actionListener = listener;
     }
 
     @Override
@@ -49,8 +60,21 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     }
 
     @Override
-    public void updateSpinner(SparseArray screenList) {
+    public void updateSpinner(SparseArray<String> screenList) {
+        this.screenList = screenList;
+        Spinner spinner = findViewById(R.id.spnScreens);
 
+        String[] spinnerArray = new String[screenList.size()];
+        for (int i = 0; i < screenList.size(); i++) {
+            spinnerArray[i] = screenList.valueAt(i);
+        }
+
+        ArrayAdapter<CharSequence> dataAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(dataAdapter);
+        spinner.setSelection(0);
+        spinner.setOnItemSelectedListener(this);
+        ((TextView) findViewById(R.id.txtName)).setText(screenList.valueAt(0));
     }
 
     protected void showLoadingIndicator() {
@@ -72,4 +96,13 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         }
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        ((TextView) findViewById(R.id.txtName)).setText(screenList.valueAt(i));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }
