@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
 import android.content.Context;
+import android.util.SparseArray;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
 
@@ -20,14 +21,17 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
  * limitations under the License.
  */
 public interface IContract {
-    interface ViewActionListener {
-        void update(Screen toUpdate);
+    interface IViewActionListener {
+        void load();
+
+        void update(int screenId, String newName);
 
         void delete(Screen toDelete);
 
         void importNew(Screen toImport);
 
         void exportCurrent(Screen toExport);
+
     }
 
     interface IView<ViewActionListener> {
@@ -60,5 +64,7 @@ public interface IContract {
         void setProgressIndicator(boolean show);
 
         Context getContext();
+
+        void updateSpinner(SparseArray<String> screenList);
     }
 }

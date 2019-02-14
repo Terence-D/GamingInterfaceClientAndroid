@@ -82,6 +82,8 @@ public class Screen implements IScreen {
 
     @Override
     public String getName() {
+        if (name == null)
+            return "Screen" + getScreenId();
         return name;
     }
 

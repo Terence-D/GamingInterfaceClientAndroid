@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -27,7 +28,7 @@ import static android.content.Context.MODE_PRIVATE;
  * TODO: HEADER COMMENT HERE.
  */
 public class ScreenRepository implements IScreenRepository {
-    static List<Screen> cache;
+    static List<IScreen> cache;
     private final String PREFS_NAME = "gicsScreen";
     private final String PREFS_SCREEN = "screen_";
     private final String PREFS_BACKGROUND_SUFFIX = "_background";
@@ -39,7 +40,7 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     @Override
-    public void loadScreens() {
+    public void loadScreens(@NonNull final LoadCallback callback) {
         if (cache == null) {
             //init the cache
             cache = new ArrayList<>();
@@ -61,6 +62,7 @@ public class ScreenRepository implements IScreenRepository {
                 cache.add(buildInitialScreen());
             }
         }
+        callback.onLoaded(cache);
     }
 
     //this handles both legacy (1.x) and new builds
@@ -154,7 +156,7 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     @Override
-    public void save(Screen screen) {
+    public void save(IScreen screen) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
@@ -198,20 +200,20 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     @Override
-    public Screen getScreen(int id) {
+    public IScreen getScreen(int id) {
         if (id >= cache.size())
             return null;
         return cache.get(id);
     }
 
     @Override
-    public SparseArray<String> getScreenList() {
+    public void getScreenList(@NonNull LoadScreenListCallback callback) {
 
         SparseArray<String> rv = new SparseArray<>();
-        for (Screen screen : cache) {
+        for (IScreen screen : cache) {
             rv.put(screen.getScreenId(), screen.getName());
         }
-        return rv;
+        callback.onLoaded(rv);
     }
 
     @Override

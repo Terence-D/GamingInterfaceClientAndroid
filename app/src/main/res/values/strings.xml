@@ -93,4 +93,5 @@
     <string name="activity_screens_import">Import</string>
     <string name="activity_screens_export">Export</string>
     <string name="activity_screens_delete">Delete</string>
+    <string name="loading">Please Wait...</string>
 </resources>

@@ -8,14 +8,24 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.CommandService;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.RestClientInstance;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,13 +45,20 @@ import retrofit2.Response;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    private SparseArray<String> screenList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        buildControls();
+
+        loadSettings();
+    }
+
+    private void buildControls() {
         findViewById(R.id.btnStart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,7 +87,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        loadSettings();
+        final ScreenRepository screenRepository = new ScreenRepository(getApplicationContext());
+        screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
+            @Override
+            public void onLoaded(List<IScreen> screens) {
+                screenRepository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                    @Override
+                    public void onLoaded(SparseArray<String> screenList) {
+                        buildScreenSpinner(screenList);
+                    }
+                });
+            }
+        });
+    }
+
+    private void buildScreenSpinner(SparseArray<String> screenList) {
+        this.screenList = screenList;
+
+        Spinner spinner = findViewById(R.id.spnScreens);
+
+        String[] spinnerArray = new String[screenList.size() + 1];
+        spinnerArray[0] = "Manage";
+        for (int i = 0; i < screenList.size(); i++) {
+            spinnerArray[i + 1] = screenList.valueAt(i);
+        }
+
+        ArrayAdapter<CharSequence> dataAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(dataAdapter);
+        spinner.setSelection(1);
+        spinner.setOnItemSelectedListener(this);
     }
 
     private void editApp() {
@@ -223,5 +269,15 @@ public class MainActivity extends AppCompatActivity {
         txtPassword.setText(password);
         txtPort.setText(port);
         txtAddress.setText(address);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (i == 0)
+            MainActivity.this.startActivity(new Intent(MainActivity.this, ScreenManagerActivity.class));
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
     }
 }
