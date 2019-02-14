@@ -23,7 +23,10 @@ import android.widget.ToggleButton;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.Screen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -41,15 +44,19 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Screen;
  limitations under the License.
  */
 public abstract class AbstractGameActivity extends AppCompatActivity implements View.OnClickListener {
-    protected Screen currentScreen;
-
+    protected IScreen currentScreen;
     protected int currentApiVersion;
+
+    protected IScreenRepository screenRepository;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        currentScreen = new Screen(this);
+        screenRepository = new ScreenRepository(getApplicationContext());
+        screenRepository.loadScreens();
+
+        currentScreen = screenRepository.getScreen(0);
 
         buildFontCache();
     }
@@ -165,7 +172,6 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     }
 
     protected void loadScreen() {
-        currentScreen.loadControls();
         for (GICControl control : currentScreen.getControls()) {
             switch (control.getViewType()) {
                 case 0:
@@ -183,13 +189,13 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
 
         View topLayout = findViewById(R.id.topLayout);
-        Drawable background = currentScreen.loadBackground();
+        Drawable background = currentScreen.getBackground();
         topLayout.setBackground(background);
     }
 
     protected View buildText(GICControl control) {
         AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, currentScreen.getMaxControlSize(), 2, TypedValue.COMPLEX_UNIT_SP);
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, Screen.MAX_CONTROL_SIZE, 2, TypedValue.COMPLEX_UNIT_SP);
         buildView(control, view);
         initText(view, control);
         return view;
@@ -222,7 +228,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             resizeImageView(view, control.getWidth(), control.getHeight());
         }
         else {
-            Drawable image = currentScreen.loadImage(control.getPrimaryImage());
+            Drawable image = currentScreen.getImage(control.getPrimaryImage());
             view.setImageDrawable(image);
             resizeImageView(view, control.getWidth(), control.getHeight());
         }
@@ -246,7 +252,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
         addDragDrop(view);
 
-        view.setId(currentScreen.getNewId());
+        view.setId(currentScreen.getNewControlId());
     }
 
     //initializations related to textview based controls (AppCompatTextView, Button, etc)

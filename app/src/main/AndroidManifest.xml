@@ -15,7 +15,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute">
         <activity
-            android:name=".views.ScreenManager"
+            android:name=".views.screenmanager.ScreenManager"
             android:label="@string/title_activity_screen_manager"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".views.AboutActivity" />

@@ -36,6 +36,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -136,8 +137,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         setupToggleSwitch();
 
-        seekWidth.setMax(currentScreen.getMaxControlSize());
-        seekHeight.setMax(currentScreen.getMaxControlSize());
+        seekWidth.setMax(Screen.MAX_CONTROL_SIZE);
+        seekHeight.setMax(Screen.MAX_CONTROL_SIZE);
         seekFontSize.setMax(maxFontSize);
         seekWidth.setOnSeekBarChangeListener(this);
         seekHeight.setOnSeekBarChangeListener(this);
@@ -150,7 +151,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currentScreen.saveScreen(findViewById(R.id.topLayout).getBackground());
+                currentScreen.setBackground(findViewById(R.id.topLayout).getBackground());
+                screenRepository.save((Screen) currentScreen);
             }
         });
 

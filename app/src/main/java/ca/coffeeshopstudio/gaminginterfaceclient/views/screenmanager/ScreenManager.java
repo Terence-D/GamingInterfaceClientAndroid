@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient.views;
+package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import ca.coffeeshopstudio.gaminginterfaceclient.dev.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
 public class ScreenManager extends AppCompatActivity {
 
