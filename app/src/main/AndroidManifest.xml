@@ -4,6 +4,8 @@
     package="ca.coffeeshopstudio.gaminginterfaceclient">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +19,7 @@
         <activity
             android:name=".views.screenmanager.ScreenManagerActivity"
             android:label="@string/title_activity_screen_manager"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".views.AboutActivity" />
         <activity
             android:name=".views.EditActivity"

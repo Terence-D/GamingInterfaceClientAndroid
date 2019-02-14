@@ -94,4 +94,6 @@
     <string name="activity_screens_export">Export</string>
     <string name="activity_screens_delete">Delete</string>
     <string name="loading">Please Wait...</string>
+    <string name="need_permission">This action requires you to enable this permission.</string>
+    <string name="export_complete">Export Complete!</string>
 </resources>

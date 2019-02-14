@@ -1,8 +1,13 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
@@ -11,14 +16,20 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 
-public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener {
-    private ProgressDialog dialog;
+public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener, View.OnClickListener {
+    // permissions request code
+    private final static int REQUEST_CODE_ASK_PERMISSIONS = 501;
+
     private IContract.IViewActionListener actionListener;
     private SparseArray<String> screenList;
+
+    private ProgressDialog dialog;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +40,12 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
         setViewActionListener(new Presentation(new ScreenRepository(getApplicationContext()), this));
         actionListener.load();
+
+        buildControls();
+    }
+
+    private void buildControls() {
+        findViewById(R.id.btnExport).setOnClickListener(this);
     }
 
     @Override
@@ -43,7 +60,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     @Override
     public void showMessage(int messageId) {
-
+        Toast.makeText(this, messageId, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -62,7 +79,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     @Override
     public void updateSpinner(SparseArray<String> screenList) {
         this.screenList = screenList;
-        Spinner spinner = findViewById(R.id.spnScreens);
+        spinner = findViewById(R.id.spnScreens);
 
         String[] spinnerArray = new String[screenList.size()];
         for (int i = 0; i < screenList.size(); i++) {
@@ -104,5 +121,55 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnExport:
+                export();
+                break;
+        }
+    }
+
+    private void export() {
+        //first ensure we have write permission
+        checkPermissions();
+    }
+
+    protected void checkPermissions() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            // User may have declined earlier, ask Android if we should show him a reason
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    // show an explanation to the user
+                    // Good practise: don't block thread after the user sees the explanation, try again to request the permission.
+                    Toast.makeText(this, R.string.need_permission, Toast.LENGTH_SHORT).show();
+                } else {
+                    // request the permission.
+                    // CALLBACK_NUMBER is a integer constants
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_PERMISSIONS);
+                    // The callback method gets the result of the request.
+                }
+            } else {
+                actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
+            }
+        } else {
+            actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
+                }
+                break;
+            }
+        }
     }
 }

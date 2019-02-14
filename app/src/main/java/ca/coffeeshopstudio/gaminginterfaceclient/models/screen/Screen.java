@@ -7,24 +7,58 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 
 /**
- * TODO: HEADER COMMENT HERE.
+ Copyright [2019] [Terence Doerksen]
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+        "screenId",
+        "name",
+        "controls",
+        "backgroundColor",
+        "backgroundPath",
+})
 public class Screen implements IScreen {
     public static final int MAX_CONTROL_SIZE = 800;
 
+    @JsonProperty("screenId")
     private int screenId;
+    @JsonProperty("controls")
+    @JsonUnwrapped
     private List<GICControl> customControls = new ArrayList<>();
+    @JsonIgnore
     private Drawable background;
     private int newId = 0;
+    @JsonProperty("backgroundColor")
     private int backgroundColor;
+    @JsonProperty("backgroundPath")
     private String backgroundPath;
+    @JsonIgnore
     private Context context;
+    @JsonProperty("name")
     private String name;
 
     public Screen(int screenId, Context context) {

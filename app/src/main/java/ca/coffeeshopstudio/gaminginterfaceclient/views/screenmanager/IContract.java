@@ -64,7 +64,7 @@ public interface IContract {
 
         void importNew(Screen toImport);
 
-        void exportCurrent(Screen toExport);
+        void exportCurrent(int screenId);
 
     }
 }
