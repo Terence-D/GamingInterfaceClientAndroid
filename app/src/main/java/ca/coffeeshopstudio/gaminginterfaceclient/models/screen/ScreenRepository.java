@@ -222,10 +222,10 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     @Override
-    public IScreen getScreen(int index) {
-        if (index >= cache.size())
+    public IScreen getScreen(int id) {
+        if (id >= cache.size())
             return null;
-        return cache.get(index);
+        return cache.get(id);
     }
 
     @Override
@@ -239,7 +239,7 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     @Override
-    public void removeScreen(int index) {
+    public void removeScreen(int id) {
         //TODO
     }
 
