@@ -102,6 +102,16 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         ((TextView) findViewById(R.id.txtName)).setText(screenList.valueAt(0));
     }
 
+    @Override
+    public void setSpinnerSelection(int screenId) {
+        for (int i = 0; i < screenList.size(); i++) {
+            if (screenList.keyAt(i) == screenId) {
+                spinner.setSelection(i);
+                break;
+            }
+        }
+    }
+
     protected void showLoadingIndicator() {
         buildLoadWindow();
         dialog.show();

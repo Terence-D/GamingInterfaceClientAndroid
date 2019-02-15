@@ -111,6 +111,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                 public void onLoaded(SparseArray<String> screenList) {
                     presentation.view.updateSpinner(screenList);
                     presentation.view.setProgressIndicator(false);
+                    presentation.view.setSpinnerSelection(screenList.size() - 1);
                 }
             });
         }
@@ -199,8 +200,9 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
             repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
                 @Override
                 public void onLoaded(SparseArray<String> screenList) {
-                    view.setProgressIndicator(false);
                     view.updateSpinner(screenList);
+                    view.setSpinnerSelection(screenId);
+                    view.setProgressIndicator(false);
                 }
             });
         }

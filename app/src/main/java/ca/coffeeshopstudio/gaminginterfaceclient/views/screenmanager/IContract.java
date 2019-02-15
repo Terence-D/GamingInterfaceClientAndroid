@@ -56,6 +56,7 @@ public interface IContract {
 
         void updateSpinner(SparseArray<String> screenList);
 
+        void setSpinnerSelection(int screenId);
     }
 
     interface IViewActionListener {
