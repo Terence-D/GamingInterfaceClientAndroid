@@ -50,8 +50,9 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
 
     @Override
     public void update(int screenId, String newName) {
-        repository.getScreen(screenId).setName(newName);
-        //repository.save(repository.getScreen(screenId));
+        view.setProgressIndicator(true);
+        UpdateTask task = new UpdateTask(view, repository, screenId, newName);
+        task.execute();
     }
 
     @Override
@@ -171,4 +172,37 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
         }
     }
 
+    private static class UpdateTask extends AsyncTask<Void, Void, Void> {
+        IScreenRepository repository;
+        int screenId;
+        String newName;
+        IContract.IView view;
+
+        public UpdateTask(IContract.IView view, IScreenRepository repository, int screenId, String newName) {
+            this.repository = repository;
+            this.screenId = screenId;
+            this.newName = newName;
+            this.view = view;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            IScreen screen = repository.getScreen(screenId);
+            screen.setName(newName);
+            repository.save(screen, screen.getBackground());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                @Override
+                public void onLoaded(SparseArray<String> screenList) {
+                    view.setProgressIndicator(false);
+                    view.updateSpinner(screenList);
+                }
+            });
+        }
+    }
 }

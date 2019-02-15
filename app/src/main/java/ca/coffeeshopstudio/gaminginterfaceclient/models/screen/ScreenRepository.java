@@ -54,7 +54,6 @@ public class ScreenRepository implements IScreenRepository {
             Map<String, ?> keys = prefs.getAll();
             for (Map.Entry<String, ?> entry : keys.entrySet()) {
                 if (entry.getKey().contains(PREFS_SCREEN)) {
-
                     Matcher matcher = lastIntPattern.matcher(entry.getKey());
                     if (matcher.find()) {
                         String someNumberStr = matcher.group(1);
@@ -62,6 +61,11 @@ public class ScreenRepository implements IScreenRepository {
                     }
 
                     Screen screen = new Screen(screenId, context);
+                    try { //legacy used an integer dummy value, so we need to handle that
+                        screen.setName((String) entry.getValue());
+                    } catch (Exception e) {
+                        screen.setName("Screen " + screenId);
+                    }
                     cache.add(screen);
                     loadBackground(screen);
                     loadControls(screen);
@@ -181,7 +185,7 @@ public class ScreenRepository implements IScreenRepository {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
-        prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
+        prefsEditor.putString(PREFS_SCREEN + screen.getScreenId(), screen.getName());
 
         //save the background image
         if (screen.getBackground() != null) {
@@ -225,7 +229,11 @@ public class ScreenRepository implements IScreenRepository {
     public IScreen getScreen(int id) {
         if (id >= cache.size())
             return null;
-        return cache.get(id);
+        for (int i = 0; i < cache.size(); i++) {
+            if (cache.get(i).getScreenId() == id)
+                return cache.get(i);
+        }
+        return null;
     }
 
     @Override

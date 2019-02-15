@@ -143,7 +143,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
                 break;
             case R.id.btnUpdate:
                 String screenName = ((TextView) findViewById(R.id.txtName)).getText().toString();
-                actionListener.update(selectedScreenIndex, screenName);
+                actionListener.update(screenList.indexOfKey(selectedScreenIndex), screenName);
                 break;
         }
     }
