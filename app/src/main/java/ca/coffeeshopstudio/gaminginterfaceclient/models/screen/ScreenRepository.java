@@ -167,6 +167,12 @@ public class ScreenRepository implements IScreenRepository {
         //cache.add(newScreen);
 
         save(newScreen, null);
+        loadScreens(new LoadCallback() {
+            @Override
+            public void onLoaded(List<IScreen> screens) {
+                //ignore
+            }
+        });
         return newScreen;
     }
 
