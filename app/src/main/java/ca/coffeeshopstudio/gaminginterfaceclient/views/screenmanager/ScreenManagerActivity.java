@@ -30,6 +30,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     private ProgressDialog dialog;
     private Spinner spinner;
+    private int selectedScreenIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     private void buildControls() {
         findViewById(R.id.btnExport).setOnClickListener(this);
         findViewById(R.id.btnNew).setOnClickListener(this);
+        findViewById(R.id.btnUpdate).setOnClickListener(this);
     }
 
     @Override
@@ -121,6 +123,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        selectedScreenIndex = i;
         ((TextView) findViewById(R.id.txtName)).setText(screenList.valueAt(i));
     }
 
@@ -138,15 +141,14 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
             case R.id.btnNew:
                 actionListener.create();
                 break;
+            case R.id.btnUpdate:
+                String screenName = ((TextView) findViewById(R.id.txtName)).getText().toString();
+                actionListener.update(selectedScreenIndex, screenName);
+                break;
         }
     }
 
     private void export() {
-        //first ensure we have write permission
-        checkPermissions();
-    }
-
-    protected void checkPermissions() {
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             // User may have declined earlier, ask Android if we should show him a reason
