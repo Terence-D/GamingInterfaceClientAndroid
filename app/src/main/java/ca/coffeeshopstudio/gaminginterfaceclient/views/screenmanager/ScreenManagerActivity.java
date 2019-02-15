@@ -46,6 +46,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     private void buildControls() {
         findViewById(R.id.btnExport).setOnClickListener(this);
+        findViewById(R.id.btnNew).setOnClickListener(this);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     @Override
     public void showError(int errorResource) {
-
+        Toast.makeText(this, errorResource, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -133,6 +134,9 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         switch (view.getId()) {
             case R.id.btnExport:
                 export();
+                break;
+            case R.id.btnNew:
+                actionListener.create();
                 break;
         }
     }

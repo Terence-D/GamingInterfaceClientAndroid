@@ -71,6 +71,13 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
     }
 
     @Override
+    public void create() {
+        view.setProgressIndicator(true);
+        CreateTask task = new CreateTask(repository, this);
+        task.execute();
+    }
+
+    @Override
     public void onLoaded(List<IScreen> screens) {
         repository.getScreenList(this);
     }
@@ -81,14 +88,38 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
         view.setProgressIndicator(false);
     }
 
+    private static class CreateTask extends AsyncTask<Void, Void, Void> {
+        private final IScreenRepository repository;
+        private final Presentation presentation;
+
+        public CreateTask(IScreenRepository repository, Presentation presentation) {
+            this.repository = repository;
+            this.presentation = presentation;
+        }
+
+        @Override
+        protected Void doInBackground(Void... values) {
+            repository.newScreen();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void results) {
+            repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                @Override
+                public void onLoaded(SparseArray<String> screenList) {
+                    presentation.view.updateSpinner(screenList);
+                    presentation.view.setProgressIndicator(false);
+                }
+            });
+        }
+    }
+
     private static class ExportTask extends AsyncTask<Integer, Void, String> {
-
         private WeakReference<Presentation> myReference;
-
         ExportTask(Presentation presentation) {
             myReference = new WeakReference<>(presentation);
         }
-
         @Override
         protected String doInBackground(Integer... params) {
             ObjectMapper mapper = new ObjectMapper();
@@ -98,20 +129,6 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                 Screen screen = (Screen) myReference.get().repository.getScreen(params[0]);
                 String json = mapper.writeValueAsString(screen);
                 Writer output;
-
-//                //setup directory inside cache
-//                File cacheDir = new File(myReference.get().view.getContext().getCacheDir() + "/screen" + screen.getScreenId());
-//                if (cacheDir.exists()) {
-//                    if (cacheDir.isFile()) {
-//                        cacheDir.delete();
-//                        cacheDir.mkdir();
-//                    } else {
-//                        for (File child : cacheDir.listFiles())
-//                            child.delete();
-//                    }
-//                } else {
-//                    cacheDir.mkdir();
-//                }
                 File cacheDir = new File(myReference.get().view.getContext().getCacheDir().getAbsolutePath());
 
                 //store the json dat in the directory
@@ -125,36 +142,10 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                 //look for any files inside the screen that we need to add
                 if (!screen.getBackgroundFile().isEmpty()) {
                     filesToZip.add(myReference.get().view.getContext().getFilesDir() + "/" + screen.getBackgroundFile());
-//                    File background = new File(myReference.get().view.getContext().getFilesDir() + "/" + screen.getBackgroundFile());
-//                    InputStream in = new FileInputStream(background);
-//                    OutputStream out = new FileOutputStream(cacheDir.getAbsolutePath() + "/" + screen.getBackgroundFile());
-//                    byte[] buffer = new byte[1024];
-//                    int read;
-//                    while ((read = in.read(buffer)) != -1) {
-//                        out.write(buffer, 0, read);
-//                    }
-//                    in.close();
-//
-//                    // write the output file
-//                    out.flush();
-//                    out.close();
                 }
                 for (GICControl control : screen.getControls()) {
                     if (!control.getPrimaryImage().isEmpty()) {
                         filesToZip.add(control.getPrimaryImage());
-//                        File image = new File(control.getPrimaryImage());
-//                        InputStream in = new FileInputStream(image);
-//                        OutputStream out = new FileOutputStream(cacheDir.getAbsolutePath() + "/" + image.getName());
-//                        byte[] buffer = new byte[1024];
-//                        int read;
-//                        while ((read = in.read(buffer)) != -1) {
-//                            out.write(buffer, 0, read);
-//                        }
-//                        in.close();
-//
-//                        // write the output file
-//                        out.flush();
-//                        out.close();
                     }
                 }
 

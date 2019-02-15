@@ -69,5 +69,6 @@ public interface IContract {
 
         void exportCurrent(int screenId);
 
+        void create();
     }
 }
