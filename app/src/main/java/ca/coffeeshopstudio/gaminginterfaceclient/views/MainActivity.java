@@ -71,6 +71,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 editApp();
             }
         });
+        findViewById(R.id.btnScreenManager).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity.this.startActivity(new Intent(MainActivity.this, ScreenManagerActivity.class));
+            }
+        });
         findViewById(R.id.btnAbout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,16 +112,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Spinner spinner = findViewById(R.id.spnScreens);
 
-        String[] spinnerArray = new String[screenList.size() + 1];
-        spinnerArray[0] = "Manage";
+        String[] spinnerArray = new String[screenList.size()];
         for (int i = 0; i < screenList.size(); i++) {
-            spinnerArray[i + 1] = screenList.valueAt(i);
+            spinnerArray[i] = screenList.valueAt(i);
         }
 
         ArrayAdapter<CharSequence> dataAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(dataAdapter);
-        spinner.setSelection(1);
         spinner.setOnItemSelectedListener(this);
     }
 
@@ -273,8 +277,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (i == 0)
-            MainActivity.this.startActivity(new Intent(MainActivity.this, ScreenManagerActivity.class));
+
     }
 
     @Override

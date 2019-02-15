@@ -97,4 +97,5 @@
     <string name="need_permission">This action requires you to enable this permission.</string>
     <string name="export_complete">Export Complete!</string>
     <string name="zip_successful">ZIP File successfully created: </string>
+    <string name="activity_main_screen_manager">Screen Manager</string>
 </resources>
