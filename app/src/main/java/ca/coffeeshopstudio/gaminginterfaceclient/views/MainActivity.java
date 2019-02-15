@@ -47,6 +47,7 @@ import retrofit2.Response;
  */
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final String INTENT_SCREEN_INDEX = "screen_index";
+    private static final String PREFS_CHOSEN_ID = "chosen_id";
     private SparseArray<String> screenList;
     private Spinner spinner;
 
@@ -119,13 +120,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner = findViewById(R.id.spnScreens);
 
         String[] spinnerArray = new String[screenList.size()];
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(ScreenRepository.PREFS_NAME, MODE_PRIVATE);
+        int chosenId = prefs.getInt(PREFS_CHOSEN_ID, 0);
+        int chosenIndex = 0;
+
         for (int i = 0; i < screenList.size(); i++) {
             spinnerArray[i] = screenList.valueAt(i);
+            if (screenList.keyAt(i) == chosenId)
+                chosenIndex = i;
         }
 
         ArrayAdapter<CharSequence> dataAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(dataAdapter);
+        spinner.setSelection(chosenIndex);
         spinner.setOnItemSelectedListener(this);
     }
 
@@ -284,7 +292,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(ScreenRepository.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putInt(PREFS_CHOSEN_ID, screenList.keyAt(screenList.indexOfKey(i)));
+        prefsEditor.apply();
     }
 
     @Override

@@ -31,10 +31,10 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class ScreenRepository implements IScreenRepository {
     static List<IScreen> cache;
-    private final String PREFS_NAME = "gicsScreen";
-    private final String PREFS_SCREEN = "screen_";
-    private final String PREFS_BACKGROUND_SUFFIX = "_background";
-    private final String PREFS_CONTROLS = "_control_";
+    public static final String PREFS_NAME = "gicsScreen";
+    private static final String PREFS_SCREEN = "screen_";
+    private static final String PREFS_BACKGROUND_SUFFIX = "_background";
+    private static final String PREFS_CONTROLS = "_control_";
     private Context context;
     private final static Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
 
