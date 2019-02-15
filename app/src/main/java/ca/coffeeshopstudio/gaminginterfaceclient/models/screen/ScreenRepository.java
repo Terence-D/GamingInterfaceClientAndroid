@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
-import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -19,6 +18,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
@@ -35,6 +36,7 @@ public class ScreenRepository implements IScreenRepository {
     private final String PREFS_BACKGROUND_SUFFIX = "_background";
     private final String PREFS_CONTROLS = "_control_";
     private Context context;
+    private final static Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
 
     public ScreenRepository(Context context) {
         this.context = context;
@@ -51,7 +53,14 @@ public class ScreenRepository implements IScreenRepository {
             int screenId = 0;
             Map<String, ?> keys = prefs.getAll();
             for (Map.Entry<String, ?> entry : keys.entrySet()) {
-                if (entry.getKey().contains(PREFS_SCREEN + screenId)) {
+                if (entry.getKey().contains(PREFS_SCREEN)) {
+
+                    Matcher matcher = lastIntPattern.matcher(entry.getKey());
+                    if (matcher.find()) {
+                        String someNumberStr = matcher.group(1);
+                        screenId = Integer.parseInt(someNumberStr);
+                    }
+
                     Screen screen = new Screen(screenId, context);
                     cache.add(screen);
                     loadBackground(screen);
@@ -153,8 +162,11 @@ public class ScreenRepository implements IScreenRepository {
     @Override
     public Screen newScreen() {
         Screen newScreen = new Screen(cache.size(), context);
-        cache.add(newScreen);
+        newScreen.setBackgroundColor(R.color.default_background);
+        cache = null; //invalidate the cache
+        //cache.add(newScreen);
 
+        save(newScreen, null);
         return newScreen;
     }
 
@@ -196,18 +208,18 @@ public class ScreenRepository implements IScreenRepository {
                 i++;
             }
             prefsEditor.apply();
-            Toast.makeText(context, R.string.edit_activity_saved, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, R.string.edit_activity_saved, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
-            Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
     @Override
-    public IScreen getScreen(int id) {
-        if (id >= cache.size())
+    public IScreen getScreen(int index) {
+        if (index >= cache.size())
             return null;
-        return cache.get(id);
+        return cache.get(index);
     }
 
     @Override
@@ -221,7 +233,7 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     @Override
-    public void removeScreen(int id) {
+    public void removeScreen(int index) {
         //TODO
     }
 

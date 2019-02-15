@@ -16,11 +16,11 @@ public interface IScreenRepository {
 
     void save(IScreen screen, Drawable drawable);
 
-    IScreen getScreen(int id);
+    IScreen getScreen(int index);
 
     void getScreenList(@NonNull final LoadScreenListCallback callback);
 
-    void removeScreen(int id);
+    void removeScreen(int index);
 
     interface LoadCallback {
         void onLoaded(List<IScreen> screens);

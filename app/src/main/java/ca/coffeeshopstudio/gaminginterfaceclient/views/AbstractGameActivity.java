@@ -48,6 +48,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 public abstract class AbstractGameActivity extends AppCompatActivity implements View.OnClickListener {
     protected IScreen currentScreen;
     protected int currentApiVersion;
+    protected int currentScreenIndex;
 
     protected IScreenRepository screenRepository;
 
@@ -55,11 +56,14 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (getIntent() != null)
+            currentScreenIndex = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
+
         screenRepository = new ScreenRepository(getApplicationContext());
         screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
             @Override
             public void onLoaded(List<IScreen> screens) {
-                currentScreen = screenRepository.getScreen(0);
+                currentScreen = screenRepository.getScreen(currentScreenIndex);
             }
         });
 

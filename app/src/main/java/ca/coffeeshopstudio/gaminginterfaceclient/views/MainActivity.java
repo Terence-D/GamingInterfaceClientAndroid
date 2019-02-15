@@ -46,7 +46,9 @@ import retrofit2.Response;
  limitations under the License.
  */
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    public static final String INTENT_SCREEN_INDEX = "screen_index";
     private SparseArray<String> screenList;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +94,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(i);
             }
         });
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         final ScreenRepository screenRepository = new ScreenRepository(getApplicationContext());
         screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
             @Override
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void buildScreenSpinner(SparseArray<String> screenList) {
         this.screenList = screenList;
 
-        Spinner spinner = findViewById(R.id.spnScreens);
+        spinner = findViewById(R.id.spnScreens);
 
         String[] spinnerArray = new String[screenList.size()];
         for (int i = 0; i < screenList.size(); i++) {
@@ -125,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void editApp() {
         Intent myIntent = new Intent(MainActivity.this, EditActivity.class);
-
+        int screenIndex = spinner.getSelectedItemPosition();
+        myIntent.putExtra(MainActivity.INTENT_SCREEN_INDEX, screenIndex);
         MainActivity.this.startActivity(myIntent);
     }
 
