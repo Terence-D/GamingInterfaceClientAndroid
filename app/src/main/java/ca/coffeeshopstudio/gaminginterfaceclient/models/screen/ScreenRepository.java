@@ -227,8 +227,6 @@ public class ScreenRepository implements IScreenRepository {
 
     @Override
     public IScreen getScreen(int id) {
-        if (id >= cache.size())
-            return null;
         for (int i = 0; i < cache.size(); i++) {
             if (cache.get(i).getScreenId() == id)
                 return cache.get(i);
@@ -248,7 +246,33 @@ public class ScreenRepository implements IScreenRepository {
 
     @Override
     public void removeScreen(int id) {
-        //TODO
+        for (int i = 0; i < cache.size(); i++) {
+            if (cache.get(i).getScreenId() == id)
+                deleteScreen(cache.get(i));
+        }
+        cache = null;
+        loadScreens(new LoadCallback() {
+            @Override
+            public void onLoaded(List<IScreen> screens) {
+                //ignore
+            }
+        });
+    }
+
+    private void deleteScreen(IScreen screen) {
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.remove(PREFS_SCREEN + screen.getScreenId());
+        prefsEditor.remove(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX);
+
+        //first we need to remove all existing views
+        Map<String, ?> keys = prefs.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            if (entry.getKey().contains(screen.getScreenId() + PREFS_CONTROLS)) {
+                prefsEditor.remove(entry.getKey());
+            }
+        }
+        prefsEditor.apply();
     }
 
     private void saveBitmap(String fileName, Bitmap image) {

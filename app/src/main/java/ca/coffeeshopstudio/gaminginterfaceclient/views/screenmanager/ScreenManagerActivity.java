@@ -3,13 +3,16 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,6 +52,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         findViewById(R.id.btnExport).setOnClickListener(this);
         findViewById(R.id.btnNew).setOnClickListener(this);
         findViewById(R.id.btnUpdate).setOnClickListener(this);
+        findViewById(R.id.btnDelete).setOnClickListener(this);
     }
 
     @Override
@@ -151,11 +155,32 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
             case R.id.btnNew:
                 actionListener.create();
                 break;
+            case R.id.btnDelete:
+                delete();
+                break;
             case R.id.btnUpdate:
                 String screenName = ((TextView) findViewById(R.id.txtName)).getText().toString();
                 actionListener.update(screenList.indexOfKey(selectedScreenIndex), screenName);
                 break;
         }
+    }
+
+    private void delete() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        actionListener.delete(screenList.keyAt(selectedScreenIndex));
+                        break;
+                }
+            }
+        };
+
+        String confirmation = getString(R.string.activity_screens_confirm_delete, screenList.valueAt(selectedScreenIndex));
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(Html.fromHtml(confirmation)).setPositiveButton(android.R.string.yes, dialogClickListener)
+                .setNegativeButton(android.R.string.no, dialogClickListener).show();
     }
 
     private void export() {

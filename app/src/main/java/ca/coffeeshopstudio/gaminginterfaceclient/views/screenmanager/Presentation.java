@@ -56,8 +56,20 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
     }
 
     @Override
-    public void delete(Screen toDelete) {
-
+    public void delete(final int toDelete) {
+        final IContract.IView view = this.view;
+        repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+            @Override
+            public void onLoaded(SparseArray<String> screenList) {
+                if (screenList.size() <= 1) {
+                    view.showError(R.string.cannot_delete_last_item);
+                } else {
+                    view.setProgressIndicator(true);
+                    DeleteTask task = new DeleteTask(repository, view, toDelete);
+                    task.execute();
+                }
+            }
+        });
     }
 
     @Override
@@ -112,6 +124,36 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                     presentation.view.updateSpinner(screenList);
                     presentation.view.setProgressIndicator(false);
                     presentation.view.setSpinnerSelection(screenList.size() - 1);
+                }
+            });
+        }
+    }
+
+    private static class DeleteTask extends AsyncTask<Void, Void, Void> {
+        private final IScreenRepository repository;
+        private final IContract.IView view;
+        private final int screenId;
+
+        public DeleteTask(IScreenRepository repository, IContract.IView view, int screenId) {
+            this.repository = repository;
+            this.view = view;
+            this.screenId = screenId;
+        }
+
+        @Override
+        protected Void doInBackground(Void... values) {
+            repository.removeScreen(screenId);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void results) {
+            repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                @Override
+                public void onLoaded(SparseArray<String> screenList) {
+                    view.updateSpinner(screenList);
+                    view.setProgressIndicator(false);
+                    view.setSpinnerSelection(0);
                 }
             });
         }

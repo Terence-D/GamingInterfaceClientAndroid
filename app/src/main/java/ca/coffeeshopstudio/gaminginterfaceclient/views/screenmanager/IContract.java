@@ -64,7 +64,7 @@ public interface IContract {
 
         void update(int screenId, String newName);
 
-        void delete(Screen toDelete);
+        void delete(int toDelete);
 
         void importNew(Screen toImport);
 

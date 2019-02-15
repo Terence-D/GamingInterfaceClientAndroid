@@ -294,8 +294,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences(ScreenRepository.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
-        prefsEditor.putInt(PREFS_CHOSEN_ID, screenList.keyAt(screenList.indexOfKey(i)));
-        prefsEditor.apply();
+        try {
+            prefsEditor.putInt(PREFS_CHOSEN_ID, screenList.keyAt(screenList.indexOfKey(i)));
+            prefsEditor.apply();
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
