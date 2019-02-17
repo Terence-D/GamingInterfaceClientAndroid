@@ -51,17 +51,23 @@ public class ZipHelper {
         out.close();
     }
 
-    public static void unzip(InputStream zipFile, String destinationDir) throws IOException {
+    public static boolean unzip(InputStream zipFile, String destinationDir) throws IOException {
         File f = new File(destinationDir);
         if (!f.isDirectory()) {
             f.mkdirs();
         }
 
+        //first validate
+        boolean validZip = false;
+
+        //now extract
         ZipInputStream zipInputStream = new ZipInputStream(zipFile);
         ZipEntry zipEntry;
-
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             String path = destinationDir + File.separator + zipEntry.getName();
+            if (path.contains("data.json")) {
+                validZip = true;
+            }
 
 // Unnecessary for our needs
 //            if (zipEntry.isDirectory()) {
@@ -80,5 +86,7 @@ public class ZipHelper {
 //            }
         }
         zipInputStream.close();
+
+        return validZip;
     }
 }

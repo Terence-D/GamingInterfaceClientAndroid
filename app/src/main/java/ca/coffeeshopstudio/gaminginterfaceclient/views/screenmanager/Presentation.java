@@ -77,16 +77,8 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
 
     @Override
     public void importNew(Uri toImport) {
-        try {
-            InputStream stream = view.getContext().getContentResolver().openInputStream(toImport);
-            //get a profile name
-            String path = toImport.getLastPathSegment();
-            path = path.replace("primary:", "");
-            path = path.replace(".zip", "");
-            ZipHelper.unzip(stream, Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        view.setProgressIndicator(true);
+        new ImportTask(this).execute(toImport);
     }
 
     @Override
@@ -171,10 +163,56 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
         }
     }
 
+    private static class ImportTask extends AsyncTask<Uri, Void, String> {
+        private WeakReference<Presentation> presentationWeakReference;
+
+        ImportTask(Presentation presentation) {
+            presentationWeakReference = new WeakReference<>(presentation);
+        }
+
+        @Override
+        protected String doInBackground(Uri... params) {
+            try {
+                Uri toImport = params[0];
+                InputStream stream = presentationWeakReference.get().view.getContext().getContentResolver().openInputStream(toImport);
+                //get a profile name
+                String path = toImport.getLastPathSegment();
+                path = path.replace("primary:", "");
+                path = path.replace(".zip", "");
+                boolean valid = ZipHelper.unzip(stream, Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path);
+
+                //now read the json values
+                if (valid)
+                    parseJson(Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path + "/data.json");
+                else
+                    return presentationWeakReference.get().view.getContext().getString(R.string.invalid_zip);
+            } catch (IOException e) {
+                return e.getMessage();
+            }
+            return presentationWeakReference.get().view.getContext().getString(R.string.import_successful);
+        }
+
+        @Override
+        protected void onPostExecute(String results) {
+            presentationWeakReference.get().view.setProgressIndicator(false);
+            presentationWeakReference.get().view.showMessage(results);
+        }
+
+        private void parseJson(String path) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            File file = new File(path);
+            try {
+                Screen screen = objectMapper.readValue(file, Screen.class);
+                presentationWeakReference.get().repository.importScreen(screen);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     private static class ExportTask extends AsyncTask<Integer, Void, String> {
-        private WeakReference<Presentation> myReference;
+        private WeakReference<Presentation> presentationWeakReference;
         ExportTask(Presentation presentation) {
-            myReference = new WeakReference<>(presentation);
+            presentationWeakReference = new WeakReference<>(presentation);
         }
         @Override
         protected String doInBackground(Integer... params) {
@@ -182,10 +220,10 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
             try {
                 List<String> filesToZip = new ArrayList<>();
 
-                Screen screen = (Screen) myReference.get().repository.getScreen(params[0]);
+                Screen screen = (Screen) presentationWeakReference.get().repository.getScreen(params[0]);
                 String json = mapper.writeValueAsString(screen);
                 Writer output;
-                File cacheDir = new File(myReference.get().view.getContext().getCacheDir().getAbsolutePath());
+                File cacheDir = new File(presentationWeakReference.get().view.getContext().getCacheDir().getAbsolutePath());
 
                 //store the json dat in the directory
                 File jsonData = new File(cacheDir.getAbsolutePath() + "/data.json");
@@ -197,7 +235,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
 
                 //look for any files inside the screen that we need to add
                 if (screen.getBackgroundFile() != null && !screen.getBackgroundFile().isEmpty()) {
-                    filesToZip.add(myReference.get().view.getContext().getFilesDir() + "/" + screen.getBackgroundFile());
+                    filesToZip.add(presentationWeakReference.get().view.getContext().getFilesDir() + "/" + screen.getBackgroundFile());
                 }
                 for (GICControl control : screen.getControls()) {
                     if (!control.getPrimaryImage().isEmpty()) {
@@ -212,7 +250,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                 String destination = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + zipName;
                 ZipHelper.zip(zipArray, destination);
 
-                String message = myReference.get().view.getContext().getString(R.string.zip_successful);
+                String message = presentationWeakReference.get().view.getContext().getString(R.string.zip_successful);
                 return message + zipName;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -222,8 +260,8 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
 
         @Override
         protected void onPostExecute(String results) {
-            myReference.get().view.setProgressIndicator(false);
-            myReference.get().view.showMessage(results);
+            presentationWeakReference.get().view.setProgressIndicator(false);
+            presentationWeakReference.get().view.showMessage(results);
         }
     }
 

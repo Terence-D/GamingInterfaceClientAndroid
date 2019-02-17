@@ -165,7 +165,7 @@ public class ScreenRepository implements IScreenRepository {
 
     @Override
     public Screen newScreen() {
-        Screen newScreen = new Screen(cache.size(), context);
+        Screen newScreen = new Screen(getUniqueId(cache.size()), context);
         newScreen.setBackgroundColor(R.color.default_background);
         cache = null; //invalidate the cache
         //cache.add(newScreen);
@@ -179,6 +179,44 @@ public class ScreenRepository implements IScreenRepository {
         });
         return newScreen;
     }
+
+    @Override
+    public void importScreen(final IScreen screen) {
+        loadScreens(new LoadCallback() {
+            @Override
+            public void onLoaded(List<IScreen> screens) {
+                getUniqueName(screen);
+                final Screen newScreen = (Screen) screen;
+                newScreen.setScreenId(getUniqueId(cache.size()));
+                cache = null; //invalidate the cache
+                //cache.add(newScreen);
+                save(newScreen, null);
+            }
+        });
+    }
+
+    private int getUniqueId(int startingId) {
+        int unique = startingId;
+
+        if (cache != null) {
+            for (IScreen screen : cache) {
+                if (unique == screen.getScreenId()) {
+                    getUniqueId(startingId);
+                }
+            }
+        }
+        return unique;
+    }
+
+    private void getUniqueName(IScreen newScreen) {
+        for (IScreen screen : cache) {
+            if (screen.getName().equals(newScreen.getName())) {
+                newScreen.setName(newScreen.getName() + "1");
+                getUniqueName(newScreen);
+            }
+        }
+    }
+
 
     @Override
     public void save(IScreen screen, Drawable image) {

@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -40,6 +41,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
         "controls",
         "backgroundColor",
         "backgroundPath",
+        "newControlId"
 })
 public class Screen implements IScreen {
     public static final int MAX_CONTROL_SIZE = 800;
@@ -51,6 +53,7 @@ public class Screen implements IScreen {
     private List<GICControl> customControls = new ArrayList<>();
     @JsonIgnore
     private Drawable background;
+    @JsonProperty("newControlId")
     private int newId = 0;
     @JsonProperty("backgroundColor")
     private int backgroundColor;
@@ -60,6 +63,21 @@ public class Screen implements IScreen {
     private Context context;
     @JsonProperty("name")
     private String name;
+
+    @JsonCreator
+    public Screen(@JsonProperty("screenId") int screenId,
+                  @JsonProperty("controls") List<GICControl> controls,
+                  @JsonProperty("backgroundColor") int backgroundColor,
+                  @JsonProperty("backgroundPath") String backgroundPath,
+                  @JsonProperty("newControlId") int newId,
+                  @JsonProperty("name") String name) {
+        this.screenId = screenId;
+        this.customControls = controls;
+        this.backgroundColor = backgroundColor;
+        this.backgroundPath = backgroundPath;
+        this.name = name;
+        this.newId = newId;
+    }
 
     public Screen(int screenId, Context context) {
         this.screenId = screenId;
@@ -134,6 +152,11 @@ public class Screen implements IScreen {
     @Override
     public int getScreenId() {
         return screenId;
+    }
+
+    @Override
+    public void setScreenId(int newId) {
+        this.screenId = newId;
     }
 
     @Override

@@ -6,13 +6,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +24,7 @@ import android.widget.Toast;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener, View.OnClickListener {
     // permissions request code
@@ -193,29 +191,26 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     }
 
     private void export() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            // User may have declined earlier, ask Android if we should show him a reason
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    // show an explanation to the user
-                    // Good practise: don't block thread after the user sees the explanation, try again to request the permission.
-                    Toast.makeText(this, R.string.need_permission, Toast.LENGTH_SHORT).show();
-                } else {
-                    // request the permission.
-                    // CALLBACK_NUMBER is a integer constants
-                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_ASK_PERMISSIONS);
-                    // The callback method gets the result of the request.
-                }
-            } else {
-                actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
-            }
-        } else {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
             actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, getString(R.string.need_permission), REQUEST_CODE_ASK_PERMISSIONS, perms);
         }
     }
 
     private void importScreen() {
+        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            startImport();
+        } else {
+            // Do not have permissions, request them now
+            EasyPermissions.requestPermissions(this, getString(R.string.need_permission), REQUEST_CODE_ASK_PERMISSIONS, perms);
+        }
+    }
+
+    private void startImport() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -225,15 +220,19 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_CODE_ASK_PERMISSIONS: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
-                }
-                break;
-            }
-        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+        //        switch (requestCode) {
+//            case REQUEST_CODE_ASK_PERMISSIONS: {
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
+//                }
+//                break;
+//            }
+//        }
     }
 
     @Override

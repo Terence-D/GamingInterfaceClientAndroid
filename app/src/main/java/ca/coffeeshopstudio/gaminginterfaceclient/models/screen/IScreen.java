@@ -26,6 +26,8 @@ public interface IScreen {
 
     List<GICControl> getControls();
 
+    void setScreenId(int newId);
+
     void removeControl(GICControl control);
 
     Drawable getBackground();
