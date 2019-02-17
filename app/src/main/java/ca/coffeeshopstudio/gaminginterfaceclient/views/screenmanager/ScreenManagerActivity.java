@@ -1,13 +1,17 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +31,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener, View.OnClickListener {
     // permissions request code
     private final static int REQUEST_CODE_ASK_PERMISSIONS = 501;
+    private final static int REQUEST_CODE_IMPORT = 510;
 
     private IContract.IViewActionListener actionListener;
     private SparseArray<String> screenList;
@@ -53,6 +58,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         findViewById(R.id.btnNew).setOnClickListener(this);
         findViewById(R.id.btnUpdate).setOnClickListener(this);
         findViewById(R.id.btnDelete).setOnClickListener(this);
+        findViewById(R.id.btnImport).setOnClickListener(this);
     }
 
     @Override
@@ -162,6 +168,9 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
                 String screenName = ((TextView) findViewById(R.id.txtName)).getText().toString();
                 actionListener.update(screenList.indexOfKey(selectedScreenIndex), screenName);
                 break;
+            case R.id.btnImport:
+                importScreen();
+                break;
         }
     }
 
@@ -206,6 +215,14 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         }
     }
 
+    private void importScreen() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/zip");
+        startActivityForResult(intent, REQUEST_CODE_IMPORT);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -215,6 +232,22 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
                     actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
                 }
                 break;
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_IMPORT) {
+                if (resultData != null) {
+                    Uri currentUri = resultData.getData();
+                    actionListener.importNew(currentUri);
+//                    EditBackgroundFragment.EditDialogListener listener = (EditBackgroundFragment.EditDialogListener) getActivity();
+//                    listener.onFinishEditBackgroundDialog(-1, currentUri);
+//                    dismiss();
+                }
             }
         }
     }

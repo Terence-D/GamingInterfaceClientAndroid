@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -50,13 +51,13 @@ public class ZipHelper {
         out.close();
     }
 
-    public void unzip(String zipFile, String destinationDir) throws IOException {
+    public static void unzip(InputStream zipFile, String destinationDir) throws IOException {
         File f = new File(destinationDir);
         if (!f.isDirectory()) {
             f.mkdirs();
         }
 
-        ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFile));
+        ZipInputStream zipInputStream = new ZipInputStream(zipFile);
         ZipEntry zipEntry;
 
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {

@@ -1,9 +1,8 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.SparseArray;
-
-import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
 
 /**
  * Copyright [2019] [Terence Doerksen]
@@ -66,7 +65,7 @@ public interface IContract {
 
         void delete(int toDelete);
 
-        void importNew(Screen toImport);
+        void importNew(Uri toImport);
 
         void exportCurrent(int screenId);
 

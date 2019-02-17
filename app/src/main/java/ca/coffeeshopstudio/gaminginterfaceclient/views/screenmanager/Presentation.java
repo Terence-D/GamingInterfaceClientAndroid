@@ -1,5 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -10,6 +11,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -73,8 +76,17 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
     }
 
     @Override
-    public void importNew(Screen toImport) {
-
+    public void importNew(Uri toImport) {
+        try {
+            InputStream stream = view.getContext().getContentResolver().openInputStream(toImport);
+            //get a profile name
+            String path = toImport.getLastPathSegment();
+            path = path.replace("primary:", "");
+            path = path.replace(".zip", "");
+            ZipHelper.unzip(stream, Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -184,7 +196,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                 filesToZip.add(jsonData.getAbsolutePath());
 
                 //look for any files inside the screen that we need to add
-                if (!screen.getBackgroundFile().isEmpty()) {
+                if (screen.getBackgroundFile() != null && !screen.getBackgroundFile().isEmpty()) {
                     filesToZip.add(myReference.get().view.getContext().getFilesDir() + "/" + screen.getBackgroundFile());
                 }
                 for (GICControl control : screen.getControls()) {
