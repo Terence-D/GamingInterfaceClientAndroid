@@ -350,7 +350,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
     private void displayImageEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        EditImageFragment editFragment = EditImageFragment.newInstance();
+        EditImageFragment editFragment = EditImageFragment.newInstance(currentScreen.getScreenId());
         editFragment.show(fm, "fragment_edit_image_name");
     }
 
@@ -424,13 +424,13 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     @Override
-    public void onFinishEditImageDialog(Uri newImageUri) {
-        if (newImageUri == null) {
+    public void onFinishEditImageDialog(String imagePath) {
+        if (imagePath.isEmpty()) {
             deleteView();
         } else {
             ImageView image = ((ImageView) selectedView);
-            ((GICControl) selectedView.getTag()).setPrimaryImage(newImageUri.getPath());
-            image.setImageURI(newImageUri);
+            ((GICControl) selectedView.getTag()).setPrimaryImage(imagePath);
+            image.setImageDrawable(currentScreen.getImage(imagePath));
             resizeImageView(image, seekWidth.getProgress(), seekHeight.getProgress());
         }
     }
@@ -588,7 +588,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
                 }
                 dialog.show();
                 currentScreen.setBackground(findViewById(R.id.topLayout).getBackground());
-                new SaveTask(editActivity, (BitmapDrawable) findViewById(R.id.topLayout).getBackground()).execute();
+                new SaveTask(editActivity).execute();
             }
         });
 
@@ -601,11 +601,9 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     private static class SaveTask extends AsyncTask<Void, Void, Void> {
-        private final BitmapDrawable drawable;
         private WeakReference<EditActivity> presentationWeakReference;
 
-        SaveTask(EditActivity presentation, BitmapDrawable drawable) {
-            this.drawable = drawable;
+        SaveTask(EditActivity presentation) {
             presentationWeakReference = new WeakReference<>(presentation);
         }
 

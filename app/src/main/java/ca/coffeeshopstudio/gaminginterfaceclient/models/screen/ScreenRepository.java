@@ -2,7 +2,6 @@ package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
@@ -10,7 +9,6 @@ import android.util.SparseArray;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -337,16 +335,16 @@ public class ScreenRepository implements IScreenRepository {
         prefsEditor.apply();
     }
 
-    private void saveBitmap(String fileName, Bitmap image) {
-        File file = new File(context.getFilesDir(), fileName + ".png");
-
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            image.compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    private void saveBitmap(String fileName, Bitmap image) {
+//        File file = new File(context.getFilesDir(), fileName + ".png");
+//
+//        try {
+//            FileOutputStream out = new FileOutputStream(file);
+//            image.compress(Bitmap.CompressFormat.PNG, 90, out);
+//            out.flush();
+//            out.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }
