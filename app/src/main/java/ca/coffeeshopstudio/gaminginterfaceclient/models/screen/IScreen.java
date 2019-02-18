@@ -36,6 +36,8 @@ public interface IScreen {
 
     void setBackgroundColor(int backgroundColor);
 
+    int getBackgroundColor();
+
     void setBackgroundFile(String backgroundPath);
 
 }

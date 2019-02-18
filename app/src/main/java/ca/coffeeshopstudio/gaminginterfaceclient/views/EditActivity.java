@@ -407,7 +407,6 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         } else {
             try {
                 currentScreen.setBackgroundColor(-1);
-                //currentScreen.setBackgroundFile(image.getPath()); //invalid path, but at least it's not empty with this data
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image);
                 Drawable drawable = new BitmapDrawable(getResources(), bitmap);
                 findViewById(R.id.topLayout).setBackground(drawable);
@@ -612,8 +611,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         @Override
         protected Void doInBackground(Void... voids) {
-            presentationWeakReference.get().screenRepository.save(presentationWeakReference.get().currentScreen,
-                    drawable);
+            presentationWeakReference.get().screenRepository.save(presentationWeakReference.get().currentScreen);
             return null;
         }
 

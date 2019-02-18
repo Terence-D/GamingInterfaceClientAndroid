@@ -3,9 +3,6 @@ package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
@@ -34,6 +31,7 @@ public class ScreenRepository implements IScreenRepository {
     public static final String PREFS_NAME = "gicsScreen";
     private static final String PREFS_SCREEN = "screen_";
     private static final String PREFS_BACKGROUND_SUFFIX = "_background";
+    private static final String PREFS_BACKGROUND_PATH_SUFFIX = "_background_path";
     private static final String PREFS_CONTROLS = "_control_";
     private Context context;
     private final static Pattern lastIntPattern = Pattern.compile("[^0-9]+([0-9]+)$");
@@ -44,6 +42,12 @@ public class ScreenRepository implements IScreenRepository {
 
     @Override
     public void loadScreens(@NonNull final LoadCallback callback) {
+        loadScreens();
+        callback.onLoaded(cache);
+    }
+
+    @Override
+    public void loadScreens() {
         if (cache == null) {
             //init the cache
             cache = new ArrayList<>();
@@ -76,7 +80,6 @@ public class ScreenRepository implements IScreenRepository {
                 cache.add(buildInitialScreen());
             }
         }
-        callback.onLoaded(cache);
     }
 
     //this handles both legacy (1.x) and new builds
@@ -115,12 +118,10 @@ public class ScreenRepository implements IScreenRepository {
     private void loadBackground(Screen screen) {
         convertLegacyBackground(screen);
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        int backgroundColor = prefs.getInt(screen.getScreenId() + "_background", context.getResources().getColor(R.color.default_background));
+        int backgroundColor = prefs.getInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, context.getResources().getColor(R.color.default_background));
+        String backgroundPath = prefs.getString(screen.getScreenId() + PREFS_BACKGROUND_PATH_SUFFIX, "");
         screen.setBackgroundColor(backgroundColor);
-
-        String backgroundPath = screen.getScreenId() + "_background.png";
-        if (backgroundColor == -1)
-            screen.setBackgroundFile(backgroundPath);
+        screen.setBackgroundFile(backgroundPath);
     }
 
     private void convertLegacyControls(Screen screen) {
@@ -151,12 +152,13 @@ public class ScreenRepository implements IScreenRepository {
             int backgroundColor = prefs.getInt("background", -1);
             prefsEditor.putInt(screen.getScreenId() + "_background", backgroundColor);
             prefsEditor.remove("background");
+            prefsEditor.remove("background");
             prefsEditor.apply();
         }
         String backgroundPath = "background" + ".jpg";
         File file = new File(context.getFilesDir() + "/" + backgroundPath);
         if (file.exists()) {
-            String newBackgroundPath = screen.getScreenId() + "_background" + ".png";
+            String newBackgroundPath = screen.getScreenId() + "_background.png";
             File newFile = new File(context.getFilesDir() + "/" + newBackgroundPath);
             file.renameTo(newFile);
         }
@@ -169,7 +171,7 @@ public class ScreenRepository implements IScreenRepository {
         cache = null; //invalidate the cache
         //cache.add(newScreen);
 
-        save(newScreen, null);
+        save(newScreen);
         loadScreens(new LoadCallback() {
             @Override
             public void onLoaded(List<IScreen> screens) {
@@ -189,7 +191,7 @@ public class ScreenRepository implements IScreenRepository {
                 newScreen.setScreenId(getUniqueId(cache.size()));
                 cache = null; //invalidate the cache
                 //cache.add(newScreen);
-                save(newScreen, null);
+                save(newScreen);
             }
         });
     }
@@ -200,7 +202,7 @@ public class ScreenRepository implements IScreenRepository {
         if (cache != null) {
             for (IScreen screen : cache) {
                 if (unique == screen.getScreenId()) {
-                    getUniqueId(startingId);
+                    getUniqueId(startingId + 1);
                 }
             }
         }
@@ -218,24 +220,28 @@ public class ScreenRepository implements IScreenRepository {
 
 
     @Override
-    public void save(IScreen screen, Drawable image) {
+    public void save(IScreen screen) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
         prefsEditor.putString(PREFS_SCREEN + screen.getScreenId(), screen.getName());
 
         //save the background image
-        if (screen.getBackground() != null) {
-            if (screen.getBackground() instanceof ColorDrawable) {
-                ColorDrawable color = (ColorDrawable) screen.getBackground();
-                prefsEditor.putInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, color.getColor());
-            } else {
-                //BitmapDrawable bitmap = (BitmapDrawable) screen.getBackground();
-                screen.setBackgroundFile(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX);
-                saveBitmap(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, ((BitmapDrawable) image).getBitmap());
-                prefsEditor.putInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, -1);
-            }
-        }
+//        if (screen.getBackground() != null) {
+//            if (screen.getBackground() instanceof ColorDrawable) {
+//                ColorDrawable color = (ColorDrawable) screen.getBackground();
+        prefsEditor.putInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, screen.getBackgroundColor());
+//            } else {
+//                prefsEditor.putInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, -1);
+//            }
+        prefsEditor.putString(screen.getScreenId() + PREFS_BACKGROUND_PATH_SUFFIX, screen.getBackgroundFile());
+//            } else {
+//                screen.setBackgroundFile(context.getFilesDir() + "/" + screen.getScreenId() + PREFS_BACKGROUND_SUFFIX + ".png");
+//                saveBitmap(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, ((BitmapDrawable) image).getBitmap());
+//                prefsEditor.putInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, -1);
+//                prefsEditor.putString(screen.getScreenId() + PREFS_BACKGROUND_PATH_SUFFIX, screen.getBackgroundFile());
+//            }
+//        }
 
         ObjectMapper mapper = new ObjectMapper();
 
@@ -271,14 +277,33 @@ public class ScreenRepository implements IScreenRepository {
         return null;
     }
 
+    //this is used by the main screen
     @Override
-    public void getScreenList(@NonNull LoadScreenListCallback callback) {
+    public IScreen getScreenByPosition(int index) {
+        return cache.get(index);
+    }
 
-        SparseArray<String> rv = new SparseArray<>();
-        for (IScreen screen : cache) {
-            rv.put(screen.getScreenId(), screen.getName());
+    @Override
+    public void getScreenList(@NonNull final LoadScreenListCallback callback) {
+
+        if (cache != null) {
+            SparseArray<String> rv = new SparseArray<>();
+            for (IScreen screen : cache) {
+                rv.put(screen.getScreenId(), screen.getName());
+            }
+            callback.onLoaded(rv);
+        } else {
+            loadScreens(new LoadCallback() {
+                @Override
+                public void onLoaded(List<IScreen> screens) {
+                    SparseArray<String> rv = new SparseArray<>();
+                    for (IScreen screen : cache) {
+                        rv.put(screen.getScreenId(), screen.getName());
+                    }
+                    callback.onLoaded(rv);
+                }
+            });
         }
-        callback.onLoaded(rv);
     }
 
     @Override

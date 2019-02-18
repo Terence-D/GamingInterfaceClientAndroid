@@ -210,6 +210,10 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
             try {
                 Screen screen = objectMapper.readValue(file, Screen.class);
                 //update any filenames to point to the local folder now
+                if (!screen.getBackgroundFile().isEmpty()) {
+                    int index = screen.getBackgroundFile().lastIndexOf("/");
+                    screen.setBackgroundFile(fullPath + screen.getBackgroundFile().substring(index + 1));
+                }
                 for (GICControl control : screen.getControls()) {
                     if (!control.getPrimaryImage().isEmpty()) {
                         int index = control.getPrimaryImage().lastIndexOf("/");
@@ -248,7 +252,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
 
                 //look for any files inside the screen that we need to add
                 if (screen.getBackgroundFile() != null && !screen.getBackgroundFile().isEmpty()) {
-                    filesToZip.add(presentationWeakReference.get().view.getContext().getFilesDir() + "/" + screen.getBackgroundFile());
+                    filesToZip.add(screen.getBackgroundFile());
                 }
                 for (GICControl control : screen.getControls()) {
                     if (!control.getPrimaryImage().isEmpty()) {
@@ -295,7 +299,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
         protected Void doInBackground(Void... voids) {
             IScreen screen = repository.getScreen(screenId);
             screen.setName(newName);
-            repository.save(screen, screen.getBackground());
+            repository.save(screen);
             return null;
         }
 

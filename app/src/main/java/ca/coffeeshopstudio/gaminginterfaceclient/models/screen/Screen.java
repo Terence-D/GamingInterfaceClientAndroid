@@ -3,6 +3,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -86,7 +87,22 @@ public class Screen implements IScreen {
 
     @Override
     public Drawable getBackground() {
-        loadBackground();
+        if (backgroundPath.isEmpty()) {
+            //load a color
+            ColorDrawable color = new ColorDrawable();
+            color.setColor(backgroundColor);
+            background = color;
+        } else {
+            //load an image
+            Bitmap bitmap = BitmapFactory.decodeFile(backgroundPath);
+            if (bitmap == null) {
+                background = new ColorDrawable(Color.BLACK);
+            } else {
+                Drawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
+                background = bitmapDrawable;
+            }
+        }
+
         return background;
     }
 
@@ -99,6 +115,11 @@ public class Screen implements IScreen {
     @Override
     public void setBackgroundColor(int backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    @Override
+    public int getBackgroundColor() {
+        return backgroundColor;
     }
 
     @Override
@@ -162,18 +183,5 @@ public class Screen implements IScreen {
     @Override
     public void removeControl(GICControl control) {
         customControls.remove(control);
-    }
-
-    private void loadBackground() {
-        if (backgroundColor == -1) {
-            Bitmap bitmap = BitmapFactory.decodeFile(context.getFilesDir() + "/" + backgroundPath);
-            Drawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
-            background = bitmapDrawable;
-        } else {
-            ColorDrawable color = new ColorDrawable();
-            color.setColor(backgroundColor);
-            background = color;
-        }
-
     }
 }

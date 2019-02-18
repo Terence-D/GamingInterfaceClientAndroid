@@ -20,8 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import java.util.List;
-
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
@@ -60,13 +58,8 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             currentScreenIndex = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
 
         screenRepository = new ScreenRepository(getApplicationContext());
-        screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
-            @Override
-            public void onLoaded(List<IScreen> screens) {
-                currentScreen = screenRepository.getScreen(currentScreenIndex);
-            }
-        });
-
+        screenRepository.loadScreens();
+        currentScreen = screenRepository.getScreenByPosition(currentScreenIndex);
 
         buildFontCache();
     }
