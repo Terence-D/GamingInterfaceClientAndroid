@@ -22,7 +22,7 @@ public interface IScreenRepository {
     IScreen getScreen(int id);
 
     //this is used by the main screen
-    IScreen getScreenByPosition(int index);
+    //IScreen getScreenByPosition(int index);
 
     void getScreenList(@NonNull final LoadScreenListCallback callback);
 

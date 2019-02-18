@@ -278,10 +278,10 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     //this is used by the main screen
-    @Override
-    public IScreen getScreenByPosition(int index) {
-        return cache.get(index);
-    }
+//    @Override
+//    public IScreen getScreenByPosition(int index) {
+//        return cache.get(index);
+//    }
 
     @Override
     public void getScreenList(@NonNull final LoadScreenListCallback callback) {

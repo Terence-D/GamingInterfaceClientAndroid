@@ -46,7 +46,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 public abstract class AbstractGameActivity extends AppCompatActivity implements View.OnClickListener {
     protected IScreen currentScreen;
     protected int currentApiVersion;
-    protected int currentScreenIndex;
+    protected int currentScreenId;
 
     protected IScreenRepository screenRepository;
 
@@ -55,11 +55,11 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
 
         if (getIntent() != null)
-            currentScreenIndex = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
+            currentScreenId = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
 
         screenRepository = new ScreenRepository(getApplicationContext());
         screenRepository.loadScreens();
-        currentScreen = screenRepository.getScreenByPosition(currentScreenIndex);
+        currentScreen = screenRepository.getScreen(currentScreenId);
 
         buildFontCache();
     }

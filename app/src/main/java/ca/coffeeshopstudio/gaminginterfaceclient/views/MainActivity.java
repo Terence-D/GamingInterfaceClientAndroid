@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void editApp() {
         Intent myIntent = new Intent(MainActivity.this, EditActivity.class);
-        int screenIndex = spinner.getSelectedItemPosition();
+        int screenIndex = screenList.keyAt(spinner.getSelectedItemPosition());
         myIntent.putExtra(MainActivity.INTENT_SCREEN_INDEX, screenIndex);
         MainActivity.this.startActivity(myIntent);
     }
@@ -179,6 +179,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
                     if (response.body().equals("1.3.0.0")) {
+                        int screenIndex = screenList.keyAt(spinner.getSelectedItemPosition());
+                        myIntent.putExtra(MainActivity.INTENT_SCREEN_INDEX, screenIndex);
                         MainActivity.this.startActivity(myIntent);
                         return;
                     }
@@ -236,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             e.printStackTrace();
         }
 
-        if (password == null) {
+        if (password.isEmpty()) {
             Toast.makeText(this, R.string.password_invalid, Toast.LENGTH_SHORT).show();
             return;
         }
