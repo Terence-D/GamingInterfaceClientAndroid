@@ -165,7 +165,7 @@ public class ScreenRepository implements IScreenRepository {
     @Override
     public Screen newScreen() {
         Screen newScreen = new Screen(getUniqueId(cache.size()), context);
-        newScreen.setBackgroundColor(R.color.default_background);
+        newScreen.setBackgroundColor(context.getResources().getColor(R.color.default_background));
         cache = null; //invalidate the cache
         //cache.add(newScreen);
 
