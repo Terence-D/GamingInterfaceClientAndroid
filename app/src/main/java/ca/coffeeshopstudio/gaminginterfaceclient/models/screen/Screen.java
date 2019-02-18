@@ -134,12 +134,12 @@ public class Screen implements IScreen {
 
     @Override
     public Drawable getImage(String fileName) {
-        if (fileName.contains(screenId + "_control")) {
+//        if (fileName.contains(screenId + "_control")) {
             Bitmap bitmap = BitmapFactory.decodeFile(fileName);
             Drawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
             return bitmapDrawable;
-        }
-        return null;
+//        }
+        //return null;
     }
 
     @Override

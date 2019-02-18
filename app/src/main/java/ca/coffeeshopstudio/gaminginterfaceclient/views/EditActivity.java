@@ -6,15 +6,11 @@ import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -32,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
@@ -344,7 +339,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         int primaryColor = color;
 
         FragmentManager fm = getSupportFragmentManager();
-        EditBackgroundFragment editBackgroundFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor);
+        EditBackgroundFragment editBackgroundFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor, currentScreen.getScreenId());
         editBackgroundFragment.show(fm, "fragment_edit_background_name");
     }
 
@@ -400,19 +395,16 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     @Override
-    public void onFinishEditBackgroundDialog(int primaryColor, Uri image) {
+    public void onFinishEditBackgroundDialog(int primaryColor, String image) {
         if (image == null) {
             currentScreen.setBackgroundColor(primaryColor);
+            currentScreen.setBackgroundFile("");
             findViewById(R.id.topLayout).setBackgroundColor(primaryColor);
         } else {
-            try {
-                currentScreen.setBackgroundColor(-1);
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image);
-                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                findViewById(R.id.topLayout).setBackground(drawable);
-            } catch (IOException e) {
-                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
+            currentScreen.setBackgroundColor(-1);
+            currentScreen.setBackgroundFile(image);
+            Drawable drawable = currentScreen.getImage(image);
+            findViewById(R.id.topLayout).setBackground(drawable);
         }
     }
 
@@ -425,7 +417,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
     @Override
     public void onFinishEditImageDialog(String imagePath) {
-        if (imagePath.isEmpty()) {
+        if (imagePath == null || imagePath.isEmpty()) {
             deleteView();
         } else {
             ImageView image = ((ImageView) selectedView);

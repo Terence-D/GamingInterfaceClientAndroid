@@ -59,10 +59,11 @@ public class ZipHelper {
 
         //first validate
         boolean validZip = false;
-
+        byte[] buffer = new byte[8192];
         //now extract
         ZipInputStream zipInputStream = new ZipInputStream(zipFile);
         ZipEntry zipEntry;
+        int count;
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             String path = destinationDir + File.separator + zipEntry.getName();
             if (path.contains("data.json")) {
@@ -78,9 +79,15 @@ public class ZipHelper {
 //            } else {
             FileOutputStream fileOutputStream = new FileOutputStream(path, false);
 
-            for (int c = zipInputStream.read(); c != -1; c = zipInputStream.read()) {
-                fileOutputStream.write(c);
+            try {
+                while ((count = zipInputStream.read(buffer)) != -1)
+                    fileOutputStream.write(buffer, 0, count);
+            } finally {
+                fileOutputStream.close();
             }
+//            for (int c = zipInputStream.read(buffer); c != -1; c = zipInputStream.read(buffer)) {
+//                fileOutputStream.write(c);
+//            }
             zipInputStream.closeEntry();
             fileOutputStream.close();
 //            }

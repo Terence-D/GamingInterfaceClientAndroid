@@ -3,19 +3,26 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
@@ -37,12 +44,14 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
 public class EditBackgroundFragment extends DialogFragment implements View.OnClickListener {
     private int primary;
     private Button btnPrimary;
+    private int screenId;
 
-    public static EditBackgroundFragment newInstance(String title, int primary) {
+    public static EditBackgroundFragment newInstance(String title, int primary, int screenId) {
         EditBackgroundFragment frag = new EditBackgroundFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putInt("primary", primary);
+        args.putInt("screen", screenId);
         frag.setArguments(args);
         return frag;
     }
@@ -63,6 +72,7 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
         } else
             title = getString(R.string.default_control_text);
         primary = getArguments().getInt("primary", Color.BLACK);
+        screenId = getArguments().getInt("screen", 0);
         getDialog().setTitle(title);
         setupControls(view);
     }
@@ -131,11 +141,6 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
                 .show();
     }
 
-
-    public interface EditDialogListener {
-        void onFinishEditBackgroundDialog(int primaryColor, Uri background);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
@@ -144,11 +149,29 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
             if (requestCode == EditActivity.OPEN_REQUEST_CODE_BACKGROUND) {
                 if (resultData != null) {
                     Uri currentUri = resultData.getData();
+                    File file = null;
+                    if (currentUri != null) {
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), currentUri);
+                            file = new File(getContext().getFilesDir(), screenId + "_background.png");
+                            FileOutputStream out = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                            out.flush();
+                            out.close();
+                        } catch (IOException e) {
+                            Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
                     EditDialogListener listener = (EditDialogListener) getActivity();
-                    listener.onFinishEditBackgroundDialog(-1, currentUri);
+                    listener.onFinishEditBackgroundDialog(-1, file.getAbsolutePath());
                     dismiss();
                 }
             }
         }
+    }
+
+    public interface EditDialogListener {
+        void onFinishEditBackgroundDialog(int primaryColor, String backgroundPath);
     }
 }

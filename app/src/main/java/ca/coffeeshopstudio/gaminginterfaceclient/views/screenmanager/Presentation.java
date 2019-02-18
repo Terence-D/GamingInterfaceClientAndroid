@@ -219,6 +219,10 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                         int index = control.getPrimaryImage().lastIndexOf("/");
                         control.setPrimaryImage(fullPath + control.getPrimaryImage().substring(index + 1));
                     }
+                    if (!control.getSecondaryImage().isEmpty()) {
+                        int index = control.getSecondaryImage().lastIndexOf("/");
+                        control.setSecondaryImage(fullPath + control.getSecondaryImage().substring(index + 1));
+                    }
                 }
                 presentationWeakReference.get().repository.importScreen(screen);
             } catch (IOException e) {
@@ -257,6 +261,9 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                 for (GICControl control : screen.getControls()) {
                     if (!control.getPrimaryImage().isEmpty()) {
                         filesToZip.add(control.getPrimaryImage());
+                    }
+                    if (!control.getSecondaryImage().isEmpty()) {
+                        filesToZip.add(control.getSecondaryImage());
                     }
                 }
 
