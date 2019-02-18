@@ -2,6 +2,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
@@ -147,22 +150,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         setupButtons();
     }
 
-    private void setupButtons() {
-        findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentScreen.setBackground(findViewById(R.id.topLayout).getBackground());
-                screenRepository.save(currentScreen, findViewById(R.id.topLayout).getBackground());
-            }
-        });
-
-        findViewById(R.id.btnSettings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                displayEditBackgroundDialog();
-            }
-        });
-    }
+    //TODO move this to presentation on refactor
+    private ProgressDialog dialog;
 
     private void setupToggleSwitch() {
         ((Switch) findViewById(R.id.toggleMode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -584,6 +573,53 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             } else {
                 return false;
             }
+        }
+    }
+
+    private void setupButtons() {
+        final EditActivity editActivity = this;
+        findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dialog == null) {
+                    //prepare our dialog
+                    dialog = new ProgressDialog(editActivity);
+                    dialog.setMessage(getString(R.string.loading));
+                    dialog.setIndeterminate(true);
+                }
+                dialog.show();
+                currentScreen.setBackground(findViewById(R.id.topLayout).getBackground());
+                new SaveTask(editActivity, (BitmapDrawable) findViewById(R.id.topLayout).getBackground()).execute();
+            }
+        });
+
+        findViewById(R.id.btnSettings).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayEditBackgroundDialog();
+            }
+        });
+    }
+
+    private static class SaveTask extends AsyncTask<Void, Void, Void> {
+        private final BitmapDrawable drawable;
+        private WeakReference<EditActivity> presentationWeakReference;
+
+        SaveTask(EditActivity presentation, BitmapDrawable drawable) {
+            this.drawable = drawable;
+            presentationWeakReference = new WeakReference<>(presentation);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            presentationWeakReference.get().screenRepository.save(presentationWeakReference.get().currentScreen,
+                    drawable);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void voids) {
+            presentationWeakReference.get().dialog.dismiss();
         }
     }
 }

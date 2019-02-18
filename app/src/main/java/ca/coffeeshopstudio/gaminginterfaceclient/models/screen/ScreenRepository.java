@@ -82,7 +82,6 @@ public class ScreenRepository implements IScreenRepository {
     //this handles both legacy (1.x) and new builds
     private Screen buildInitialScreen() {
         Screen screen = new Screen(0, context);
-        cache.add(screen);
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 

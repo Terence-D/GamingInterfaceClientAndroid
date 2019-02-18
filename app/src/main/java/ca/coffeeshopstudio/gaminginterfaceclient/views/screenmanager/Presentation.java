@@ -183,7 +183,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
 
                 //now read the json values
                 if (valid)
-                    parseJson(Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path + "/data.json");
+                    parseJson(Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path + "/");
                 else
                     return presentationWeakReference.get().view.getContext().getString(R.string.invalid_zip);
             } catch (IOException e) {
@@ -193,16 +193,29 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
         }
 
         @Override
-        protected void onPostExecute(String results) {
-            presentationWeakReference.get().view.setProgressIndicator(false);
-            presentationWeakReference.get().view.showMessage(results);
+        protected void onPostExecute(final String results) {
+            presentationWeakReference.get().repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                @Override
+                public void onLoaded(SparseArray<String> screenList) {
+                    presentationWeakReference.get().view.updateSpinner(screenList);
+                    presentationWeakReference.get().view.setProgressIndicator(false);
+                    presentationWeakReference.get().view.showMessage(results);
+                }
+            });
         }
 
-        private void parseJson(String path) {
+        private void parseJson(String fullPath) {
             ObjectMapper objectMapper = new ObjectMapper();
-            File file = new File(path);
+            File file = new File(fullPath + "data.json");
             try {
                 Screen screen = objectMapper.readValue(file, Screen.class);
+                //update any filenames to point to the local folder now
+                for (GICControl control : screen.getControls()) {
+                    if (!control.getPrimaryImage().isEmpty()) {
+                        int index = control.getPrimaryImage().lastIndexOf("/");
+                        control.setPrimaryImage(fullPath + control.getPrimaryImage().substring(index + 1));
+                    }
+                }
                 presentationWeakReference.get().repository.importScreen(screen);
             } catch (IOException e) {
                 e.printStackTrace();
