@@ -118,8 +118,20 @@ class ViewHolder {
 
 class Constants {
     static final int[] buttons = new int[]{
-        R.drawable.neon_button,
-        R.drawable.neon_button_pressed
+            R.drawable.button_neon,
+            R.drawable.button_neon_pushed,
+            R.drawable.button_blue,
+            R.drawable.button_blue_dark,
+            R.drawable.button_green,
+            R.drawable.button_green_dark,
+            R.drawable.button_green_alt,
+            R.drawable.button_green_alt_dark,
+            R.drawable.button_purple,
+            R.drawable.button_purple_dark,
+            R.drawable.button_red,
+            R.drawable.button_red_dark,
+            R.drawable.button_yellow,
+            R.drawable.button_yellow_dark
     };
 
 

@@ -41,10 +41,9 @@
     <string name="about_color_picker">Color Picker</string>
     <string name="legal_color">Licensed under the Apache 2.0 license.  See below for details</string>
     <string name="website_color"><![CDATA[https://android-arsenal.com/details/1/1693]]></string>
-    <string name="about_art_free_ui_elements">Art by Czarny-design</string>
-    <string name="legal_free_ui_elements">Licensed under the Creative Commons Attribution 3.0 License.  See below for details</string>
-    <string name="website_free_ui_elements">http://ui-cloud.com/free-ui-elements-2/</string>
-    <string name="website_creative_attribution">https://creativecommons.org/licenses/by/3.0/</string>
+    <string name="about_easy_permissions">Easy Permissions Library</string>
+    <string name="legal_easy_permissions">Licensed under the Apache 2.0 License.  See below for details</string>
+    <string name="website_easy_permissions">https://github.com/googlesamples/easypermissions</string>
     <string name="legal">Legal</string>
     <string name="legal_contents">GIC Client (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2019 Terence Doerksen</string>
     <string name="website_apache">http://www.apache.org/licenses/LICENSE-2.0</string>

@@ -146,26 +146,50 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         if (type == GICControl.TYPE_BUTTON) {
             switch (resourceId) {
                 case 0:
-                    return getResources().getDrawable(R.drawable.neon_button);
+                    return getResources().getDrawable(R.drawable.button_neon);
                 case 1:
-                    return getResources().getDrawable(R.drawable.neon_button_pressed);
+                    return getResources().getDrawable(R.drawable.button_neon_pushed);
+                case 2:
+                    return getResources().getDrawable(R.drawable.button_blue);
+                case 3:
+                    return getResources().getDrawable(R.drawable.button_blue_dark);
+                case 4:
+                    return getResources().getDrawable(R.drawable.button_green);
+                case 5:
+                    return getResources().getDrawable(R.drawable.button_green_dark);
+                case 6:
+                    return getResources().getDrawable(R.drawable.button_green_alt);
+                case 7:
+                    return getResources().getDrawable(R.drawable.button_green_alt_dark);
+                case 8:
+                    return getResources().getDrawable(R.drawable.button_purple);
+                case 9:
+                    return getResources().getDrawable(R.drawable.button_purple_dark);
+                case 10:
+                    return getResources().getDrawable(R.drawable.button_red);
+                case 11:
+                    return getResources().getDrawable(R.drawable.button_red_dark);
+                case 12:
+                    return getResources().getDrawable(R.drawable.button_yellow);
+                case 13:
+                    return getResources().getDrawable(R.drawable.button_yellow_dark);
                 default:
                     if (primary)
-                        return getResources().getDrawable(R.drawable.neon_button);
+                        return getResources().getDrawable(R.drawable.button_neon);
                     else
-                        return getResources().getDrawable(R.drawable.neon_button_pressed);
+                        return getResources().getDrawable(R.drawable.button_neon_pushed);
             }
         } else {
             switch (resourceId) {
                 case 0:
-                    return getResources().getDrawable(R.drawable.neon_toggle_off);
+                    return getResources().getDrawable(R.drawable.switch_off);
                 case 1:
-                    return getResources().getDrawable(R.drawable.neon_toggle_on);
+                    return getResources().getDrawable(R.drawable.switch_on);
                 default:
                     if (primary)
-                        return getResources().getDrawable(R.drawable.neon_toggle_off);
+                        return getResources().getDrawable(R.drawable.switch_off);
                     else
-                        return getResources().getDrawable(R.drawable.neon_toggle_on);
+                        return getResources().getDrawable(R.drawable.switch_on);
             }
         }
     }

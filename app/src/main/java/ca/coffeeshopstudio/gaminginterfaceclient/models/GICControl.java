@@ -80,9 +80,9 @@ public class GICControl {
     @JsonProperty("viewType")
     private int viewType = 0;
     @JsonProperty("primaryImageResource")
-    private int primaryImageResource = R.drawable.neon_button;
+    private int primaryImageResource = R.drawable.button_neon;
     @JsonProperty("secondaryImageResource")
-    private int secondaryImageResource = R.drawable.neon_button_pressed;
+    private int secondaryImageResource = R.drawable.button_neon_pushed;
     @JsonProperty("primaryImage")
     private String primaryImage = "";
     @JsonProperty("secondaryImage")
