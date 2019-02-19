@@ -103,4 +103,5 @@
     <string name="invalid_zip">Invalid Zip File!</string>
     <string name="menu_help">Help</string>
     <string name="menu_about">About</string>
+    <string name="menu_toggle_theme">Toggle Theme</string>
 </resources>

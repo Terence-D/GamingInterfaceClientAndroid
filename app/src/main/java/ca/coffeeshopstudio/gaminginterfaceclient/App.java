@@ -20,22 +20,13 @@ import android.preference.PreferenceManager;
  * limitations under the License.
  */
 public class App extends Application {
-    private boolean isNightModeEnabled = false;
-
     @Override
     public void onCreate() {
         super.onCreate();
-        // We load the Night Mode state here
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        this.isNightModeEnabled = mPrefs.getBoolean("NIGHT_MODE", true);
-
     }
 
     public boolean isNightModeEnabled() {
-        return isNightModeEnabled;
-    }
-
-    public void setIsNightModeEnabled(boolean isNightModeEnabled) {
-        this.isNightModeEnabled = isNightModeEnabled;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return prefs.getBoolean("NIGHT_MODE", true);
     }
 }

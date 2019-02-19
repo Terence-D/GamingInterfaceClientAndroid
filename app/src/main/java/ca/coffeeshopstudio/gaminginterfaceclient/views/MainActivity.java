@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -94,6 +95,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 i.setData(Uri.parse(url));
                 startActivity(i);
                 return true;
+            case R.id.menu_toggle_theme:
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor prefsEditor = prefs.edit();
+                prefsEditor.putBoolean("NIGHT_MODE", !prefs.getBoolean("NIGHT_MODE", true));
+                prefsEditor.apply();
+                recreate();
+                break;
         }
 
         return super.onOptionsItemSelected(item);

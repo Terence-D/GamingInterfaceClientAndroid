@@ -8,6 +8,11 @@
         android:title="@string/menu_help"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/menu_toggle_theme"
+        android:orderInCategory="300"
+        android:title="@string/menu_toggle_theme"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_about"
         android:orderInCategory="500"
         android:title="@string/menu_about"
