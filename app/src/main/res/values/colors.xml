@@ -11,8 +11,4 @@
     <color name="darkThemePrimaryTextColor">#33343B</color>
     <color name="darkThemeSecondaryTextColor">#8033343B</color>
     <color name="darkThemeBackgroundColor">#33343B</color>
-
-    <color name="lightThemePrimaryTextColor">#F4F4F6</color>
-    <color name="lightThemeSecondaryTextColor">#96F4F4F6</color>
-    <color name="lightThemeBackgroundColor">#F4F4F6</color>
 </resources>

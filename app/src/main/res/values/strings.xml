@@ -101,4 +101,6 @@
     <string name="activity_screens_confirm_delete"><![CDATA[Are you sure you wish to PERMANENTLY delete <b>%1$s</b>?]]></string>
     <string name="import_successful">Import Successful</string>
     <string name="invalid_zip">Invalid Zip File!</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_about">About</string>
 </resources>

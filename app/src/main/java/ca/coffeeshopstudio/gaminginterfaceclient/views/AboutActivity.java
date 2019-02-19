@@ -48,7 +48,7 @@ public class AboutActivity extends AppCompatActivity {
                     Email.putExtra(Intent.EXTRA_EMAIL,
                             new String[]{"support@coffeeshopstudio.ca"});  //developer 's email
                     Email.putExtra(Intent.EXTRA_SUBJECT,
-                            "Budget Miser"); // Email 's Subject
+                            "GIC"); // Email 's Subject
                     startActivity(Intent.createChooser(Email, "Send Feedback:"));
                 }
             });
