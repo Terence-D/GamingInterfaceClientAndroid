@@ -200,7 +200,7 @@ public class ScreenRepository implements IScreenRepository {
         if (cache != null) {
             for (IScreen screen : cache) {
                 if (unique == screen.getScreenId()) {
-                    getUniqueId(startingId + 1);
+                    unique = getUniqueId(startingId + 1);
                 }
             }
         }
