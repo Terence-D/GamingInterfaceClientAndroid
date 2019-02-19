@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.EditActivity;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.MainActivity;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -57,6 +59,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         findViewById(R.id.btnUpdate).setOnClickListener(this);
         findViewById(R.id.btnDelete).setOnClickListener(this);
         findViewById(R.id.btnImport).setOnClickListener(this);
+        findViewById(R.id.btnEdit).setOnClickListener(this);
     }
 
     @Override
@@ -110,6 +113,13 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         ((TextView) findViewById(R.id.txtName)).setText(screenList.valueAt(0));
     }
 
+    private void editApp() {
+        Intent myIntent = new Intent(this, EditActivity.class);
+        int screenIndex = screenList.keyAt(spinner.getSelectedItemPosition());
+        myIntent.putExtra(MainActivity.INTENT_SCREEN_INDEX, screenIndex);
+        this.startActivity(myIntent);
+    }
+
     @Override
     public void setSpinnerSelection(int screenId) {
         for (int i = 0; i < screenList.size(); i++) {
@@ -155,6 +165,9 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         switch (view.getId()) {
             case R.id.btnExport:
                 export();
+                break;
+            case R.id.btnEdit:
+                editApp();
                 break;
             case R.id.btnNew:
                 actionListener.create();

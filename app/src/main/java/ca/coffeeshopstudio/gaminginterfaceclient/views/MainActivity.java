@@ -68,12 +68,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startApp();
             }
         });
-        findViewById(R.id.btnEdit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editApp();
-            }
-        });
         findViewById(R.id.btnScreenManager).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,13 +129,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(chosenIndex);
         spinner.setOnItemSelectedListener(this);
-    }
-
-    private void editApp() {
-        Intent myIntent = new Intent(MainActivity.this, EditActivity.class);
-        int screenIndex = screenList.keyAt(spinner.getSelectedItemPosition());
-        myIntent.putExtra(MainActivity.INTENT_SCREEN_INDEX, screenIndex);
-        MainActivity.this.startActivity(myIntent);
     }
 
     public static boolean isInteger(String str) {
