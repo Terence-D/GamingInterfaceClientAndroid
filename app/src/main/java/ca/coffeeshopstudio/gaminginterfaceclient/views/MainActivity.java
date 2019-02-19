@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
@@ -53,6 +54,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (((App) getApplication()).isNightModeEnabled())
+            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 

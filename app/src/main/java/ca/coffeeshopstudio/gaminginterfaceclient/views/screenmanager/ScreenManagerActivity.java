@@ -22,6 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.EditActivity;
@@ -42,6 +43,9 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (((App) getApplication()).isNightModeEnabled())
+            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_manager);
         Toolbar toolbar = findViewById(R.id.toolbar);

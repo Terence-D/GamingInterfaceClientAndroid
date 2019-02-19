@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
 /**
@@ -31,6 +32,9 @@ public class AboutActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (((App) getApplication()).isNightModeEnabled())
+            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
