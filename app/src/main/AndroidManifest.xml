@@ -21,7 +21,10 @@
             android:windowSoftInputMode="stateHidden"
             android:label="@string/title_activity_screen_manager"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".views.AboutActivity" />
+        <activity
+            android:name=".views.AboutActivity"
+            android:label="@string/title_activity_about"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".views.EditActivity"
             android:windowSoftInputMode="stateHidden"
