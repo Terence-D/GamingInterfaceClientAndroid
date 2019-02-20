@@ -105,4 +105,5 @@
     <string name="menu_about">About</string>
     <string name="menu_toggle_theme">Toggle Theme</string>
     <string name="title_activity_about">About</string>
+    <string name="title_activity_main">GIC</string>
 </resources>

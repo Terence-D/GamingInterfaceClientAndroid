@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -12,90 +12,111 @@
     tools:context="ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity"
     tools:showIn="@layout/activity_screen_manager">
 
-    <Spinner
-        android:id="@+id/spnScreens"
-        android:layout_width="395dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnNew" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btnUpdate"
-        android:layout_width="wrap_content"
-        android:padding="@dimen/button_padding"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="@string/activity_screens_update"
-        app:layout_constraintStart_toEndOf="@+id/txtName"
-        app:layout_constraintTop_toTopOf="@+id/txtName" />
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/title_activity_screen_manager"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="@dimen/title_text_size"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnNew"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:padding="@dimen/button_padding"
-        android:layout_marginTop="8dp"
-        android:text="@string/activity_screens_new"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Spinner
+            android:id="@+id/spnScreens"
+            android:layout_width="395dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnNew" />
 
-    <Button
-        android:id="@+id/btnImport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:padding="@dimen/button_padding"
-        android:layout_marginTop="8dp"
-        android:text="@string/activity_screens_import"
-        app:layout_constraintStart_toEndOf="@+id/btnNew"
-        app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/btnUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:padding="@dimen/button_padding"
+            android:text="@string/activity_screens_update"
+            app:layout_constraintStart_toEndOf="@+id/txtName"
+            app:layout_constraintTop_toTopOf="@+id/txtName" />
 
-    <Button
-        android:id="@+id/btnExport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:padding="@dimen/button_padding"
-        android:layout_marginTop="8dp"
-        android:text="@string/activity_screens_export"
-        app:layout_constraintStart_toEndOf="@+id/btnEdit"
-        app:layout_constraintTop_toBottomOf="@+id/txtName" />
+        <Button
+            android:id="@+id/btnNew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:padding="@dimen/button_padding"
+            android:text="@string/activity_screens_new"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
 
-    <EditText
-        android:id="@+id/txtName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spnScreens" />
+        <Button
+            android:id="@+id/btnImport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:padding="@dimen/button_padding"
+            android:text="@string/activity_screens_import"
+            app:layout_constraintStart_toEndOf="@+id/btnNew"
+            app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
 
-    <Button
-        android:id="@+id/btnDelete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:padding="@dimen/button_padding"
-        android:text="@string/activity_screens_delete"
-        app:layout_constraintEnd_toEndOf="@+id/btnUpdate"
-        app:layout_constraintStart_toStartOf="@+id/btnUpdate"
-        app:layout_constraintTop_toBottomOf="@+id/btnUpdate" />
+        <Button
+            android:id="@+id/btnExport"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:padding="@dimen/button_padding"
+            android:text="@string/activity_screens_export"
+            app:layout_constraintStart_toEndOf="@+id/btnEdit"
+            app:layout_constraintTop_toBottomOf="@+id/txtName" />
 
-    <Button
-        android:id="@+id/btnEdit"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:padding="@dimen/button_padding"
-        android:layout_marginTop="8dp"
-        android:text="@string/button_edit"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtName" />
+        <EditText
+            android:id="@+id/txtName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="32dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spnScreens" />
 
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:padding="@dimen/button_padding"
+            android:text="@string/activity_screens_delete"
+            app:layout_constraintEnd_toEndOf="@+id/btnUpdate"
+            app:layout_constraintStart_toStartOf="@+id/btnUpdate"
+            app:layout_constraintTop_toBottomOf="@+id/btnUpdate" />
+
+        <Button
+            android:id="@+id/btnEdit"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:padding="@dimen/button_padding"
+            android:text="@string/button_edit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtName" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v4.widget.NestedScrollView>

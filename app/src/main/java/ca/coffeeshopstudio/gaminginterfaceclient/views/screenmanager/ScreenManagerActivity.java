@@ -50,6 +50,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         setContentView(R.layout.activity_screen_manager);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.app_name);
 
         setViewActionListener(new Presentation(new ScreenRepository(getApplicationContext()), this));
         actionListener.load();

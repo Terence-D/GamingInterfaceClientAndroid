@@ -18,6 +18,15 @@
         android:orientation="vertical">
 
         <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_activity_about"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="@dimen/title_text_size"
+            android:textStyle="italic" />
+
+        <TextView
             android:id="@+id/txtVersion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

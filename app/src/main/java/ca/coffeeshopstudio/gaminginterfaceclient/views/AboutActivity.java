@@ -40,7 +40,7 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.title_activity_about);
+        toolbar.setTitle(R.string.app_name);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         if (fab != null) {

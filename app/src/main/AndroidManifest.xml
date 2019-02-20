@@ -17,13 +17,22 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute">
         <activity
+            android:name=".views.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".views.screenmanager.ScreenManagerActivity"
             android:windowSoftInputMode="stateHidden"
-            android:label="@string/title_activity_screen_manager"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".views.AboutActivity"
-            android:label="@string/title_activity_about"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".views.EditActivity"
@@ -41,17 +50,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.coffeeshopstudio.gaminginterfaceclient.views.MainActivity" />
-        </activity>
-        <activity
-            android:name=".views.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
