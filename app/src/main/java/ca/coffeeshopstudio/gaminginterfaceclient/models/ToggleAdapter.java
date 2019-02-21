@@ -118,8 +118,8 @@ class ToggleViewHolder {
 
 class ToggleConstants {
     static final int[] toggles = new int[]{
-            R.drawable.neon_toggle_off,
-            R.drawable.neon_toggle_on
+            R.drawable.switch_off,
+            R.drawable.switch_on
     };
 
 

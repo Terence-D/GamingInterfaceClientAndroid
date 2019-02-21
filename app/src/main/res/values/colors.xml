@@ -2,9 +2,13 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#2A41B3</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#43a047</color>
 
     <color name="black_overlay">#66000000</color>
-    <color name="default_background">#383838</color>
+    <color name="default_background">#FF383838</color>
     <color name="color_bottom_bar">#A1F8F8F8</color>
+
+    <color name="darkThemePrimaryTextColor">#33343B</color>
+    <color name="darkThemeSecondaryTextColor">#8033343B</color>
+    <color name="darkThemeBackgroundColor">#33343B</color>
 </resources>

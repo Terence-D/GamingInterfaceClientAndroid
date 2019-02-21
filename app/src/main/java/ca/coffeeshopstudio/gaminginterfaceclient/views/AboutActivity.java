@@ -7,9 +7,11 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
 /**
@@ -31,8 +33,14 @@ public class AboutActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (((App) getApplication()).isNightModeEnabled())
+            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.app_name);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         if (fab != null) {
@@ -44,7 +52,7 @@ public class AboutActivity extends AppCompatActivity {
                     Email.putExtra(Intent.EXTRA_EMAIL,
                             new String[]{"support@coffeeshopstudio.ca"});  //developer 's email
                     Email.putExtra(Intent.EXTRA_SUBJECT,
-                            "Budget Miser"); // Email 's Subject
+                            "GIC"); // Email 's Subject
                     startActivity(Intent.createChooser(Email, "Send Feedback:"));
                 }
             });

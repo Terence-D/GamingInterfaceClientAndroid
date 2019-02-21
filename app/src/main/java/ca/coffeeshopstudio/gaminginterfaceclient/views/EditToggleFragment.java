@@ -461,10 +461,10 @@ public class EditToggleFragment extends DialogFragment implements
             btnNormal.setVisibility(View.VISIBLE);
             btnPressed.setVisibility(View.VISIBLE);
             if (controlToLoad.getPrimaryImageResource() == -1 && controlToLoad.getPrimaryImage().isEmpty()) {
-                controlToLoad.setPrimaryImageResource(R.drawable.neon_toggle_off);
+                controlToLoad.setPrimaryImageResource(R.drawable.switch_off);
             }
             if (controlToLoad.getSecondaryImageResource() == -1 && controlToLoad.getSecondaryImage().isEmpty()) {
-                controlToLoad.setSecondaryImageResource(R.drawable.neon_toggle_on);
+                controlToLoad.setSecondaryImageResource(R.drawable.switch_on);
             }
             preview.setBackground(buildStatePreview());
         } else {
@@ -526,14 +526,14 @@ public class EditToggleFragment extends DialogFragment implements
     public void onImageSelected(int builtIn) {
         if (state == 0) {
             controlToLoad.setPrimaryImage("");
-            if (builtIn == R.drawable.neon_toggle_off)
+            if (builtIn == R.drawable.switch_off)
                 controlToLoad.setPrimaryImageResource(0);
             else
                 controlToLoad.setPrimaryImageResource(1);
         }
         if (state == 1) {
             controlToLoad.setSecondaryImage("");
-            if (builtIn == R.drawable.neon_toggle_off)
+            if (builtIn == R.drawable.switch_off)
                 controlToLoad.setSecondaryImageResource(0);
             else
                 controlToLoad.setSecondaryImageResource(1);
@@ -573,14 +573,14 @@ public class EditToggleFragment extends DialogFragment implements
     private Drawable getButtonResource(int resourceId, boolean primary) {
         switch (resourceId) {
             case 0:
-                return getResources().getDrawable(R.drawable.neon_toggle_off);
+                return getResources().getDrawable(R.drawable.switch_off);
             case 1:
-                return getResources().getDrawable(R.drawable.neon_toggle_on);
+                return getResources().getDrawable(R.drawable.switch_on);
             default:
                 if (primary)
-                    return getResources().getDrawable(R.drawable.neon_toggle_off);
+                    return getResources().getDrawable(R.drawable.switch_off);
                 else
-                    return getResources().getDrawable(R.drawable.neon_toggle_on);
+                    return getResources().getDrawable(R.drawable.switch_on);
         }
     }
 

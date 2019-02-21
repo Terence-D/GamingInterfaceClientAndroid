@@ -7,7 +7,7 @@
     <string name="hint_password">Password</string>
     <string name="button_start">Start</string>
 
-    <string name="title_activity_edit">EditActivity</string>
+    <string name="title_activity_edit">Edit Activity</string>
     <string name="button_edit">Edit</string>
     <string name="fragment_edit_button_save">Save</string>
     <string name="fragment_edit_button_delete">Delete</string>
@@ -41,10 +41,9 @@
     <string name="about_color_picker">Color Picker</string>
     <string name="legal_color">Licensed under the Apache 2.0 license.  See below for details</string>
     <string name="website_color"><![CDATA[https://android-arsenal.com/details/1/1693]]></string>
-    <string name="about_art_free_ui_elements">Art by Czarny-design</string>
-    <string name="legal_free_ui_elements">Licensed under the Creative Commons Attribution 3.0 License.  See below for details</string>
-    <string name="website_free_ui_elements">http://ui-cloud.com/free-ui-elements-2/</string>
-    <string name="website_creative_attribution">https://creativecommons.org/licenses/by/3.0/</string>
+    <string name="about_easy_permissions">Easy Permissions Library</string>
+    <string name="legal_easy_permissions">Licensed under the Apache 2.0 License.  See below for details</string>
+    <string name="website_easy_permissions">https://github.com/googlesamples/easypermissions</string>
     <string name="legal">Legal</string>
     <string name="legal_contents">GIC Client (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2019 Terence Doerksen</string>
     <string name="website_apache">http://www.apache.org/licenses/LICENSE-2.0</string>
@@ -87,4 +86,24 @@
     <string name="fragment_edit_toggle_on">On</string>
     <string name="activity_main_server_upgrade_title">Server Mismatch</string>
     <string name="activity_main_server_upgrade_text">The GIC Server appears to be out of date - please upgrade to the latest version by clicking on the \"Website\" link on the server.  If you did not yet install the server, click the Help link below,</string>
+    <string name="title_activity_screen_manager">Screen Manager</string>
+    <string name="activity_screens_new">New</string>
+    <string name="activity_screens_update">Update</string>
+    <string name="activity_screens_import">Import</string>
+    <string name="activity_screens_export">Export</string>
+    <string name="activity_screens_delete">Delete</string>
+    <string name="loading">Please Wait…</string>
+    <string name="need_permission">This action requires you to enable write access.  After accepting, you will need to click on the button again to begin the Import/Export.</string>
+    <string name="export_complete">Export Complete!</string>
+    <string name="zip_successful">ZIP File successfully created: </string>
+    <string name="activity_main_screen_manager">Screen Manager</string>
+    <string name="cannot_delete_last_item">Cannot remove last screen!</string>
+    <string name="activity_screens_confirm_delete"><![CDATA[Are you sure you wish to PERMANENTLY delete <b>%1$s</b>?]]></string>
+    <string name="import_successful">Import Successful</string>
+    <string name="invalid_zip">Invalid Zip File!</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_about">About</string>
+    <string name="menu_toggle_theme">Toggle Theme</string>
+    <string name="title_activity_about">About</string>
+    <string name="title_activity_main">GIC</string>
 </resources>

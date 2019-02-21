@@ -5,17 +5,32 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseArray;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.CommandService;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.RestClientInstance;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,48 +50,117 @@ import retrofit2.Response;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    public static final String INTENT_SCREEN_INDEX = "screen_index";
+    private static final String PREFS_CHOSEN_ID = "chosen_id";
+    private SparseArray<String> screenList;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (((App) getApplication()).isNightModeEnabled())
+            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.app_name);
 
+        buildControls();
+
+        loadSettings();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.menu_about:
+                MainActivity.this.startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                return true;
+            case R.id.menu_help:
+                String url = "https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+                return true;
+            case R.id.menu_toggle_theme:
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor prefsEditor = prefs.edit();
+                prefsEditor.putBoolean("NIGHT_MODE", !prefs.getBoolean("NIGHT_MODE", true));
+                prefsEditor.apply();
+                recreate();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void buildControls() {
         findViewById(R.id.btnStart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startApp();
             }
         });
-        findViewById(R.id.btnEdit).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.btnScreenManager).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editApp();
+                MainActivity.this.startActivity(new Intent(MainActivity.this, ScreenManagerActivity.class));
             }
         });
-        findViewById(R.id.btnAbout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity.this.startActivity(new Intent(MainActivity.this, AboutActivity.class));
-            }
-        });
-        findViewById(R.id.btnHelp).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url = "https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
-
-        loadSettings();
     }
 
-    private void editApp() {
-        Intent myIntent = new Intent(MainActivity.this, EditActivity.class);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final ScreenRepository screenRepository = new ScreenRepository(getApplicationContext());
+        screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
+            @Override
+            public void onLoaded(List<IScreen> screens) {
+                screenRepository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                    @Override
+                    public void onLoaded(SparseArray<String> screenList) {
+                        buildScreenSpinner(screenList);
+                    }
+                });
+            }
+        });
+    }
 
-        MainActivity.this.startActivity(myIntent);
+    private void buildScreenSpinner(SparseArray<String> screenList) {
+        this.screenList = screenList;
+
+        spinner = findViewById(R.id.spnScreens);
+
+        String[] spinnerArray = new String[screenList.size()];
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(ScreenRepository.PREFS_NAME, MODE_PRIVATE);
+        int chosenId = prefs.getInt(PREFS_CHOSEN_ID, 0);
+        int chosenIndex = 0;
+
+        for (int i = 0; i < screenList.size(); i++) {
+            spinnerArray[i] = screenList.valueAt(i);
+            if (screenList.keyAt(i) == chosenId)
+                chosenIndex = i;
+        }
+
+        ArrayAdapter<CharSequence> dataAdapter = new ArrayAdapter<CharSequence>(this, android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        spinner.setAdapter(dataAdapter);
+        spinner.setSelection(chosenIndex);
+        spinner.setOnItemSelectedListener(this);
     }
 
     public static boolean isInteger(String str) {
@@ -114,6 +198,8 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
                     if (response.body().equals("1.3.0.0")) {
+                        int screenIndex = screenList.keyAt(spinner.getSelectedItemPosition());
+                        myIntent.putExtra(MainActivity.INTENT_SCREEN_INDEX, screenIndex);
                         MainActivity.this.startActivity(myIntent);
                         return;
                     }
@@ -171,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if (password == null) {
+        if (password.isEmpty()) {
             Toast.makeText(this, R.string.password_invalid, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -223,5 +309,21 @@ public class MainActivity extends AppCompatActivity {
         txtPassword.setText(password);
         txtPort.setText(port);
         txtAddress.setText(address);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(ScreenRepository.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        try {
+            prefsEditor.putInt(PREFS_CHOSEN_ID, screenList.keyAt(screenList.indexOfKey(i)));
+            prefsEditor.apply();
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
     }
 }

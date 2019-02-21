@@ -2,17 +2,15 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -30,12 +28,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -136,8 +135,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         setupToggleSwitch();
 
-        seekWidth.setMax(currentScreen.getMaxControlSize());
-        seekHeight.setMax(currentScreen.getMaxControlSize());
+        seekWidth.setMax(Screen.MAX_CONTROL_SIZE);
+        seekHeight.setMax(Screen.MAX_CONTROL_SIZE);
         seekFontSize.setMax(maxFontSize);
         seekWidth.setOnSeekBarChangeListener(this);
         seekHeight.setOnSeekBarChangeListener(this);
@@ -146,21 +145,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         setupButtons();
     }
 
-    private void setupButtons() {
-        findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentScreen.saveScreen(findViewById(R.id.topLayout).getBackground());
-            }
-        });
-
-        findViewById(R.id.btnSettings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                displayEditBackgroundDialog();
-            }
-        });
-    }
+    //TODO move this to presentation on refactor
+    private ProgressDialog dialog;
 
     private void setupToggleSwitch() {
         ((Switch) findViewById(R.id.toggleMode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -353,13 +339,13 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         int primaryColor = color;
 
         FragmentManager fm = getSupportFragmentManager();
-        EditBackgroundFragment editBackgroundFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor);
+        EditBackgroundFragment editBackgroundFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor, currentScreen.getScreenId());
         editBackgroundFragment.show(fm, "fragment_edit_background_name");
     }
 
     private void displayImageEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        EditImageFragment editFragment = EditImageFragment.newInstance();
+        EditImageFragment editFragment = EditImageFragment.newInstance(currentScreen.getScreenId());
         editFragment.show(fm, "fragment_edit_image_name");
     }
 
@@ -409,17 +395,16 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     @Override
-    public void onFinishEditBackgroundDialog(int primaryColor, Uri image) {
-        if (image == null)
+    public void onFinishEditBackgroundDialog(int primaryColor, String image) {
+        if (image == null) {
+            currentScreen.setBackgroundColor(primaryColor);
+            currentScreen.setBackgroundFile("");
             findViewById(R.id.topLayout).setBackgroundColor(primaryColor);
-        else {
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image);
-                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-                findViewById(R.id.topLayout).setBackground(drawable);
-            } catch (IOException e) {
-                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-            }
+        } else {
+            currentScreen.setBackgroundColor(-1);
+            currentScreen.setBackgroundFile(image);
+            Drawable drawable = currentScreen.getImage(image);
+            findViewById(R.id.topLayout).setBackground(drawable);
         }
     }
 
@@ -431,13 +416,13 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     @Override
-    public void onFinishEditImageDialog(Uri newImageUri) {
-        if (newImageUri == null) {
+    public void onFinishEditImageDialog(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) {
             deleteView();
         } else {
             ImageView image = ((ImageView) selectedView);
-            ((GICControl) selectedView.getTag()).setPrimaryImage(newImageUri.getPath());
-            image.setImageURI(newImageUri);
+            ((GICControl) selectedView.getTag()).setPrimaryImage(imagePath);
+            image.setImageDrawable(currentScreen.getImage(imagePath));
             resizeImageView(image, seekWidth.getProgress(), seekHeight.getProgress());
         }
     }
@@ -579,6 +564,50 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             } else {
                 return false;
             }
+        }
+    }
+
+    private void setupButtons() {
+        final EditActivity editActivity = this;
+        findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (dialog == null) {
+                    //prepare our dialog
+                    dialog = new ProgressDialog(editActivity);
+                    dialog.setMessage(getString(R.string.loading));
+                    dialog.setIndeterminate(true);
+                }
+                dialog.show();
+                currentScreen.setBackground(findViewById(R.id.topLayout).getBackground());
+                new SaveTask(editActivity).execute();
+            }
+        });
+
+        findViewById(R.id.btnSettings).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayEditBackgroundDialog();
+            }
+        });
+    }
+
+    private static class SaveTask extends AsyncTask<Void, Void, Void> {
+        private WeakReference<EditActivity> presentationWeakReference;
+
+        SaveTask(EditActivity presentation) {
+            presentationWeakReference = new WeakReference<>(presentation);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            presentationWeakReference.get().screenRepository.save(presentationWeakReference.get().currentScreen);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void voids) {
+            presentationWeakReference.get().dialog.dismiss();
         }
     }
 }
