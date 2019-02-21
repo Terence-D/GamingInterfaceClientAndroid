@@ -2,13 +2,20 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
@@ -28,6 +35,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
  * limitations under the License.
  */
 public class EditImageFragment extends DialogFragment implements View.OnClickListener {
+    private int screenId;
 
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
@@ -35,8 +43,11 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
     public EditImageFragment() {
     }
 
-    public static EditImageFragment newInstance() {
+    public static EditImageFragment newInstance(int screenId) {
         EditImageFragment frag = new EditImageFragment();
+        Bundle args = new Bundle();
+        args.putInt("screen", screenId);
+        frag.setArguments(args);
         return frag;
     }
 
@@ -44,6 +55,8 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Fetch arguments from bundle and set title
+
+        screenId = getArguments().getInt("screen");
         getDialog().setTitle(R.string.edit_fragment_image_title);
         setupControls(view);
     }
@@ -84,9 +97,29 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
             if (requestCode == EditActivity.OPEN_REQUEST_CODE_IMAGE) {
                 if (resultData != null) {
                     Uri currentUri = resultData.getData();
-                    EditImageFragment.EditImageDialogListener listener = (EditImageFragment.EditImageDialogListener) getActivity();
-                    listener.onFinishEditImageDialog(currentUri);
+                    File file = null;
+                    if (currentUri != null) {
+                        try {
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), currentUri);
+                            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                                file = new File(getContext().getFilesDir(), screenId + "_control_" + i + ".png");
+                                if (!file.exists())
+                                    break;
+                            }
+                            FileOutputStream out = new FileOutputStream(file);
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                            out.flush();
+                            out.close();
+                        } catch (IOException e) {
+                            Toast.makeText(getActivity(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
 
+                    EditImageFragment.EditImageDialogListener listener = (EditImageFragment.EditImageDialogListener) getActivity();
+                    if (file == null)
+                        listener.onFinishEditImageDialog("");
+                    else
+                        listener.onFinishEditImageDialog(file.getAbsolutePath());
                     dismiss();
                 }
             }
@@ -94,6 +127,6 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
     }
 
     public interface EditImageDialogListener {
-        void onFinishEditImageDialog(Uri imageUri);
+        void onFinishEditImageDialog(String imagePath);
     }
 }

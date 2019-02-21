@@ -23,7 +23,10 @@ import android.widget.ToggleButton;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.Screen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -41,15 +44,22 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.Screen;
  limitations under the License.
  */
 public abstract class AbstractGameActivity extends AppCompatActivity implements View.OnClickListener {
-    protected Screen currentScreen;
-
+    protected IScreen currentScreen;
     protected int currentApiVersion;
+    protected int currentScreenId;
+
+    protected IScreenRepository screenRepository;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        currentScreen = new Screen(this);
+        if (getIntent() != null)
+            currentScreenId = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
+
+        screenRepository = new ScreenRepository(getApplicationContext());
+        screenRepository.loadScreens();
+        currentScreen = screenRepository.getScreen(currentScreenId);
 
         buildFontCache();
     }
@@ -136,26 +146,50 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         if (type == GICControl.TYPE_BUTTON) {
             switch (resourceId) {
                 case 0:
-                    return getResources().getDrawable(R.drawable.neon_button);
+                    return getResources().getDrawable(R.drawable.button_neon);
                 case 1:
-                    return getResources().getDrawable(R.drawable.neon_button_pressed);
+                    return getResources().getDrawable(R.drawable.button_neon_pushed);
+                case 2:
+                    return getResources().getDrawable(R.drawable.button_blue);
+                case 3:
+                    return getResources().getDrawable(R.drawable.button_blue_dark);
+                case 4:
+                    return getResources().getDrawable(R.drawable.button_green);
+                case 5:
+                    return getResources().getDrawable(R.drawable.button_green_dark);
+                case 6:
+                    return getResources().getDrawable(R.drawable.button_green_alt);
+                case 7:
+                    return getResources().getDrawable(R.drawable.button_green_alt_dark);
+                case 8:
+                    return getResources().getDrawable(R.drawable.button_purple);
+                case 9:
+                    return getResources().getDrawable(R.drawable.button_purple_dark);
+                case 10:
+                    return getResources().getDrawable(R.drawable.button_red);
+                case 11:
+                    return getResources().getDrawable(R.drawable.button_red_dark);
+                case 12:
+                    return getResources().getDrawable(R.drawable.button_yellow);
+                case 13:
+                    return getResources().getDrawable(R.drawable.button_yellow_dark);
                 default:
                     if (primary)
-                        return getResources().getDrawable(R.drawable.neon_button);
+                        return getResources().getDrawable(R.drawable.button_neon);
                     else
-                        return getResources().getDrawable(R.drawable.neon_button_pressed);
+                        return getResources().getDrawable(R.drawable.button_neon_pushed);
             }
         } else {
             switch (resourceId) {
                 case 0:
-                    return getResources().getDrawable(R.drawable.neon_toggle_off);
+                    return getResources().getDrawable(R.drawable.switch_off);
                 case 1:
-                    return getResources().getDrawable(R.drawable.neon_toggle_on);
+                    return getResources().getDrawable(R.drawable.switch_on);
                 default:
                     if (primary)
-                        return getResources().getDrawable(R.drawable.neon_toggle_off);
+                        return getResources().getDrawable(R.drawable.switch_off);
                     else
-                        return getResources().getDrawable(R.drawable.neon_toggle_on);
+                        return getResources().getDrawable(R.drawable.switch_on);
             }
         }
     }
@@ -165,7 +199,6 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     }
 
     protected void loadScreen() {
-        currentScreen.loadControls();
         for (GICControl control : currentScreen.getControls()) {
             switch (control.getViewType()) {
                 case 0:
@@ -183,13 +216,13 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
 
         View topLayout = findViewById(R.id.topLayout);
-        Drawable background = currentScreen.loadBackground();
+        Drawable background = currentScreen.getBackground();
         topLayout.setBackground(background);
     }
 
     protected View buildText(GICControl control) {
         AppCompatTextView view = new AppCompatTextView(AbstractGameActivity.this);
-        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, currentScreen.getMaxControlSize(), 2, TypedValue.COMPLEX_UNIT_SP);
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(view, 24, Screen.MAX_CONTROL_SIZE, 2, TypedValue.COMPLEX_UNIT_SP);
         buildView(control, view);
         initText(view, control);
         return view;
@@ -222,7 +255,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             resizeImageView(view, control.getWidth(), control.getHeight());
         }
         else {
-            Drawable image = currentScreen.loadImage(control.getPrimaryImage());
+            Drawable image = currentScreen.getImage(control.getPrimaryImage());
             view.setImageDrawable(image);
             resizeImageView(view, control.getWidth(), control.getHeight());
         }
@@ -246,7 +279,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
         addDragDrop(view);
 
-        view.setId(currentScreen.getNewId());
+        view.setId(currentScreen.getNewControlId());
     }
 
     //initializations related to textview based controls (AppCompatTextView, Button, etc)

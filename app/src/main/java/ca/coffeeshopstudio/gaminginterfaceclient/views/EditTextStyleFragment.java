@@ -528,21 +528,50 @@ public class EditTextStyleFragment extends DialogFragment implements
     public void onImageSelected(int builtIn) {
         if (state == 0) {
             controlToLoad.setPrimaryImage("");
-            if (builtIn == R.drawable.neon_button)
-                controlToLoad.setPrimaryImageResource(0);
-            else
-                controlToLoad.setPrimaryImageResource(1);
+            controlToLoad.setPrimaryImageResource(getButtonByResourceId(builtIn));
         }
         if (state == 1) {
             controlToLoad.setSecondaryImage("");
-            if (builtIn == R.drawable.neon_button)
-                controlToLoad.setSecondaryImageResource(0);
-            else
-                controlToLoad.setSecondaryImageResource(1);
+            controlToLoad.setSecondaryImageResource(getButtonByResourceId(builtIn));
         }
         controlToLoad.setPrimaryColor(-1);
         controlToLoad.setSecondaryColor(-1);
         preview.setBackground(buildStatePreview());
+    }
+
+    private int getButtonByResourceId(int builtIn) {
+        switch (builtIn) {
+            case R.drawable.button_neon:
+                return 0;
+            case R.drawable.button_neon_pushed:
+                return 1;
+            case R.drawable.button_blue:
+                return 2;
+            case R.drawable.button_blue_dark:
+                return 3;
+            case R.drawable.button_green:
+                return 4;
+            case R.drawable.button_green_dark:
+                return 5;
+            case R.drawable.button_green_alt:
+                return 6;
+            case R.drawable.button_green_alt_dark:
+                return 7;
+            case R.drawable.button_purple:
+                return 8;
+            case R.drawable.button_purple_dark:
+                return 9;
+            case R.drawable.button_red:
+                return 10;
+            case R.drawable.button_red_dark:
+                return 11;
+            case R.drawable.button_yellow:
+                return 12;
+            case R.drawable.button_yellow_dark:
+                return 13;
+            default:
+                return 0;
+        }
     }
 
     private StateListDrawable buildStatePreview() {
@@ -575,14 +604,38 @@ public class EditTextStyleFragment extends DialogFragment implements
     private Drawable getButtonResource(int resourceId, boolean primary) {
         switch (resourceId) {
             case 0:
-                return getResources().getDrawable(R.drawable.neon_button);
+                return getResources().getDrawable(R.drawable.button_neon);
             case 1:
-                return getResources().getDrawable(R.drawable.neon_button_pressed);
+                return getResources().getDrawable(R.drawable.button_neon_pushed);
+            case 2:
+                return getResources().getDrawable(R.drawable.button_blue);
+            case 3:
+                return getResources().getDrawable(R.drawable.button_blue_dark);
+            case 4:
+                return getResources().getDrawable(R.drawable.button_green);
+            case 5:
+                return getResources().getDrawable(R.drawable.button_green_dark);
+            case 6:
+                return getResources().getDrawable(R.drawable.button_green_alt);
+            case 7:
+                return getResources().getDrawable(R.drawable.button_green_alt_dark);
+            case 8:
+                return getResources().getDrawable(R.drawable.button_purple);
+            case 9:
+                return getResources().getDrawable(R.drawable.button_purple_dark);
+            case 10:
+                return getResources().getDrawable(R.drawable.button_red);
+            case 11:
+                return getResources().getDrawable(R.drawable.button_red_dark);
+            case 12:
+                return getResources().getDrawable(R.drawable.button_yellow);
+            case 13:
+                return getResources().getDrawable(R.drawable.button_yellow_dark);
             default:
                 if (primary)
-                    return getResources().getDrawable(R.drawable.neon_button);
+                    return getResources().getDrawable(R.drawable.button_neon);
                 else
-                    return getResources().getDrawable(R.drawable.neon_button_pressed);
+                    return getResources().getDrawable(R.drawable.button_neon_pushed);
         }
     }
 

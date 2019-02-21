@@ -9,8 +9,8 @@ android {
         applicationId "ca.coffeeshopstudio.gaminginterfaceclient"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 15
-        versionName "1.5"
+        versionCode 20
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -85,6 +85,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
     implementation files('libs/commons-codec-1.10-rep.jar')
-    implementation 'com.github.QuadFlask:colorpicker:0.0.13' //https://android-arsenal.com/details/1/1693
+    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
+    //https://android-arsenal.com/details/1/1693
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'pub.devrel:easypermissions:2.0.1'
 }
