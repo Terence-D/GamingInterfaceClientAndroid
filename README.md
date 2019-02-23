@@ -11,4 +11,4 @@ This is part of a  two app system that allows the use of a remote device (Tablet
 * Supports practically any game
 * More features to be worked on!
 
-Check the Wiki link at the top for more information on how to use.  Any issues please add to the Issue tracker, or contact me at support [ a]t coffeeshopstudio.ca
+Check the Wiki here https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki for more information.  Any issues please add to the Issue tracker, or contact me at support [ a]t coffeeshopstudio.ca
