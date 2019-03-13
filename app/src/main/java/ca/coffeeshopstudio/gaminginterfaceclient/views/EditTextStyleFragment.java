@@ -185,18 +185,18 @@ public class EditTextStyleFragment extends DialogFragment implements
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
 
         if (incomingView != null && !(incomingView instanceof Button)) {
-            btnSecondary.setVisibility(View.INVISIBLE);
-            btnPrimary.setVisibility(View.INVISIBLE);
-            btnPressed.setVisibility(View.INVISIBLE);
-            btnNormal.setVisibility(View.INVISIBLE);
-            preview.setVisibility(View.INVISIBLE);
+            btnSecondary.setVisibility(View.GONE);
+            btnPrimary.setVisibility(View.GONE);
+            btnPressed.setVisibility(View.GONE);
+            btnNormal.setVisibility(View.GONE);
+            preview.setVisibility(View.GONE);
 
-            view.findViewById(R.id.switchType).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.lblInstructions).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.spinner).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.chkLShift).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.chkLAlt).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.chkLCtrl).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.switchType).setVisibility(View.GONE);
+            view.findViewById(R.id.lblInstructions).setVisibility(View.GONE);
+            view.findViewById(R.id.spinner).setVisibility(View.GONE);
+            view.findViewById(R.id.chkLShift).setVisibility(View.GONE);
+            view.findViewById(R.id.chkLAlt).setVisibility(View.GONE);
+            view.findViewById(R.id.chkLCtrl).setVisibility(View.GONE);
         }
         if (incomingView instanceof Button) {
             if (controlToLoad.getPrimaryImageResource() != -1 || !controlToLoad.getPrimaryImage().isEmpty()) {
