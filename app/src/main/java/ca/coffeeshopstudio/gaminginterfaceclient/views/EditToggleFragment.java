@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
@@ -283,7 +284,8 @@ public class EditToggleFragment extends DialogFragment implements
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+            ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
     }
 
     @Override
