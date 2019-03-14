@@ -9,7 +9,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/edit_dialog_min_width">
 
         <Button
             android:id="@+id/btnSave"
@@ -125,18 +126,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chkLAlt" />
 
-        <TextView
-            android:id="@+id/lblInstructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/edit_fragment"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtText" />
-
 
         <Spinner
             android:id="@+id/spinnerOff"
@@ -223,9 +212,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:text="@string/edit_fragment_font_color"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chkRCtrlOff" />
 
@@ -235,10 +222,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
             android:text="@string/edit_fragment_button_color_1"
             android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnFont" />
 
@@ -246,14 +231,12 @@
             android:id="@+id/btnSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/edit_fragment_button_color_2"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnPrimary" />
+            app:layout_constraintTop_toBottomOf="@+id/btnFont" />
 
         <Switch
             android:id="@+id/switchType"
@@ -312,14 +295,12 @@
             android:id="@+id/btnFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/fragment_edit_font_typeface"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnFontColor" />
+            app:layout_constraintTop_toBottomOf="@+id/chkLCtrlOff" />
 
         <TextView
             android:id="@+id/textView11"
@@ -332,7 +313,7 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/lblInstructions" />
+            app:layout_constraintTop_toBottomOf="@+id/txtText" />
 
         <TextView
             android:id="@+id/textView12"

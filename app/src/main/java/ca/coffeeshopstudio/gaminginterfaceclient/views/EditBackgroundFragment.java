@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
 /**
@@ -80,6 +81,14 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_edit_background, container);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+            setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
     }
 
     private void setupControls(View view) {

@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
@@ -124,6 +127,18 @@ public class EditTextStyleFragment extends DialogFragment implements
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
+            } else {
+                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
+            }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_edit_control, container);
     }
@@ -185,18 +200,18 @@ public class EditTextStyleFragment extends DialogFragment implements
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
 
         if (incomingView != null && !(incomingView instanceof Button)) {
-            btnSecondary.setVisibility(View.INVISIBLE);
-            btnPrimary.setVisibility(View.INVISIBLE);
-            btnPressed.setVisibility(View.INVISIBLE);
-            btnNormal.setVisibility(View.INVISIBLE);
-            preview.setVisibility(View.INVISIBLE);
+            btnSecondary.setVisibility(View.GONE);
+            btnPrimary.setVisibility(View.GONE);
+            btnPressed.setVisibility(View.GONE);
+            btnNormal.setVisibility(View.GONE);
+            preview.setVisibility(View.GONE);
 
-            view.findViewById(R.id.switchType).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.lblInstructions).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.spinner).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.chkLShift).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.chkLAlt).setVisibility(View.INVISIBLE);
-            view.findViewById(R.id.chkLCtrl).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.switchType).setVisibility(View.GONE);
+            view.findViewById(R.id.lblInstructions).setVisibility(View.GONE);
+            view.findViewById(R.id.spinner).setVisibility(View.GONE);
+            view.findViewById(R.id.chkLShift).setVisibility(View.GONE);
+            view.findViewById(R.id.chkLAlt).setVisibility(View.GONE);
+            view.findViewById(R.id.chkLCtrl).setVisibility(View.GONE);
         }
         if (incomingView instanceof Button) {
             if (controlToLoad.getPrimaryImageResource() != -1 || !controlToLoad.getPrimaryImage().isEmpty()) {
@@ -244,7 +259,8 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+            ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
     }
 
     @Override
