@@ -6,10 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -41,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
@@ -121,6 +124,18 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     public void loadView(View view) {
         incomingView = view;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
+            } else {
+                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
+            }
     }
 
     @Override
@@ -244,7 +259,8 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+            ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
     }
 
     @Override

@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
 /**
@@ -49,6 +50,14 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
         args.putInt("screen", screenId);
         frag.setArguments(args);
         return frag;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+            setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
     }
 
     @Override

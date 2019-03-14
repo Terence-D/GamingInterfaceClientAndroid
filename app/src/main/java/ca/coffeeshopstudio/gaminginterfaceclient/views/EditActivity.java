@@ -190,7 +190,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     private void showControlPopup(final MotionEvent e) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(EditActivity.this);
+        AlertDialog.Builder builderSingle;
+        builderSingle = new AlertDialog.Builder(EditActivity.this);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(EditActivity.this, android.R.layout.simple_list_item_1, controlTypes.getStringValues());
 
@@ -340,6 +341,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         FragmentManager fm = getSupportFragmentManager();
         EditBackgroundFragment editBackgroundFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor, currentScreen.getScreenId());
+
         editBackgroundFragment.show(fm, "fragment_edit_background_name");
     }
 

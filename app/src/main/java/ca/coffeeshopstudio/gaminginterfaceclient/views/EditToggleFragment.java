@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
@@ -118,6 +119,14 @@ public class EditToggleFragment extends DialogFragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupControls(view);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+            setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
     }
 
     public void loadControl(GICControl control) {
