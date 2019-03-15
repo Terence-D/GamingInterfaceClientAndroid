@@ -89,4 +89,5 @@ dependencies {
     //https://android-arsenal.com/details/1/1693
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'pub.devrel:easypermissions:2.0.1'
+    implementation 'com.heinrichreimersoftware:material-intro:1.6'
 }

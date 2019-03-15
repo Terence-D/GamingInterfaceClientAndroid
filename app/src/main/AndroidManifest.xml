@@ -17,6 +17,10 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute">
         <activity
+            android:name=".views.launch.SplashIntroActivity"
+            android:label="@string/title_activity_intro"
+            android:theme="@style/Theme.Intro"></activity>
+        <activity
             android:name=".views.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
@@ -29,23 +33,23 @@
         </activity>
         <activity
             android:name=".views.screenmanager.ScreenManagerActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".views.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".views.EditActivity"
-            android:windowSoftInputMode="stateHidden"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_edit"
-            android:theme="@style/FullscreenTheme" />
+            android:theme="@style/FullscreenTheme"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".views.GameActivity"
-            android:theme="@style/ActivityTheme.Primary.Base.Dark"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game_interface"
             android:parentActivityName=".views.MainActivity"
+            android:theme="@style/ActivityTheme.Primary.Base.Dark"
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
