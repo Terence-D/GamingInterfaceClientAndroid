@@ -30,6 +30,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.CommandService;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.RestClientInstance;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,8 +54,10 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final String INTENT_SCREEN_INDEX = "screen_index";
     private static final String PREFS_CHOSEN_ID = "chosen_id";
+    public static final int REQUEST_CODE_INTRO = 65;
     private SparseArray<String> screenList;
     private Spinner spinner;
+    private static final String PREF_KEY_FIRST_START = "prefSplash";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +68,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        boolean firstStart = PreferenceManager.getDefaultSharedPreferences(this)
+                .getBoolean(PREF_KEY_FIRST_START, true);
+
+        if (firstStart) {
+            Intent intent = new Intent(this, SplashIntroActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_INTRO);
+        }
+
         toolbar.setTitle(R.string.app_name);
 
         buildControls();
 
         loadSettings();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_INTRO) {
+            if (resultCode == RESULT_OK) {
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                        .putBoolean(PREF_KEY_FIRST_START, false)
+                        .apply();
+            } else {
+                PreferenceManager.getDefaultSharedPreferences(this).edit()
+                        .putBoolean(PREF_KEY_FIRST_START, true)
+                        .apply();
+            }
+        }
     }
 
     @Override

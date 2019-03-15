@@ -44,6 +44,9 @@
     <string name="about_easy_permissions">Easy Permissions Library</string>
     <string name="legal_easy_permissions">Licensed under the Apache 2.0 License.  See below for details</string>
     <string name="website_easy_permissions">https://github.com/googlesamples/easypermissions</string>
+    <string name="about_onboarding_title">Material Intro</string>
+    <string name="legal_onboarding">Licensed under the MIT License.  See below for details</string>
+    <string name="website_onboarding">https://github.com/heinrichreimer/material-intro#left-back-button</string>
     <string name="legal">Legal</string>
     <string name="legal_contents">GIC Client (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2019 Terence Doerksen</string>
     <string name="website_apache">http://www.apache.org/licenses/LICENSE-2.0</string>
@@ -55,7 +58,7 @@
     <string name="edit_fragment_font_color">Font Color</string>
     <string name="edit_fragment_button_color_1">Primary Color</string>
     <string name="edit_fragment_button_color_2">Secondary Color</string>
-    <string name="activity_main_help">To use this you need to run GIC Server (also Open Source) on your Windows computer where the game resides.  Please visit the link below for further information</string>
+    <string name="activityAboutServerDesc">To use this you need to run GIC Server (also Open Source) on your Windows computer where the game resides.  Please visit the link below for further information</string>
     <string name="password_invalid">Please enter a password of at least 6 characters</string>
     <string name="port_invalid">Invalid Port number</string>
     <string name="address_invalid">Please enter a valid address pointing to your computer running GIC Server</string>
@@ -106,4 +109,16 @@
     <string name="menu_toggle_theme">Toggle Theme</string>
     <string name="title_activity_about">About</string>
     <string name="title_activity_main">GIC</string>
+    <string name="title_activity_intro">IntroActivity</string>
+
+    <string name="slideIntroTitle">Welcome!</string>
+    <string name="slideIntroDesc">Thank you for installing GIC - the Game Interface Client.  Ahead are just a few tips to help you get started.  This will only be shown once - tap on the bottom right corner arrow to begin.</string>
+    <string name="slideServerTitle">Server</string>
+    <string name="slideServerDesc">GIC requires you to run software on your Windows computer to understand the commands.  For ease of use, clicking the button below will open your email app with the link inside, send it to yourself and open the link on your computer.  Don\'t worry, nothing you sent is through my app, I won\'t see or know if you clicked on the button.  You can verify that yourself if you want - the source code for this entire app is available on GitHub - link is inside the "About" screen.  You can ALSO find the link to the server in the About view, located inside GIC\'s menu (top right corner in the main view).</string>
+    <string name="slideAboutTitle">About</string>
+    <string name="slideAboutDesc">GIC allows you to create fully customizable interfaces (screens) to send commands to an app on your computer.  Useful for complex sim type games, but GIC can be used for any app or game that you like.  You can also share your screens with others!</string>
+    <string name="slideLetsGoTitle">Lets Go</string>
+    <string name="slideLetsGoDesc">I\'ve added Help sections to each part of this app - any further questions click the \'?\' at the top right corner of the app!  Click the Check Mark to get started, and thank you for using GIC!</string>
+    <string name="slideSendLink">Send Link</string>
+    <string name="aboutServer">Server</string>
 </resources>
