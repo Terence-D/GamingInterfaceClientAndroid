@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -128,7 +129,11 @@ public class EditToggleFragment extends DialogFragment implements
         super.onCreate(savedInstanceState);
 
         if (((App) getContext().getApplicationContext()).isNightModeEnabled())
-            setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
+            } else {
+                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
+            }
     }
 
     public void loadControl(GICControl control) {
