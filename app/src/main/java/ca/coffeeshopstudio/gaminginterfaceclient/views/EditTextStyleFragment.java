@@ -83,6 +83,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     private CheckBox lAlt;
     //private CheckBox rAlt;
     private TextView text;
+    private Switch quickMode;
 
     private Button btnFontColor;
     private Button btnPrimary;
@@ -152,6 +153,10 @@ public class EditTextStyleFragment extends DialogFragment implements
         //rCtrl = view.findViewById(R.id.chkRCtrl);
         lAlt = view.findViewById(R.id.chkLAlt);
         //rAlt = view.findViewById(R.id.chkRAlt);
+
+        quickMode = view.findViewById(R.id.switchQuick);
+        if (controlToLoad.getViewType() == GICControl.TYPE_BUTTON_QUICK)
+            quickMode.setChecked(true);
 
         buildCommandSpinner(view);
 
@@ -376,6 +381,10 @@ public class EditTextStyleFragment extends DialogFragment implements
         }
 
         if (incomingView instanceof Button) {
+            if (quickMode.isChecked())
+                controlToLoad.setViewType(GICControl.TYPE_BUTTON_QUICK);
+            else
+                controlToLoad.setViewType(GICControl.TYPE_BUTTON);
             if (mode) {
                 controlToLoad.setSecondaryColor(-1);
                 controlToLoad.setPrimaryColor(-1);

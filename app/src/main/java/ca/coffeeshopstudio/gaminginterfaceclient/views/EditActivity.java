@@ -544,11 +544,14 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     private float getPosition(float startingPosition, int controlSize) {
         float pos = startingPosition - (controlSize / 2);
 
-        float temp = pos % gridSize;
-        if (temp < (gridSize / 2))
-            pos = pos - temp;
-        else
-            pos = pos + gridSize - temp;
+        if (gridSize > 0) {
+            float temp = pos % gridSize;
+            if (temp < (gridSize / 2))
+                pos = pos - temp;
+            else
+                pos = pos + gridSize - temp;
+        }
+
 
         return pos;
     }
