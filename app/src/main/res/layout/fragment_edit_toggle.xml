@@ -225,7 +225,7 @@
             android:text="@string/edit_fragment_button_color_1"
             android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnFont" />
+            app:layout_constraintTop_toBottomOf="@+id/switchType" />
 
         <Button
             android:id="@+id/btnSecondary"
@@ -249,7 +249,7 @@
             android:text="@string/fragment_edit_control_switch_button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/btnSave"
-            app:layout_constraintTop_toBottomOf="@+id/btnSecondary" />
+            app:layout_constraintTop_toBottomOf="@+id/btnFontColor" />
 
         <Button
             android:id="@+id/btnNormal"
@@ -257,13 +257,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:scaleType="fitXY"
             android:text="@string/fragment_edit_toggle_off"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnPrimary" />
+            app:layout_constraintTop_toBottomOf="@+id/switchType" />
 
         <Button
             android:id="@+id/btnPressed"
@@ -271,13 +269,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
             android:scaleType="fitXY"
             android:text="@string/fragment_edit_toggle_on"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/btnPrimary" />
+            app:layout_constraintTop_toBottomOf="@+id/switchType" />
 
         <ToggleButton
             android:id="@+id/preview"
@@ -289,7 +285,7 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchType" />
+            app:layout_constraintTop_toBottomOf="@+id/btnNormal" />
 
         <Button
             android:id="@+id/btnFont"
