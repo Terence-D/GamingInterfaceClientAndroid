@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
@@ -26,6 +28,8 @@ import java.io.IOException;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+
+import static ca.coffeeshopstudio.gaminginterfaceclient.views.EditActivity.PREF_KEY_GRID_SIZE;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -42,25 +46,26 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditBackgroundFragment extends DialogFragment implements View.OnClickListener {
+public class EditSettingsFragment extends DialogFragment implements View.OnClickListener {
     private int primary;
     private Button btnPrimary;
+    private SeekBar seekGridSize;
     private int screenId;
 
-    public static EditBackgroundFragment newInstance(String title, int primary, int screenId) {
-        EditBackgroundFragment frag = new EditBackgroundFragment();
+    // Empty constructor is required for DialogFragment
+    // Make sure not to add arguments to the constructor
+    // Use `newInstance` instead as shown below
+    public EditSettingsFragment() {
+    }
+
+    public static EditSettingsFragment newInstance(String title, int primary, int screenId) {
+        EditSettingsFragment frag = new EditSettingsFragment();
         Bundle args = new Bundle();
         args.putString("title", title);
         args.putInt("primary", primary);
         args.putInt("screen", screenId);
         frag.setArguments(args);
         return frag;
-    }
-
-    // Empty constructor is required for DialogFragment
-    // Make sure not to add arguments to the constructor
-    // Use `newInstance` instead as shown below
-    public EditBackgroundFragment() {
     }
 
     @Override
@@ -80,7 +85,7 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_edit_background, container);
+        return inflater.inflate(R.layout.fragment_edit_settings, container);
     }
 
     @Override
@@ -96,6 +101,11 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
         btnPrimary.setOnClickListener(this);
         btnPrimary.setTextColor(primary);
 
+        seekGridSize = view.findViewById(R.id.seekGrid);
+        int gridSize = PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getInt(PREF_KEY_GRID_SIZE, 64);
+        seekGridSize.setProgress((gridSize / 32));
+
         view.findViewById(R.id.btnBackgroundImage).setOnClickListener(this);
         view.findViewById(R.id.btnSave).setOnClickListener(this);
     }
@@ -105,6 +115,11 @@ public class EditBackgroundFragment extends DialogFragment implements View.OnCli
         EditDialogListener listener = (EditDialogListener) getActivity();
         switch (view.getId()) {
             case R.id.btnSave:
+                int gridSize = seekGridSize.getProgress() * 32;
+                PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
+                        .putInt(PREF_KEY_GRID_SIZE, gridSize)
+                        .apply();
+
                 listener.onFinishEditBackgroundDialog(btnPrimary.getTextColors().getDefaultColor(), null);
                 dismiss();
                 break;

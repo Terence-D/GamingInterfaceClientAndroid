@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.view.DragEvent;
@@ -36,6 +37,8 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
 
+import static java.lang.Math.round;
+
 /**
  Copyright [2019] [Terence Doerksen]
 
@@ -55,8 +58,9 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         SeekBar.OnSeekBarChangeListener,
         EditImageFragment.EditImageDialogListener,
         EditToggleFragment.EditToggleListener,
-        EditBackgroundFragment.EditDialogListener {
+        EditSettingsFragment.EditDialogListener {
 
+    public static final String PREF_KEY_GRID_SIZE = "prefGridSize";
     private GestureDetector gd;
     private SeekBar seekWidth;
     private SeekBar seekHeight;
@@ -66,7 +70,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     private final int minFontSize = 4;
     private final int maxFontSize = 256;
     private ControlTypes controlTypes;
-
+    private int gridSize;
     private ControlDefaults defaults;
 
     private View selectedView; //which view is active
@@ -99,6 +103,9 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         defaults = new ControlDefaults(this, currentScreen.getScreenId());
 
         toggleEditControls(View.GONE);
+        gridSize = PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt(PREF_KEY_GRID_SIZE, 64);
+
         if (currentScreen.getControls().size() > 0)
             findViewById(R.id.txtHelp).setVisibility(View.GONE);
     }
@@ -202,6 +209,9 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             }
         });
 
+        final int x = gridSize * round(e.getX() / gridSize);
+        final int y = gridSize * round(e.getY() / gridSize);
+
         builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -218,19 +228,22 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         builderSingle.show();
     }
 
-    private void addImage(float x, float y) {
+
+    private void addImage(float startingX, float startingY) {
         GICControl control = initNewControl();
         control.setWidth(defaults.getImageDefaults().getWidth());
         control.setHeight(defaults.getImageDefaults().getHeight());
         control.setViewType(GICControl.TYPE_IMAGE);
 
-        control.setLeft((x - (control.getWidth() / 2)));
-        control.setTop((y - (control.getHeight() / 2)));
+        float x = getPosition(startingX, control.getWidth());
+        float y = getPosition(startingY, control.getHeight());
+        control.setLeft(x);
+        control.setTop(y);
         View view = buildImage(control);
         updateDisplay(view);
     }
 
-    private void addTextView(float x, float y) {
+    private void addTextView(float startingX, float startingY) {
         //un select any previous button
         GICControl control = initNewControl();
         control.setWidth(defaults.getTextDefaults().getWidth());
@@ -241,14 +254,16 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         control.setFontName(defaults.getTextDefaults().getFontName());
         control.setViewType(GICControl.TYPE_TEXT);
 
-        control.setLeft((x - (control.getWidth() / 2)));
-        control.setTop((y - (control.getHeight() / 2)));
+        float x = getPosition(startingX, control.getWidth());
+        float y = getPosition(startingY, control.getHeight());
+        control.setLeft(x);
+        control.setTop(y);
         View view = buildText(control);
 
         updateDisplay(view);
     }
 
-    private void addButton(float x, float y) {
+    private void addButton(float startingX, float startingY) {
         //unselect any previous button
         GICControl control = initNewControl();
 
@@ -266,8 +281,10 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         control.setHeight(defaults.getButtonDefaults().getHeight());
         control.setFontName(defaults.getButtonDefaults().getFontName());
 
-        control.setLeft((x - (control.getWidth() / 2)));
-        control.setTop((y - (control.getHeight() / 2)));
+        float x = getPosition(startingX, control.getWidth());
+        float y = getPosition(startingY, control.getHeight());
+        control.setLeft(x);
+        control.setTop(y);
         View view = buildButton(control);
 
         updateDisplay(view);
@@ -275,7 +292,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         ((Button) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getButtonDefaults().getFontSize());
     }
 
-    private void addSwitch(float x, float y) {
+    private void addSwitch(float startingX, float startingY) {
         //unselect any previous button
         GICControl control = initNewControl();
 
@@ -297,8 +314,10 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         control.setSecondaryImageResource(1);
         control.setText("");
 
-        control.setLeft((x - (control.getWidth() / 2)));
-        control.setTop((y - (control.getHeight() / 2)));
+        float x = getPosition(startingX, control.getWidth());
+        float y = getPosition(startingY, control.getHeight());
+        control.setLeft(x);
+        control.setTop(y);
         View view = buildSwitch(control);
         updateDisplay(view);
         ((ToggleButton) view).setTextSize(TypedValue.COMPLEX_UNIT_PX, defaults.getSwitchDefaults().getFontSize());
@@ -340,7 +359,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         int primaryColor = color;
 
         FragmentManager fm = getSupportFragmentManager();
-        EditBackgroundFragment editBackgroundFragment = EditBackgroundFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor, currentScreen.getScreenId());
+        EditSettingsFragment editBackgroundFragment = EditSettingsFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor, currentScreen.getScreenId());
 
         editBackgroundFragment.show(fm, "fragment_edit_background_name");
     }
@@ -398,6 +417,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
     @Override
     public void onFinishEditBackgroundDialog(int primaryColor, String image) {
+        gridSize = PreferenceManager.getDefaultSharedPreferences(this)
+                .getInt(PREF_KEY_GRID_SIZE, 64);
         if (image == null) {
             currentScreen.setBackgroundColor(primaryColor);
             currentScreen.setBackgroundFile("");
@@ -520,6 +541,19 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     @SuppressWarnings("IntegerDivisionInFloatingPointContext")
+    private float getPosition(float startingPosition, int controlSize) {
+        float pos = startingPosition - (controlSize / 2);
+
+        float temp = pos % gridSize;
+        if (temp < (gridSize / 2))
+            pos = pos - temp;
+        else
+            pos = pos + gridSize - temp;
+
+        return pos;
+    }
+
+    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     private final class DragDropListener implements View.OnDragListener {
         @Override
         public boolean onDrag(View v, DragEvent event) {
@@ -534,10 +568,12 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
                     break;
                 case DragEvent.ACTION_DROP:
                     View view = (View) event.getLocalState();
-                    float x = event.getX();
-                    float y = event.getY();
-                    view.setX(x-(view.getWidth()/2));
-                    view.setY(y-(view.getHeight()/2));
+                    float x = getPosition(event.getX(), view.getWidth());
+                    float y = getPosition(event.getY(), view.getHeight());
+
+                    view.setX(x);
+                    view.setY(y);
+
                     view.setVisibility(View.VISIBLE);
                     ((GICControl) view.getTag()).setLeft(view.getX());
                     ((GICControl) view.getTag()).setTop(view.getY());

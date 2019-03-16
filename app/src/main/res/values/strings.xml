@@ -64,8 +64,8 @@
     <string name="address_invalid">Please enter a valid address pointing to your computer running GIC Server</string>
 
     <string name="default_control_text">New</string>
-    <string name="edit_fragment_background_image">Background Image</string>
-    <string name="edit_fragment_background_color_1">Primary Color</string>
+    <string name="edit_fragment_background_image">Image</string>
+    <string name="edit_fragment_background_color_1">Color</string>
     <string name="edit_fragment_backgrouond_color_2">Secondary Color</string>
     <string name="control_type_button">Button</string>
     <string name="control_type_text">Text</string>
@@ -121,4 +121,6 @@
     <string name="slideLetsGoDesc">I\'ve added Help sections to each part of this app - any further questions click the \'?\' at the top right corner of the app!  Click the Check Mark to get started, and thank you for using GIC!</string>
     <string name="slideSendLink">Send Link</string>
     <string name="aboutServer">Server</string>
+    <string name="edit_fragment_background_title">Background</string>
+    <string name="edit_fragment_background_grid_title">Grid Size</string>
 </resources>
