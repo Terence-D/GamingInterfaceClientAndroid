@@ -359,7 +359,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         int primaryColor = color;
 
         FragmentManager fm = getSupportFragmentManager();
-        EditSettingsFragment editBackgroundFragment = EditSettingsFragment.newInstance(getString(R.string.title_fragment_edit), primaryColor, currentScreen.getScreenId());
+        EditSettingsFragment editBackgroundFragment = EditSettingsFragment.newInstance(primaryColor, currentScreen.getScreenId());
 
         editBackgroundFragment.show(fm, "fragment_edit_background_name");
     }

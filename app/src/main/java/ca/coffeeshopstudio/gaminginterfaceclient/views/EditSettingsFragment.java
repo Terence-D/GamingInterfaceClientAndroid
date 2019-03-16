@@ -58,10 +58,9 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
     public EditSettingsFragment() {
     }
 
-    public static EditSettingsFragment newInstance(String title, int primary, int screenId) {
+    public static EditSettingsFragment newInstance(int primary, int screenId) {
         EditSettingsFragment frag = new EditSettingsFragment();
         Bundle args = new Bundle();
-        args.putString("title", title);
         args.putInt("primary", primary);
         args.putInt("screen", screenId);
         frag.setArguments(args);
@@ -72,14 +71,9 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Fetch arguments from bundle and set title
-        String title;
-        if (getArguments() != null) {
-            title = getArguments().getString("title", "Enter Name");
-        } else
-            title = getString(R.string.default_control_text);
         primary = getArguments().getInt("primary", Color.BLACK);
         screenId = getArguments().getInt("screen", 0);
-        getDialog().setTitle(title);
+        getDialog().setTitle(R.string.edit_fragment_settings_title);
         setupControls(view);
     }
 
