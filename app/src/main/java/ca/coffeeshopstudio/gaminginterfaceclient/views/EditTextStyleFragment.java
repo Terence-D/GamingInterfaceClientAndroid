@@ -115,6 +115,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getDialog().setTitle(R.string.edit_fragment_title);
         setupControls(view);
     }
 
