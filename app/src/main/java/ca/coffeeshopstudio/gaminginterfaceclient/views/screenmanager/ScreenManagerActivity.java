@@ -262,7 +262,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
                     Uri currentUri = resultData.getData();
                     actionListener.importNew(currentUri);
 //                    EditBackgroundFragment.EditDialogListener listener = (EditBackgroundFragment.EditDialogListener) getActivity();
-//                    listener.onFinishEditBackgroundDialog(-1, currentUri);
+//                    listener.onFinishEditSettingsDialog(-1, currentUri);
 //                    dismiss();
                 }
             }

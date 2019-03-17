@@ -211,6 +211,7 @@ public class EditTextStyleFragment extends DialogFragment implements
             btnPressed.setVisibility(View.GONE);
             btnNormal.setVisibility(View.GONE);
             preview.setVisibility(View.GONE);
+            quickMode.setVisibility(View.GONE);
 
             view.findViewById(R.id.switchType).setVisibility(View.GONE);
             view.findViewById(R.id.lblInstructions).setVisibility(View.GONE);

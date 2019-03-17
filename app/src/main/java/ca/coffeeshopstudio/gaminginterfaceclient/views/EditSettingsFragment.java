@@ -52,6 +52,7 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
     private Button btnPrimary;
     private SeekBar seekGridSize;
     private int screenId;
+    private boolean changedColor = false;
 
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
@@ -119,7 +120,10 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
                         .putInt(PREF_KEY_GRID_SIZE, gridSize)
                         .apply();
 
-                listener.onFinishEditBackgroundDialog(btnPrimary.getTextColors().getDefaultColor(), null);
+                int colorToSend = -1; //default to no change
+                if (changedColor)
+                    colorToSend = btnPrimary.getTextColors().getDefaultColor();
+                listener.onFinishEditSettingsDialog(colorToSend, null);
                 dismiss();
                 break;
             case R.id.btnColor1:
@@ -153,6 +157,7 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
                     @Override
                     public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
                         ((Button) view).setTextColor(selectedColor);
+                        changedColor = true;
                     }
                 })
                 .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
@@ -187,7 +192,7 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
                     }
 
                     EditDialogListener listener = (EditDialogListener) getActivity();
-                    listener.onFinishEditBackgroundDialog(-1, file.getAbsolutePath());
+                    listener.onFinishEditSettingsDialog(-1, file.getAbsolutePath());
                     dismiss();
                 }
             }
@@ -195,6 +200,6 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
     }
 
     public interface EditDialogListener {
-        void onFinishEditBackgroundDialog(int primaryColor, String backgroundPath);
+        void onFinishEditSettingsDialog(int primaryColor, String backgroundPath);
     }
 }
