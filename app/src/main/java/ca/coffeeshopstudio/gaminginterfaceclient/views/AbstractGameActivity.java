@@ -132,7 +132,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         }
 
         StateListDrawable res = new StateListDrawable();
-        if (control.getViewType() == GICControl.TYPE_BUTTON) {
+        if (control.getViewType() == GICControl.TYPE_BUTTON || control.getViewType() == GICControl.TYPE_BUTTON_QUICK) {
             res.addState(new int[]{android.R.attr.state_pressed}, secondary);
         } else {
             res.addState(new int[]{android.R.attr.state_checked}, secondary);
@@ -143,7 +143,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
 
     //primary is used for backwards compatability
     private Drawable getButtonResource(int resourceId, int type, boolean primary) {
-        if (type == GICControl.TYPE_BUTTON) {
+        if (type == GICControl.TYPE_BUTTON || type == GICControl.TYPE_BUTTON_QUICK) {
             switch (resourceId) {
                 case 0:
                     return getResources().getDrawable(R.drawable.button_neon);
@@ -201,16 +201,17 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected void loadScreen() {
         for (GICControl control : currentScreen.getControls()) {
             switch (control.getViewType()) {
-                case 0:
+                case GICControl.TYPE_BUTTON:
+                case GICControl.TYPE_BUTTON_QUICK:
                     buildButton(control);
                     break;
-                case 1:
+                case GICControl.TYPE_TEXT:
                     buildText(control);
                     break;
-                case 2:
+                case GICControl.TYPE_IMAGE:
                     buildImage(control);
                     break;
-                case 3:
+                case GICControl.TYPE_SWITCH:
                     buildSwitch(control);
             }
         }

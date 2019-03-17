@@ -19,6 +19,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -42,6 +43,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
@@ -83,6 +85,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     private CheckBox lAlt;
     //private CheckBox rAlt;
     private TextView text;
+    private Switch quickMode;
 
     private Button btnFontColor;
     private Button btnPrimary;
@@ -141,6 +144,7 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Objects.requireNonNull(getDialog().getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         return inflater.inflate(R.layout.fragment_edit_control, container);
     }
 
@@ -152,6 +156,10 @@ public class EditTextStyleFragment extends DialogFragment implements
         //rCtrl = view.findViewById(R.id.chkRCtrl);
         lAlt = view.findViewById(R.id.chkLAlt);
         //rAlt = view.findViewById(R.id.chkRAlt);
+
+        quickMode = view.findViewById(R.id.switchQuick);
+        if (controlToLoad.getViewType() == GICControl.TYPE_BUTTON_QUICK)
+            quickMode.setChecked(true);
 
         buildCommandSpinner(view);
 
@@ -206,6 +214,7 @@ public class EditTextStyleFragment extends DialogFragment implements
             btnPressed.setVisibility(View.GONE);
             btnNormal.setVisibility(View.GONE);
             preview.setVisibility(View.GONE);
+            quickMode.setVisibility(View.GONE);
 
             view.findViewById(R.id.switchType).setVisibility(View.GONE);
             view.findViewById(R.id.lblInstructions).setVisibility(View.GONE);
@@ -376,6 +385,10 @@ public class EditTextStyleFragment extends DialogFragment implements
         }
 
         if (incomingView instanceof Button) {
+            if (quickMode.isChecked())
+                controlToLoad.setViewType(GICControl.TYPE_BUTTON_QUICK);
+            else
+                controlToLoad.setViewType(GICControl.TYPE_BUTTON);
             if (mode) {
                 controlToLoad.setSecondaryColor(-1);
                 controlToLoad.setPrimaryColor(-1);

@@ -246,7 +246,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:checked="true"
-            android:text="@string/fragment_edit_control_switch_button"
+            android:text="@string/fragment_edit_control_switch_button_graphic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/btnSave"
             app:layout_constraintTop_toBottomOf="@+id/btnFontColor" />

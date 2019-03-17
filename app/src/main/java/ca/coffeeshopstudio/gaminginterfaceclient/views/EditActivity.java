@@ -416,14 +416,15 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     }
 
     @Override
-    public void onFinishEditBackgroundDialog(int primaryColor, String image) {
+    public void onFinishEditSettingsDialog(int primaryColor, String image) {
         gridSize = PreferenceManager.getDefaultSharedPreferences(this)
                 .getInt(PREF_KEY_GRID_SIZE, 64);
-        if (image == null) {
+        if (primaryColor != -1) {
             currentScreen.setBackgroundColor(primaryColor);
             currentScreen.setBackgroundFile("");
             findViewById(R.id.topLayout).setBackgroundColor(primaryColor);
-        } else {
+        }
+        if (image != null) {
             currentScreen.setBackgroundColor(-1);
             currentScreen.setBackgroundFile(image);
             Drawable drawable = currentScreen.getImage(image);
@@ -544,11 +545,14 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     private float getPosition(float startingPosition, int controlSize) {
         float pos = startingPosition - (controlSize / 2);
 
-        float temp = pos % gridSize;
-        if (temp < (gridSize / 2))
-            pos = pos - temp;
-        else
-            pos = pos + gridSize - temp;
+        if (gridSize > 0) {
+            float temp = pos % gridSize;
+            if (temp < (gridSize / 2))
+                pos = pos - temp;
+            else
+                pos = pos + gridSize - temp;
+        }
+
 
         return pos;
     }

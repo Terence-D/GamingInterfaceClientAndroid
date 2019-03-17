@@ -48,6 +48,7 @@ public class GICControl {
     public static final int TYPE_TEXT = 1;
     public static final int TYPE_IMAGE = 2;
     public static final int TYPE_SWITCH = 3;
+    public static final int TYPE_BUTTON_QUICK = 4;
 
     //this is required for the toggle button, there are 4 stages to track:
     //0 - switched off ready for mouse down
