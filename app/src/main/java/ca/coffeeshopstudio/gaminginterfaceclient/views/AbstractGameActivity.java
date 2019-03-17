@@ -201,16 +201,17 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected void loadScreen() {
         for (GICControl control : currentScreen.getControls()) {
             switch (control.getViewType()) {
-                case 0:
+                case GICControl.TYPE_BUTTON:
+                case GICControl.TYPE_BUTTON_QUICK:
                     buildButton(control);
                     break;
-                case 1:
+                case GICControl.TYPE_TEXT:
                     buildText(control);
                     break;
-                case 2:
+                case GICControl.TYPE_IMAGE:
                     buildImage(control);
                     break;
-                case 3:
+                case GICControl.TYPE_SWITCH:
                     buildSwitch(control);
             }
         }

@@ -15,8 +15,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
@@ -239,7 +240,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
         protected String doInBackground(Integer... params) {
             ObjectMapper mapper = new ObjectMapper();
             try {
-                List<String> filesToZip = new ArrayList<>();
+                Set<String> filesToZip = new HashSet<>();
 
                 Screen screen = (Screen) presentationWeakReference.get().repository.getScreen(params[0]);
                 String json = mapper.writeValueAsString(screen);
