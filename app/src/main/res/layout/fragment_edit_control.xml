@@ -12,15 +12,41 @@
         android:layout_height="wrap_content"
         android:minWidth="@dimen/edit_dialog_min_width">
 
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/edit_text_font_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/txtWidth"
+            app:layout_constraintTop_toBottomOf="@+id/btnFont" />
+
+        <EditText
+            android:id="@+id/txtFontSize"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/btnDelete"
+            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
         <Button
             android:id="@+id/btnSave"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/fragment_edit_button_save"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTop" />
 
         <EditText
             android:id="@+id/txtText"
@@ -48,7 +74,7 @@
             android:text="@string/fragment_edit_button_delete"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/preview" />
+            app:layout_constraintTop_toBottomOf="@+id/txtTop" />
 
         <Spinner
             android:id="@+id/spinner"
@@ -160,18 +186,18 @@
             android:text="@string/edit_fragment_button_color_1"
             android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchQuick" />
+            app:layout_constraintTop_toBottomOf="@+id/txtFontSize" />
 
         <Button
             android:id="@+id/btnSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="4dp"
             android:text="@string/edit_fragment_button_color_2"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchQuick" />
+            app:layout_constraintTop_toBottomOf="@+id/txtFontSize" />
 
         <Switch
             android:id="@+id/switchType"
@@ -196,7 +222,7 @@
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchQuick" />
+            app:layout_constraintTop_toBottomOf="@+id/txtFontSize" />
 
         <Button
             android:id="@+id/btnPressed"
@@ -210,7 +236,7 @@
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchQuick" />
+            app:layout_constraintTop_toBottomOf="@+id/txtFontSize" />
 
         <Button
             android:id="@+id/preview"
@@ -245,6 +271,99 @@
             android:text="@string/fragment_edit_control_switch_button_type"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/switchType" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/edit_text_left"
+            app:layout_constraintEnd_toEndOf="@+id/txtLeft"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/preview" />
+
+        <EditText
+            android:id="@+id/txtLeft"
+            android:layout_width="@dimen/resize_texts"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="@+id/btnSave"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/edit_text_width"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/txtWidth"
+            app:layout_constraintTop_toBottomOf="@+id/preview" />
+
+        <EditText
+            android:id="@+id/txtWidth"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/btnDelete"
+            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/edit_text_top"
+            app:layout_constraintEnd_toEndOf="@+id/txtTop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtLeft" />
+
+        <EditText
+            android:id="@+id/txtTop"
+            android:layout_width="@dimen/resize_texts"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/edit_text_height"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/txtHeight"
+            app:layout_constraintTop_toBottomOf="@+id/txtWidth" />
+
+        <EditText
+            android:id="@+id/txtHeight"
+            android:layout_width="@dimen/resize_texts"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

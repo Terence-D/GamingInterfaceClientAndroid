@@ -1,5 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,6 +17,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.InputFilter;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,6 +55,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.utils.NumberFilter;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -95,8 +100,17 @@ public class EditTextStyleFragment extends DialogFragment implements
     private Button btnFont;
     private Button preview;
 
+    private EditText txtLeft;
+    private EditText txtTop;
+    private EditText txtHeight;
+    private EditText txtWidth;
+    private EditText txtFontSize;
+
     private int state = 0; //are we looking at normal (0) or secondary (1) for button
     private boolean mode = true;
+
+    private float screenWidth;
+    private float screenHeight;
 
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
@@ -148,7 +162,13 @@ public class EditTextStyleFragment extends DialogFragment implements
         return inflater.inflate(R.layout.fragment_edit_control, container);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setupControls(View view) {
+
+        getScreenDimensions();
+
+        buildSizeControls(view);
+
         text = view.findViewById(R.id.txtText);
         lShift = view.findViewById(R.id.chkLShift);
         //rShift = view.findViewById(R.id.chkRShift);
@@ -241,6 +261,32 @@ public class EditTextStyleFragment extends DialogFragment implements
             }
         }
         ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
+    }
+
+    private void buildSizeControls(View view) {
+        txtFontSize = view.findViewById(R.id.txtFontSize);
+        txtHeight = view.findViewById(R.id.txtHeight);
+        txtLeft = view.findViewById(R.id.txtLeft);
+        txtTop = view.findViewById(R.id.txtTop);
+        txtWidth = view.findViewById(R.id.txtWidth);
+
+        txtFontSize.setText(Integer.toString(controlToLoad.getFontSize()));
+        txtHeight.setText(Integer.toString(controlToLoad.getHeight()));
+        txtLeft.setText(Float.toString(controlToLoad.getLeft()));
+        txtTop.setText(Float.toString(controlToLoad.getTop()));
+        txtWidth.setText(Integer.toString(controlToLoad.getWidth()));
+
+        txtFontSize.setFilters(new InputFilter[]{new NumberFilter(1, 1000)});
+        txtHeight.setFilters(new InputFilter[]{new NumberFilter(1, (int) screenHeight)});
+        txtLeft.setFilters(new InputFilter[]{new NumberFilter(1, (int) screenWidth)});
+        txtTop.setFilters(new InputFilter[]{new NumberFilter(1, (int) (screenHeight - 10))});
+        txtWidth.setFilters(new InputFilter[]{new NumberFilter(1, (int) (screenWidth - 10))});
+    }
+
+    private void getScreenDimensions() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        screenHeight = displayMetrics.heightPixels / displayMetrics.density;
+        screenWidth = displayMetrics.widthPixels / displayMetrics.density;
     }
 
     private void buildCommandSpinner(View view) {
@@ -372,6 +418,12 @@ public class EditTextStyleFragment extends DialogFragment implements
         controlToLoad.setText(text.getText().toString());
         controlToLoad.getCommand().setKey(keys.get(spinner.getSelectedItemPosition()));
         controlToLoad.setFontColor(btnFontColor.getTextColors().getDefaultColor());
+
+        controlToLoad.setFontSize(Integer.parseInt(txtFontSize.getText().toString()));
+        controlToLoad.setHeight(Integer.parseInt(txtHeight.getText().toString()));
+        controlToLoad.setWidth(Integer.parseInt(txtWidth.getText().toString()));
+        controlToLoad.setTop(Float.parseFloat(txtTop.getText().toString()));
+        controlToLoad.setLeft(Float.parseFloat(txtLeft.getText().toString()));
 
         controlToLoad.getCommand().removeAllModifiers();
         if (lShift.isChecked()) {
