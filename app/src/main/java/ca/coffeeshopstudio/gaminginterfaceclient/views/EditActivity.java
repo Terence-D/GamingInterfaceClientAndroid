@@ -366,7 +366,9 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
     private void displayImageEditDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        EditImageFragment editFragment = EditImageFragment.newInstance(currentScreen.getScreenId());
+        ImageView view = (ImageView) selectedView;
+
+        EditImageFragment editFragment = EditImageFragment.newInstance((GICControl) view.getTag(), currentScreen.getScreenId());
         editFragment.show(fm, "fragment_edit_image_name");
     }
 
