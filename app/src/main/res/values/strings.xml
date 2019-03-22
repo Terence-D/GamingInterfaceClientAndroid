@@ -125,4 +125,9 @@
     <string name="edit_fragment_settings_title">Settings</string>
     <string name="edit_fragment_title">Edit</string>
     <string name="edit_fragment_settings_grid_title">Grid Size</string>
+    <string name="edit_text_left">Left</string>
+    <string name="edit_text_top">Top</string>
+    <string name="edit_text_width">Width</string>
+    <string name="edit_text_height">Height</string>
+    <string name="edit_text_font_size">Font Size</string>
 </resources>

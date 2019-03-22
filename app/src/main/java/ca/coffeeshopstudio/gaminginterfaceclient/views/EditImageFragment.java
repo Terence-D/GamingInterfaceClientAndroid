@@ -9,10 +9,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.text.InputFilter;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.File;
@@ -22,6 +25,8 @@ import java.util.Objects;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.utils.NumberFilter;
 
 /**
  * Copyright [2019] [Terence Doerksen]
@@ -40,6 +45,14 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
  */
 public class EditImageFragment extends DialogFragment implements View.OnClickListener {
     private int screenId;
+    private GICControl controlToLoad;
+    private EditText txtLeft;
+    private EditText txtTop;
+    private EditText txtHeight;
+    private EditText txtWidth;
+
+    private float screenWidth;
+    private float screenHeight;
 
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
@@ -47,12 +60,17 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
     public EditImageFragment() {
     }
 
-    public static EditImageFragment newInstance(int screenId) {
+    public static EditImageFragment newInstance(GICControl control, int screenId) {
         EditImageFragment frag = new EditImageFragment();
         Bundle args = new Bundle();
         args.putInt("screen", screenId);
         frag.setArguments(args);
+        frag.loadControl(control);
         return frag;
+    }
+
+    public void loadControl(GICControl control) {
+        controlToLoad = control;
     }
 
     @Override
@@ -84,14 +102,49 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
     }
 
     private void setupControls(View view) {
+
+        getScreenDimensions();
+
+        buildSizeControls(view);
+
         view.findViewById(R.id.btnImage).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
+        view.findViewById(R.id.btnSave).setOnClickListener(this);
+    }
+
+    private void buildSizeControls(View view) {
+
+        txtHeight = view.findViewById(R.id.txtHeight);
+        txtLeft = view.findViewById(R.id.txtLeft);
+        txtTop = view.findViewById(R.id.txtTop);
+        txtWidth = view.findViewById(R.id.txtWidth);
+
+        txtHeight.setText(Integer.toString(controlToLoad.getHeight()));
+        txtLeft.setText(Float.toString(controlToLoad.getLeft()));
+        txtTop.setText(Float.toString(controlToLoad.getTop()));
+        txtWidth.setText(Integer.toString(controlToLoad.getWidth()));
+
+        txtHeight.setFilters(new InputFilter[]{new NumberFilter(1, (int) screenHeight)});
+        txtLeft.setFilters(new InputFilter[]{new NumberFilter(1, (int) screenWidth)});
+        txtTop.setFilters(new InputFilter[]{new NumberFilter(1, (int) (screenHeight - 10))});
+        txtWidth.setFilters(new InputFilter[]{new NumberFilter(1, (int) (screenWidth - 10))});
+    }
+
+    private void getScreenDimensions() {
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        screenHeight = displayMetrics.heightPixels / displayMetrics.density;
+        screenWidth = displayMetrics.widthPixels / displayMetrics.density;
     }
 
     @Override
     public void onClick(View view) {
         EditImageDialogListener listener = (EditImageDialogListener) getActivity();
         switch (view.getId()) {
+            case R.id.btnSave:
+                saveControl();
+                dismiss();
+                listener.onFinishEditImageDialog("");
+                break;
             case R.id.btnImage:
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -99,12 +152,19 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
                 startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_IMAGE);
                 break;
             case R.id.btnDelete:
-                listener.onFinishEditImageDialog(null);
+                listener.onFinishEditImageDialog("DELETE");
                 dismiss();
                 break;
             default:
                 break;
         }
+    }
+
+    private void saveControl() {
+        controlToLoad.setHeight(Integer.parseInt(txtHeight.getText().toString()));
+        controlToLoad.setWidth(Integer.parseInt(txtWidth.getText().toString()));
+        controlToLoad.setTop(Float.parseFloat(txtTop.getText().toString()));
+        controlToLoad.setLeft(Float.parseFloat(txtLeft.getText().toString()));
     }
 
     @Override
