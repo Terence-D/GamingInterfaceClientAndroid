@@ -443,13 +443,19 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
     @Override
     public void onFinishEditImageDialog(String imagePath) {
-        if (imagePath == null || imagePath.isEmpty()) {
+        if (imagePath == "DELETE") {
             deleteView();
         } else {
             ImageView image = ((ImageView) selectedView);
-            ((GICControl) selectedView.getTag()).setPrimaryImage(imagePath);
-            image.setImageDrawable(currentScreen.getImage(imagePath));
-            resizeImageView(image, seekWidth.getProgress(), seekHeight.getProgress());
+
+            GICControl control = (GICControl) selectedView.getTag();
+            if (imagePath != null && !imagePath.isEmpty()) {
+                control.setPrimaryImage(imagePath);
+                image.setImageDrawable(currentScreen.getImage(imagePath));
+            }
+            selectedView.setX(control.getLeft());
+            selectedView.setY(control.getTop());
+            resizeImageView(image, control.getWidth(), control.getHeight());
         }
     }
 
@@ -469,6 +475,9 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
             setFontTypeface((TextView) selectedView, control);
 
+            selectedView.setLayoutParams(new FrameLayout.LayoutParams(control.getWidth(), control.getHeight()));
+            selectedView.setX(control.getLeft());
+            selectedView.setY(control.getTop());
             defaults.saveControl(control);
 
             selectedView.setTag(control);

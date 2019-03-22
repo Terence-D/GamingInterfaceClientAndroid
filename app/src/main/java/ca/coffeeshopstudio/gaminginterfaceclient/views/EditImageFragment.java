@@ -152,7 +152,7 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
                 startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_IMAGE);
                 break;
             case R.id.btnDelete:
-                listener.onFinishEditImageDialog(null);
+                listener.onFinishEditImageDialog("DELETE");
                 dismiss();
                 break;
             default:
