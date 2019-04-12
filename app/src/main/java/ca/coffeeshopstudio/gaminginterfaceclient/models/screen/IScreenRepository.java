@@ -1,9 +1,10 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
-import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * TODO: HEADER COMMENT HERE.
