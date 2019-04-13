@@ -1,8 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -10,6 +8,8 @@ import android.widget.GridView;
 import java.io.File;
 import java.util.Objects;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ToggleAdapter;
 

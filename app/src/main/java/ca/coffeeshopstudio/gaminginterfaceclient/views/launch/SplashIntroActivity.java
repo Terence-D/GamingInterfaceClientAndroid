@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
+import com.heinrichreimersoftware.materialintro.slide.FragmentSlide;
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
@@ -69,12 +70,17 @@ public class SplashIntroActivity extends IntroActivity {
                 .build());
 
 
+        addSlide(new FragmentSlide.Builder()
+                .fragment(new ScreenFragment())
+                .background(R.color.slideBackground)
+                .backgroundDark(R.color.colorPrimaryDark)
+                .build());
+
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.slideLetsGoTitle)
                 .description(R.string.slideLetsGoDesc)
                 .background(R.color.slideBackground)
                 .backgroundDark(R.color.colorPrimaryDark)
                 .build());
-
     }
 }

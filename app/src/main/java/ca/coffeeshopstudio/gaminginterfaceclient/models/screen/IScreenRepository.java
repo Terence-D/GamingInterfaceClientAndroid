@@ -1,9 +1,10 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
-import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * TODO: HEADER COMMENT HERE.
@@ -18,6 +19,8 @@ public interface IScreenRepository {
     void importScreen(IScreen screen);
 
     void save(IScreen screen);
+
+    void init();
 
     IScreen getScreen(int id);
 

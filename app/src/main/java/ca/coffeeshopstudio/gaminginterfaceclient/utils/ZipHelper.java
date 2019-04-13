@@ -66,7 +66,7 @@ public class ZipHelper {
         int count;
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             String path = destinationDir + File.separator + zipEntry.getName();
-            if (path.contains("data.json")) {
+            if (path.contains("Space - 10.5 Inch Tablet.json")) {
                 validZip = true;
             }
 

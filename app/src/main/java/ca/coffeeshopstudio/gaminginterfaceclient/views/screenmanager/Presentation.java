@@ -3,7 +3,6 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.util.SparseArray;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
@@ -207,7 +207,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
 
         private void parseJson(String fullPath) {
             ObjectMapper objectMapper = new ObjectMapper();
-            File file = new File(fullPath + "data.json");
+            File file = new File(fullPath + "Space - 10.5 Inch Tablet.json");
             try {
                 Screen screen = objectMapper.readValue(file, Screen.class);
                 //update any filenames to point to the local folder now
@@ -248,7 +248,7 @@ public class Presentation implements IContract.IViewActionListener, IScreenRepos
                 File cacheDir = new File(presentationWeakReference.get().view.getContext().getCacheDir().getAbsolutePath());
 
                 //store the json dat in the directory
-                File jsonData = new File(cacheDir.getAbsolutePath() + "/data.json");
+                File jsonData = new File(cacheDir.getAbsolutePath() + "/Space - 10.5 Inch Tablet.json");
                 output = new BufferedWriter(new FileWriter(jsonData));
                 output.write(json);
                 output.close();

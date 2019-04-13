@@ -12,7 +12,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.GestureDetector;
@@ -31,6 +30,7 @@ import android.widget.ToggleButton;
 
 import java.lang.ref.WeakReference;
 
+import androidx.fragment.app.FragmentManager;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;

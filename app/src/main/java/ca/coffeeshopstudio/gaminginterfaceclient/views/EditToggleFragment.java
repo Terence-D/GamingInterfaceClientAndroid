@@ -13,8 +13,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.text.InputFilter;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -45,6 +43,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;

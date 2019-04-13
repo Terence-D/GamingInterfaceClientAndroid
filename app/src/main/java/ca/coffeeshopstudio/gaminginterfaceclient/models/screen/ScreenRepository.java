@@ -2,7 +2,6 @@ package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -16,6 +15,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.annotation.NonNull;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 
@@ -73,26 +73,26 @@ public class ScreenRepository implements IScreenRepository {
                     loadControls(screen);
                 }
             }
-            if (cache.size() == 0) {
-                //load in the legacy
-                cache.add(buildInitialScreen());
-            }
         }
     }
 
     //this handles both legacy (1.x) and new builds
-    private Screen buildInitialScreen() {
-        Screen screen = new Screen(0, context);
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
+    public void init() {
+        loadScreens();
+        if (cache.size() == 0) {
+            //load in the legacy
+            Screen screen = new Screen(0, context);
+            SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = prefs.edit();
 
-        prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
+            prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
 
-        prefsEditor.apply();
+            prefsEditor.apply();
 
-        loadBackground(screen);
-        loadControls(screen);
-        return screen;
+            loadBackground(screen);
+            loadControls(screen);
+            cache.add(screen);
+        }
     }
 
     private void loadControls(Screen screen) {
