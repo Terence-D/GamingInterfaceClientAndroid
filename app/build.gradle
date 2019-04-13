@@ -5,6 +5,9 @@ int minutesSinceEpoch = System.currentTimeMillis() / MILLIS_IN_MINUTE
 
 android {
     compileSdkVersion 28
+    dataBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "ca.coffeeshopstudio.gaminginterfaceclient"
         minSdkVersion 19
@@ -89,5 +92,6 @@ dependencies {
     //https://android-arsenal.com/details/1/1693
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'pub.devrel:easypermissions:2.0.1'
-    implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
+    implementation 'com.github.adrcotfas:material-intro:e1228'
+    //implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
 }

@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         .putBoolean(PREF_KEY_FIRST_START, true)
                         .apply();
             }
+            new ScreenRepository(this).init();
         }
     }
 
@@ -130,6 +131,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 prefsEditor.putBoolean("NIGHT_MODE", !prefs.getBoolean("NIGHT_MODE", true));
                 prefsEditor.apply();
                 recreate();
+                break;
+            case R.id.menu_show_intro:
+                Intent intent = new Intent(this, SplashIntroActivity.class);
+                startActivityForResult(intent, REQUEST_CODE_INTRO);
                 break;
         }
 

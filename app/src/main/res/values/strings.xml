@@ -121,6 +121,8 @@
     <string name="slideLetsGoTitle">Lets Go</string>
     <string name="slideLetsGoDesc">I\'ve added Help sections to each part of this app - any further questions click the \'?\' at the top right corner of the app!  Click the Check Mark to get started, and thank you for using GIC!</string>
     <string name="slideSendLink">Send Link</string>
+    <string name="slideScreenTitle">Screen Starter</string>
+    <string name="slideScreenDesc">If you like you can pick one (or more!) of the screens I\'ve built below as a starting point, or you can skip this step and build your own.!</string>
     <string name="aboutServer">Server</string>
     <string name="edit_fragment_settings_title">Settings</string>
     <string name="edit_fragment_title">Edit</string>
@@ -130,4 +132,7 @@
     <string name="edit_text_width">Width</string>
     <string name="edit_text_height">Height</string>
     <string name="edit_text_font_size">Font Size</string>
+    <string name="slideScreenImportButton">Import</string>
+    <string name="slideScreenSuccess">Screens Imported!</string>
+    <string name="menu_show_intro">Show Intro</string>
 </resources>

@@ -20,6 +20,8 @@ public interface IScreenRepository {
 
     void save(IScreen screen);
 
+    void init();
+
     IScreen getScreen(int id);
 
     //this is used by the main screen
