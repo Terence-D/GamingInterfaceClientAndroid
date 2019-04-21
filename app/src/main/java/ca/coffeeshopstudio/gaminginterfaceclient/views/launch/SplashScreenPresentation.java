@@ -32,7 +32,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class SplashScreenPresentation implements IContract.IViewActionListener {
+public class SplashScreenPresentation implements IContract.IPresentation {
     IContract.IView view;
     IScreenRepository repository;
 

@@ -26,7 +26,7 @@ public interface IContract {
          *
          * @param listener Action Listener
          */
-        void setViewActionListener(IViewActionListener listener);
+        void setPresentation(IPresentation listener);
 
         void showScreenList(String[] screens);
 
@@ -48,7 +48,7 @@ public interface IContract {
         Context getContext();
     }
 
-    interface IViewActionListener {
+    interface IPresentation {
         void loadScreenList();
 
         void importJson(List<ScreenFragment.Model> toImport);

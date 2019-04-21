@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".views.MainActivity">
+        tools:context=".views.main.MainActivity">
 
 
         <TextView

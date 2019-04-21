@@ -26,7 +26,7 @@ public interface IContract {
          *
          * @param listener Action Listener
          */
-        void setViewActionListener(IViewActionListener listener);
+        void setPresentation(IPresentation listener);
 
         /**
          * Display an error message
@@ -58,7 +58,7 @@ public interface IContract {
         void setSpinnerSelection(int screenId);
     }
 
-    interface IViewActionListener {
+    interface IPresentation {
         void load();
 
         void update(int screenId, String newName);

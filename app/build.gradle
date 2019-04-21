@@ -80,8 +80,8 @@ dependencies {
     implementation 'androidx.core:core:1.1.0-alpha05'
     implementation 'com.google.android.material:material:1.1.0-alpha05'
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0-alpha03'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha03'
+    androidTestImplementation 'androidx.test:runner:1.2.0-alpha04'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-alpha04'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.9.0'
@@ -94,4 +94,6 @@ dependencies {
     implementation 'pub.devrel:easypermissions:2.0.1'
     implementation 'com.github.adrcotfas:material-intro:e1228'
     //implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0-alpha04'
 }

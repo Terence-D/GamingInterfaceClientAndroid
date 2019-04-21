@@ -21,7 +21,7 @@
             android:label="@string/title_activity_intro"
             android:theme="@style/Theme.Intro"></activity>
         <activity
-            android:name=".views.MainActivity"
+            android:name=".views.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -48,12 +48,12 @@
             android:name=".views.GameActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game_interface"
-            android:parentActivityName=".views.MainActivity"
+            android:parentActivityName=".views.main.MainActivity"
             android:theme="@style/ActivityTheme.Primary.Base.Dark"
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.coffeeshopstudio.gaminginterfaceclient.views.MainActivity" />
+                android:value="ca.coffeeshopstudio.gaminginterfaceclient.views.main.MainActivity" />
         </activity>
     </application>
 

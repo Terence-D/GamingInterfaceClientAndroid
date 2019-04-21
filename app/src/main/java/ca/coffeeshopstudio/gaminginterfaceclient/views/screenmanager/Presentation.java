@@ -29,7 +29,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.utils.ZipHelper;
 /**
  * TODO: HEADER COMMENT HERE.
  */
-public class Presentation implements IContract.IViewActionListener, IScreenRepository.LoadCallback, IScreenRepository.LoadScreenListCallback {
+public class Presentation implements IContract.IPresentation, IScreenRepository.LoadCallback, IScreenRepository.LoadScreenListCallback {
     final IContract.IView view;
     final IScreenRepository repository;
 
