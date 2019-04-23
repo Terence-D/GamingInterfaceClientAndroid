@@ -25,7 +25,7 @@ import androidx.appcompat.widget.Toolbar;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
-import ca.coffeeshopstudio.gaminginterfaceclient.views.EditActivity;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.main.MainActivity;
 import pub.devrel.easypermissions.EasyPermissions;
 

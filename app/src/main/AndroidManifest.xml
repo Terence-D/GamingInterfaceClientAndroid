@@ -39,7 +39,7 @@
             android:name=".views.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".views.EditActivity"
+            android:name=".views.edit.EditActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_edit"
             android:theme="@style/FullscreenTheme"

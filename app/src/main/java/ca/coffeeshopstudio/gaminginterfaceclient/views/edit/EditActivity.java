@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient.views;
+package ca.coffeeshopstudio.gaminginterfaceclient.views.edit;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -36,6 +36,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.AbstractGameActivity;
 
 import static java.lang.Math.round;
 

@@ -85,52 +85,52 @@ public interface IContract {
         private int startingSelectedScreen;
         private String[] screenArray;
 
-        public String getAddress() {
+        String getAddress() {
             return address;
         }
 
-        public void setAddress(String address) {
+        void setAddress(String address) {
             this.address = address;
         }
 
-        public String getPort() {
+        String getPort() {
             return port;
         }
 
-        public void setPort(String port) {
+        void setPort(String port) {
             this.port = port;
         }
 
-        public String getPassword() {
+        String getPassword() {
             return password;
         }
 
-        public void setPassword(String password) {
+        void setPassword(String password) {
             this.password = password;
         }
 
-        public SparseArray<String> getScreenList() {
+        SparseArray<String> getScreenList() {
             return screenList;
         }
 
-        public void setScreenList(SparseArray<String> screenList) {
+        void setScreenList(SparseArray<String> screenList) {
             this.screenList = screenList;
         }
 
-        public void SetStartingScreenIndex(int chosenIndex) {
+        void SetStartingScreenIndex(int chosenIndex) {
             this.startingSelectedScreen = chosenIndex;
         }
 
-        public int getStartingScreenIndex() {
+        int getStartingScreenIndex() {
             return startingSelectedScreen;
         }
 
-        public void setScreenArray(String[] spinnerArray) {
-            this.screenArray = spinnerArray;
+        String[] getScreenArray() {
+            return screenArray;
         }
 
-        public String[] getScreenArray() {
-            return screenArray;
+        void setScreenArray(String[] spinnerArray) {
+            this.screenArray = spinnerArray;
         }
     }
 }

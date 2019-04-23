@@ -4,10 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,15 +21,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProviders;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
-import ca.coffeeshopstudio.gaminginterfaceclient.network.CommandService;
-import ca.coffeeshopstudio.gaminginterfaceclient.network.RestClientInstance;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.AboutActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -193,6 +186,8 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(viewModel.getStartingScreenIndex());
         spinner.setOnItemSelectedListener(this);
+
+
     }
 
     @Override
