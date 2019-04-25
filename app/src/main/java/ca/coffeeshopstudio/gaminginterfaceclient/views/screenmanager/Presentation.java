@@ -53,10 +53,28 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
     }
 
     @Override
-    public void update(int screenId, String newName) {
+    public void update(final int screenId, final String newName) {
         view.setProgressIndicator(true);
-        UpdateTask task = new UpdateTask(view, repository, screenId, newName);
-        task.execute();
+
+        repository.getScreen(screenId, new IScreenRepository.LoadScreenCallback() {
+            @Override
+            public void onLoaded(IScreen screen) {
+                screen.setName(newName);
+                repository.save(screen, new IScreenRepository.LoadScreenCallback() {
+                    @Override
+                    public void onLoaded(IScreen screen) {
+                        repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                            @Override
+                            public void onLoaded(SparseArray<String> screenList) {
+                                view.updateSpinner(screenList);
+                                view.setSpinnerSelection(screenId);
+                                view.setProgressIndicator(false);
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -69,8 +87,19 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
                     view.showError(R.string.cannot_delete_last_item);
                 } else {
                     view.setProgressIndicator(true);
-                    DeleteTask task = new DeleteTask(repository, view, toDelete);
-                    task.execute();
+                    repository.removeScreen(toDelete, new IScreenRepository.LoadScreenCallback() {
+                        @Override
+                        public void onLoaded(IScreen screen) {
+                            repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                                @Override
+                                public void onLoaded(SparseArray<String> screenList) {
+                                    view.updateSpinner(screenList);
+                                    view.setProgressIndicator(false);
+                                    view.setSpinnerSelection(0);
+                                }
+                            });
+                        }
+                    });
                 }
             }
         });
@@ -91,8 +120,19 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
     @Override
     public void create() {
         view.setProgressIndicator(true);
-        CreateTask task = new CreateTask(repository, this);
-        task.execute();
+        repository.newScreen(new IScreenRepository.LoadScreenCallback() {
+            @Override
+            public void onLoaded(IScreen screen) {
+                repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                    @Override
+                    public void onLoaded(SparseArray<String> screenList) {
+                        view.updateSpinner(screenList);
+                        view.setProgressIndicator(false);
+                        view.setSpinnerSelection(screenList.size() - 1);
+                }
+            });
+            }
+        });
     }
 
     @Override
@@ -106,66 +146,9 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
         view.setProgressIndicator(false);
     }
 
-    private static class CreateTask extends AsyncTask<Void, Void, Void> {
-        private final IScreenRepository repository;
-        private final Presentation presentation;
-
-        public CreateTask(IScreenRepository repository, Presentation presentation) {
-            this.repository = repository;
-            this.presentation = presentation;
-        }
-
-        @Override
-        protected Void doInBackground(Void... values) {
-            repository.newScreen();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void results) {
-            repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
-                @Override
-                public void onLoaded(SparseArray<String> screenList) {
-                    presentation.view.updateSpinner(screenList);
-                    presentation.view.setProgressIndicator(false);
-                    presentation.view.setSpinnerSelection(screenList.size() - 1);
-                }
-            });
-        }
-    }
-
-    private static class DeleteTask extends AsyncTask<Void, Void, Void> {
-        private final IScreenRepository repository;
-        private final IContract.IView view;
-        private final int screenId;
-
-        public DeleteTask(IScreenRepository repository, IContract.IView view, int screenId) {
-            this.repository = repository;
-            this.view = view;
-            this.screenId = screenId;
-        }
-
-        @Override
-        protected Void doInBackground(Void... values) {
-            repository.removeScreen(screenId);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void results) {
-            repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
-                @Override
-                public void onLoaded(SparseArray<String> screenList) {
-                    view.updateSpinner(screenList);
-                    view.setProgressIndicator(false);
-                    view.setSpinnerSelection(0);
-                }
-            });
-        }
-    }
-
     private static class ImportTask extends AsyncTask<Uri, Void, String> {
         private WeakReference<Presentation> presentationWeakReference;
+        private IScreen screen;
 
         ImportTask(Presentation presentation) {
             presentationWeakReference = new WeakReference<>(presentation);
@@ -183,8 +166,9 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
                 boolean valid = ZipHelper.unzip(stream, Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path);
 
                 //now read the json values
-                if (valid)
-                    parseJson(Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path + "/");
+                if (valid) {
+                    this.screen = parseJson(Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path + "/");
+                }
                 else
                     return presentationWeakReference.get().view.getContext().getString(R.string.invalid_zip);
             } catch (IOException e) {
@@ -195,17 +179,22 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
 
         @Override
         protected void onPostExecute(final String results) {
-            presentationWeakReference.get().repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+            presentationWeakReference.get().repository.importScreen(screen, new IScreenRepository.LoadScreenCallback() {
                 @Override
-                public void onLoaded(SparseArray<String> screenList) {
-                    presentationWeakReference.get().view.updateSpinner(screenList);
-                    presentationWeakReference.get().view.setProgressIndicator(false);
-                    presentationWeakReference.get().view.showMessage(results);
+                public void onLoaded(IScreen screen) {
+                    presentationWeakReference.get().repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                        @Override
+                        public void onLoaded(SparseArray<String> screenList) {
+                            presentationWeakReference.get().view.updateSpinner(screenList);
+                            presentationWeakReference.get().view.setProgressIndicator(false);
+                            presentationWeakReference.get().view.showMessage(results);
+                        }
+                    });
                 }
             });
         }
 
-        private void parseJson(String fullPath) {
+        private IScreen parseJson(String fullPath) {
             ObjectMapper objectMapper = new ObjectMapper();
             File file = new File(fullPath + "Space - 10.5 Inch Tablet.json");
             try {
@@ -225,10 +214,11 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
                         control.setSecondaryImage(fullPath + control.getSecondaryImage().substring(index + 1));
                     }
                 }
-                presentationWeakReference.get().repository.importScreen(screen);
+                return screen;//presentationWeakReference.get().repository.importScreen(screen);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            return null;
         }
     }
     private static class ExportTask extends AsyncTask<Integer, Void, String> {
@@ -242,7 +232,7 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
             try {
                 Set<String> filesToZip = new HashSet<>();
 
-                Screen screen = (Screen) presentationWeakReference.get().repository.getScreen(params[0]);
+                Screen screen = (Screen) presentationWeakReference.get().repository.getScreenSync(params[0]);
                 String json = mapper.writeValueAsString(screen);
                 Writer output;
                 File cacheDir = new File(presentationWeakReference.get().view.getContext().getCacheDir().getAbsolutePath());
@@ -287,41 +277,6 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
         protected void onPostExecute(String results) {
             presentationWeakReference.get().view.setProgressIndicator(false);
             presentationWeakReference.get().view.showMessage(results);
-        }
-    }
-
-    private static class UpdateTask extends AsyncTask<Void, Void, Void> {
-        IScreenRepository repository;
-        int screenId;
-        String newName;
-        IContract.IView view;
-
-        public UpdateTask(IContract.IView view, IScreenRepository repository, int screenId, String newName) {
-            this.repository = repository;
-            this.screenId = screenId;
-            this.newName = newName;
-            this.view = view;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            IScreen screen = repository.getScreen(screenId);
-            screen.setName(newName);
-            repository.save(screen);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
-                @Override
-                public void onLoaded(SparseArray<String> screenList) {
-                    view.updateSpinner(screenList);
-                    view.setSpinnerSelection(screenId);
-                    view.setProgressIndicator(false);
-                }
-            });
         }
     }
 }

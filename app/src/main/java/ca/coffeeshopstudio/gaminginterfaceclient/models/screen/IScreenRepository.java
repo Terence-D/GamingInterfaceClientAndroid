@@ -10,30 +10,33 @@ import androidx.annotation.NonNull;
  * TODO: HEADER COMMENT HERE.
  */
 public interface IScreenRepository {
-    void loadScreens(@NonNull final LoadCallback callback);
+    void loadScreens(@NonNull LoadCallback callback);
 
-    void loadScreens();
+    void newScreen(@NonNull LoadScreenCallback callback);
 
-    Screen newScreen();
+    void importScreen(IScreen screen, @NonNull LoadScreenCallback callback);
 
-    void importScreen(IScreen screen);
+    void importScreenSync(IScreen screen);
 
-    void save(IScreen screen);
+    void save(IScreen screen, @NonNull LoadScreenCallback callback);
 
-    void init();
+    void init(@NonNull LoadCallback callback);
 
-    IScreen getScreen(int id);
+    void getScreen(int id, @NonNull LoadScreenCallback callback);
 
-    //this is used by the main screen
-    //IScreen getScreenByPosition(int index);
+    IScreen getScreenSync(int id);
 
     void getScreenList(@NonNull final LoadScreenListCallback callback);
 
-    void removeScreen(int id);
+    void removeScreen(int id, @NonNull LoadScreenCallback callback);
 
 
     interface LoadCallback {
         void onLoaded(List<IScreen> screens);
+    }
+
+    interface LoadScreenCallback {
+        void onLoaded(IScreen screen);
     }
 
     interface LoadScreenListCallback {

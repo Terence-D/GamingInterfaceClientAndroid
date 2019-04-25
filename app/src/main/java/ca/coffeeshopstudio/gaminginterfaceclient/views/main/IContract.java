@@ -58,6 +58,8 @@ public interface IContract {
         void displayUpgradeWarning();
 
         void showMessage(String message);
+
+        void showHelpMenuIcon();
     }
 
     interface IPresentation {
@@ -84,6 +86,7 @@ public interface IContract {
         private SparseArray<String> screenList;
         private int startingSelectedScreen;
         private String[] screenArray;
+        private boolean helpMenuIcon;
 
         String getAddress() {
             return address;
@@ -131,6 +134,14 @@ public interface IContract {
 
         void setScreenArray(String[] spinnerArray) {
             this.screenArray = spinnerArray;
+        }
+
+        boolean isHelpMenuIcon() {
+            return helpMenuIcon;
+        }
+
+        void setHelpMenuIcon(boolean helpMenuIcon) {
+            this.helpMenuIcon = helpMenuIcon;
         }
     }
 }

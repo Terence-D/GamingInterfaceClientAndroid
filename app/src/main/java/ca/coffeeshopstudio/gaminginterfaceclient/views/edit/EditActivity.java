@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
@@ -28,13 +27,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.lang.ref.WeakReference;
-
 import androidx.fragment.app.FragmentManager;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.AbstractGameActivity;
 
@@ -634,7 +633,12 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
                 }
                 dialog.show();
                 currentScreen.setBackground(findViewById(R.id.topLayout).getBackground());
-                new SaveTask(editActivity).execute();
+                screenRepository.save(currentScreen, new IScreenRepository.LoadScreenCallback() {
+                    @Override
+                    public void onLoaded(IScreen screen) {
+                        dialog.dismiss();
+                    }
+                });
             }
         });
 
@@ -646,22 +650,4 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         });
     }
 
-    private static class SaveTask extends AsyncTask<Void, Void, Void> {
-        private WeakReference<EditActivity> presentationWeakReference;
-
-        SaveTask(EditActivity presentation) {
-            presentationWeakReference = new WeakReference<>(presentation);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            presentationWeakReference.get().screenRepository.save(presentationWeakReference.get().currentScreen);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void voids) {
-            presentationWeakReference.get().dialog.dismiss();
-        }
-    }
 }

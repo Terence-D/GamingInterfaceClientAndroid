@@ -2,6 +2,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,7 @@ import static android.content.Context.MODE_PRIVATE;
  * TODO: HEADER COMMENT HERE.
  */
 public class ScreenRepository implements IScreenRepository {
-    static List<IScreen> cache;
+    private static List<IScreen> cache;
     public static final String PREFS_NAME = "gicsScreen";
     private static final String PREFS_SCREEN = "screen_";
     private static final String PREFS_BACKGROUND_SUFFIX = "_background";
@@ -38,14 +40,7 @@ public class ScreenRepository implements IScreenRepository {
         this.context = context;
     }
 
-    @Override
-    public void loadScreens(@NonNull final LoadCallback callback) {
-        loadScreens();
-        callback.onLoaded(cache);
-    }
-
-    @Override
-    public void loadScreens() {
+    private static void screenLoader(Context context) {
         if (cache == null) {
             //init the cache
             cache = new ArrayList<>();
@@ -68,35 +63,16 @@ public class ScreenRepository implements IScreenRepository {
                     } catch (Exception e) {
                         screen.setName("Screen " + screenId);
                     }
+                    loadBackground(screen, context);
+                    loadControls(screen, context);
                     cache.add(screen);
-                    loadBackground(screen);
-                    loadControls(screen);
                 }
             }
         }
     }
 
-    //this handles both legacy (1.x) and new builds
-    public void init() {
-        loadScreens();
-        if (cache.size() == 0) {
-            //load in the legacy
-            Screen screen = new Screen(0, context);
-            SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            SharedPreferences.Editor prefsEditor = prefs.edit();
-
-            prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
-
-            prefsEditor.apply();
-
-            loadBackground(screen);
-            loadControls(screen);
-            cache.add(screen);
-        }
-    }
-
-    private void loadControls(Screen screen) {
-        convertLegacyControls(screen);
+    private static void loadControls(Screen screen, Context context) {
+        convertLegacyControls(screen, context);
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         final ObjectMapper mapper = new ObjectMapper();
@@ -113,8 +89,8 @@ public class ScreenRepository implements IScreenRepository {
         }
     }
 
-    private void loadBackground(Screen screen) {
-        convertLegacyBackground(screen);
+    private static void loadBackground(Screen screen, Context context) {
+        convertLegacyBackground(screen, context);
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         int backgroundColor = prefs.getInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, context.getResources().getColor(R.color.default_background));
         String backgroundPath = prefs.getString(screen.getScreenId() + PREFS_BACKGROUND_PATH_SUFFIX, "");
@@ -122,7 +98,7 @@ public class ScreenRepository implements IScreenRepository {
         screen.setBackgroundFile(backgroundPath);
     }
 
-    private void convertLegacyControls(Screen screen) {
+    private static void convertLegacyControls(Screen screen, Context context) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
@@ -143,7 +119,7 @@ public class ScreenRepository implements IScreenRepository {
         prefsEditor.apply();
     }
 
-    private void convertLegacyBackground(Screen screen) {
+    private static void convertLegacyBackground(Screen screen, Context context) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         if (prefs.contains("background")) {
             SharedPreferences.Editor prefsEditor = prefs.edit();
@@ -162,39 +138,7 @@ public class ScreenRepository implements IScreenRepository {
         }
     }
 
-    @Override
-    public Screen newScreen() {
-        Screen newScreen = new Screen(getUniqueId(cache.size()), context);
-        newScreen.setBackgroundColor(context.getResources().getColor(R.color.default_background));
-        cache = null; //invalidate the cache
-        //cache.add(newScreen);
-
-        save(newScreen);
-        loadScreens(new LoadCallback() {
-            @Override
-            public void onLoaded(List<IScreen> screens) {
-                //ignore
-            }
-        });
-        return newScreen;
-    }
-
-    @Override
-    public void importScreen(final IScreen screen) {
-        loadScreens(new LoadCallback() {
-            @Override
-            public void onLoaded(List<IScreen> screens) {
-                getUniqueName(screen);
-                final Screen newScreen = (Screen) screen;
-                newScreen.setScreenId(getUniqueId(cache.size()));
-                cache = null; //invalidate the cache
-                //cache.add(newScreen);
-                save(newScreen);
-            }
-        });
-    }
-
-    private int getUniqueId(int startingId) {
+    private static int getUniqueId(int startingId) {
         int unique = startingId;
 
         if (cache != null) {
@@ -207,7 +151,7 @@ public class ScreenRepository implements IScreenRepository {
         return unique;
     }
 
-    private void getUniqueName(IScreen newScreen) {
+    private static void getUniqueName(IScreen newScreen) {
         for (IScreen screen : cache) {
             if (screen.getName().equals(newScreen.getName())) {
                 newScreen.setName(newScreen.getName() + "1");
@@ -216,9 +160,7 @@ public class ScreenRepository implements IScreenRepository {
         }
     }
 
-
-    @Override
-    public void save(IScreen screen) {
+    private static void screenSaver(Context context, IScreen screen) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
@@ -266,60 +208,7 @@ public class ScreenRepository implements IScreenRepository {
         }
     }
 
-    @Override
-    public IScreen getScreen(int id) {
-        for (int i = 0; i < cache.size(); i++) {
-            if (cache.get(i).getScreenId() == id)
-                return cache.get(i);
-        }
-        return null;
-    }
-
-    //this is used by the main screen
-//    @Override
-//    public IScreen getScreenByPosition(int index) {
-//        return cache.get(index);
-//    }
-
-    @Override
-    public void getScreenList(@NonNull final LoadScreenListCallback callback) {
-
-        if (cache != null) {
-            SparseArray<String> rv = new SparseArray<>();
-            for (IScreen screen : cache) {
-                rv.put(screen.getScreenId(), screen.getName());
-            }
-            callback.onLoaded(rv);
-        } else {
-            loadScreens(new LoadCallback() {
-                @Override
-                public void onLoaded(List<IScreen> screens) {
-                    SparseArray<String> rv = new SparseArray<>();
-                    for (IScreen screen : cache) {
-                        rv.put(screen.getScreenId(), screen.getName());
-                    }
-                    callback.onLoaded(rv);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void removeScreen(int id) {
-        for (int i = 0; i < cache.size(); i++) {
-            if (cache.get(i).getScreenId() == id)
-                deleteScreen(cache.get(i));
-        }
-        cache = null;
-        loadScreens(new LoadCallback() {
-            @Override
-            public void onLoaded(List<IScreen> screens) {
-                //ignore
-            }
-        });
-    }
-
-    private void deleteScreen(IScreen screen) {
+    private static void deleteScreen(Context context, IScreen screen) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
         prefsEditor.remove(PREFS_SCREEN + screen.getScreenId());
@@ -333,6 +222,315 @@ public class ScreenRepository implements IScreenRepository {
             }
         }
         prefsEditor.apply();
+    }
+
+    @Override
+    public void loadScreens(@NonNull LoadCallback callback) {
+        new LoadScreenAsync(context, callback);
+    }
+
+    @Override
+    public void getScreenList(@NonNull LoadScreenListCallback callback) {
+        new GetScreenListAsync(context, callback).execute();
+    }
+
+    //this handles both legacy (1.x) and new builds
+    @Override
+    public void init(@NonNull LoadCallback callback) {
+        new InitAsync(context, callback).execute();
+    }
+
+    @Override
+    public void newScreen(@NonNull LoadScreenCallback callback) {
+        new NewScreenAsync(context, callback).execute();
+    }
+
+    @Override
+    public void importScreen(final IScreen screen, @NonNull LoadScreenCallback callback) {
+        new ImportScreenAsync(context, screen, callback).execute();
+    }
+
+    @Override
+    public void importScreenSync(IScreen screen) {
+        screenLoader(context);
+        getUniqueName(screen);
+        final Screen newScreen = (Screen) screen;
+        newScreen.setScreenId(getUniqueId(cache.size()));
+        cache = null; //invalidate the cache
+        //cache.add(newScreen);
+        screenSaver(context, newScreen);
+    }
+
+    @Override
+    public void save(IScreen screen, @NonNull LoadScreenCallback callback) {
+        new SaveScreenAsync(context, screen, callback);
+    }
+
+    @Override
+    public void getScreen(int id, @NonNull LoadScreenCallback callback) {
+        new GetScreenAsync(context, id, callback);
+    }
+
+    @Override
+    public IScreen getScreenSync(int id) {
+        for (int i = 0; i < cache.size(); i++) {
+            if (cache.get(i).getScreenId() == id)
+                return cache.get(i);
+        }
+        return null;
+    }
+
+    @Override
+    public void removeScreen(int id, @NonNull LoadScreenCallback callback) {
+        new DeleteScreenAsync(context, id, callback);
+    }
+
+    private static class GetScreenListAsync extends AsyncTask<Void, Void, Void> {
+        final WeakReference<Context> weakContext;
+        LoadScreenListCallback callback;
+        // Weak references will still allow the Activity to be garbage-collected
+        private SparseArray<String> rv = new SparseArray<>();
+
+        GetScreenListAsync(Context context, LoadScreenListCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (cache != null) {
+                for (IScreen screen : cache) {
+                    rv.put(screen.getScreenId(), screen.getName());
+                }
+            } else {
+                screenLoader(weakContext.get());
+                SparseArray<String> rv = new SparseArray<>();
+                for (IScreen screen : cache) {
+                    rv.put(screen.getScreenId(), screen.getName());
+                }
+            }
+            callback.onLoaded(rv);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(rv);
+        }
+    }
+
+    private static class InitAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadCallback callback;
+
+        InitAsync(Context context, LoadCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            screenLoader(weakContext.get());
+            if (cache.size() == 0) {
+                //load in the legacy
+                Screen screen = new Screen(0, weakContext.get());
+                SharedPreferences prefs = weakContext.get().getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = prefs.edit();
+
+                prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
+
+                prefsEditor.apply();
+
+                loadBackground(screen, weakContext.get());
+                loadControls(screen, weakContext.get());
+                cache.add(screen);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(cache);
+        }
+    }
+
+    private static class SaveScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadScreenCallback callback;
+        IScreen screen;
+
+        SaveScreenAsync(Context context, IScreen screen, LoadScreenCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+            this.screen = screen;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            screenSaver(weakContext.get(), screen);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(screen);
+        }
+    }
+
+    private static class LoadScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadCallback callback;
+
+        LoadScreenAsync(Context context, LoadCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            screenLoader(weakContext.get());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(cache);
+        }
+    }
+
+    private static class NewScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadScreenCallback callback;
+        Screen newScreen;
+
+        NewScreenAsync(Context context, LoadScreenCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(newScreen);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            newScreen = new Screen(getUniqueId(cache.size()), weakContext.get());
+            newScreen.setBackgroundColor(weakContext.get().getResources().getColor(R.color.default_background));
+            cache = null; //invalidate the cache
+            //cache.add(newScreen);
+
+            screenSaver(weakContext.get(), newScreen);
+            screenLoader(weakContext.get());
+            return null;
+        }
+    }
+
+    private static class ImportScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadScreenCallback callback;
+        IScreen screen;
+
+        ImportScreenAsync(Context context, IScreen screen, LoadScreenCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+            this.screen = screen;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            screenLoader(weakContext.get());
+            getUniqueName(screen);
+            final Screen newScreen = (Screen) screen;
+            newScreen.setScreenId(getUniqueId(cache.size()));
+            cache = null; //invalidate the cache
+            //cache.add(newScreen);
+            screenSaver(weakContext.get(), newScreen);
+
+            return null;
+        }
+    }
+
+    private static class GetScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadScreenCallback callback;
+        int screenId;
+        IScreen screen = null;
+
+        GetScreenAsync(Context context, int screenId, LoadScreenCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+            this.screenId = screenId;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < cache.size(); i++) {
+                if (cache.get(i).getScreenId() == screenId)
+                    screen = cache.get(i);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(screen);
+        }
+    }
+
+    private static class DeleteScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadScreenCallback callback;
+        int screenId;
+        IScreen screen = null;
+
+        DeleteScreenAsync(Context context, int screenId, LoadScreenCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+            this.screenId = screenId;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < cache.size(); i++) {
+                if (cache.get(i).getScreenId() == screenId) {
+                    screen = cache.get(i);
+                    deleteScreen(weakContext.get(), cache.get(i));
+                }
+            }
+            cache = null;
+            screenLoader(weakContext.get());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(screen);
+        }
     }
 
 //    private void saveBitmap(String fileName, Bitmap image) {

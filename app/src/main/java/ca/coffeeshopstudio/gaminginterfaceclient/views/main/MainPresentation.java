@@ -1,11 +1,9 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.main;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.SparseArray;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -46,7 +44,12 @@ class MainPresentation implements IContract.IPresentation {
         PreferenceManager.getDefaultSharedPreferences(view.getContext()).edit()
                 .putBoolean(PREF_KEY_FIRST_START, isFirstTime)
                 .apply();
-        new ScreenRepository(view.getContext()).init();
+        new ScreenRepository(view.getContext()).init(new IScreenRepository.LoadCallback() {
+            @Override
+            public void onLoaded(List<IScreen> screens) {
+
+            }
+        });
     }
 
     @Override
@@ -116,57 +119,6 @@ class MainPresentation implements IContract.IPresentation {
     }
 
     @Override
-    public void loadSettings() {
-        SharedPreferences prefs = view.getContext().getApplicationContext().getSharedPreferences("gics", MODE_PRIVATE);
-
-        String password = prefs.getString("password", "");
-        try {
-            password = CryptoHelper.decrypt(password);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (password == null) {
-            Log.d("GIC", "start: Password Decryption Failure");
-        }
-
-        String address = prefs.getString("address", "");
-        String port = prefs.getString("port", "8091");
-
-        view.getViewModel().setPort(port);
-        view.getViewModel().setPassword(password);
-        view.getViewModel().setAddress(address);
-
-        final ScreenRepository screenRepository = new ScreenRepository(view.getContext().getApplicationContext());
-        screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
-            @Override
-            public void onLoaded(List<IScreen> screens) {
-                screenRepository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
-                    @Override
-                    public void onLoaded(SparseArray<String> screenList) {
-
-                        String[] spinnerArray = new String[screenList.size()];
-                        SharedPreferences prefs = view.getContext().getApplicationContext().getSharedPreferences(ScreenRepository.PREFS_NAME, MODE_PRIVATE);
-                        int chosenId = prefs.getInt(PREFS_CHOSEN_ID, 0);
-                        int chosenIndex = 0;
-
-                        for (int i = 0; i < screenList.size(); i++) {
-                            spinnerArray[i] = screenList.valueAt(i);
-                            if (screenList.keyAt(i) == chosenId)
-                                chosenIndex = i;
-                        }
-
-                        view.getViewModel().setScreenArray(spinnerArray);
-                        view.getViewModel().setScreenList(screenList);
-                        view.getViewModel().SetStartingScreenIndex(chosenIndex);
-                        view.updateView();
-                    }
-                });
-            }
-        });
-    }
-
-    @Override
     public void selectScreen(int keyAt) {
         SharedPreferences prefs = view.getContext().getApplicationContext().getSharedPreferences(ScreenRepository.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
@@ -214,4 +166,69 @@ class MainPresentation implements IContract.IPresentation {
         });
     }
 
+    @Override
+    public void loadSettings() {
+        view.setProgressIndicator(true);
+        LoadSettingsAsync asyncTask = new LoadSettingsAsync(view);
+        asyncTask.execute();
+    }
+
+    private static class LoadSettingsAsync extends AsyncTask<Void, Void, Void> {
+        private IContract.IView view;
+        private String password;
+        private String address;
+        private String port;
+
+        LoadSettingsAsync(IContract.IView view) {
+            this.view = view;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            SharedPreferences prefs = view.getContext().getApplicationContext().getSharedPreferences("gics", MODE_PRIVATE);
+
+            password = prefs.getString("password", "");
+            try {
+                password = CryptoHelper.decrypt(password);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            address = prefs.getString("address", "");
+            port = prefs.getString("port", "8091");
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            view.getViewModel().setPort(port);
+            view.getViewModel().setPassword(password);
+            view.getViewModel().setAddress(address);
+
+            ScreenRepository screenRepository = new ScreenRepository(view.getContext().getApplicationContext());
+            screenRepository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                @Override
+                public void onLoaded(SparseArray<String> screenList) {
+                    String[] spinnerArray = new String[screenList.size()];
+                    SharedPreferences prefs = view.getContext().getApplicationContext().getSharedPreferences(ScreenRepository.PREFS_NAME, MODE_PRIVATE);
+                    int chosenId = prefs.getInt(PREFS_CHOSEN_ID, 0);
+                    int chosenIndex = 0;
+
+                    for (int i = 0; i < screenList.size(); i++) {
+                        spinnerArray[i] = screenList.valueAt(i);
+                        if (screenList.keyAt(i) == chosenId)
+                            chosenIndex = i;
+                    }
+
+                    view.getViewModel().setScreenArray(spinnerArray);
+                    view.getViewModel().setScreenList(screenList);
+                    view.getViewModel().SetStartingScreenIndex(chosenIndex);
+                    view.setProgressIndicator(false);
+                    view.updateView();
+                }
+            });
+            view.setProgressIndicator(true);
+        }
+    }
 }

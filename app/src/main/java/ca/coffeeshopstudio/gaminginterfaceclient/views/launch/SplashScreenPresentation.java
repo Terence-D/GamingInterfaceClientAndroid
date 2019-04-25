@@ -76,7 +76,7 @@ public class SplashScreenPresentation implements IContract.IPresentation {
                     String json = loadJSONFromAsset(view.getContext(), model.getText());
                     try {
                         Screen screen = objectMapper.readValue(json, Screen.class);
-                        repository.importScreen(screen);
+                        repository.importScreenSync(screen);
                         anythingDone = true;
                     } catch (JsonParseException e) {
                         e.printStackTrace();

@@ -135,4 +135,6 @@
     <string name="slideScreenImportButton">Import</string>
     <string name="slideScreenSuccess">Screens Imported!</string>
     <string name="menu_show_intro">Show Intro</string>
+    <string name="help_menu_icon_title">Help a Tap Away</string>
+    <string name="help_menu_icon_desc">Tapping this icon will explain whats on your devices screen and is available through most of the application</string>
 </resources>

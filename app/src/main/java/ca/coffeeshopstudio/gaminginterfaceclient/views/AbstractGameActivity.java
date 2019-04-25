@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.util.List;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -59,8 +61,17 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             currentScreenId = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
 
         screenRepository = new ScreenRepository(getApplicationContext());
-        screenRepository.loadScreens();
-        currentScreen = screenRepository.getScreen(currentScreenId);
+        screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
+            @Override
+            public void onLoaded(List<IScreen> screens) {
+                screenRepository.getScreen(currentScreenId, new IScreenRepository.LoadScreenCallback() {
+                    @Override
+                    public void onLoaded(IScreen screen) {
+                        currentScreen = screen;
+                    }
+                });
+            }
+        });
 
         buildFontCache();
     }

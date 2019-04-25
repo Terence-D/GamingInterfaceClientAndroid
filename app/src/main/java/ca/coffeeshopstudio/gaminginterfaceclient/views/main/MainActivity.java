@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.views.AboutActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -164,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
         String address = txtAddress.getText().toString();
 
         presentation.saveSettings(password, port, address);
-
     }
 
     public void startApp() {
@@ -187,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
         spinner.setSelection(viewModel.getStartingScreenIndex());
         spinner.setOnItemSelectedListener(this);
 
-
+        showHelpMenuIcon();
     }
 
     @Override
@@ -268,5 +269,24 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
         myIntent.putExtra(MainActivity.INTENT_SCREEN_INDEX, screenIndex);
 
         MainActivity.this.startActivity(myIntent);
+    }
+
+    @Override
+    public void showHelpMenuIcon() {
+        Log.d("TAG", "showHelpMenuIcon: ");
+        new MaterialTapTargetPrompt.Builder(this)
+                .setTarget(R.id.menu_help)
+                .setIcon(R.drawable.ic_help_outline_white_24dp)
+                .setPrimaryText(R.string.help_menu_icon_title)
+                .setSecondaryText(R.string.help_menu_icon_desc)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED) {
+                            //if we wanted to chain helps together, this is where we'd do it
+                        }
+                    }
+                })
+                .show();
     }
 }
