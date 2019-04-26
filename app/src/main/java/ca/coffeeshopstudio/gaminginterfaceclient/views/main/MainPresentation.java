@@ -236,7 +236,7 @@ class MainPresentation implements IContract.IPresentation {
                     view.getViewModel().setScreenList(screenList);
                     view.getViewModel().SetStartingScreenIndex(chosenIndex);
                     view.setProgressIndicator(false);
-                    if (seenHelp)
+                    if (!seenHelp)
                         view.showHelpMenuIcon();
                     view.updateView();
                 }

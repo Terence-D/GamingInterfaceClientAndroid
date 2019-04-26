@@ -725,7 +725,7 @@ public class ScreenRepository implements IScreenRepository {
                 File cacheDir = new File(weakContext.get().getCacheDir().getAbsolutePath());
 
                 //store the json dat in the directory
-                File jsonData = new File(cacheDir.getAbsolutePath() + "/Space - 10.5 Inch Tablet.json");
+                File jsonData = new File(cacheDir.getAbsolutePath() + "/screen.json");
                 output = new BufferedWriter(new FileWriter(jsonData));
                 output.write(json);
                 output.close();
