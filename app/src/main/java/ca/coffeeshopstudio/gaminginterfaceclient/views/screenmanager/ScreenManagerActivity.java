@@ -52,7 +52,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.app_name);
 
-        setPresentation(new Presentation(new ScreenRepository(getApplicationContext()), this));
+        setPresentation(new ScreenManagerPresentation(new ScreenRepository(getApplicationContext()), this));
         presentation.load();
 
         buildControls();

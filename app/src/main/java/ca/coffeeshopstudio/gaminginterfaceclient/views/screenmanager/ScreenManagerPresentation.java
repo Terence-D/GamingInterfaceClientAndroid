@@ -25,7 +25,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class Presentation implements IContract.IPresentation {
+public class ScreenManagerPresentation implements IContract.IPresentation {
     final IContract.IView view;
     final IScreenRepository repository;
 
@@ -35,8 +35,8 @@ public class Presentation implements IContract.IPresentation {
      * @param repository Repository to connect to
      * @param detailView view to connect to
      */
-    public Presentation(@NonNull IScreenRepository repository,
-                        @NonNull IContract.IView detailView) {
+    public ScreenManagerPresentation(@NonNull IScreenRepository repository,
+                                     @NonNull IContract.IView detailView) {
         this.repository = repository;//checkNotNull(repository, "repository cannot be null!");
         this.view = detailView;// checkNotNull(detailView, "detail view cannot be null!");
     }

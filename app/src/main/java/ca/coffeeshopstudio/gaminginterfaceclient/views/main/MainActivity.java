@@ -4,9 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -125,7 +123,15 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
         findViewById(R.id.btnStart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveSettings();
+                setProgressIndicator(true);
+                TextView txtPassword = findViewById(R.id.txtPassword);
+                TextView txtPort = findViewById(R.id.txtPort);
+                TextView txtAddress = findViewById(R.id.txtAddress);
+                String password = txtPassword.getText().toString();
+                String port = txtPort.getText().toString();
+                String address = txtAddress.getText().toString();
+
+                presentation.saveSettings(password, port, address);
             }
         });
         findViewById(R.id.btnScreenManager).setOnClickListener(new View.OnClickListener() {
@@ -156,17 +162,6 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
         alertDialog.show();
     }
 
-    private void saveSettings() {
-        TextView txtPassword = findViewById(R.id.txtPassword);
-        TextView txtPort = findViewById(R.id.txtPort);
-        TextView txtAddress = findViewById(R.id.txtAddress);
-        String password = txtPassword.getText().toString();
-        String port = txtPort.getText().toString();
-        String address = txtAddress.getText().toString();
-
-        presentation.saveSettings(password, port, address);
-    }
-
     public void startApp() {
         presentation.checkServerVersion(viewModel.getAddress(), viewModel.getPort());
     }
@@ -190,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        presentation.selectScreen(viewModel.getScreenList().keyAt(viewModel.getScreenList().indexOfKey(i)));
+        presentation.selectScreen(viewModel.getScreenList().keyAt(i));
     }
 
     @Override

@@ -359,7 +359,7 @@ public class ScreenRepository implements IScreenRepository {
 
     @Override
     public void removeScreen(int id, @NonNull LoadScreenCallback callback) {
-        new DeleteScreenAsync(context, id, callback);
+        new DeleteScreenAsync(context, id, callback).execute();
     }
 
     private static class GetScreenAsync extends AsyncTask<Void, Void, Void> {

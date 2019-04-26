@@ -148,6 +148,7 @@ class MainPresentation implements IContract.IPresentation {
         version.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                view.setProgressIndicator(false);
                 if (response.isSuccessful()) {
                     assert response.body() != null;
                     if (response.body().equals("1.3.0.0")) {
@@ -162,6 +163,7 @@ class MainPresentation implements IContract.IPresentation {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
+                view.setProgressIndicator(false);
                 view.showMessage(t.getLocalizedMessage());
             }
         });
@@ -169,10 +171,9 @@ class MainPresentation implements IContract.IPresentation {
 
     @Override
     public void setSeenHelp() {
-        SharedPreferences prefs = view.getContext().getApplicationContext().getSharedPreferences(PREFS_HELP_FIRST_TIME, MODE_PRIVATE);
+        SharedPreferences prefs = view.getContext().getApplicationContext().getSharedPreferences("gics", MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
-        prefsEditor.putBoolean(PREFS_HELP_FIRST_TIME, true);
-        prefsEditor.apply();
+        prefsEditor.putBoolean(PREFS_HELP_FIRST_TIME, true).apply();
     }
 
     @Override
