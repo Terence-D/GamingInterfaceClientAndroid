@@ -21,6 +21,7 @@ import retrofit2.Response;
 import static android.content.Context.MODE_PRIVATE;
 
 class MainPresentation implements IContract.IPresentation {
+    private static final String PREFS_HELP_FIRST_TIME = "seenHelp";
     private static final String PREF_KEY_FIRST_START = "prefSplash";
     private static final String PREFS_CHOSEN_ID = "chosen_id";
     private IContract.IView view;
@@ -167,6 +168,14 @@ class MainPresentation implements IContract.IPresentation {
     }
 
     @Override
+    public void setSeenHelp() {
+        SharedPreferences prefs = view.getContext().getApplicationContext().getSharedPreferences(PREFS_HELP_FIRST_TIME, MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putBoolean(PREFS_HELP_FIRST_TIME, true);
+        prefsEditor.apply();
+    }
+
+    @Override
     public void loadSettings() {
         view.setProgressIndicator(true);
         LoadSettingsAsync asyncTask = new LoadSettingsAsync(view);
@@ -178,6 +187,7 @@ class MainPresentation implements IContract.IPresentation {
         private String password;
         private String address;
         private String port;
+        private boolean seenHelp;
 
         LoadSettingsAsync(IContract.IView view) {
             this.view = view;
@@ -196,6 +206,7 @@ class MainPresentation implements IContract.IPresentation {
 
             address = prefs.getString("address", "");
             port = prefs.getString("port", "8091");
+            seenHelp = prefs.getBoolean(PREFS_HELP_FIRST_TIME, false);
             return null;
         }
 
@@ -225,6 +236,8 @@ class MainPresentation implements IContract.IPresentation {
                     view.getViewModel().setScreenList(screenList);
                     view.getViewModel().SetStartingScreenIndex(chosenIndex);
                     view.setProgressIndicator(false);
+                    if (seenHelp)
+                        view.showHelpMenuIcon();
                     view.updateView();
                 }
             });

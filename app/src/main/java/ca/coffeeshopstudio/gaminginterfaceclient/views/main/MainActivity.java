@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -27,6 +28,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -104,10 +106,7 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
                 MainActivity.this.startActivity(new Intent(MainActivity.this, AboutActivity.class));
                 return true;
             case R.id.menu_help:
-                String url = "https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
+                startHelp();
                 return true;
             case R.id.menu_toggle_theme:
                 presentation.toggleTheme();
@@ -187,8 +186,6 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
         spinner.setAdapter(dataAdapter);
         spinner.setSelection(viewModel.getStartingScreenIndex());
         spinner.setOnItemSelectedListener(this);
-
-        showHelpMenuIcon();
     }
 
     @Override
@@ -273,7 +270,6 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
 
     @Override
     public void showHelpMenuIcon() {
-        Log.d("TAG", "showHelpMenuIcon: ");
         new MaterialTapTargetPrompt.Builder(this)
                 .setTarget(R.id.menu_help)
                 .setIcon(R.drawable.ic_help_outline_white_24dp)
@@ -282,11 +278,83 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
                 .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
                     @Override
                     public void onPromptStateChanged(MaterialTapTargetPrompt prompt, int state) {
-                        if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED) {
-                            //if we wanted to chain helps together, this is where we'd do it
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED) {
+                            presentation.setSeenHelp();
                         }
                     }
                 })
                 .show();
     }
+
+    private void startHelp() {
+        MaterialTapTargetPrompt.Builder address = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder port = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder password = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder spinner = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder screenManager = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder start = new MaterialTapTargetPrompt.Builder(this);
+
+        address.setTarget(R.id.txtAddress)
+                .setPrimaryText(R.string.help_address_title).setSecondaryText(R.string.help_address_desc)
+                .setPromptFocal(new RectanglePromptFocal())
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            port.show();
+                        }
+                    }
+                });
+        port.setTarget(R.id.txtPort)
+                .setPrimaryText(R.string.help_port_title).setSecondaryText(R.string.help_port_desc)
+                .setPromptFocal(new RectanglePromptFocal())
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            password.show();
+                        }
+                    }
+                });
+        password.setTarget(R.id.txtPassword)
+                .setPrimaryText(R.string.help_password_title).setSecondaryText(R.string.help_password_desc)
+                .setPromptFocal(new RectanglePromptFocal())
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                    {
+                        spinner.show();
+                    }
+                    }
+                });
+        spinner.setTarget(R.id.spnScreens)
+                .setPrimaryText(R.string.help_spinner_title).setSecondaryText(R.string.help_spinner_desc)
+                .setPromptFocal(new RectanglePromptFocal())
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            screenManager.show();
+                        }
+                    }
+                });
+        screenManager.setTarget(R.id.btnScreenManager)
+                .setPrimaryText(R.string.help_screenmanager_title).setSecondaryText(R.string.help_screenmanager_desc)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            start.show();
+                        }
+                    }
+                });
+        start.setTarget(R.id.btnStart)
+                .setPrimaryText(R.string.help_start_title).setSecondaryText(R.string.help_start_desc);
+        address.show();
+    }
+
 }

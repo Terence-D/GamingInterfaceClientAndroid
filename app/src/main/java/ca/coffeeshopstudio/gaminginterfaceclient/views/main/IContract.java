@@ -77,6 +77,8 @@ public interface IContract {
         void toggleTheme();
 
         void checkServerVersion(String address, String port);
+
+        void setSeenHelp();
     }
     
     class MainViewModel extends ViewModel {
