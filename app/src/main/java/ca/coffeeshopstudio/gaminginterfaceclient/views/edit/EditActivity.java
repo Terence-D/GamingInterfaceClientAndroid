@@ -90,14 +90,13 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit);
 
         controlTypes = new ControlTypes(getApplicationContext());
-
     }
 
     @Override
     protected void loadScreen() {
-        setContentView(R.layout.activity_edit);
 
         setupFullScreen();
         setupDoubleTap(EditActivity.this);

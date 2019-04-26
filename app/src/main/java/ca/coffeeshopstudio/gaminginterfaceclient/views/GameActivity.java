@@ -44,8 +44,11 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_game_interface);
+    }
+
+    @Override
+    protected void loadScreen() {
 
         Intent intent = getIntent();
         password = intent.getStringExtra("password"); //if it's a string you stored.
@@ -53,7 +56,7 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
         address = intent.getStringExtra("address"); //if it's a string you stored.
 
         setupFullScreen();
-        loadScreen();
+        super.loadScreen();
     }
 
     @Override
