@@ -107,7 +107,7 @@ public class ScreenFragment extends Fragment implements IContract.IView {
             return text;
         }
 
-        boolean isSelected() {
+        public boolean isSelected() {
             return isSelected;
         }
 
