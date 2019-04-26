@@ -13,7 +13,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository
 /**
  * TODO: HEADER COMMENT HERE.
  */
-public class Presentation implements IContract.IPresentation, IScreenRepository.LoadCallback, IScreenRepository.LoadScreenListCallback {
+public class Presentation implements IContract.IPresentation {
     final IContract.IView view;
     final IScreenRepository repository;
 
@@ -33,7 +33,18 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
     @Override
     public void load() {
         view.setProgressIndicator(true);
-        repository.loadScreens(this);
+        repository.loadScreens(new IScreenRepository.LoadCallback() {
+            @Override
+            public void onLoaded(List<IScreen> screens) {
+                repository.getScreenList(new IScreenRepository.LoadScreenListCallback() {
+                    @Override
+                    public void onLoaded(SparseArray<String> screenList) {
+                        view.updateSpinner(screenList);
+                        view.setProgressIndicator(false);
+                    }
+                });
+            }
+        });
     }
 
     @Override
@@ -133,16 +144,5 @@ public class Presentation implements IContract.IPresentation, IScreenRepository.
             });
             }
         });
-    }
-
-    @Override
-    public void onLoaded(List<IScreen> screens) {
-        repository.getScreenList(this);
-    }
-
-    @Override
-    public void onLoaded(SparseArray<String> screenList) {
-        view.updateSpinner(screenList);
-        view.setProgressIndicator(false);
     }
 }

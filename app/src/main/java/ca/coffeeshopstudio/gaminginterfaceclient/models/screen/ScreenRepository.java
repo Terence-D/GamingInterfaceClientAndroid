@@ -157,7 +157,7 @@ public class ScreenRepository implements IScreenRepository {
 
     @Override
     public void loadScreens(@NonNull LoadCallback callback) {
-        new LoadScreenAsync(context, callback);
+        new LoadScreenAsync(context, callback).execute();
     }
 
 //    @Override
@@ -235,12 +235,12 @@ public class ScreenRepository implements IScreenRepository {
 
     @Override
     public void save(IScreen screen, @NonNull LoadScreenCallback callback) {
-        new SaveScreenAsync(context, screen, callback);
+        new SaveScreenAsync(context, screen, callback).execute();
     }
 
     @Override
     public void getScreen(int id, @NonNull LoadScreenCallback callback) {
-        new GetScreenAsync(context, id, callback);
+        new GetScreenAsync(context, id, callback).execute();
     }
 
     //    private void saveBitmap(String fileName, Bitmap image) {
