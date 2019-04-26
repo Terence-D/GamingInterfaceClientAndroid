@@ -93,12 +93,15 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         controlTypes = new ControlTypes(getApplicationContext());
 
+    }
+
+    @Override
+    protected void loadScreen() {
         setContentView(R.layout.activity_edit);
 
         setupFullScreen();
         setupDoubleTap(EditActivity.this);
         setupControls();
-        loadScreen();
 
         defaults = new ControlDefaults(this, currentScreen.getScreenId());
 
@@ -108,6 +111,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         if (currentScreen.getControls().size() > 0)
             findViewById(R.id.txtHelp).setVisibility(View.GONE);
+        super.loadScreen();
     }
 
     private void toggleEditControls(int visibility) {

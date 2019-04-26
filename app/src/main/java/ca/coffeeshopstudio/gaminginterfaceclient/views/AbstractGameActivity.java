@@ -68,12 +68,13 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                     @Override
                     public void onLoaded(IScreen screen) {
                         currentScreen = screen;
+                        loadScreen();
+                        buildFontCache();
                     }
                 });
             }
         });
 
-        buildFontCache();
     }
 
     private void buildFontCache() {
