@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
 
     private Spinner spinner;
     private ProgressDialog dialog;
+    private ProgressDialog connectDialog;
     private IContract.IPresentation presentation;
     private IContract.MainViewModel viewModel;
 
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
 
         switch (id) {
             case R.id.menu_about:
-                MainActivity.this.startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                this.startActivity(new Intent(MainActivity.this, AboutActivity.class));
                 return true;
             case R.id.menu_help:
                 startHelp();
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
         findViewById(R.id.btnStart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setProgressIndicator(true);
+                setConnectingIndicator(true);
                 TextView txtPassword = findViewById(R.id.txtPassword);
                 TextView txtPort = findViewById(R.id.txtPort);
                 TextView txtAddress = findViewById(R.id.txtAddress);
@@ -205,6 +206,14 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
             hideLoadingIndicator();
     }
 
+    @Override
+    public void setConnectingIndicator(boolean show) {
+        if (show)
+            showConnectingIndicator();
+        else
+            hideConnectingIndicator();
+    }
+
     protected void showLoadingIndicator() {
         buildLoadWindow();
         dialog.show();
@@ -215,12 +224,31 @@ public class MainActivity extends AppCompatActivity implements IContract.IView,
         dialog.dismiss();
     }
 
+    protected void showConnectingIndicator() {
+        buildConnectingWindow();
+        connectDialog.show();
+    }
+
+    protected void hideConnectingIndicator() {
+        buildConnectingWindow();
+        connectDialog.dismiss();
+    }
+
     private void buildLoadWindow() {
         if (dialog == null) {
             //prepare our dialog
             dialog = new ProgressDialog(this);
             dialog.setMessage(getString(R.string.loading));
             dialog.setIndeterminate(true);
+        }
+    }
+
+    private void buildConnectingWindow() {
+        if (connectDialog == null) {
+            //prepare our dialog
+            connectDialog = new ProgressDialog(this);
+            connectDialog.setMessage(getString(R.string.connecting));
+            connectDialog.setIndeterminate(true);
         }
     }
 

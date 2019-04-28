@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.SparseArray;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,6 +30,8 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.main.MainActivity;
 import pub.devrel.easypermissions.EasyPermissions;
+import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
+import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
 public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener, View.OnClickListener {
     // permissions request code
@@ -65,6 +69,29 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         findViewById(R.id.btnDelete).setOnClickListener(this);
         findViewById(R.id.btnImport).setOnClickListener(this);
         findViewById(R.id.btnEdit).setOnClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.manager, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.menu_help:
+                startHelp();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -267,5 +294,98 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
                 }
             }
         }
+    }
+
+    private void startHelp() {
+        MaterialTapTargetPrompt.Builder addNew = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder importScreen = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder spinner = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder nameEditor = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder update = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder edit = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder export = new MaterialTapTargetPrompt.Builder(this);
+        final MaterialTapTargetPrompt.Builder delete = new MaterialTapTargetPrompt.Builder(this);
+
+        addNew.setTarget(R.id.btnNew)
+                .setPrimaryText(R.string.help_addNew_title).setSecondaryText(R.string.help_addNew_desc)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            importScreen.show();
+                        }
+                    }
+                });
+        importScreen.setTarget(R.id.btnImport)
+                .setPrimaryText(R.string.help_importScreen_title).setSecondaryText(R.string.help_importScreen_desc)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            spinner.show();
+                        }
+                    }
+                });
+        spinner.setTarget(R.id.spnScreens)
+                .setPrimaryText(R.string.help_spinner_title).setSecondaryText(R.string.help_spinner_desc)
+                .setPromptFocal(new RectanglePromptFocal())
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            nameEditor.show();
+                        }
+                    }
+                });
+        nameEditor.setTarget(R.id.txtName)
+                .setPrimaryText(R.string.help_nameEditor_title).setSecondaryText(R.string.help_nameEditor_desc)
+                .setPromptFocal(new RectanglePromptFocal())
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                    {
+                        update.show();
+                    }
+                    }
+                });
+        update.setTarget(R.id.btnUpdate)
+                .setPrimaryText(R.string.help_update_title).setSecondaryText(R.string.help_update_desc)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            edit.show();
+                        }
+                    }
+                });
+        edit.setTarget(R.id.btnEdit)
+                .setPrimaryText(R.string.help_edit_title).setSecondaryText(R.string.help_edit_desc)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            export.show();
+                        }
+                    }
+                });
+        export.setTarget(R.id.btnExport)
+                .setPrimaryText(R.string.help_export_title).setSecondaryText(R.string.help_export_desc)
+                .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener() {
+                    @Override
+                    public void onPromptStateChanged(@NonNull MaterialTapTargetPrompt prompt, int state) {
+                        if (state == MaterialTapTargetPrompt.STATE_DISMISSED)
+                        {
+                            delete.show();
+                        }
+                    }
+                });
+        delete.setTarget(R.id.btnDelete)
+                .setPrimaryText(R.string.help_delete_title).setSecondaryText(R.string.help_delete_desc);
+        addNew.show();
     }
 }

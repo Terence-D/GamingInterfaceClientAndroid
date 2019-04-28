@@ -148,7 +148,7 @@ class MainPresentation implements IContract.IPresentation {
         version.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                view.setProgressIndicator(false);
+                view.setConnectingIndicator(false);
                 if (response.isSuccessful()) {
                     assert response.body() != null;
                     if (response.body().equals("1.3.0.0")) {
@@ -163,7 +163,7 @@ class MainPresentation implements IContract.IPresentation {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                view.setProgressIndicator(false);
+                view.setConnectingIndicator(false);
                 view.showMessage(t.getLocalizedMessage());
             }
         });
