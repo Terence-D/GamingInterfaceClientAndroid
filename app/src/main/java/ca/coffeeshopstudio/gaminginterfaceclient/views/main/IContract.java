@@ -37,6 +37,13 @@ public interface IContract {
         void setProgressIndicator(boolean show);
 
         /**
+         * Displays / hides network connection window
+         *
+         * @param show true to show, false to hide
+         */
+        void setConnectingIndicator(boolean show);
+
+        /**
          * What message to display to the user
          *
          * @param messageId which string resource to display

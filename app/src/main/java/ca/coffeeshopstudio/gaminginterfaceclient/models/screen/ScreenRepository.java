@@ -125,11 +125,11 @@ public class ScreenRepository implements IScreenRepository {
             String path = toImport.getLastPathSegment();
             path = path.replace("primary:", "");
             path = path.replace(".zip", "");
-            boolean valid = ZipHelper.unzip(stream, Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path);
+            boolean valid = ZipHelper.unzip(stream, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/GIC-Screens/" + path);
 
             //now read the json values
             if (valid) {
-                importedScreen = parseJson(Environment.getExternalStorageDirectory() + "/GIC-Screens/" + path + "/");
+                importedScreen = parseJson(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/GIC-Screens/" + path + "/");
                 return screenImporter(context, importedScreen);
             }
 
@@ -750,7 +750,7 @@ public class ScreenRepository implements IScreenRepository {
                 zipArray = filesToZip.toArray(zipArray);
                 String invalidCharRemoved = screen.getName().replaceAll("[\\\\/:*?\"<>|]", "_");
                 String zipName = "GIC-" + invalidCharRemoved + ".zip";
-                String destination = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + zipName;
+                String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + zipName;
                 ZipHelper.zip(zipArray, destination);
 
                 String message = weakContext.get().getString(R.string.zip_successful);

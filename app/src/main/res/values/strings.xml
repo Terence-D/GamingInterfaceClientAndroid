@@ -100,9 +100,10 @@
     <string name="activity_screens_export">Export</string>
     <string name="activity_screens_delete">Delete</string>
     <string name="loading">Please Wait…</string>
+    <string name="connecting">Connecting…</string>
     <string name="need_permission">This action requires you to enable write access.  After accepting, you will need to click on the button again to begin the Import/Export.</string>
     <string name="export_complete">Export Complete!</string>
-    <string name="zip_successful">ZIP File successfully created: </string>
+    <string name="zip_successful">File successfully exported: Downloads/</string>
     <string name="activity_main_screen_manager">Screen Manager</string>
     <string name="cannot_delete_last_item">Cannot remove last screen!</string>
     <string name="activity_screens_confirm_delete"><![CDATA[Are you sure you wish to PERMANENTLY delete <b>%1$s</b>?]]></string>
@@ -152,4 +153,18 @@
     <string name="help_screenmanager_desc">Tapping on this will open up the Screen Manager where you can create, edit, delete, and import/export other screens</string>
     <string name="help_start_title">Start</string>
     <string name="help_start_desc">Tapping this will connect to the server and let you start with the screen you\'ve selected</string>
+    <string name="help_addNew_desc">Tap here to add a another screen to the app</string>
+    <string name="help_addNew_title">Add New</string>
+    <string name="help_importScreen_title">Import Screen</string>
+    <string name="help_importScreen_desc">Import an existing screen that you or someone else created</string>
+    <string name="help_nameEditor_title">Name Editor</string>
+    <string name="help_nameEditor_desc">Edit the name of the screen here - don\'t forget to tap Update to save!</string>
+    <string name="help_update_title">Update Name</string>
+    <string name="help_update_desc">After typing in a new name, tap this to Save your changes</string>
+    <string name="help_edit_title">Screen Editor</string>
+    <string name="help_edit_desc">Tap here to Customzie your Screen!</string>
+    <string name="help_export_title">Export</string>
+    <string name="help_export_desc">This will export your screen and allow you to share with others.  The exported file is called \'GIC-(name of screen).ZIP\' and is saved on your device inside the Downloads folder</string>
+    <string name="help_delete_title">Delete Screen</string>
+    <string name="help_delete_desc">Tap this to delete the current screen - this cannot be undone!!!</string>
 </resources>
