@@ -9,8 +9,10 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.GestureDetector;
@@ -651,6 +653,40 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
                 displayEditBackgroundDialog();
             }
         });
+
+        findViewById(R.id.btnHelp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showHelp();
+            }
+        });
     }
 
+    public void showHelp() {
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(R.string.help_dialog_title);
+
+        View dialogView = View.inflate(getBaseContext(), R.layout.dialog_edit, null);
+        TextView txtHelp = dialogView.findViewById(R.id.txtHelp);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            txtHelp.setText(Html.fromHtml(getString(R.string.help_edit_main), Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            txtHelp.setText(Html.fromHtml(getString(R.string.help_edit_main)));
+        }
+
+        dialog.setView(dialogView);
+
+
+
+        dialog.setPositiveButton(android.R.string.ok,
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int arg1) {
+                        // OK, go back to Main menu
+                    }
+                }
+        );
+        dialog.show();
+    }
 }

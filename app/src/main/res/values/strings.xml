@@ -167,4 +167,21 @@
     <string name="help_export_desc">This will export your screen and allow you to share with others.  The exported file is called \'GIC-(name of screen).ZIP\' and is saved on your device inside the Downloads folder</string>
     <string name="help_delete_title">Delete Screen</string>
     <string name="help_delete_desc">Tap this to delete the current screen - this cannot be undone!!!</string>
+    <string name="help_edit_main"><![CDATA[
+        <strong>Add Control</strong><br/>
+        To add a button, text, image, etc double tap on the screen roughly where you want the control to go.  A list will appear, tap on the type of control you want to add!<br/><br/>
+        <strong>Control Options</strong><br/>
+        Tap on the control to select it, and once selected tap to open its Options view.  Each Options view has a ? Icon you can tap for further details.<br/><br/>
+        <strong>Edit Mode</strong><br/>
+        Allows you to choose between Drag and drop mode to place the control where you want, vs Detail Edit mode where you can resize the control.<br/><br/>
+        <strong>Drag and Drop</strong><br/>
+        In Drag and Drop mode, hold your finger down on a control and drag it to where you want to place it.  You can adjust (or disable) the snap-to-grid feature in Settings (see below)<br/><br/>
+        <strong>Adjust Size</strong><br/>
+        When in Detail mode, tap on a control to display 3 scrollbars.  The vertical one on the left will let you adjust the height.  The top horizontal will allow you to adjust the width.  The bottom (if applicable) will let you adjust the text size for buttons and switches.<br/><br/>
+        <strong>Settings</strong><br/>
+        Here you can choose an image for the background of your screen, or pick a color (default is a dark grey)  You can also adjust the Snap-to-grid sizing here.<br/><br/>
+        <strong>Save</strong><br/>
+        Tapping this will save all your changes!
+    ]]></string>
+    <string name="help_dialog_title">Help</string>
 </resources>
