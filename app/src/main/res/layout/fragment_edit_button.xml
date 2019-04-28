@@ -12,6 +12,30 @@
         android:layout_height="wrap_content"
         android:minWidth="@dimen/edit_dialog_min_width">
 
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/edit_text_font_size"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/txtWidth"
+            app:layout_constraintTop_toBottomOf="@+id/btnFont" />
+
+        <EditText
+            android:id="@+id/txtFontSize"
+            android:layout_width="92dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/btnDelete"
+            app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
         <Button
             android:id="@+id/btnSave"
             style="@style/Widget.AppCompat.Button.Colored"
@@ -19,9 +43,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/fragment_edit_button_save"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtHeight" />
+            app:layout_constraintTop_toBottomOf="@+id/txtTop" />
 
         <EditText
             android:id="@+id/txtText"
@@ -31,7 +57,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:ems="10"
-            android:hint="@string/fragment_toggle_text"
+            android:hint="@string/fragment_edit_text_text"
             android:importantForAutofill="no"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toStartOf="@+id/btnHelp"
@@ -47,20 +73,23 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/fragment_edit_button_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtHeight" />
+            app:layout_constraintTop_toBottomOf="@+id/txtTop" />
 
         <Spinner
             android:id="@+id/spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:spinnerMode="dialog"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            app:layout_constraintStart_toEndOf="@+id/lblInstructions"
+            app:layout_constraintTop_toBottomOf="@+id/btnHelp" />
 
         <CheckBox
             android:id="@+id/chkLCtrl"
@@ -129,85 +158,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chkLAlt" />
 
-
-        <Spinner
-            android:id="@+id/spinnerOff"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/lblInstructions"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:spinnerMode="dialog"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/edit_fragment"
+            app:layout_constraintBottom_toTopOf="@+id/chkLCtrl"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView12" />
-
-        <CheckBox
-            android:id="@+id/chkLCtrlOff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/fragment_edit_text_left_ctrl"
-            app:layout_constraintEnd_toStartOf="@+id/chkLAltOff"
-            app:layout_constraintStart_toEndOf="@+id/chkLShiftOff"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerOff" />
-
-        <CheckBox
-            android:id="@+id/chkLShiftOff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/fragment_edit_text_left_shift"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerOff" />
-
-        <CheckBox
-            android:id="@+id/chkRShiftOff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/fragment_edit_text_right_shift"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chkLShiftOff" />
-
-        <CheckBox
-            android:id="@+id/chkLAltOff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/fragment_edit_text_left_alt"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerOff" />
-
-        <CheckBox
-            android:id="@+id/chkRCtrlOff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/fragment_edit_text_right_ctrl"
-            android:visibility="gone"
-            app:layout_constraintEnd_toStartOf="@+id/chkRAltOff"
-            app:layout_constraintStart_toEndOf="@+id/chkRShiftOff"
-            app:layout_constraintTop_toBottomOf="@+id/chkLCtrlOff" />
-
-        <CheckBox
-            android:id="@+id/chkRAltOff"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/fragment_edit_text_right_alt"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chkLAltOff" />
-
+            app:layout_constraintTop_toBottomOf="@+id/txtText" />
 
         <Button
             android:id="@+id/btnFontColor"
@@ -217,7 +178,7 @@
             android:layout_marginTop="8dp"
             android:text="@string/edit_fragment_font_color"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chkRCtrlOff" />
+            app:layout_constraintTop_toBottomOf="@+id/chkRCtrl" />
 
         <Button
             android:id="@+id/btnPrimary"
@@ -235,11 +196,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="4dp"
             android:text="@string/edit_fragment_button_color_2"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtFontSize" />
+
+        <Switch
+            android:id="@+id/switchType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:checked="true"
+            android:text="@string/fragment_edit_control_switch_button_graphic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnFontColor" />
 
         <Button
             android:id="@+id/btnNormal"
@@ -247,9 +219,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:scaleType="fitXY"
-            android:text="@string/fragment_edit_toggle_off"
+            android:text="@string/fragment_edit_button_normal"
             android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtFontSize" />
 
@@ -259,15 +233,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:scaleType="fitXY"
-            android:text="@string/fragment_edit_toggle_on"
+            android:text="@string/fragment_edit_button_pressed"
             android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/btnSecondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtFontSize" />
 
-        <ToggleButton
+        <Button
             android:id="@+id/preview"
-            android:layout_width="100dp"
+            android:layout_width="120dp"
             android:layout_height="48dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
@@ -275,7 +251,8 @@
             android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnNormal" />
+            app:layout_constraintTop_toBottomOf="@+id/btnNormal"
+            app:srcCompat="@drawable/button_neon" />
 
         <Button
             android:id="@+id/btnFont"
@@ -286,33 +263,17 @@
             android:fontFamily="sans-serif-medium"
             android:text="@string/fragment_edit_font_typeface"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chkLCtrlOff" />
+            app:layout_constraintTop_toBottomOf="@+id/chkLCtrl" />
 
-        <TextView
-            android:id="@+id/textView11"
+        <Switch
+            android:id="@+id/switchQuick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/fragment_toggle_on"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/fragment_edit_control_switch_button_type"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnHelp" />
-
-        <TextView
-            android:id="@+id/textView12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/fragment_toggle_off"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chkLAlt" />
+            app:layout_constraintTop_toBottomOf="@+id/switchType" />
 
         <TextView
             android:id="@+id/textView4"
@@ -407,31 +368,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
-        <TextView
-            android:id="@+id/textView15"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/edit_text_font_size"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnFont" />
-
-        <EditText
-            android:id="@+id/txtFontSize"
-            android:layout_width="92dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:ems="10"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView15" />
-
         <Button
             android:id="@+id/btnHelp"
             android:layout_width="wrap_content"
@@ -441,7 +377,6 @@
             android:text="@string/edit_help"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
