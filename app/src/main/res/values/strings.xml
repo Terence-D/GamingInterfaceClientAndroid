@@ -171,7 +171,7 @@
         <strong>Add Control</strong><br/>
         To add a button, text, image, etc double tap on the screen roughly where you want the control to go.  A list will appear, tap on the type of control you want to add!<br/><br/>
         <strong>Control Options</strong><br/>
-        Tap on the control to select it, and once selected tap to open its Options view.  Each Options view has a ? Icon you can tap for further details.<br/><br/>
+        Tap on the control to select it, and once selected tap to open its Options view.  Each Options view has a <strong>Help</strong> button you can tap for further details.<br/><br/>
         <strong>Edit Mode</strong><br/>
         Allows you to choose between Drag and drop mode to place the control where you want, vs Detail Edit mode where you can resize the control.<br/><br/>
         <strong>Drag and Drop</strong><br/>
@@ -183,5 +183,24 @@
         <strong>Save</strong><br/>
         Tapping this will save all your changes!
     ]]></string>
+    <string name="help_edit_text"><![CDATA[
+        <strong>Text</strong><br/>
+        At the top you can change what text to show, by default its "New"<br/><br/>
+        <strong>Font Color</strong><br/>
+        Here you can change the color of the text<br/><br/>
+        <strong>Font</strong><br/>
+        A small selection of different fonts, due to limitations of Android if there is a font you want to use, please contact me.<br/><br/>
+        <strong>Font Size</strong><br/>
+        Allows you to specify the exact size of the text you want.<br/><br/>
+        <strong>Left / Top</strong><br/>
+        Allows you to specify the exact position of the text.<br/><br/>
+        <strong>Width / Height</strong><br/>
+        Allows you to specify the display area size of the text.<br/><br/>
+        <strong>Save</strong><br/>
+        Saves the above options you chose.<br/><br/>
+        <strong>Delete</strong><br/>
+        Deletes the control - this can't be undone!<br/><br/>
+    ]]></string>
     <string name="help_dialog_title">Help</string>
+    <string name="edit_help">Help</string>
 </resources>

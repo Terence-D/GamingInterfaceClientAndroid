@@ -226,6 +226,7 @@ public class EditTextStyleFragment extends DialogFragment implements
         preview.setBackground(buildStatePreview());
 
         view.findViewById(R.id.btnSave).setOnClickListener(this);
+        view.findViewById(R.id.btnHelp).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
 
         if (incomingView != null && !(incomingView instanceof Button)) {
@@ -367,6 +368,9 @@ public class EditTextStyleFragment extends DialogFragment implements
                 break;
             case R.id.btnFont:
                 showFontPopup();
+                break;
+            case R.id.btnHelp:
+                EditActivity.ShowHelp(getContext(), R.string.help_edit_text);
                 break;
             default:
                 break;

@@ -59,7 +59,7 @@
             android:hint="@string/fragment_edit_text_text"
             android:importantForAutofill="no"
             android:inputType="textPersonName"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnHelp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:targetApi="o" />
@@ -86,7 +86,7 @@
             android:spinnerMode="dialog"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/lblInstructions"
-            app:layout_constraintTop_toBottomOf="@+id/txtText" />
+            app:layout_constraintTop_toBottomOf="@+id/btnHelp" />
 
         <CheckBox
             android:id="@+id/chkLCtrl"
@@ -364,6 +364,16 @@
             android:inputType="number"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView14" />
+
+        <Button
+            android:id="@+id/btnHelp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/edit_help"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

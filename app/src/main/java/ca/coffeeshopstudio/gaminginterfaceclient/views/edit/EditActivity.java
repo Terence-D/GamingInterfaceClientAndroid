@@ -657,23 +657,23 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         findViewById(R.id.btnHelp).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showHelp();
+                ShowHelp(getBaseContext(), R.string.help_edit_main);
             }
         });
     }
 
-    public void showHelp() {
+    public static void ShowHelp(Context context, int stringId) {
 
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle(R.string.help_dialog_title);
 
-        View dialogView = View.inflate(getBaseContext(), R.layout.dialog_edit, null);
+        View dialogView = View.inflate(context, R.layout.dialog_edit, null);
         TextView txtHelp = dialogView.findViewById(R.id.txtHelp);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            txtHelp.setText(Html.fromHtml(getString(R.string.help_edit_main), Html.FROM_HTML_MODE_COMPACT));
+            txtHelp.setText(Html.fromHtml(context.getString(stringId), Html.FROM_HTML_MODE_COMPACT));
         } else {
-            txtHelp.setText(Html.fromHtml(getString(R.string.help_edit_main)));
+            txtHelp.setText(Html.fromHtml(context.getString(stringId)));
         }
 
         dialog.setView(dialogView);
