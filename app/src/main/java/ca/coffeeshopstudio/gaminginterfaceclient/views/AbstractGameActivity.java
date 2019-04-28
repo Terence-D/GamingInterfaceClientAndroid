@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.util.List;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -27,6 +29,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.main.MainActivity;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -58,10 +61,20 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
             currentScreenId = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
 
         screenRepository = new ScreenRepository(getApplicationContext());
-        screenRepository.loadScreens();
-        currentScreen = screenRepository.getScreen(currentScreenId);
+        screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
+            @Override
+            public void onLoaded(List<IScreen> screens) {
+                screenRepository.getScreen(currentScreenId, new IScreenRepository.LoadScreenCallback() {
+                    @Override
+                    public void onLoaded(IScreen screen) {
+                        currentScreen = screen;
+                        loadScreen();
+                        buildFontCache();
+                    }
+                });
+            }
+        });
 
-        buildFontCache();
     }
 
     private void buildFontCache() {

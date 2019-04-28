@@ -36,7 +36,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
  * limitations under the License.
  */
 public class ScreenFragment extends Fragment implements IContract.IView {
-    private IContract.IViewActionListener actionListener;
+    private IContract.IPresentation actionListener;
     private RecyclerView recyclerView;
     private List<Model> screenList;
     private ProgressBar progressBar;
@@ -60,14 +60,14 @@ public class ScreenFragment extends Fragment implements IContract.IView {
             }
         });
 
-        setViewActionListener(new SplashScreenPresentation(this, new ScreenRepository(getContext())));
+        setPresentation(new SplashScreenPresentation(this, new ScreenRepository(getContext())));
         actionListener.loadScreenList();
 
         return view;
     }
 
     @Override
-    public void setViewActionListener(IContract.IViewActionListener listener) {
+    public void setPresentation(IContract.IPresentation listener) {
         this.actionListener = listener;
     }
 
@@ -107,7 +107,7 @@ public class ScreenFragment extends Fragment implements IContract.IView {
             return text;
         }
 
-        boolean isSelected() {
+        public boolean isSelected() {
             return isSelected;
         }
 

@@ -47,10 +47,13 @@
     <string name="about_onboarding_title">Material Intro</string>
     <string name="legal_onboarding">Licensed under the MIT License.  See below for details</string>
     <string name="website_onboarding">https://github.com/heinrichreimer/material-intro#left-back-button</string>
+    <string name="about_help_title">Material Tap Target Prompt</string>
+    <string name="legal_help">Licensed under the Apache 2.0 License.  See below for details</string>
+    <string name="website_help">https://github.com/sjwall/MaterialTapTargetPrompt</string>
     <string name="legal">Legal</string>
     <string name="legal_contents">GIC Client (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2019 Terence Doerksen</string>
     <string name="website_apache">http://www.apache.org/licenses/LICENSE-2.0</string>
-    <string name="website_git">https://github.com/Terence-D/GamingInterfaceClientAndroid</string>
+    <string name="website_git">https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki</string>
 
     <string name="activity_main_help_button">Help (Website)</string>
     <string name="edit_activity_settings">Settings</string>
@@ -135,4 +138,18 @@
     <string name="slideScreenImportButton">Import</string>
     <string name="slideScreenSuccess">Screens Imported!</string>
     <string name="menu_show_intro">Show Intro</string>
+    <string name="help_menu_icon_title">Help is a Tap Away</string>
+    <string name="help_menu_icon_desc">Tapping this icon will explain whats on your devices screen and is available through most of the application</string>
+    <string name="help_address_title">Server Address</string>
+    <string name="help_address_desc">Type the IP Address of the computer running the server.  This can be found  in Windows 10 by going into Settings, then Network and Internet, and usually starts with \"192\"</string>
+    <string name="help_port_title">Network Port</string>
+    <string name="help_port_desc">This has to match on the server end - by default its 8091</string>
+    <string name="help_password_title">Password</string>
+    <string name="help_password_desc">This has to match on the server as well, and is used to provide some security</string>
+    <string name="help_spinner_title">Screen List</string>
+    <string name="help_spinner_desc">This will let you select different screens you have created to use</string>
+    <string name="help_screenmanager_title">Screen Manager</string>
+    <string name="help_screenmanager_desc">Tapping on this will open up the Screen Manager where you can create, edit, delete, and import/export other screens</string>
+    <string name="help_start_title">Start</string>
+    <string name="help_start_desc">Tapping this will connect to the server and let you start with the screen you\'ve selected</string>
 </resources>

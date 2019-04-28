@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient.views;
+package ca.coffeeshopstudio.gaminginterfaceclient.views.edit;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
@@ -28,14 +27,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.lang.ref.WeakReference;
-
 import androidx.fragment.app.FragmentManager;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.AbstractGameActivity;
 
 import static java.lang.Math.round;
 
@@ -90,15 +90,17 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit);
 
         controlTypes = new ControlTypes(getApplicationContext());
+    }
 
-        setContentView(R.layout.activity_edit);
+    @Override
+    protected void loadScreen() {
 
         setupFullScreen();
         setupDoubleTap(EditActivity.this);
         setupControls();
-        loadScreen();
 
         defaults = new ControlDefaults(this, currentScreen.getScreenId());
 
@@ -108,6 +110,7 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
 
         if (currentScreen.getControls().size() > 0)
             findViewById(R.id.txtHelp).setVisibility(View.GONE);
+        super.loadScreen();
     }
 
     private void toggleEditControls(int visibility) {
@@ -633,7 +636,12 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
                 }
                 dialog.show();
                 currentScreen.setBackground(findViewById(R.id.topLayout).getBackground());
-                new SaveTask(editActivity).execute();
+                screenRepository.save(currentScreen, new IScreenRepository.LoadScreenCallback() {
+                    @Override
+                    public void onLoaded(IScreen screen) {
+                        dialog.dismiss();
+                    }
+                });
             }
         });
 
@@ -645,22 +653,4 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         });
     }
 
-    private static class SaveTask extends AsyncTask<Void, Void, Void> {
-        private WeakReference<EditActivity> presentationWeakReference;
-
-        SaveTask(EditActivity presentation) {
-            presentationWeakReference = new WeakReference<>(presentation);
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            presentationWeakReference.get().screenRepository.save(presentationWeakReference.get().currentScreen);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void voids) {
-            presentationWeakReference.get().dialog.dismiss();
-        }
-    }
 }

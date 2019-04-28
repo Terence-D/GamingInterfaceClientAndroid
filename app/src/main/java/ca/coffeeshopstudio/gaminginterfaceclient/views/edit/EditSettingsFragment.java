@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient.views;
+package ca.coffeeshopstudio.gaminginterfaceclient.views.edit;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -30,7 +30,7 @@ import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
-import static ca.coffeeshopstudio.gaminginterfaceclient.views.EditActivity.PREF_KEY_GRID_SIZE;
+import static ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity.PREF_KEY_GRID_SIZE;
 
 /**
  Copyright [2019] [Terence Doerksen]

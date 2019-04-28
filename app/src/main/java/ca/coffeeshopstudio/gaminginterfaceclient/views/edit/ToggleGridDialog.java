@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gaminginterfaceclient.views;
+package ca.coffeeshopstudio.gaminginterfaceclient.views.edit;
 
 import android.content.Intent;
 import android.view.View;
@@ -11,7 +11,7 @@ import java.util.Objects;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.ImageAdapter;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ToggleAdapter;
 
 /**
  * Copyright [2019] [Terence Doerksen]
@@ -28,25 +28,24 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.ImageAdapter;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class ImageGridDialog extends AlertDialog {
+public class ToggleGridDialog extends AlertDialog {
     private int customCount = 0;
 
-    public ImageGridDialog(final Fragment fragment) {
+    public ToggleGridDialog(final Fragment fragment) {
         super(Objects.requireNonNull(fragment.getActivity()));
         File file;
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            file = new File(getContext().getFilesDir(), "button_" + i + ".png");
+            file = new File(getContext().getFilesDir(), "switch_" + i + ".png");
             if (!file.exists()) {
                 customCount = i;
                 break;
             }
         }
 
-
         setTitle(R.string.image_grid_title);
 
         GridView gridView = new GridView(fragment.getActivity());
-        gridView.setAdapter(new ImageAdapter(getContext(), customCount));
+        gridView.setAdapter(new ToggleAdapter(getContext(), customCount));
 
         gridView.setNumColumns(2);               // Number of columns
         gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);       // Choice mode
@@ -57,14 +56,14 @@ public class ImageGridDialog extends AlertDialog {
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("image/*");
-                    fragment.startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_IMPORT_BUTTON);
+                    fragment.startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_IMPORT_SWITCH);
                     dismiss();
                 } else if (position <= customCount) {
-                    String path = fragment.getActivity().getFilesDir() + "/button_" + (position - 1) + ".png";
-                    ((ImageGridDialogListener) fragment).onImageSelected(path);
+                    String path = fragment.getActivity().getFilesDir() + "/switch_" + (position - 1) + ".png";
+                    ((ToggleGridDialogListener) fragment).onImageSelected(path);
                     dismiss();
-                } else if (position - customCount <= ImageAdapter.builtIn.length) {
-                    ((ImageGridDialogListener) fragment).onImageSelected(ImageAdapter.builtIn[position - customCount - 1]);
+                } else if (position - customCount <= ToggleAdapter.builtIn.length) {
+                    ((ToggleGridDialogListener) fragment).onImageSelected(ToggleAdapter.builtIn[position - customCount - 1]);
                     dismiss();
                 }
             }
@@ -72,7 +71,7 @@ public class ImageGridDialog extends AlertDialog {
         setView(gridView);
     }
 
-    public interface ImageGridDialogListener {
+    public interface ToggleGridDialogListener {
         void onImageSelected(String custom);
 
         void onImageSelected(int builtIn);

@@ -25,8 +25,8 @@ import androidx.appcompat.widget.Toolbar;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
-import ca.coffeeshopstudio.gaminginterfaceclient.views.EditActivity;
-import ca.coffeeshopstudio.gaminginterfaceclient.views.MainActivity;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.main.MainActivity;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener, View.OnClickListener {
@@ -34,7 +34,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     private final static int REQUEST_CODE_ASK_PERMISSIONS = 501;
     private final static int REQUEST_CODE_IMPORT = 510;
 
-    private IContract.IViewActionListener actionListener;
+    private IContract.IPresentation presentation;
     private SparseArray<String> screenList;
 
     private ProgressDialog dialog;
@@ -52,8 +52,8 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.app_name);
 
-        setViewActionListener(new Presentation(new ScreenRepository(getApplicationContext()), this));
-        actionListener.load();
+        setPresentation(new ScreenManagerPresentation(new ScreenRepository(getApplicationContext()), this));
+        presentation.load();
 
         buildControls();
     }
@@ -68,8 +68,8 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     }
 
     @Override
-    public void setViewActionListener(IContract.IViewActionListener listener) {
-        actionListener = listener;
+    public void setPresentation(IContract.IPresentation listener) {
+        presentation = listener;
     }
 
     @Override
@@ -175,14 +175,14 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
                 editApp();
                 break;
             case R.id.btnNew:
-                actionListener.create();
+                presentation.create();
                 break;
             case R.id.btnDelete:
                 delete();
                 break;
             case R.id.btnUpdate:
                 String screenName = ((TextView) findViewById(R.id.txtName)).getText().toString();
-                actionListener.update(screenList.keyAt(selectedScreenIndex), screenName);
+                presentation.update(screenList.keyAt(selectedScreenIndex), screenName);
                 break;
             case R.id.btnImport:
                 importScreen();
@@ -196,7 +196,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-                        actionListener.delete(screenList.keyAt(selectedScreenIndex));
+                        presentation.delete(screenList.keyAt(selectedScreenIndex));
                         break;
                 }
             }
@@ -211,7 +211,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     private void export() {
         String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (EasyPermissions.hasPermissions(this, perms)) {
-            actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
+            presentation.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(this, getString(R.string.need_permission), REQUEST_CODE_ASK_PERMISSIONS, perms);
@@ -246,7 +246,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 //            case REQUEST_CODE_ASK_PERMISSIONS: {
 //                // If request is cancelled, the result arrays are empty.
 //                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    actionListener.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
+//                    presentation.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
 //                }
 //                break;
 //            }
@@ -260,7 +260,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
             if (requestCode == REQUEST_CODE_IMPORT) {
                 if (resultData != null) {
                     Uri currentUri = resultData.getData();
-                    actionListener.importNew(currentUri);
+                    presentation.importNew(currentUri);
 //                    EditBackgroundFragment.EditDialogListener listener = (EditBackgroundFragment.EditDialogListener) getActivity();
 //                    listener.onFinishEditSettingsDialog(-1, currentUri);
 //                    dismiss();

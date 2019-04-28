@@ -1,42 +1,67 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
+import android.net.Uri;
 import android.util.SparseArray;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.ScreenFragment;
 
 /**
- * TODO: HEADER COMMENT HERE.
+ Copyright [2019] [Terence Doerksen]
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
  */
 public interface IScreenRepository {
-    void loadScreens(@NonNull final LoadCallback callback);
+    void loadScreens(@NonNull LoadCallback callback);
 
-    void loadScreens();
+    void newScreen(@NonNull LoadScreenCallback callback);
 
-    Screen newScreen();
+    void importScreen(Uri toImport, @NonNull ImportCallback callback);
 
-    void importScreen(IScreen screen);
+    void importDefaultScreens(List<ScreenFragment.Model> toImport, @NonNull ImportCallback callback);
 
-    void save(IScreen screen);
+    void exportScreen(int screenId, @NonNull ExportCallback callback);
 
-    void init();
+    void save(IScreen screen, @NonNull LoadScreenCallback callback);
 
-    IScreen getScreen(int id);
+    void init(@NonNull LoadCallback callback);
 
-    //this is used by the main screen
-    //IScreen getScreenByPosition(int index);
+    void getScreen(int id, @NonNull LoadScreenCallback callback);
 
     void getScreenList(@NonNull final LoadScreenListCallback callback);
 
-    void removeScreen(int id);
+    void removeScreen(int id, @NonNull LoadScreenCallback callback);
 
 
     interface LoadCallback {
         void onLoaded(List<IScreen> screens);
     }
 
+    interface LoadScreenCallback {
+        void onLoaded(IScreen screen);
+    }
+
     interface LoadScreenListCallback {
         void onLoaded(SparseArray<String> screenList);
+    }
+
+    interface ImportCallback {
+        void onFinished(Boolean result, SparseArray<String> screenList);
+    }
+
+    interface ExportCallback {
+        void onFinished(String zipFile);
     }
 }
