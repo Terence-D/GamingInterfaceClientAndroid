@@ -290,7 +290,7 @@ public class EditToggleFragment extends DialogFragment implements
         String[] spinnerArray = values.toArray(new String[values.size()]);
         ArrayAdapter<CharSequence> dataAdapter = new ArrayAdapter<CharSequence>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_dropdown_item, spinnerArray);
 
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        dataAdapter.setDropDownViewResource(R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(dataAdapter);
         spinnerOff.setAdapter(dataAdapter);
 
