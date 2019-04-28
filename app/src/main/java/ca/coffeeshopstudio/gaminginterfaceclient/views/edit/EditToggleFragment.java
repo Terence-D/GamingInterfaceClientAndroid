@@ -23,10 +23,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -43,6 +41,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
@@ -71,11 +70,9 @@ import ca.coffeeshopstudio.gaminginterfaceclient.utils.NumberFilter;
 public class EditToggleFragment extends DialogFragment implements
         ToggleGridDialog.ToggleGridDialogListener,
         AdapterView.OnItemSelectedListener,
-        View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+        View.OnClickListener {
 
     private AutoItKeyMap map = new AutoItKeyMap();
-    private View incomingView;
     private Spinner spinner;
     private Spinner spinnerOff;
     private GICControl controlToLoad;
@@ -111,7 +108,6 @@ public class EditToggleFragment extends DialogFragment implements
     private float screenWidth;
     private float screenHeight;
     private int state = 0; //are we looking at normal (0) or secondary (1) for button
-    private boolean mode = true;
 
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
@@ -119,21 +115,19 @@ public class EditToggleFragment extends DialogFragment implements
     public EditToggleFragment() {
     }
 
-    public static EditToggleFragment newInstance(GICControl control, View view) {
+    static EditToggleFragment newInstance(GICControl control, View view) {
         EditToggleFragment frag = new EditToggleFragment();
         Bundle args = new Bundle();
         frag.setArguments(args);
-        if (view != null)
-            frag.loadView(view);
         if (control != null)
             frag.loadControl(control);
         return frag;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getDialog().setTitle(R.string.edit_fragment_title);
+        Objects.requireNonNull(getDialog()).setTitle(R.string.edit_fragment_title);
         setupControls(view);
     }
 
@@ -141,7 +135,7 @@ public class EditToggleFragment extends DialogFragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+        if (((App) Objects.requireNonNull(getContext()).getApplicationContext()).isNightModeEnabled())
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
             } else {
@@ -149,17 +143,13 @@ public class EditToggleFragment extends DialogFragment implements
             }
     }
 
-    public void loadControl(GICControl control) {
+    private void loadControl(GICControl control) {
         controlToLoad = control;
     }
 
-    public void loadView(View view) {
-        incomingView = view;
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Objects.requireNonNull(getDialog().getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Objects.requireNonNull(Objects.requireNonNull(getDialog()).getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         return inflater.inflate(R.layout.fragment_edit_toggle, container);
     }
 
@@ -258,13 +248,12 @@ public class EditToggleFragment extends DialogFragment implements
             btnPressed.setVisibility(View.INVISIBLE);
             btnNormal.setVisibility(View.INVISIBLE);
             preview.setVisibility(View.GONE);
-            ((Switch) view.findViewById(R.id.switchType)).setChecked(false);
-            mode = false;
         }
         ((ToggleButton) preview).setTextOff("");
         ((ToggleButton) preview).setTextOn("");
         preview.setText("");
-        ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
+
+        view.findViewById(R.id.btnHelp).setOnClickListener(this);
     }
 
     private void buildSizeControls(View view) {
@@ -299,7 +288,7 @@ public class EditToggleFragment extends DialogFragment implements
 
         Collection<String> values = map.getKeys().values();
         String[] spinnerArray = values.toArray(new String[values.size()]);
-        ArrayAdapter<CharSequence> dataAdapter = new ArrayAdapter<CharSequence>(getActivity(), android.R.layout.simple_spinner_dropdown_item, spinnerArray);
+        ArrayAdapter<CharSequence> dataAdapter = new ArrayAdapter<CharSequence>(Objects.requireNonNull(getActivity()), android.R.layout.simple_spinner_dropdown_item, spinnerArray);
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinner.setAdapter(dataAdapter);
@@ -331,7 +320,7 @@ public class EditToggleFragment extends DialogFragment implements
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+        if (((App) Objects.requireNonNull(getContext()).getApplicationContext()).isNightModeEnabled())
             ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
     }
 
@@ -357,10 +346,12 @@ public class EditToggleFragment extends DialogFragment implements
 //                if (rAlt.isChecked()) {
 //                    savedCommand.addModifier("ALT");
 //                }
+                assert listener != null;
                 listener.onFinishEditDialog(true, controlToLoad);
                 dismiss();
                 break;
             case R.id.btnDelete:
+                assert listener != null;
                 listener.onFinishEditDialog(false, controlToLoad);
                 dismiss();
                 break;
@@ -383,6 +374,9 @@ public class EditToggleFragment extends DialogFragment implements
                 break;
             case R.id.btnFont:
                 showFontPopup();
+                break;
+            case R.id.btnHelp:
+                EditActivity.ShowHelp(getContext(), R.string.help_edit_toggle);
                 break;
             default:
                 break;
@@ -463,17 +457,8 @@ public class EditToggleFragment extends DialogFragment implements
             controlToLoad.getCommandSecondary().addModifier("ALT");
         }
 
-        if (mode) {
-            controlToLoad.setSecondaryColor(-1);
-            controlToLoad.setPrimaryColor(-1);
-        } else {
-            controlToLoad.setSecondaryColor(btnSecondary.getTextColors().getDefaultColor());
-            controlToLoad.setPrimaryColor(btnPrimary.getTextColors().getDefaultColor());
-            controlToLoad.setPrimaryImage("");
-            controlToLoad.setSecondaryImage("");
-            controlToLoad.setPrimaryImageResource(-1);
-            controlToLoad.setSecondaryImageResource(-1);
-        }
+        controlToLoad.setSecondaryColor(-1);
+        controlToLoad.setPrimaryColor(-1);
     }
 
     private void displayImageLoader() {
@@ -483,7 +468,7 @@ public class EditToggleFragment extends DialogFragment implements
 
     private void displayColorPicker(final View view) {
         ColorPickerDialogBuilder
-                .with(getContext())
+                .with(Objects.requireNonNull(getContext()))
                 .setTitle(getString(R.string.color_picker_title))
                 .initialColor(((Button) view).getCurrentTextColor())
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
@@ -515,32 +500,6 @@ public class EditToggleFragment extends DialogFragment implements
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        mode = checked;
-        if (checked) {
-            btnSecondary.setVisibility(View.INVISIBLE);
-            btnPrimary.setVisibility(View.INVISIBLE);
-            preview.setVisibility(View.VISIBLE);
-            btnNormal.setVisibility(View.VISIBLE);
-            btnPressed.setVisibility(View.VISIBLE);
-            if (controlToLoad.getPrimaryImageResource() == -1 && controlToLoad.getPrimaryImage().isEmpty()) {
-                controlToLoad.setPrimaryImageResource(R.drawable.switch_off);
-            }
-            if (controlToLoad.getSecondaryImageResource() == -1 && controlToLoad.getSecondaryImage().isEmpty()) {
-                controlToLoad.setSecondaryImageResource(R.drawable.switch_on);
-            }
-            preview.setBackground(buildStatePreview());
-        } else {
-            btnSecondary.setVisibility(View.VISIBLE);
-            btnPrimary.setVisibility(View.VISIBLE);
-            preview.setVisibility(View.GONE);
-            btnNormal.setVisibility(View.INVISIBLE);
-            btnPressed.setVisibility(View.INVISIBLE);
-
-        }
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
         if (resultCode == Activity.RESULT_OK) {
@@ -549,10 +508,10 @@ public class EditToggleFragment extends DialogFragment implements
                     Uri currentUri = resultData.getData();
                     if (currentUri != null) {
                         try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), currentUri);
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), currentUri);
                             File file = null;
                             for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                                file = new File(getContext().getFilesDir(), "switch_" + i + ".png");
+                                file = new File(Objects.requireNonNull(getContext()).getFilesDir(), "switch_" + i + ".png");
                                 if (!file.exists())
                                     break;
                             }

@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
@@ -60,7 +61,7 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
     public EditImageFragment() {
     }
 
-    public static EditImageFragment newInstance(GICControl control, int screenId) {
+    static EditImageFragment newInstance(GICControl control, int screenId) {
         EditImageFragment frag = new EditImageFragment();
         Bundle args = new Bundle();
         args.putInt("screen", screenId);
@@ -69,7 +70,7 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
         return frag;
     }
 
-    public void loadControl(GICControl control) {
+    private void loadControl(GICControl control) {
         controlToLoad = control;
     }
 
@@ -77,7 +78,7 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+        if (((App) Objects.requireNonNull(getContext()).getApplicationContext()).isNightModeEnabled())
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
             } else {
@@ -86,18 +87,19 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Fetch arguments from bundle and set title
 
+        assert getArguments() != null;
         screenId = getArguments().getInt("screen");
-        getDialog().setTitle(R.string.edit_fragment_image_title);
+        Objects.requireNonNull(getDialog()).setTitle(R.string.edit_fragment_image_title);
         setupControls(view);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Objects.requireNonNull(getDialog().getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Objects.requireNonNull(Objects.requireNonNull(getDialog()).getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         return inflater.inflate(R.layout.fragment_edit_image, container);
     }
 
@@ -110,6 +112,7 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
         view.findViewById(R.id.btnImage).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
         view.findViewById(R.id.btnSave).setOnClickListener(this);
+        view.findViewById(R.id.btnHelp).setOnClickListener(this);
     }
 
     private void buildSizeControls(View view) {
@@ -143,6 +146,7 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
             case R.id.btnSave:
                 saveControl();
                 dismiss();
+                assert listener != null;
                 listener.onFinishEditImageDialog("");
                 break;
             case R.id.btnImage:
@@ -152,8 +156,12 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
                 startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_IMAGE);
                 break;
             case R.id.btnDelete:
+                assert listener != null;
                 listener.onFinishEditImageDialog("DELETE");
                 dismiss();
+                break;
+            case R.id.btnHelp:
+                EditActivity.ShowHelp(getContext(), R.string.help_edit_image);
                 break;
             default:
                 break;
@@ -177,9 +185,9 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
                     File file = null;
                     if (currentUri != null) {
                         try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), currentUri);
+                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), currentUri);
                             for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                                file = new File(getContext().getFilesDir(), screenId + "_control_" + i + ".png");
+                                file = new File(Objects.requireNonNull(getContext()).getFilesDir(), screenId + "_control_" + i + ".png");
                                 if (!file.exists())
                                     break;
                             }
@@ -193,8 +201,10 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
                     }
 
                     EditImageFragment.EditImageDialogListener listener = (EditImageFragment.EditImageDialogListener) getActivity();
-                    if (file == null)
+                    if (file == null) {
+                        assert listener != null;
                         listener.onFinishEditImageDialog("");
+                    }
                     else
                         listener.onFinishEditImageDialog(file.getAbsolutePath());
                     dismiss();

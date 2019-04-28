@@ -193,9 +193,9 @@
         <strong>Font Size</strong><br/>
         Allows you to specify the exact size of the text you want.<br/><br/>
         <strong>Left / Top</strong><br/>
-        Allows you to specify the exact position of the text.<br/><br/>
+        Allows you to specify the exact position of the control.<br/><br/>
         <strong>Width / Height</strong><br/>
-        Allows you to specify the display area size of the text.<br/><br/>
+        Allows you to specify the display area size of the control.<br/><br/>
         <strong>Save</strong><br/>
         Saves the above options you chose.<br/><br/>
         <strong>Delete</strong><br/>
@@ -225,9 +225,47 @@
         <strong>Secondary Color</strong><br/>
         When Button Graphics mode is turned off, tap this to choose the secondary button color.  When pressed the colors are inverted.<br/><br/>
         <strong>Left / Top</strong><br/>
-        Allows you to specify the exact position of the text.<br/><br/>
+        Allows you to specify the exact position of the control.<br/><br/>
         <strong>Width / Height</strong><br/>
-        Allows you to specify the display area size of the text.<br/><br/>
+        Allows you to specify the display area size of the control.<br/><br/>
+        <strong>Save</strong><br/>
+        Saves the above options you chose.<br/><br/>
+        <strong>Delete</strong><br/>
+        Deletes the control - this can't be undone!<br/><br/>
+    ]]></string>
+    <string name="help_edit_toggle"><![CDATA[
+        <strong>Text</strong><br/>
+        At the top you can change what text to show, by default its "New"<br/><br/>
+        <strong>Toggle on Command</strong><br/>
+        You can select a keyboard command to send to the computer when you turn the switch "on", and you can include the Shift, Ctrl, or Alt key on your keyboard.  This will be sent when you tap on the button when it\'s currently set to "Off".<br/><br/>
+        <strong>Toggle off Command</strong><br/>
+        You can select a keyboard command to send to the computer when you turn the switch "off", and you can include the Shift, Ctrl, or Alt key on your keyboard.  This will be sent when you tap on the button when it\'s currently set to "On".<br/><br/>
+        <strong>Font Color</strong><br/>
+        Here you can change the color of the text<br/><br/>
+        <strong>Font</strong><br/>
+        A small selection of different fonts, due to limitations of Android if there is a font you want to use, please contact me.<br/><br/>
+        <strong>Font Size</strong><br/>
+        Allows you to specify the exact size of the text you want.<br/><br/>
+        <strong>Off</strong><br/>
+        Tap this to choose an image for the Off position of the switch.  There are several built in graphics, and you can also Import your own.<br/><br/>
+        <strong>On</strong><br/>
+        Tap this to choose an image for the On position of the switch.  There are several built in graphics, and you can also Import your own.<br/><br/>
+        <strong>Left / Top</strong><br/>
+        Allows you to specify the exact position of the control.<br/><br/>
+        <strong>Width / Height</strong><br/>
+        Allows you to specify the display area size of the control.<br/><br/>
+        <strong>Save</strong><br/>
+        Saves the above options you chose.<br/><br/>
+        <strong>Delete</strong><br/>
+        Deletes the control - this can't be undone!<br/><br/>
+    ]]></string>
+    <string name="help_edit_image"><![CDATA[
+        <strong>Image</strong><br/>
+        This will let you choose an image you have stored on your device to display.<br/><br/>
+        <strong>Left / Top</strong><br/>
+        Allows you to specify the exact position of the control.<br/><br/>
+        <strong>Width / Height</strong><br/>
+        Allows you to specify the display area size of the control.<br/><br/>
         <strong>Save</strong><br/>
         Saves the above options you chose.<br/><br/>
         <strong>Delete</strong><br/>
