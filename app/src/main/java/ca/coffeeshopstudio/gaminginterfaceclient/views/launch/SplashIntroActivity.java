@@ -35,6 +35,7 @@ public class SplashIntroActivity extends IntroActivity {
 
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.slideIntroTitle)
+                .image(R.drawable.ic_thumb_up_white_192dp)
                 .description(R.string.slideIntroDesc)
                 .background(R.color.slideBackground)
                 .backgroundDark(R.color.colorPrimaryDark)
@@ -42,6 +43,7 @@ public class SplashIntroActivity extends IntroActivity {
 
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.slideAboutTitle)
+                .image(R.drawable.ic_info_outline_white_192dp)
                 .description(R.string.slideAboutDesc)
                 .background(R.color.slideBackground)
                 .backgroundDark(R.color.colorPrimaryDark)
@@ -49,6 +51,7 @@ public class SplashIntroActivity extends IntroActivity {
 
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.slideServerTitle)
+                .image(R.drawable.ic_important_devices_white_192dp)
                 .description(R.string.slideServerDesc)
                 .background(R.color.slideBackground)
                 .backgroundDark(R.color.colorPrimaryDark)
@@ -78,6 +81,7 @@ public class SplashIntroActivity extends IntroActivity {
 
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.slideLetsGoTitle)
+                .image(R.drawable.ic_help_outline_whilte_192dp)
                 .description(R.string.slideLetsGoDesc)
                 .background(R.color.slideBackground)
                 .backgroundDark(R.color.colorPrimaryDark)

@@ -117,13 +117,13 @@
     <string name="title_activity_intro">IntroActivity</string>
 
     <string name="slideIntroTitle">Welcome!</string>
-    <string name="slideIntroDesc">Thank you for installing GIC - the Game Interface Client.  Ahead are just a few tips to help you get started.  This will only be shown once - tap on the bottom right corner arrow to begin.</string>
+    <string name="slideIntroDesc">Thank you for installing GIC - the open source Game Interface Client.  Ahead are just a few tips to help you get started.  This will only be shown once - tap on the bottom right corner arrow to begin.</string>
     <string name="slideServerTitle">Server</string>
-    <string name="slideServerDesc">GIC requires you to run software on your Windows computer to understand the commands.  For ease of use, clicking the button below will open your email app with the link inside, send it to yourself and open the link on your computer.  Don\'t worry, nothing you sent is through my app, I won\'t see or know if you clicked on the button.  You can verify that yourself if you want - the source code for this entire app is available on GitHub - link is inside the "About" screen.  You can ALSO find the link to the server in the About view, located inside GIC\'s menu (top right corner in the main view).</string>
+    <string name="slideServerDesc">GIC requires software on the computer your communicating with.  The link is in inside the "About" view from the main screen.  Alternatively clicking this button will open your email app with the link to the server inside.</string>
     <string name="slideAboutTitle">About</string>
     <string name="slideAboutDesc">GIC allows you to create fully customizable interfaces (screens) to send commands to an app on your computer.  Useful for complex sim type games, but GIC can be used for any app or game that you like.  You can also share your screens with others!</string>
-    <string name="slideLetsGoTitle">Lets Go</string>
-    <string name="slideLetsGoDesc">I\'ve added Help sections to each part of this app - any further questions click the \'?\' at the top right corner of the app!  Click the Check Mark to get started, and thank you for using GIC!</string>
+    <string name="slideLetsGoTitle">Questions?</string>
+    <string name="slideLetsGoDesc">I\'ve added Help sections to each part of this app - click the \'?\' at the top right corner of the app for help!  Thank you for using GIC!</string>
     <string name="slideSendLink">Send Link</string>
     <string name="slideScreenTitle">Screen Starter</string>
     <string name="slideScreenDesc">If you like you can pick one (or more!) of the screens I\'ve built below as a starting point, or you can skip this step and build your own.!</string>
