@@ -201,6 +201,38 @@
         <strong>Delete</strong><br/>
         Deletes the control - this can't be undone!<br/><br/>
     ]]></string>
+    <string name="help_edit_button"><![CDATA[
+        <strong>Text</strong><br/>
+        At the top you can change what text to show, by default its "New"<br/><br/>
+        <strong>Select a Key</strong><br/>
+        You can select a keyboard command to send to the computer, and choose to include the Shift, Ctrl, or Alt key on your keyboard.  This will be sent when you tap on the button.<br/><br/>
+        <strong>Font Color</strong><br/>
+        Here you can change the color of the text<br/><br/>
+        <strong>Font</strong><br/>
+        A small selection of different fonts, due to limitations of Android if there is a font you want to use, please contact me.<br/><br/>
+        <strong>Font Size</strong><br/>
+        Allows you to specify the exact size of the text you want.<br/><br/>
+        <strong>Button Graphics</strong><br/>
+        By default you can pick an image to show when the button normally, and when it\'s pressed down.  Turning this off lets you use a color gradient instead.<br/><br/>
+        <strong>Quick Mode</strong><br/>
+        By default, a button will stay pressed down as long as you hold it.  In some games that use the same button as a quick toggle and press to hold, it may not work as a quick toggle.  Enable this to set it to Quick Mode which will send a command quick as soon as you press it, regardless of how long you hold it down.<br/><br/>
+        <strong>Normal</strong><br/>
+        When in Button Graphics mode, tap this to choose an image for the button when it\'s not being pressed down.  There are several built in graphics, and you can also Import your own.<br/><br/>
+        <strong>Pressed</strong><br/>
+        When in Button Graphics mode, tap this to choose an image for the button when it\'s not being pressed down.  There are several built in graphics, and you can also Import your own.<br/><br/>
+        <strong>Primary Color</strong><br/>
+        When Button Graphics mode is turned off, tap this to choose the primary button color.  When pressed the colors are inverted.<br/><br/>
+        <strong>Secondary Color</strong><br/>
+        When Button Graphics mode is turned off, tap this to choose the secondary button color.  When pressed the colors are inverted.<br/><br/>
+        <strong>Left / Top</strong><br/>
+        Allows you to specify the exact position of the text.<br/><br/>
+        <strong>Width / Height</strong><br/>
+        Allows you to specify the display area size of the text.<br/><br/>
+        <strong>Save</strong><br/>
+        Saves the above options you chose.<br/><br/>
+        <strong>Delete</strong><br/>
+        Deletes the control - this can't be undone!<br/><br/>
+    ]]></string>
     <string name="help_dialog_title">Help</string>
     <string name="edit_help">Help</string>
 </resources>

@@ -56,7 +56,9 @@ import static java.lang.Math.round;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditActivity extends AbstractGameActivity implements EditTextStyleFragment.EditDialogListener,
+public class EditActivity extends AbstractGameActivity implements
+        EditTextFragment.EditTextListener,
+        EditButtonFragment.EditButtonListener,
         SeekBar.OnSeekBarChangeListener,
         EditImageFragment.EditImageDialogListener,
         EditToggleFragment.EditToggleListener,
@@ -381,8 +383,16 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
         FragmentManager fm = getSupportFragmentManager();
         TextView view = (TextView) selectedView;
 
-        EditTextStyleFragment editTextDialog = EditTextStyleFragment.newInstance((GICControl) view.getTag(), view);
+        EditTextFragment editTextDialog = EditTextFragment.newInstance((GICControl) view.getTag());
         editTextDialog.show(fm, "fragment_edit_name");
+    }
+
+    private void displayButtonEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        Button view = (Button) selectedView;
+
+        EditButtonFragment editDialog = EditButtonFragment.newInstance((GICControl) view.getTag(), view);
+        editDialog.show(fm, "fragment_edit_name");
     }
 
     private void displayToggleEditDialog() {
@@ -405,6 +415,8 @@ public class EditActivity extends AbstractGameActivity implements EditTextStyleF
             toggleEditControls(View.VISIBLE);
             if (view instanceof ToggleButton)
                 displayToggleEditDialog();
+            else if (view instanceof Button)
+                displayButtonEditDialog();
             else if (view instanceof TextView)
                 displayTextEditDialog();
             else if (view instanceof ImageView)

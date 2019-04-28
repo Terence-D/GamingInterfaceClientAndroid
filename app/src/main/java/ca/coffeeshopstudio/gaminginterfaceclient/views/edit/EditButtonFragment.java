@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
@@ -72,7 +73,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.utils.NumberFilter;
  See the License for the specific language governing permissions and
  limitations under the License.
  */
-public class EditTextStyleFragment extends DialogFragment implements
+public class EditButtonFragment extends DialogFragment implements
         ImageGridDialog.ImageGridDialogListener,
         AdapterView.OnItemSelectedListener,
         View.OnClickListener,
@@ -115,11 +116,11 @@ public class EditTextStyleFragment extends DialogFragment implements
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
     // Use `newInstance` instead as shown below
-    public EditTextStyleFragment() {
+    public EditButtonFragment() {
     }
 
-    public static EditTextStyleFragment newInstance(GICControl control, View view) {
-        EditTextStyleFragment frag = new EditTextStyleFragment();
+    static EditButtonFragment newInstance(GICControl control, View view) {
+        EditButtonFragment frag = new EditButtonFragment();
         Bundle args = new Bundle();
         frag.setArguments(args);
         if (view != null)
@@ -130,17 +131,17 @@ public class EditTextStyleFragment extends DialogFragment implements
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getDialog().setTitle(R.string.edit_fragment_title);
         setupControls(view);
     }
 
-    public void loadControl(GICControl control) {
+    private void loadControl(GICControl control) {
         controlToLoad = control;
     }
 
-    public void loadView(View view) {
+    private void loadView(View view) {
         incomingView = view;
     }
 
@@ -148,7 +149,7 @@ public class EditTextStyleFragment extends DialogFragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+        if (((App) Objects.requireNonNull(getContext()).getApplicationContext()).isNightModeEnabled())
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
             } else {
@@ -157,9 +158,9 @@ public class EditTextStyleFragment extends DialogFragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Objects.requireNonNull(getDialog().getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        return inflater.inflate(R.layout.fragment_edit_control, container);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Objects.requireNonNull(Objects.requireNonNull(getDialog()).getWindow()).setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        return inflater.inflate(R.layout.fragment_edit_button, container);
     }
 
     @SuppressLint("SetTextI18n")
@@ -229,37 +230,20 @@ public class EditTextStyleFragment extends DialogFragment implements
         view.findViewById(R.id.btnHelp).setOnClickListener(this);
         view.findViewById(R.id.btnDelete).setOnClickListener(this);
 
-        if (incomingView != null && !(incomingView instanceof Button)) {
-            btnSecondary.setVisibility(View.GONE);
-            btnPrimary.setVisibility(View.GONE);
-            btnPressed.setVisibility(View.GONE);
-            btnNormal.setVisibility(View.GONE);
-            preview.setVisibility(View.GONE);
-            quickMode.setVisibility(View.GONE);
-
-            view.findViewById(R.id.switchType).setVisibility(View.GONE);
-            view.findViewById(R.id.lblInstructions).setVisibility(View.GONE);
-            view.findViewById(R.id.spinner).setVisibility(View.GONE);
-            view.findViewById(R.id.chkLShift).setVisibility(View.GONE);
-            view.findViewById(R.id.chkLAlt).setVisibility(View.GONE);
-            view.findViewById(R.id.chkLCtrl).setVisibility(View.GONE);
-        }
-        if (incomingView instanceof Button) {
-            if (controlToLoad.getPrimaryImageResource() != -1 || !controlToLoad.getPrimaryImage().isEmpty()) {
-                btnSecondary.setVisibility(View.INVISIBLE);
-                btnPrimary.setVisibility(View.INVISIBLE);
-                btnPressed.setVisibility(View.VISIBLE);
-                btnNormal.setVisibility(View.VISIBLE);
-                preview.setVisibility(View.VISIBLE);
-            } else {
-                btnSecondary.setVisibility(View.VISIBLE);
-                btnPrimary.setVisibility(View.VISIBLE);
-                btnPressed.setVisibility(View.INVISIBLE);
-                btnNormal.setVisibility(View.INVISIBLE);
-                preview.setVisibility(View.INVISIBLE);
-                ((Switch) view.findViewById(R.id.switchType)).setChecked(false);
-                mode = false;
-            }
+        if (controlToLoad.getPrimaryImageResource() != -1 || !controlToLoad.getPrimaryImage().isEmpty()) {
+            btnSecondary.setVisibility(View.INVISIBLE);
+            btnPrimary.setVisibility(View.INVISIBLE);
+            btnPressed.setVisibility(View.VISIBLE);
+            btnNormal.setVisibility(View.VISIBLE);
+            preview.setVisibility(View.VISIBLE);
+        } else {
+            btnSecondary.setVisibility(View.VISIBLE);
+            btnPrimary.setVisibility(View.VISIBLE);
+            btnPressed.setVisibility(View.INVISIBLE);
+            btnNormal.setVisibility(View.INVISIBLE);
+            preview.setVisibility(View.INVISIBLE);
+            ((Switch) view.findViewById(R.id.switchType)).setChecked(false);
+            mode = false;
         }
         ((Switch) view.findViewById(R.id.switchType)).setOnCheckedChangeListener(this);
     }
@@ -327,7 +311,7 @@ public class EditTextStyleFragment extends DialogFragment implements
 
     @Override
     public void onClick(View view) {
-        EditDialogListener listener = (EditDialogListener) getActivity();
+        EditButtonListener listener = (EditButtonListener) getActivity();
         switch (view.getId()) {
             case R.id.btnSave:
                 saveControl();
@@ -342,10 +326,12 @@ public class EditTextStyleFragment extends DialogFragment implements
 //                if (rAlt.isChecked()) {
 //                    savedCommand.addModifier("ALT");
 //                }
+                assert listener != null;
                 listener.onFinishEditDialog(true, controlToLoad);
                 dismiss();
                 break;
             case R.id.btnDelete:
+                assert listener != null;
                 listener.onFinishEditDialog(false, controlToLoad);
                 dismiss();
                 break;
@@ -370,7 +356,7 @@ public class EditTextStyleFragment extends DialogFragment implements
                 showFontPopup();
                 break;
             case R.id.btnHelp:
-                EditActivity.ShowHelp(getContext(), R.string.help_edit_text);
+                EditActivity.ShowHelp(getContext(), R.string.help_edit_button);
                 break;
             default:
                 break;
@@ -725,7 +711,7 @@ public class EditTextStyleFragment extends DialogFragment implements
         }
     }
 
-    public interface EditDialogListener {
+    public interface EditButtonListener {
         void onFinishEditDialog(boolean toSave, GICControl control);
     }
 
