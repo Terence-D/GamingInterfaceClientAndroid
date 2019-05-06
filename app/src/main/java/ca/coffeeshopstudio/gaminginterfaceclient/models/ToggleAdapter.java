@@ -31,7 +31,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
  * limitations under the License.
  */
 public class ToggleAdapter extends BaseAdapter {
-    public static final int[] builtIn = ToggleConstants.toggles;
+    public static final int[] builtIn = ControlTypes.Toggles;
     private int customToggleCount;
     private Context context;
     private LayoutInflater inflater;
@@ -113,14 +113,4 @@ public class ToggleAdapter extends BaseAdapter {
 class ToggleViewHolder {
     ImageView imageView;
     TextView textView;
-}
-
-
-class ToggleConstants {
-    static final int[] toggles = new int[]{
-            R.drawable.switch_off,
-            R.drawable.switch_on
-    };
-
-
 }

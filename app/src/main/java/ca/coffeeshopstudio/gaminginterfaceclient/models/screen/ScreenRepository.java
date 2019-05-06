@@ -1,10 +1,13 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -92,7 +95,7 @@ public class ScreenRepository implements IScreenRepository {
 
     private static IScreen parseJson(String fullPath) {
         ObjectMapper objectMapper = new ObjectMapper();
-        File file = new File(fullPath + "Space - 10.5 Inch Tablet.json");
+        File file = new File(fullPath + "data.json");
         try {
             Screen screen = objectMapper.readValue(file, Screen.class);
             //update any filenames to point to the local folder now
@@ -117,13 +120,23 @@ public class ScreenRepository implements IScreenRepository {
         return null;
     }
 
+    private static String queryName(ContentResolver resolver, Uri uri) {
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
+    }
     private static SparseArray<String> screenImporterFromUri(Context context, Uri toImport) {
         IScreen importedScreen;
         try {
             InputStream stream = context.getContentResolver().openInputStream(toImport);
             //get a profile name
             String path = toImport.getLastPathSegment();
-            path = path.replace("primary:", "");
+            path = queryName(context.getContentResolver(), toImport);
             path = path.replace(".zip", "");
             boolean valid = ZipHelper.unzip(stream, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/GIC-Screens/" + path);
 
@@ -692,7 +705,7 @@ public class ScreenRepository implements IScreenRepository {
         @Override
         protected Boolean doInBackground(Uri... params) {
             rv = screenImporterFromUri(weakContext.get(), params[0]);
-            return rv == null;
+            return rv != null;
         }
 
     }
@@ -725,7 +738,7 @@ public class ScreenRepository implements IScreenRepository {
                 File cacheDir = new File(weakContext.get().getCacheDir().getAbsolutePath());
 
                 //store the json dat in the directory
-                File jsonData = new File(cacheDir.getAbsolutePath() + "/screen.json");
+                File jsonData = new File(cacheDir.getAbsolutePath() + "/data.json");
                 output = new BufferedWriter(new FileWriter(jsonData));
                 output.write(json);
                 output.close();

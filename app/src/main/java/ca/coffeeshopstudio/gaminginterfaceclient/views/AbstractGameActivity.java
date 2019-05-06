@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.TextViewCompat;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
@@ -157,53 +158,9 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     //primary is used for backwards compatability
     private Drawable getButtonResource(int resourceId, int type, boolean primary) {
         if (type == GICControl.TYPE_BUTTON || type == GICControl.TYPE_BUTTON_QUICK) {
-            switch (resourceId) {
-                case 0:
-                    return getResources().getDrawable(R.drawable.button_neon);
-                case 1:
-                    return getResources().getDrawable(R.drawable.button_neon_pushed);
-                case 2:
-                    return getResources().getDrawable(R.drawable.button_blue);
-                case 3:
-                    return getResources().getDrawable(R.drawable.button_blue_dark);
-                case 4:
-                    return getResources().getDrawable(R.drawable.button_green);
-                case 5:
-                    return getResources().getDrawable(R.drawable.button_green_dark);
-                case 6:
-                    return getResources().getDrawable(R.drawable.button_green_alt);
-                case 7:
-                    return getResources().getDrawable(R.drawable.button_green_alt_dark);
-                case 8:
-                    return getResources().getDrawable(R.drawable.button_purple);
-                case 9:
-                    return getResources().getDrawable(R.drawable.button_purple_dark);
-                case 10:
-                    return getResources().getDrawable(R.drawable.button_red);
-                case 11:
-                    return getResources().getDrawable(R.drawable.button_red_dark);
-                case 12:
-                    return getResources().getDrawable(R.drawable.button_yellow);
-                case 13:
-                    return getResources().getDrawable(R.drawable.button_yellow_dark);
-                default:
-                    if (primary)
-                        return getResources().getDrawable(R.drawable.button_neon);
-                    else
-                        return getResources().getDrawable(R.drawable.button_neon_pushed);
-            }
+            return getResources().getDrawable(ControlTypes.GetButtonDrawableId(resourceId, primary));
         } else {
-            switch (resourceId) {
-                case 0:
-                    return getResources().getDrawable(R.drawable.switch_off);
-                case 1:
-                    return getResources().getDrawable(R.drawable.switch_on);
-                default:
-                    if (primary)
-                        return getResources().getDrawable(R.drawable.switch_off);
-                    else
-                        return getResources().getDrawable(R.drawable.switch_on);
-            }
+            return getResources().getDrawable(ControlTypes.GetSwitchDrawableId(resourceId, primary));
         }
     }
 

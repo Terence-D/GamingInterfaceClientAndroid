@@ -47,6 +47,7 @@ import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
@@ -548,17 +549,11 @@ public class EditToggleFragment extends DialogFragment implements
     public void onImageSelected(int builtIn) {
         if (state == 0) {
             controlToLoad.setPrimaryImage("");
-            if (builtIn == R.drawable.switch_off)
-                controlToLoad.setPrimaryImageResource(0);
-            else
-                controlToLoad.setPrimaryImageResource(1);
+            controlToLoad.setPrimaryImageResource(ControlTypes.GetSwitchByResourceId(builtIn));
         }
         if (state == 1) {
             controlToLoad.setSecondaryImage("");
-            if (builtIn == R.drawable.switch_off)
-                controlToLoad.setSecondaryImageResource(0);
-            else
-                controlToLoad.setSecondaryImageResource(1);
+            controlToLoad.setSecondaryImageResource(ControlTypes.GetSwitchByResourceId(builtIn));
         }
         controlToLoad.setPrimaryColor(-1);
         controlToLoad.setSecondaryColor(-1);
@@ -570,14 +565,14 @@ public class EditToggleFragment extends DialogFragment implements
         Drawable secondary = null;
 
         if (controlToLoad.getPrimaryImageResource() != -1) {
-            normal = getButtonResource(controlToLoad.getPrimaryImageResource(), true);
+            normal = getResources().getDrawable(ControlTypes.GetSwitchDrawableId(controlToLoad.getPrimaryImageResource(), true));
         }
         if (!controlToLoad.getPrimaryImage().isEmpty()) {
             normal = Drawable.createFromPath(controlToLoad.getPrimaryImage());
         }
 
         if (controlToLoad.getSecondaryImageResource() != -1) {
-            secondary = getButtonResource(controlToLoad.getSecondaryImageResource(), false);
+            secondary = getResources().getDrawable(ControlTypes.GetSwitchDrawableId(controlToLoad.getSecondaryImageResource(), false));
         }
         if (!controlToLoad.getSecondaryImage().isEmpty()) {
             secondary = Drawable.createFromPath(controlToLoad.getSecondaryImage());
@@ -589,21 +584,6 @@ public class EditToggleFragment extends DialogFragment implements
             res.addState(new int[]{}, normal);
         }
         return res;
-    }
-
-    //primary is used for backwards compatability
-    private Drawable getButtonResource(int resourceId, boolean primary) {
-        switch (resourceId) {
-            case 0:
-                return getResources().getDrawable(R.drawable.switch_off);
-            case 1:
-                return getResources().getDrawable(R.drawable.switch_on);
-            default:
-                if (primary)
-                    return getResources().getDrawable(R.drawable.switch_off);
-                else
-                    return getResources().getDrawable(R.drawable.switch_on);
-        }
     }
 
     public interface EditToggleListener {

@@ -53,6 +53,7 @@ import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
@@ -600,50 +601,15 @@ public class EditButtonFragment extends DialogFragment implements
     public void onImageSelected(int builtIn) {
         if (state == 0) {
             controlToLoad.setPrimaryImage("");
-            controlToLoad.setPrimaryImageResource(getButtonByResourceId(builtIn));
+            controlToLoad.setPrimaryImageResource(ControlTypes.GetButtonByResourceId(builtIn));
         }
         if (state == 1) {
             controlToLoad.setSecondaryImage("");
-            controlToLoad.setSecondaryImageResource(getButtonByResourceId(builtIn));
+            controlToLoad.setSecondaryImageResource(ControlTypes.GetButtonByResourceId(builtIn));
         }
         controlToLoad.setPrimaryColor(-1);
         controlToLoad.setSecondaryColor(-1);
         preview.setBackground(buildStatePreview());
-    }
-
-    private int getButtonByResourceId(int builtIn) {
-        switch (builtIn) {
-            case R.drawable.button_neon:
-                return 0;
-            case R.drawable.button_neon_pushed:
-                return 1;
-            case R.drawable.button_blue:
-                return 2;
-            case R.drawable.button_blue_dark:
-                return 3;
-            case R.drawable.button_green:
-                return 4;
-            case R.drawable.button_green_dark:
-                return 5;
-            case R.drawable.button_green_alt:
-                return 6;
-            case R.drawable.button_green_alt_dark:
-                return 7;
-            case R.drawable.button_purple:
-                return 8;
-            case R.drawable.button_purple_dark:
-                return 9;
-            case R.drawable.button_red:
-                return 10;
-            case R.drawable.button_red_dark:
-                return 11;
-            case R.drawable.button_yellow:
-                return 12;
-            case R.drawable.button_yellow_dark:
-                return 13;
-            default:
-                return 0;
-        }
     }
 
     private StateListDrawable buildStatePreview() {
@@ -651,14 +617,14 @@ public class EditButtonFragment extends DialogFragment implements
         Drawable secondary = null;
 
         if (controlToLoad.getPrimaryImageResource() != -1) {
-            normal = getButtonResource(controlToLoad.getPrimaryImageResource(), true);
+            normal = getResources().getDrawable(ControlTypes.GetButtonDrawableId(controlToLoad.getPrimaryImageResource(), true));
         }
         if (!controlToLoad.getPrimaryImage().isEmpty()) {
             normal = Drawable.createFromPath(controlToLoad.getPrimaryImage());
         }
 
         if (controlToLoad.getSecondaryImageResource() != -1) {
-            secondary = getButtonResource(controlToLoad.getSecondaryImageResource(), false);
+            secondary = getResources().getDrawable(ControlTypes.GetButtonDrawableId(controlToLoad.getSecondaryImageResource(), false));
         }
         if (!controlToLoad.getSecondaryImage().isEmpty()) {
             secondary = Drawable.createFromPath(controlToLoad.getSecondaryImage());
@@ -670,45 +636,6 @@ public class EditButtonFragment extends DialogFragment implements
             res.addState(new int[]{}, normal);
         }
         return res;
-    }
-
-    //primary is used for backwards compatability
-    private Drawable getButtonResource(int resourceId, boolean primary) {
-        switch (resourceId) {
-            case 0:
-                return getResources().getDrawable(R.drawable.button_neon);
-            case 1:
-                return getResources().getDrawable(R.drawable.button_neon_pushed);
-            case 2:
-                return getResources().getDrawable(R.drawable.button_blue);
-            case 3:
-                return getResources().getDrawable(R.drawable.button_blue_dark);
-            case 4:
-                return getResources().getDrawable(R.drawable.button_green);
-            case 5:
-                return getResources().getDrawable(R.drawable.button_green_dark);
-            case 6:
-                return getResources().getDrawable(R.drawable.button_green_alt);
-            case 7:
-                return getResources().getDrawable(R.drawable.button_green_alt_dark);
-            case 8:
-                return getResources().getDrawable(R.drawable.button_purple);
-            case 9:
-                return getResources().getDrawable(R.drawable.button_purple_dark);
-            case 10:
-                return getResources().getDrawable(R.drawable.button_red);
-            case 11:
-                return getResources().getDrawable(R.drawable.button_red_dark);
-            case 12:
-                return getResources().getDrawable(R.drawable.button_yellow);
-            case 13:
-                return getResources().getDrawable(R.drawable.button_yellow_dark);
-            default:
-                if (primary)
-                    return getResources().getDrawable(R.drawable.button_neon);
-                else
-                    return getResources().getDrawable(R.drawable.button_neon_pushed);
-        }
     }
 
     public interface EditButtonListener {

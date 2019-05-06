@@ -31,7 +31,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
  * limitations under the License.
  */
 public class ImageAdapter extends BaseAdapter {
-    public static final int[] builtIn = Constants.buttons;
+    public static final int[] builtIn = ControlTypes.Buttons;
     private int customButtonCount;
     private Context context;
     private LayoutInflater inflater;
@@ -115,24 +115,3 @@ class ViewHolder {
     TextView textView;
 }
 
-
-class Constants {
-    static final int[] buttons = new int[]{
-            R.drawable.button_neon,
-            R.drawable.button_neon_pushed,
-            R.drawable.button_blue,
-            R.drawable.button_blue_dark,
-            R.drawable.button_green,
-            R.drawable.button_green_dark,
-            R.drawable.button_green_alt,
-            R.drawable.button_green_alt_dark,
-            R.drawable.button_purple,
-            R.drawable.button_purple_dark,
-            R.drawable.button_red,
-            R.drawable.button_red_dark,
-            R.drawable.button_yellow,
-            R.drawable.button_yellow_dark
-    };
-
-
-}
