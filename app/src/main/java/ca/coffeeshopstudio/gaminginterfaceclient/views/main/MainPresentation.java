@@ -57,15 +57,18 @@ class MainPresentation implements IContract.IPresentation {
     public void saveSettings(String password, String port, String address) {
         if (password.length() < 6) {
             view.showMessage(R.string.password_invalid);
+            view.setConnectingIndicator(false);
             return;
         }
         if (!isInteger(port)) {
             view.showMessage(R.string.port_invalid);
+            view.setConnectingIndicator(false);
             return;
         }
 
         if (address.length() < 7) {
             view.showMessage(R.string.address_invalid);
+            view.setConnectingIndicator(false);
             return;
         }
 
@@ -91,6 +94,7 @@ class MainPresentation implements IContract.IPresentation {
         view.getViewModel().setAddress(address);
         view.getViewModel().setPassword(password);
         view.getViewModel().setPort(port);
+        view.setConnectingIndicator(false);
         view.startApp();
     }
 

@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -53,6 +54,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected int currentScreenId;
 
     protected IScreenRepository screenRepository;
+    protected ProgressDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         if (getIntent() != null)
             currentScreenId = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
 
+        setProgressIndicator(true);
         screenRepository = new ScreenRepository(getApplicationContext());
         screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
             @Override
@@ -71,6 +74,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                         currentScreen = screen;
                         loadScreen();
                         buildFontCache();
+                        setProgressIndicator(false);
                     }
                 });
             }
@@ -311,5 +315,31 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(newWidth, newHeight);
         view.setLayoutParams(layout);
         view.invalidate();
+    }
+
+    protected void setProgressIndicator(boolean show) {
+        if (show)
+            showLoadingIndicator();
+        else
+            hideLoadingIndicator();
+    }
+
+    private void showLoadingIndicator() {
+        buildLoadWindow();
+        dialog.show();
+    }
+
+    private void hideLoadingIndicator() {
+        buildLoadWindow();
+        dialog.dismiss();
+    }
+
+    private void buildLoadWindow() {
+        if (dialog == null) {
+            //prepare our dialog
+            dialog = new ProgressDialog(this);
+            dialog.setMessage(getString(R.string.loading));
+            dialog.setIndeterminate(true);
+        }
     }
 }

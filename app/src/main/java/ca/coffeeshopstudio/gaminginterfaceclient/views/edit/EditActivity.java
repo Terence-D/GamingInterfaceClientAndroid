@@ -101,7 +101,6 @@ public class EditActivity extends AbstractGameActivity implements
 
     @Override
     protected void loadScreen() {
-
         setupFullScreen();
         setupDoubleTap(EditActivity.this);
         setupControls();
@@ -115,6 +114,33 @@ public class EditActivity extends AbstractGameActivity implements
         if (currentScreen.getControls().size() > 0)
             findViewById(R.id.txtHelp).setVisibility(View.GONE);
         super.loadScreen();
+    }
+
+    @Override
+    public void setProgressIndicator(boolean show) {
+        if (show)
+            showLoadingIndicator();
+        else
+            hideLoadingIndicator();
+    }
+
+    protected void showLoadingIndicator() {
+        buildLoadWindow();
+        dialog.show();
+    }
+
+    protected void hideLoadingIndicator() {
+        buildLoadWindow();
+        dialog.dismiss();
+    }
+
+    private void buildLoadWindow() {
+        if (dialog == null) {
+            //prepare our dialog
+            dialog = new ProgressDialog(this);
+            dialog.setMessage(getString(R.string.loading));
+            dialog.setIndeterminate(true);
+        }
     }
 
     private void toggleEditControls(int visibility) {
@@ -158,9 +184,6 @@ public class EditActivity extends AbstractGameActivity implements
 
         setupButtons();
     }
-
-    //TODO move this to presentation on refactor
-    private ProgressDialog dialog;
 
     private void setupToggleSwitch() {
         ((Switch) findViewById(R.id.toggleMode)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -638,22 +661,16 @@ public class EditActivity extends AbstractGameActivity implements
     }
 
     private void setupButtons() {
-        final EditActivity editActivity = this;
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (dialog == null) {
-                    //prepare our dialog
-                    dialog = new ProgressDialog(editActivity);
-                    dialog.setMessage(getString(R.string.loading));
-                    dialog.setIndeterminate(true);
-                }
+                setProgressIndicator(true);
                 dialog.show();
                 currentScreen.setBackground(findViewById(R.id.topLayout).getBackground());
                 screenRepository.save(currentScreen, new IScreenRepository.LoadScreenCallback() {
                     @Override
                     public void onLoaded(IScreen screen) {
-                        dialog.dismiss();
+                        setProgressIndicator(false);
                     }
                 });
             }
