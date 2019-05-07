@@ -57,6 +57,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ImageAdapter;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.NumberFilter;
 
 /**
@@ -75,9 +76,9 @@ import ca.coffeeshopstudio.gaminginterfaceclient.utils.NumberFilter;
  limitations under the License.
  */
 public class EditButtonFragment extends DialogFragment implements
-        ImageGridDialog.ImageGridDialogListener,
         AdapterView.OnItemSelectedListener,
         View.OnClickListener,
+        AbstractGridDialog.GridDialogListener,
         CompoundButton.OnCheckedChangeListener {
 
     private AutoItKeyMap map = new AutoItKeyMap();
@@ -460,7 +461,7 @@ public class EditButtonFragment extends DialogFragment implements
     }
 
     private void displayImageLoader() {
-        ImageGridDialog gridView = new ImageGridDialog(this);
+        ImageGridDialog gridView = new ImageGridDialog(this, new ImageAdapter(getContext()));
         gridView.show();
     }
 
@@ -583,7 +584,7 @@ public class EditButtonFragment extends DialogFragment implements
     }
 
     @Override
-    public void onImageSelected(String custom) {
+    public void onImageSelected(String custom, int actionRequest) {
         if (state == 0) {
             controlToLoad.setPrimaryImage(custom);
             controlToLoad.setPrimaryImageResource(-1);
@@ -598,7 +599,7 @@ public class EditButtonFragment extends DialogFragment implements
     }
 
     @Override
-    public void onImageSelected(int builtIn) {
+    public void onImageSelected(int builtIn, int actionRequest) {
         if (state == 0) {
             controlToLoad.setPrimaryImage("");
             controlToLoad.setPrimaryImageResource(ControlTypes.GetButtonByResourceId(builtIn));

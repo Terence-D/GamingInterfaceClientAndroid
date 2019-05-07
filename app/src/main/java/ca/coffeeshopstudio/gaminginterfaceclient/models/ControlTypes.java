@@ -87,11 +87,15 @@ public class ControlTypes {
                 return R.drawable.switch_off;
             case 1:
                 return R.drawable.switch_on;
+            case 2:
+                return R.drawable.toggle_off;
+            case 3:
+                return R.drawable.toggle_on;
             default:
                 if (primary)
-                    return R.drawable.switch_off;
+                    return R.drawable.toggle_off;
                 else
-                    return R.drawable.switch_on;
+                    return R.drawable.toggle_on;
         }
     }
 
@@ -169,9 +173,9 @@ public class ControlTypes {
                 return R.drawable.button_white_dark;
             default:
                 if (primary)
-                    return R.drawable.button_neon;
+                    return R.drawable.button_blue;
                 else
-                    return R.drawable.button_neon_dark;
+                    return R.drawable.button_blue_dark;
         }
     }
 

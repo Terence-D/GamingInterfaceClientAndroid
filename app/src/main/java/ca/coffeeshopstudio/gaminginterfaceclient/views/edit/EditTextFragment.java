@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -250,24 +249,6 @@ public class EditTextFragment extends DialogFragment implements View.OnClickList
         controlToLoad.setWidth(Integer.parseInt(txtWidth.getText().toString()));
         controlToLoad.setTop(Float.parseFloat(txtTop.getText().toString()));
         controlToLoad.setLeft(Float.parseFloat(txtLeft.getText().toString()));
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 1337: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    displayImageLoader();
-                }
-            }
-            break;
-        }
-    }
-
-    private void displayImageLoader() {
-        ImageGridDialog gridView = new ImageGridDialog(this);
-        gridView.show();
     }
 
     private void displayColorPicker(final View view) {

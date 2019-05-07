@@ -51,6 +51,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontAdapter;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ToggleAdapter;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.NumberFilter;
 
 /**
@@ -69,7 +70,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.utils.NumberFilter;
  * limitations under the License.
  */
 public class EditToggleFragment extends DialogFragment implements
-        ToggleGridDialog.ToggleGridDialogListener,
+        AbstractGridDialog.GridDialogListener,
         AdapterView.OnItemSelectedListener,
         View.OnClickListener {
 
@@ -463,7 +464,7 @@ public class EditToggleFragment extends DialogFragment implements
     }
 
     private void displayImageLoader() {
-        ToggleGridDialog gridView = new ToggleGridDialog(this);
+        ToggleGridDialog gridView = new ToggleGridDialog(this, new ToggleAdapter(getContext()));
         gridView.show();
     }
 
@@ -531,7 +532,7 @@ public class EditToggleFragment extends DialogFragment implements
     }
 
     @Override
-    public void onImageSelected(String custom) {
+    public void onImageSelected(String custom, int actionRequest) {
         if (state == 0) {
             controlToLoad.setPrimaryImage(custom);
             controlToLoad.setPrimaryImageResource(-1);
@@ -546,7 +547,7 @@ public class EditToggleFragment extends DialogFragment implements
     }
 
     @Override
-    public void onImageSelected(int builtIn) {
+    public void onImageSelected(int builtIn, int actionRequest) {
         if (state == 0) {
             controlToLoad.setPrimaryImage("");
             controlToLoad.setPrimaryImageResource(ControlTypes.GetSwitchByResourceId(builtIn));
