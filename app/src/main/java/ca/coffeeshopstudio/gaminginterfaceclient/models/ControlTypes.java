@@ -72,7 +72,7 @@ public class ControlTypes {
             R.drawable.button_red2,
             R.drawable.button_red2_dark,
             R.drawable.button_white,
-            R.drawable.button_white,
+            R.drawable.button_white_dark,
     };
     static final int[] Toggles = new int[]{
             R.drawable.switch_off,

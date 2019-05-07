@@ -80,6 +80,7 @@
     <string name="fragment_edit_control_switch_button_type">Quick Mode</string>
     <string name="image_grid_title">Choose Image</string>
     <string name="item_grid_text">Import</string>
+    <string name="item_grid_text_image">Image</string>
     <string name="item_text_import">Import</string>
     <string name="item_text_default">Default</string>
     <string name="fragment_edit_button_normal">Normal</string>

@@ -44,7 +44,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return builtIn.length + 1 + customButtonCount;
+        return builtIn.length + 2 + customButtonCount;
     }
 
     @Override
@@ -76,13 +76,17 @@ public class ImageAdapter extends BaseAdapter {
         }
 
 
-        if (position == 0) {
+        if (position == 0 || position == 1) {
             holder.textView.setVisibility(View.VISIBLE);
             holder.imageView.setVisibility(View.GONE);
+            if (position == 0)
+                holder.textView.setText(R.string.item_grid_text);
+            else
+                holder.textView.setText(R.string.item_grid_text_image);
             //show "add" item
         } else if (position <= customButtonCount) {
             holder.textView.setVisibility(View.GONE);
-            String path = context.getFilesDir() + "/button_" + (position - 1) + ".png";
+            String path = context.getFilesDir() + "/button_" + (position - 2) + ".png";
             Picasso.get().setLoggingEnabled(true);
             Picasso.get()
                     .load(new File(path))
@@ -99,10 +103,10 @@ public class ImageAdapter extends BaseAdapter {
                             holder.imageView.setVisibility(View.INVISIBLE);
                         }
                     });
-        } else if (position - customButtonCount <= builtIn.length) {
+        } else if (position - customButtonCount <= builtIn.length + 1) {
             holder.textView.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
-            holder.imageView.setImageResource(builtIn[position - customButtonCount - 1]);
+            holder.imageView.setImageResource(builtIn[position - customButtonCount - 2]);
             holder.imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
 

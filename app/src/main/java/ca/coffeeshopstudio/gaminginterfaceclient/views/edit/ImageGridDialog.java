@@ -28,10 +28,10 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.ImageAdapter;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class ImageGridDialog extends AlertDialog {
+class ImageGridDialog extends AlertDialog {
     private int customCount = 0;
 
-    public ImageGridDialog(final Fragment fragment) {
+    ImageGridDialog(final Fragment fragment) {
         super(Objects.requireNonNull(fragment.getActivity()));
         File file;
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
@@ -53,18 +53,18 @@ public class ImageGridDialog extends AlertDialog {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) { //import
+                if (position < 2) { //import
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("image/*");
                     fragment.startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_IMPORT_BUTTON);
                     dismiss();
                 } else if (position <= customCount) {
-                    String path = fragment.getActivity().getFilesDir() + "/button_" + (position - 1) + ".png";
+                    String path = fragment.getActivity().getFilesDir() + "/button_" + (position - 2) + ".png";
                     ((ImageGridDialogListener) fragment).onImageSelected(path);
                     dismiss();
-                } else if (position - customCount <= ImageAdapter.builtIn.length) {
-                    ((ImageGridDialogListener) fragment).onImageSelected(ImageAdapter.builtIn[position - customCount - 1]);
+                } else if (position - customCount <= ImageAdapter.builtIn.length + 1) {
+                    ((ImageGridDialogListener) fragment).onImageSelected(ImageAdapter.builtIn[position - customCount - 2]);
                     dismiss();
                 }
             }
