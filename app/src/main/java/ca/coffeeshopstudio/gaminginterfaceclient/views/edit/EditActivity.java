@@ -660,7 +660,33 @@ public class EditActivity extends AbstractGameActivity implements
         }
     }
 
+    public static void ShowHelp(Context context, int text) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle(R.string.help_dialog_title);
+
+        View dialogView = View.inflate(context, R.layout.dialog_edit, null);
+        TextView txtHelp = dialogView.findViewById(R.id.txtHelp);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            txtHelp.setText(Html.fromHtml(context.getString(text), Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            txtHelp.setText(Html.fromHtml(context.getString(text)));
+        }
+
+        dialog.setView(dialogView);
+
+
+        dialog.setPositiveButton(android.R.string.ok,
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int arg1) {
+                    }
+                }
+        );
+        dialog.show();
+    }
+
     private void setupButtons() {
+        final Context context = this;
         findViewById(R.id.btnSave).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -686,36 +712,8 @@ public class EditActivity extends AbstractGameActivity implements
         findViewById(R.id.btnHelp).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ShowHelp(getBaseContext(), R.string.help_edit_main);
+                ShowHelp(context, R.string.help_edit_main);
             }
         });
-    }
-
-    public static void ShowHelp(Context context, int stringId) {
-
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle(R.string.help_dialog_title);
-
-        View dialogView = View.inflate(context, R.layout.dialog_edit, null);
-        TextView txtHelp = dialogView.findViewById(R.id.txtHelp);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            txtHelp.setText(Html.fromHtml(context.getString(stringId), Html.FROM_HTML_MODE_COMPACT));
-        } else {
-            txtHelp.setText(Html.fromHtml(context.getString(stringId)));
-        }
-
-        dialog.setView(dialogView);
-
-
-
-        dialog.setPositiveButton(android.R.string.ok,
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int arg1) {
-                        // OK, go back to Main menu
-                    }
-                }
-        );
-        dialog.show();
     }
 }

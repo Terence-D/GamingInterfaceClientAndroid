@@ -153,13 +153,8 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     }
 
     @Override
-    public void setSpinnerSelection(int screenId) {
-        for (int i = 0; i < screenList.size(); i++) {
-            if (screenList.keyAt(i) == screenId) {
-                spinner.setSelection(i);
-                break;
-            }
-        }
+    public void setSpinnerSelection(int position) {
+        spinner.setSelection(position);
     }
 
     protected void showLoadingIndicator() {
