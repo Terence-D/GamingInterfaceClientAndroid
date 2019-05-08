@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.util.SparseArray;
@@ -135,14 +136,14 @@ public class ScreenRepository implements IScreenRepository {
         try {
             InputStream stream = context.getContentResolver().openInputStream(toImport);
             //get a profile name
-            String path = toImport.getLastPathSegment();
-            path = queryName(context.getContentResolver(), toImport);
+            String path = queryName(context.getContentResolver(), toImport);
             path = path.replace(".zip", "");
-            boolean valid = ZipHelper.unzip(stream, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/GIC-Screens/" + path);
+
+            boolean valid = ZipHelper.unzip(stream, context.getCacheDir().getAbsolutePath() + "/imported/" + path);
 
             //now read the json values
             if (valid) {
-                importedScreen = parseJson(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/GIC-Screens/" + path + "/");
+                importedScreen = parseJson(context.getCacheDir().getAbsolutePath() + "/imported/" + path + "/");
                 return screenImporter(context, importedScreen);
             }
 
@@ -254,8 +255,8 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     @Override
-    public void exportScreen(int screenId, @NonNull ExportCallback callback) {
-        new ExportScreenAsync(context, callback).execute(screenId);
+    public void exportScreen(ParcelFileDescriptor pfd, int screenId, @NonNull ExportCallback callback) {
+        new ExportScreenAsync(pfd, screenId, context, callback).execute();
     }
 
     @Override
@@ -710,14 +711,18 @@ public class ScreenRepository implements IScreenRepository {
 
     }
 
-    private static class ExportScreenAsync extends AsyncTask<Integer, Void, String> {
+    private static class ExportScreenAsync extends AsyncTask<Void, Void, String> {
         // Weak references will still allow the Activity to be garbage-collected
         final WeakReference<Context> weakContext;
         ExportCallback callback;
+        ParcelFileDescriptor pfd;
+        int screenId;
 
-        ExportScreenAsync(Context context, ExportCallback callback) {
+        ExportScreenAsync(ParcelFileDescriptor pfd, int screenId, Context context, ExportCallback callback) {
             weakContext = new WeakReference<>(context);
             this.callback = callback;
+            this.pfd = pfd;
+            this.screenId = screenId;
         }
 
         @Override
@@ -727,12 +732,12 @@ public class ScreenRepository implements IScreenRepository {
         }
 
         @Override
-        protected String doInBackground(Integer... params) {
+        protected String doInBackground(Void... params) {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 Set<String> filesToZip = new HashSet<>();
 
-                IScreen screen = screenGetter(params[0]);
+                IScreen screen = screenGetter(screenId);
                 String json = mapper.writeValueAsString(screen);
                 Writer output;
                 File cacheDir = new File(weakContext.get().getCacheDir().getAbsolutePath());
@@ -763,8 +768,8 @@ public class ScreenRepository implements IScreenRepository {
                 zipArray = filesToZip.toArray(zipArray);
                 String invalidCharRemoved = screen.getName().replaceAll("[\\\\/:*?\"<>|]", "_");
                 String zipName = "GIC-" + invalidCharRemoved + ".zip";
-                String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + zipName;
-                ZipHelper.zip(zipArray, destination);
+                //String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + zipName;
+                ZipHelper.zip(zipArray, pfd);
 
                 String message = weakContext.get().getString(R.string.zip_successful);
                 return message + zipName;

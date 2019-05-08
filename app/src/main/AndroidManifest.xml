@@ -4,7 +4,6 @@
     package="ca.coffeeshopstudio.gaminginterfaceclient">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App"
@@ -19,7 +18,7 @@
         <activity
             android:name=".views.launch.SplashIntroActivity"
             android:label="@string/title_activity_intro"
-            android:theme="@style/Theme.Intro"></activity>
+            android:theme="@style/Theme.Intro"/>
         <activity
             android:name=".views.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
