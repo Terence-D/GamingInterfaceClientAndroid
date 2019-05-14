@@ -4,7 +4,6 @@
     package="ca.coffeeshopstudio.gaminginterfaceclient">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".App"
@@ -17,7 +16,11 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,UnusedAttribute">
         <activity
-            android:name=".views.MainActivity"
+            android:name=".views.launch.SplashIntroActivity"
+            android:label="@string/title_activity_intro"
+            android:theme="@style/Theme.Intro"/>
+        <activity
+            android:name=".views.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
@@ -29,27 +32,27 @@
         </activity>
         <activity
             android:name=".views.screenmanager.ScreenManagerActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".views.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".views.EditActivity"
-            android:windowSoftInputMode="stateHidden"
+            android:name=".views.edit.EditActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_edit"
-            android:theme="@style/FullscreenTheme" />
+            android:theme="@style/FullscreenTheme"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".views.GameActivity"
-            android:theme="@style/ActivityTheme.Primary.Base.Dark"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game_interface"
-            android:parentActivityName=".views.MainActivity"
+            android:parentActivityName=".views.main.MainActivity"
+            android:theme="@style/ActivityTheme.Primary.Base.Dark"
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="ca.coffeeshopstudio.gaminginterfaceclient.views.MainActivity" />
+                android:value="ca.coffeeshopstudio.gaminginterfaceclient.views.main.MainActivity" />
         </activity>
     </application>
 

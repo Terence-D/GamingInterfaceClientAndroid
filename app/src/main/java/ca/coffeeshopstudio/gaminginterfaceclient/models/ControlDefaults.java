@@ -65,7 +65,7 @@ public class ControlDefaults {
     public void saveControl(GICControl control) {
         if (control.getViewType() == GICControl.TYPE_TEXT) {
             defaultTextControl = control;
-        } else if (control.getViewType() == GICControl.TYPE_BUTTON) {
+        } else if (control.getViewType() == GICControl.TYPE_BUTTON || control.getViewType() == GICControl.TYPE_BUTTON_QUICK) {
             defaultButtonControl = control;
         } else if (control.getViewType() == GICControl.TYPE_IMAGE) {
             defaultImageControl = control;

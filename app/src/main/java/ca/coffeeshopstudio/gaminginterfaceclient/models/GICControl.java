@@ -48,6 +48,7 @@ public class GICControl {
     public static final int TYPE_TEXT = 1;
     public static final int TYPE_IMAGE = 2;
     public static final int TYPE_SWITCH = 3;
+    public static final int TYPE_BUTTON_QUICK = 4;
 
     //this is required for the toggle button, there are 4 stages to track:
     //0 - switched off ready for mouse down
@@ -68,7 +69,7 @@ public class GICControl {
     @JsonProperty("top")
     private float top = 200;
     @JsonProperty("height")
-    private int height = 240;
+    private int height = 120;
     @JsonProperty("fontColor")
     private int fontColor = Color.WHITE;
     @JsonProperty("primaryColor")
@@ -80,9 +81,9 @@ public class GICControl {
     @JsonProperty("viewType")
     private int viewType = 0;
     @JsonProperty("primaryImageResource")
-    private int primaryImageResource = R.drawable.button_neon;
+    private int primaryImageResource = R.drawable.button_blue;
     @JsonProperty("secondaryImageResource")
-    private int secondaryImageResource = R.drawable.button_neon_pushed;
+    private int secondaryImageResource = R.drawable.button_blue_dark;
     @JsonProperty("primaryImage")
     private String primaryImage = "";
     @JsonProperty("secondaryImage")

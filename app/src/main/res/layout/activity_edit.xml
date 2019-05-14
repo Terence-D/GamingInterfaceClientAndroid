@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/default_background"
-    tools:context=".views.EditActivity">
+    tools:context=".views.edit.EditActivity">
 
     <SeekBar
         android:id="@+id/seekWidth"
@@ -73,11 +73,23 @@
         android:layout_margin="12dp"
         android:text="@string/edit_activity_edit_mode" />
 
-    <Button
-        android:id="@+id/btnSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_gravity="bottom|center"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/edit_activity_settings" />
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="@string/edit_activity_settings" />
+        <Button
+            android:id="@+id/btnHelp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:text="\?" />
+    </LinearLayout>
 </FrameLayout>

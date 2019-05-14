@@ -1,31 +1,62 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.ParcelFileDescriptor;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.util.SparseArray;
 
+import androidx.annotation.NonNull;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.lang.ref.WeakReference;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
+import ca.coffeeshopstudio.gaminginterfaceclient.utils.ZipHelper;
+import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.ScreenFragment;
 
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * TODO: HEADER COMMENT HERE.
+ Copyright [2019] [Terence Doerksen]
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
  */
 public class ScreenRepository implements IScreenRepository {
-    static List<IScreen> cache;
+    private static List<IScreen> cache;
     public static final String PREFS_NAME = "gicsScreen";
     private static final String PREFS_SCREEN = "screen_";
     private static final String PREFS_BACKGROUND_SUFFIX = "_background";
@@ -38,14 +69,161 @@ public class ScreenRepository implements IScreenRepository {
         this.context = context;
     }
 
-    @Override
-    public void loadScreens(@NonNull final LoadCallback callback) {
-        loadScreens();
-        callback.onLoaded(cache);
+
+    private static IScreen screenGetter(int id) {
+        for (int i = 0; i < cache.size(); i++) {
+            if (cache.get(i).getScreenId() == id)
+                return cache.get(i);
+        }
+        return null;
+    }
+
+    private static SparseArray<String> screenListGetter(Context context) {
+        SparseArray<String> rv = new SparseArray<>();
+        if (cache != null) {
+            for (IScreen screen : cache) {
+                rv.put(screen.getScreenId(), screen.getName());
+            }
+        } else {
+            screenLoader(context);
+            for (IScreen screen : cache) {
+                rv.put(screen.getScreenId(), screen.getName());
+            }
+        }
+
+        return rv;
+    }
+
+    private static IScreen parseJson(String fullPath) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        File file = new File(fullPath + "data.json");
+        try {
+            Screen screen = objectMapper.readValue(file, Screen.class);
+            //update any filenames to point to the local folder now
+            if (!screen.getBackgroundFile().isEmpty()) {
+                int index = screen.getBackgroundFile().lastIndexOf("/");
+                screen.setBackgroundFile(fullPath + screen.getBackgroundFile().substring(index + 1));
+            }
+            for (GICControl control : screen.getControls()) {
+                if (!control.getPrimaryImage().isEmpty()) {
+                    int index = control.getPrimaryImage().lastIndexOf("/");
+                    control.setPrimaryImage(fullPath + control.getPrimaryImage().substring(index + 1));
+                }
+                if (!control.getSecondaryImage().isEmpty()) {
+                    int index = control.getSecondaryImage().lastIndexOf("/");
+                    control.setSecondaryImage(fullPath + control.getSecondaryImage().substring(index + 1));
+                }
+            }
+            return screen;//presentationWeakReference.get().repository.importScreen(screen);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static String queryName(ContentResolver resolver, Uri uri) {
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
+    }
+    private static SparseArray<String> screenImporterFromUri(Context context, Uri toImport) {
+        IScreen importedScreen;
+        try {
+            InputStream stream = context.getContentResolver().openInputStream(toImport);
+            //get a profile name
+            String path = queryName(context.getContentResolver(), toImport);
+            path = path.replace(".zip", "");
+
+            boolean valid = ZipHelper.unzip(stream, context.getCacheDir().getAbsolutePath() + "/imported/" + path);
+
+            //now read the json values
+            if (valid) {
+                importedScreen = parseJson(context.getCacheDir().getAbsolutePath() + "/imported/" + path + "/");
+                return screenImporter(context, importedScreen);
+            }
+
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private static SparseArray<String> screenImporter(Context context, IScreen toImport) {
+        screenLoader(context);
+        getUniqueName(toImport);
+        IScreen newScreen = toImport;
+        assert newScreen != null;
+        newScreen.setScreenId(getUniqueId(cache.size()));
+        cache = null; //invalidate the cache
+        //cache.add(newScreen);
+        screenSaver(context, newScreen);
+        return screenListGetter(context);
+    }
+
+    private static String loadJSONFromAsset(Context context, String filename) {
+        String json;
+        try {
+            InputStream is = context.getAssets().open("screens/" + filename + ".json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
     @Override
-    public void loadScreens() {
+    public void loadScreens(@NonNull LoadCallback callback) {
+        new LoadScreenAsync(context, callback).execute();
+    }
+
+//    @Override
+//    public void importScreenSync(IScreen screen) {
+//        screenLoader(context);
+//        getUniqueName(screen);
+//        final Screen newScreen = (Screen) screen;
+//        newScreen.setScreenId(getUniqueId(cache.size()));
+//        cache = null; //invalidate the cache
+//        //cache.add(newScreen);
+//        screenSaver(context, newScreen);
+//    }
+
+    @Override
+    public void getScreenList(@NonNull LoadScreenListCallback callback) {
+        new GetScreenListAsync(context, callback).execute();
+    }
+
+    //this handles both legacy (1.x) and new builds
+    @Override
+    public void init(@NonNull LoadCallback callback) {
+        new InitAsync(context, callback).execute();
+    }
+
+    @Override
+    public void newScreen(@NonNull LoadScreenCallback callback) {
+        new NewScreenAsync(context, callback).execute();
+    }
+
+    @Override
+    public void importScreen(Uri toImport, @NonNull ImportCallback callback) {
+        new ImportScreenAsync(context, callback).execute(toImport);
+    }
+
+    @Override
+    public void importDefaultScreens(List<ScreenFragment.Model> toImport, @NonNull ImportCallback callback) {
+        new ImportDefaultScreensAsync(context, callback).execute(toImport);
+    }
+
+    private static void screenLoader(Context context) {
         if (cache == null) {
             //init the cache
             cache = new ArrayList<>();
@@ -68,35 +246,44 @@ public class ScreenRepository implements IScreenRepository {
                     } catch (Exception e) {
                         screen.setName("Screen " + screenId);
                     }
+                    loadBackground(screen, context);
+                    loadControls(screen, context);
                     cache.add(screen);
-                    loadBackground(screen);
-                    loadControls(screen);
                 }
-            }
-            if (cache.size() == 0) {
-                //load in the legacy
-                cache.add(buildInitialScreen());
             }
         }
     }
 
-    //this handles both legacy (1.x) and new builds
-    private Screen buildInitialScreen() {
-        Screen screen = new Screen(0, context);
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
-
-        prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
-
-        prefsEditor.apply();
-
-        loadBackground(screen);
-        loadControls(screen);
-        return screen;
+    @Override
+    public void exportScreen(ParcelFileDescriptor pfd, int screenId, @NonNull ExportCallback callback) {
+        new ExportScreenAsync(pfd, screenId, context, callback).execute();
     }
 
-    private void loadControls(Screen screen) {
-        convertLegacyControls(screen);
+    @Override
+    public void save(IScreen screen, @NonNull LoadScreenCallback callback) {
+        new SaveScreenAsync(context, screen, callback).execute();
+    }
+
+    @Override
+    public void getScreen(int id, @NonNull LoadScreenCallback callback) {
+        new GetScreenAsync(context, id, callback).execute();
+    }
+
+    //    private void saveBitmap(String fileName, Bitmap image) {
+//        File file = new File(context.getFilesDir(), fileName + ".png");
+//
+//        try {
+//            FileOutputStream out = new FileOutputStream(file);
+//            image.compress(Bitmap.CompressFormat.PNG, 90, out);
+//            out.flush();
+//            out.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    private static void loadControls(Screen screen, Context context) {
+        convertLegacyControls(screen, context);
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         final ObjectMapper mapper = new ObjectMapper();
@@ -113,8 +300,8 @@ public class ScreenRepository implements IScreenRepository {
         }
     }
 
-    private void loadBackground(Screen screen) {
-        convertLegacyBackground(screen);
+    private static void loadBackground(Screen screen, Context context) {
+        convertLegacyBackground(screen, context);
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         int backgroundColor = prefs.getInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, context.getResources().getColor(R.color.default_background));
         String backgroundPath = prefs.getString(screen.getScreenId() + PREFS_BACKGROUND_PATH_SUFFIX, "");
@@ -122,7 +309,7 @@ public class ScreenRepository implements IScreenRepository {
         screen.setBackgroundFile(backgroundPath);
     }
 
-    private void convertLegacyControls(Screen screen) {
+    private static void convertLegacyControls(Screen screen, Context context) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
@@ -143,7 +330,7 @@ public class ScreenRepository implements IScreenRepository {
         prefsEditor.apply();
     }
 
-    private void convertLegacyBackground(Screen screen) {
+    private static void convertLegacyBackground(Screen screen, Context context) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         if (prefs.contains("background")) {
             SharedPreferences.Editor prefsEditor = prefs.edit();
@@ -162,39 +349,7 @@ public class ScreenRepository implements IScreenRepository {
         }
     }
 
-    @Override
-    public Screen newScreen() {
-        Screen newScreen = new Screen(getUniqueId(cache.size()), context);
-        newScreen.setBackgroundColor(context.getResources().getColor(R.color.default_background));
-        cache = null; //invalidate the cache
-        //cache.add(newScreen);
-
-        save(newScreen);
-        loadScreens(new LoadCallback() {
-            @Override
-            public void onLoaded(List<IScreen> screens) {
-                //ignore
-            }
-        });
-        return newScreen;
-    }
-
-    @Override
-    public void importScreen(final IScreen screen) {
-        loadScreens(new LoadCallback() {
-            @Override
-            public void onLoaded(List<IScreen> screens) {
-                getUniqueName(screen);
-                final Screen newScreen = (Screen) screen;
-                newScreen.setScreenId(getUniqueId(cache.size()));
-                cache = null; //invalidate the cache
-                //cache.add(newScreen);
-                save(newScreen);
-            }
-        });
-    }
-
-    private int getUniqueId(int startingId) {
+    private static int getUniqueId(int startingId) {
         int unique = startingId;
 
         if (cache != null) {
@@ -207,7 +362,7 @@ public class ScreenRepository implements IScreenRepository {
         return unique;
     }
 
-    private void getUniqueName(IScreen newScreen) {
+    private static void getUniqueName(IScreen newScreen) {
         for (IScreen screen : cache) {
             if (screen.getName().equals(newScreen.getName())) {
                 newScreen.setName(newScreen.getName() + "1");
@@ -216,9 +371,39 @@ public class ScreenRepository implements IScreenRepository {
         }
     }
 
-
     @Override
-    public void save(IScreen screen) {
+    public void removeScreen(int id, @NonNull LoadScreenCallback callback) {
+        new DeleteScreenAsync(context, id, callback).execute();
+    }
+
+    private static class GetScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadScreenCallback callback;
+        int screenId;
+        IScreen screen = null;
+
+        GetScreenAsync(Context context, int screenId, LoadScreenCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+            this.screenId = screenId;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            screen = screenGetter(screenId);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(screen);
+        }
+    }
+
+    private static void screenSaver(Context context, IScreen screen) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
@@ -266,60 +451,7 @@ public class ScreenRepository implements IScreenRepository {
         }
     }
 
-    @Override
-    public IScreen getScreen(int id) {
-        for (int i = 0; i < cache.size(); i++) {
-            if (cache.get(i).getScreenId() == id)
-                return cache.get(i);
-        }
-        return null;
-    }
-
-    //this is used by the main screen
-//    @Override
-//    public IScreen getScreenByPosition(int index) {
-//        return cache.get(index);
-//    }
-
-    @Override
-    public void getScreenList(@NonNull final LoadScreenListCallback callback) {
-
-        if (cache != null) {
-            SparseArray<String> rv = new SparseArray<>();
-            for (IScreen screen : cache) {
-                rv.put(screen.getScreenId(), screen.getName());
-            }
-            callback.onLoaded(rv);
-        } else {
-            loadScreens(new LoadCallback() {
-                @Override
-                public void onLoaded(List<IScreen> screens) {
-                    SparseArray<String> rv = new SparseArray<>();
-                    for (IScreen screen : cache) {
-                        rv.put(screen.getScreenId(), screen.getName());
-                    }
-                    callback.onLoaded(rv);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void removeScreen(int id) {
-        for (int i = 0; i < cache.size(); i++) {
-            if (cache.get(i).getScreenId() == id)
-                deleteScreen(cache.get(i));
-        }
-        cache = null;
-        loadScreens(new LoadCallback() {
-            @Override
-            public void onLoaded(List<IScreen> screens) {
-                //ignore
-            }
-        });
-    }
-
-    private void deleteScreen(IScreen screen) {
+    private static void deleteScreen(Context context, IScreen screen) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
         prefsEditor.remove(PREFS_SCREEN + screen.getScreenId());
@@ -335,16 +467,313 @@ public class ScreenRepository implements IScreenRepository {
         prefsEditor.apply();
     }
 
-//    private void saveBitmap(String fileName, Bitmap image) {
-//        File file = new File(context.getFilesDir(), fileName + ".png");
-//
-//        try {
-//            FileOutputStream out = new FileOutputStream(file);
-//            image.compress(Bitmap.CompressFormat.PNG, 90, out);
-//            out.flush();
-//            out.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    private static class DeleteScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadScreenCallback callback;
+        int screenId;
+        IScreen screen = null;
+
+        DeleteScreenAsync(Context context, int screenId, LoadScreenCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+            this.screenId = screenId;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            for (int i = 0; i < cache.size(); i++) {
+                if (cache.get(i).getScreenId() == screenId) {
+                    screen = cache.get(i);
+                    deleteScreen(weakContext.get(), cache.get(i));
+                }
+            }
+            cache = null;
+            screenLoader(weakContext.get());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(screen);
+        }
+    }
+
+    private static class GetScreenListAsync extends AsyncTask<Void, Void, Void> {
+        final WeakReference<Context> weakContext;
+        LoadScreenListCallback callback;
+        // Weak references will still allow the Activity to be garbage-collected
+        private SparseArray<String> rv = new SparseArray<>();
+
+        GetScreenListAsync(Context context, LoadScreenListCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            rv = screenListGetter(weakContext.get());
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(rv);
+        }
+    }
+
+    private static class InitAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadCallback callback;
+
+        InitAsync(Context context, LoadCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            screenLoader(weakContext.get());
+            if (cache.size() == 0) {
+                //load in the legacy
+                Screen screen = new Screen(0, weakContext.get());
+                SharedPreferences prefs = weakContext.get().getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = prefs.edit();
+
+                prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
+
+                prefsEditor.apply();
+
+                loadBackground(screen, weakContext.get());
+                loadControls(screen, weakContext.get());
+                cache.add(screen);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(cache);
+        }
+    }
+
+    private static class SaveScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadScreenCallback callback;
+        IScreen screen;
+
+        SaveScreenAsync(Context context, IScreen screen, LoadScreenCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+            this.screen = screen;
+        }
+
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            screenSaver(weakContext.get(), screen);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(screen);
+        }
+    }
+
+    private static class LoadScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadCallback callback;
+
+        LoadScreenAsync(Context context, LoadCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            screenLoader(weakContext.get());
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(cache);
+        }
+    }
+
+    private static class NewScreenAsync extends AsyncTask<Void, Void, Void> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        LoadScreenCallback callback;
+        Screen newScreen;
+
+        NewScreenAsync(Context context, LoadScreenCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            callback.onLoaded(newScreen);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            newScreen = new Screen(getUniqueId(cache.size()), weakContext.get());
+            newScreen.setBackgroundColor(weakContext.get().getResources().getColor(R.color.default_background));
+            cache = null; //invalidate the cache
+            //cache.add(newScreen);
+
+            screenSaver(weakContext.get(), newScreen);
+            screenLoader(weakContext.get());
+            return null;
+        }
+    }
+
+    private static class ImportDefaultScreensAsync extends AsyncTask<List<ScreenFragment.Model>, Void, Boolean> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        ImportCallback callback;
+        SparseArray<String> rv;
+
+        ImportDefaultScreensAsync(Context context, ImportCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            callback.onFinished(result, rv);
+        }
+
+        @Override
+        protected Boolean doInBackground(List<ScreenFragment.Model>... params) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            boolean anythingDone = false;
+            for (ScreenFragment.Model model : params[0]) {
+                if (model.isSelected()) {
+                    String json = loadJSONFromAsset(weakContext.get(), model.getText());
+                    try {
+                        Screen screen = objectMapper.readValue(json, Screen.class);
+                        screenImporter(weakContext.get(), screen);
+                        anythingDone = true;
+                    } catch (JsonParseException e) {
+                        e.printStackTrace();
+                    } catch (JsonMappingException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            return anythingDone;
+        }
+    }
+
+    private static class ImportScreenAsync extends AsyncTask<Uri, Void, Boolean> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        ImportCallback callback;
+        SparseArray<String> rv;
+
+        ImportScreenAsync(Context context, ImportCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            callback.onFinished(result, rv);
+        }
+
+        @Override
+        protected Boolean doInBackground(Uri... params) {
+            rv = screenImporterFromUri(weakContext.get(), params[0]);
+            return rv != null;
+        }
+
+    }
+
+    private static class ExportScreenAsync extends AsyncTask<Void, Void, String> {
+        // Weak references will still allow the Activity to be garbage-collected
+        final WeakReference<Context> weakContext;
+        ExportCallback callback;
+        ParcelFileDescriptor pfd;
+        int screenId;
+
+        ExportScreenAsync(ParcelFileDescriptor pfd, int screenId, Context context, ExportCallback callback) {
+            weakContext = new WeakReference<>(context);
+            this.callback = callback;
+            this.pfd = pfd;
+            this.screenId = screenId;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            callback.onFinished(result);
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                Set<String> filesToZip = new HashSet<>();
+
+                IScreen screen = screenGetter(screenId);
+                String json = mapper.writeValueAsString(screen);
+                Writer output;
+                File cacheDir = new File(weakContext.get().getCacheDir().getAbsolutePath());
+
+                //store the json dat in the directory
+                File jsonData = new File(cacheDir.getAbsolutePath() + "/data.json");
+                output = new BufferedWriter(new FileWriter(jsonData));
+                output.write(json);
+                output.close();
+
+                filesToZip.add(jsonData.getAbsolutePath());
+
+                //look for any files inside the screen that we need to add
+                assert screen != null;
+                if (screen.getBackgroundFile() != null && !screen.getBackgroundFile().isEmpty()) {
+                    filesToZip.add(screen.getBackgroundFile());
+                }
+                for (GICControl control : screen.getControls()) {
+                    if (!control.getPrimaryImage().isEmpty()) {
+                        filesToZip.add(control.getPrimaryImage());
+                    }
+                    if (!control.getSecondaryImage().isEmpty()) {
+                        filesToZip.add(control.getSecondaryImage());
+                    }
+                }
+
+                String[] zipArray = new String[filesToZip.size()];
+                zipArray = filesToZip.toArray(zipArray);
+                ZipHelper.zip(zipArray, pfd);
+
+                String message = weakContext.get().getString(R.string.zip_successful);
+                return message;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return e.getMessage();
+            }
+        }
+    }
+
 }
