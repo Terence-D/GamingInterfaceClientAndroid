@@ -6,11 +6,12 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.util.SparseArray;
+
+import androidx.annotation.NonNull;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -32,7 +33,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import androidx.annotation.NonNull;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.ZipHelper;
@@ -648,7 +648,6 @@ public class ScreenRepository implements IScreenRepository {
         final WeakReference<Context> weakContext;
         ImportCallback callback;
         SparseArray<String> rv;
-        IScreen importedScreen;
 
         ImportDefaultScreensAsync(Context context, ImportCallback callback) {
             weakContext = new WeakReference<>(context);
@@ -766,13 +765,10 @@ public class ScreenRepository implements IScreenRepository {
 
                 String[] zipArray = new String[filesToZip.size()];
                 zipArray = filesToZip.toArray(zipArray);
-                String invalidCharRemoved = screen.getName().replaceAll("[\\\\/:*?\"<>|]", "_");
-                String zipName = "GIC-" + invalidCharRemoved + ".zip";
-                //String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + zipName;
                 ZipHelper.zip(zipArray, pfd);
 
                 String message = weakContext.get().getString(R.string.zip_successful);
-                return message + zipName;
+                return message;
             } catch (Exception e) {
                 e.printStackTrace();
                 return e.getMessage();
