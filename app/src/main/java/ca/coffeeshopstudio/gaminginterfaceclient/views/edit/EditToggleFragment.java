@@ -29,6 +29,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -41,9 +45,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
@@ -458,9 +459,6 @@ public class EditToggleFragment extends DialogFragment implements
         if (lAltOff.isChecked()) {
             controlToLoad.getCommandSecondary().addModifier("ALT");
         }
-
-        controlToLoad.setSecondaryColor(-1);
-        controlToLoad.setPrimaryColor(-1);
     }
 
     private void displayImageLoader() {

@@ -4,9 +4,10 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.SparseArray;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
-import androidx.annotation.NonNull;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
@@ -75,7 +76,7 @@ public class ScreenManagerPresentation implements IContract.IPresentation {
                             @Override
                             public void onLoaded(SparseArray<String> screenList) {
                                 view.updateSpinner(screenList);
-                                view.setSpinnerSelection(screenId);
+                                view.setSpinnerSelection(screenList.indexOfKey(screenId));
                                 view.setProgressIndicator(false);
                             }
                         });

@@ -30,6 +30,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.fragment.app.FragmentManager;
+
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
@@ -340,8 +341,6 @@ public class EditActivity extends AbstractGameActivity implements
         control.setHeight(defaults.getSwitchDefaults().getHeight());
         control.setFontName(defaults.getSwitchDefaults().getFontName());
 
-        control.setPrimaryImageResource(0);
-        control.setSecondaryImageResource(1);
         control.setText("");
 
         float x = getPosition(startingX, control.getWidth());
