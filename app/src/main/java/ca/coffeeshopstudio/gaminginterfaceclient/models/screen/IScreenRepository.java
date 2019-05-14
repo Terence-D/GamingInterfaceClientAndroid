@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.util.SparseArray;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public interface IScreenRepository {
 
     void importDefaultScreens(List<ScreenFragment.Model> toImport, @NonNull ImportCallback callback);
 
-    void exportScreen(int screenId, @NonNull ExportCallback callback);
+    void exportScreen(ParcelFileDescriptor pfd, int screenId, @NonNull ExportCallback callback);
 
     void save(IScreen screen, @NonNull LoadScreenCallback callback);
 

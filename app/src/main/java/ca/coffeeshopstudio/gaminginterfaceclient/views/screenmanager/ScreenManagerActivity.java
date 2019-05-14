@@ -1,6 +1,5 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.text.Html;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -24,6 +24,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import java.io.FileNotFoundException;
+
 import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
@@ -35,7 +38,7 @@ import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFoc
 
 public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener, View.OnClickListener {
     // permissions request code
-    private final static int REQUEST_CODE_ASK_PERMISSIONS = 501;
+    private static final int REQUEST_CODE_EXPORT = 520;
     private final static int REQUEST_CODE_IMPORT = 510;
 
     private IContract.IPresentation presentation;
@@ -153,13 +156,8 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     }
 
     @Override
-    public void setSpinnerSelection(int screenId) {
-        for (int i = 0; i < screenList.size(); i++) {
-            if (screenList.keyAt(i) == screenId) {
-                spinner.setSelection(i);
-                break;
-            }
-        }
+    public void setSpinnerSelection(int position) {
+        spinner.setSelection(position);
     }
 
     protected void showLoadingIndicator() {
@@ -236,26 +234,20 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     }
 
     private void export() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            presentation.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
-        } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, getString(R.string.need_permission), REQUEST_CODE_ASK_PERMISSIONS, perms);
-        }
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+
+        // Filter to only show results that can be "opened", such as
+        // a file (as opposed to a list of contacts or timezones).
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // Create a file with the requested MIME type.
+        intent.setType("application/zip");
+        intent.putExtra(Intent.EXTRA_TITLE, screenList.valueAt(spinner.getSelectedItemPosition()));
+        startActivityForResult(intent, REQUEST_CODE_EXPORT);
     }
+
 
     private void importScreen() {
-        String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        if (EasyPermissions.hasPermissions(this, perms)) {
-            startImport();
-        } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(this, getString(R.string.need_permission), REQUEST_CODE_ASK_PERMISSIONS, perms);
-        }
-    }
-
-    private void startImport() {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -264,35 +256,34 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-        //        switch (requestCode) {
-//            case REQUEST_CODE_ASK_PERMISSIONS: {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    presentation.exportCurrent(screenList.keyAt(spinner.getSelectedItemPosition()));
-//                }
-//                break;
-//            }
-//        }
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_IMPORT) {
-                if (resultData != null) {
-                    Uri currentUri = resultData.getData();
-                    presentation.importNew(currentUri);
-//                    EditBackgroundFragment.EditDialogListener listener = (EditBackgroundFragment.EditDialogListener) getActivity();
-//                    listener.onFinishEditSettingsDialog(-1, currentUri);
-//                    dismiss();
-                }
+            switch (requestCode) {
+                case REQUEST_CODE_EXPORT:
+                    if (resultData != null) {
+                        Uri uri = resultData.getData();
+                        startExport(uri);
+                    }
+                    break;
+                case REQUEST_CODE_IMPORT:
+                    if (resultData != null) {
+                        Uri currentUri = resultData.getData();
+                        presentation.importNew(currentUri);
+                    }
+                    break;
             }
+        }
+    }
+
+    private void startExport(Uri uri) {
+        try {
+            ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "w");
+            if (pfd != null) {
+                presentation.exportCurrent(pfd, screenList.keyAt(spinner.getSelectedItemPosition()));
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

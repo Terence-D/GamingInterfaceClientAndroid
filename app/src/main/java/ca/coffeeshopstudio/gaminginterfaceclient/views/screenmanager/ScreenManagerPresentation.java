@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.util.SparseArray;
 
 import java.util.List;
@@ -26,8 +27,8 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository
  limitations under the License.
  */
 public class ScreenManagerPresentation implements IContract.IPresentation {
-    final IContract.IView view;
-    final IScreenRepository repository;
+    private final IContract.IView view;
+    private final IScreenRepository repository;
 
     /**
      * Public constructor to link up our repository and our view via this presenter
@@ -35,8 +36,8 @@ public class ScreenManagerPresentation implements IContract.IPresentation {
      * @param repository Repository to connect to
      * @param detailView view to connect to
      */
-    public ScreenManagerPresentation(@NonNull IScreenRepository repository,
-                                     @NonNull IContract.IView detailView) {
+    ScreenManagerPresentation(@NonNull IScreenRepository repository,
+                              @NonNull IContract.IView detailView) {
         this.repository = repository;//checkNotNull(repository, "repository cannot be null!");
         this.view = detailView;// checkNotNull(detailView, "detail view cannot be null!");
     }
@@ -129,9 +130,9 @@ public class ScreenManagerPresentation implements IContract.IPresentation {
     }
 
     @Override
-    public void exportCurrent(int screenId) {
+    public void exportCurrent(ParcelFileDescriptor pfd, int screenId) {
         view.setProgressIndicator(true);
-        repository.exportScreen(screenId, new IScreenRepository.ExportCallback() {
+        repository.exportScreen(pfd, screenId, new IScreenRepository.ExportCallback() {
             @Override
             public void onFinished(String message) {
                 view.setProgressIndicator(false);

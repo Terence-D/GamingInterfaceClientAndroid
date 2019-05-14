@@ -1,10 +1,14 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -92,7 +96,7 @@ public class ScreenRepository implements IScreenRepository {
 
     private static IScreen parseJson(String fullPath) {
         ObjectMapper objectMapper = new ObjectMapper();
-        File file = new File(fullPath + "Space - 10.5 Inch Tablet.json");
+        File file = new File(fullPath + "data.json");
         try {
             Screen screen = objectMapper.readValue(file, Screen.class);
             //update any filenames to point to the local folder now
@@ -117,19 +121,29 @@ public class ScreenRepository implements IScreenRepository {
         return null;
     }
 
+    private static String queryName(ContentResolver resolver, Uri uri) {
+        Cursor returnCursor =
+                resolver.query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
+    }
     private static SparseArray<String> screenImporterFromUri(Context context, Uri toImport) {
         IScreen importedScreen;
         try {
             InputStream stream = context.getContentResolver().openInputStream(toImport);
             //get a profile name
-            String path = toImport.getLastPathSegment();
-            path = path.replace("primary:", "");
+            String path = queryName(context.getContentResolver(), toImport);
             path = path.replace(".zip", "");
-            boolean valid = ZipHelper.unzip(stream, Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/GIC-Screens/" + path);
+
+            boolean valid = ZipHelper.unzip(stream, context.getCacheDir().getAbsolutePath() + "/imported/" + path);
 
             //now read the json values
             if (valid) {
-                importedScreen = parseJson(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/GIC-Screens/" + path + "/");
+                importedScreen = parseJson(context.getCacheDir().getAbsolutePath() + "/imported/" + path + "/");
                 return screenImporter(context, importedScreen);
             }
 
@@ -241,8 +255,8 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     @Override
-    public void exportScreen(int screenId, @NonNull ExportCallback callback) {
-        new ExportScreenAsync(context, callback).execute(screenId);
+    public void exportScreen(ParcelFileDescriptor pfd, int screenId, @NonNull ExportCallback callback) {
+        new ExportScreenAsync(pfd, screenId, context, callback).execute();
     }
 
     @Override
@@ -692,19 +706,23 @@ public class ScreenRepository implements IScreenRepository {
         @Override
         protected Boolean doInBackground(Uri... params) {
             rv = screenImporterFromUri(weakContext.get(), params[0]);
-            return rv == null;
+            return rv != null;
         }
 
     }
 
-    private static class ExportScreenAsync extends AsyncTask<Integer, Void, String> {
+    private static class ExportScreenAsync extends AsyncTask<Void, Void, String> {
         // Weak references will still allow the Activity to be garbage-collected
         final WeakReference<Context> weakContext;
         ExportCallback callback;
+        ParcelFileDescriptor pfd;
+        int screenId;
 
-        ExportScreenAsync(Context context, ExportCallback callback) {
+        ExportScreenAsync(ParcelFileDescriptor pfd, int screenId, Context context, ExportCallback callback) {
             weakContext = new WeakReference<>(context);
             this.callback = callback;
+            this.pfd = pfd;
+            this.screenId = screenId;
         }
 
         @Override
@@ -714,18 +732,18 @@ public class ScreenRepository implements IScreenRepository {
         }
 
         @Override
-        protected String doInBackground(Integer... params) {
+        protected String doInBackground(Void... params) {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 Set<String> filesToZip = new HashSet<>();
 
-                IScreen screen = screenGetter(params[0]);
+                IScreen screen = screenGetter(screenId);
                 String json = mapper.writeValueAsString(screen);
                 Writer output;
                 File cacheDir = new File(weakContext.get().getCacheDir().getAbsolutePath());
 
                 //store the json dat in the directory
-                File jsonData = new File(cacheDir.getAbsolutePath() + "/screen.json");
+                File jsonData = new File(cacheDir.getAbsolutePath() + "/data.json");
                 output = new BufferedWriter(new FileWriter(jsonData));
                 output.write(json);
                 output.close();
@@ -750,8 +768,8 @@ public class ScreenRepository implements IScreenRepository {
                 zipArray = filesToZip.toArray(zipArray);
                 String invalidCharRemoved = screen.getName().replaceAll("[\\\\/:*?\"<>|]", "_");
                 String zipName = "GIC-" + invalidCharRemoved + ".zip";
-                String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + zipName;
-                ZipHelper.zip(zipArray, destination);
+                //String destination = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + zipName;
+                ZipHelper.zip(zipArray, pfd);
 
                 String message = weakContext.get().getString(R.string.zip_successful);
                 return message + zipName;

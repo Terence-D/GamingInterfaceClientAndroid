@@ -69,7 +69,7 @@ public class GICControl {
     @JsonProperty("top")
     private float top = 200;
     @JsonProperty("height")
-    private int height = 240;
+    private int height = 120;
     @JsonProperty("fontColor")
     private int fontColor = Color.WHITE;
     @JsonProperty("primaryColor")
@@ -81,9 +81,9 @@ public class GICControl {
     @JsonProperty("viewType")
     private int viewType = 0;
     @JsonProperty("primaryImageResource")
-    private int primaryImageResource = R.drawable.button_neon;
+    private int primaryImageResource = R.drawable.button_blue;
     @JsonProperty("secondaryImageResource")
-    private int secondaryImageResource = R.drawable.button_neon_pushed;
+    private int secondaryImageResource = R.drawable.button_blue_dark;
     @JsonProperty("primaryImage")
     private String primaryImage = "";
     @JsonProperty("secondaryImage")

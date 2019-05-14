@@ -2,6 +2,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.util.SparseArray;
 
 /**
@@ -67,7 +68,7 @@ public interface IContract {
 
         void importNew(Uri toImport);
 
-        void exportCurrent(int screenId);
+        void exportCurrent(ParcelFileDescriptor pfd, int screenId);
 
         void create();
     }

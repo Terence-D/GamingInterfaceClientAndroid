@@ -1,5 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.utils;
 
+import android.os.ParcelFileDescriptor;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -29,12 +31,13 @@ import java.util.zip.ZipOutputStream;
 public class ZipHelper {
     private static int BUFFER_SIZE = 6 * 1024;
 
-    public static void zip(String[] filesToZip, String zipFileName) throws IOException {
-        BufferedInputStream origin;
-        FileOutputStream destination = new FileOutputStream(zipFileName);
-        ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(destination));
-        byte data[] = new byte[BUFFER_SIZE];
+    public static void zip(String[] filesToZip, ParcelFileDescriptor pfd) throws IOException {
 
+        FileOutputStream fileOutputStream = new FileOutputStream(pfd.getFileDescriptor());
+        ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(fileOutputStream));
+
+        byte data[] = new byte[BUFFER_SIZE];
+        BufferedInputStream origin;
         for (int i = 0; i < filesToZip.length; i++) {
             FileInputStream fileInputStream = new FileInputStream(filesToZip[i]);
             origin = new BufferedInputStream(fileInputStream, BUFFER_SIZE);
@@ -49,6 +52,8 @@ public class ZipHelper {
             origin.close();
         }
         out.close();
+        fileOutputStream.close();
+        pfd.close();
     }
 
     public static boolean unzip(InputStream zipFile, String destinationDir) throws IOException {
@@ -66,7 +71,7 @@ public class ZipHelper {
         int count;
         while ((zipEntry = zipInputStream.getNextEntry()) != null) {
             String path = destinationDir + File.separator + zipEntry.getName();
-            if (path.contains("screen.json")) {
+            if (path.contains("data.json")) {
                 validZip = true;
             }
 

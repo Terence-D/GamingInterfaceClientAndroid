@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.TextViewCompat;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
@@ -52,6 +54,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     protected int currentScreenId;
 
     protected IScreenRepository screenRepository;
+    protected ProgressDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         if (getIntent() != null)
             currentScreenId = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
 
+        setProgressIndicator(true);
         screenRepository = new ScreenRepository(getApplicationContext());
         screenRepository.loadScreens(new IScreenRepository.LoadCallback() {
             @Override
@@ -70,6 +74,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
                         currentScreen = screen;
                         loadScreen();
                         buildFontCache();
+                        setProgressIndicator(false);
                     }
                 });
             }
@@ -157,53 +162,9 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     //primary is used for backwards compatability
     private Drawable getButtonResource(int resourceId, int type, boolean primary) {
         if (type == GICControl.TYPE_BUTTON || type == GICControl.TYPE_BUTTON_QUICK) {
-            switch (resourceId) {
-                case 0:
-                    return getResources().getDrawable(R.drawable.button_neon);
-                case 1:
-                    return getResources().getDrawable(R.drawable.button_neon_pushed);
-                case 2:
-                    return getResources().getDrawable(R.drawable.button_blue);
-                case 3:
-                    return getResources().getDrawable(R.drawable.button_blue_dark);
-                case 4:
-                    return getResources().getDrawable(R.drawable.button_green);
-                case 5:
-                    return getResources().getDrawable(R.drawable.button_green_dark);
-                case 6:
-                    return getResources().getDrawable(R.drawable.button_green_alt);
-                case 7:
-                    return getResources().getDrawable(R.drawable.button_green_alt_dark);
-                case 8:
-                    return getResources().getDrawable(R.drawable.button_purple);
-                case 9:
-                    return getResources().getDrawable(R.drawable.button_purple_dark);
-                case 10:
-                    return getResources().getDrawable(R.drawable.button_red);
-                case 11:
-                    return getResources().getDrawable(R.drawable.button_red_dark);
-                case 12:
-                    return getResources().getDrawable(R.drawable.button_yellow);
-                case 13:
-                    return getResources().getDrawable(R.drawable.button_yellow_dark);
-                default:
-                    if (primary)
-                        return getResources().getDrawable(R.drawable.button_neon);
-                    else
-                        return getResources().getDrawable(R.drawable.button_neon_pushed);
-            }
+            return getResources().getDrawable(ControlTypes.GetButtonDrawableId(resourceId, primary));
         } else {
-            switch (resourceId) {
-                case 0:
-                    return getResources().getDrawable(R.drawable.switch_off);
-                case 1:
-                    return getResources().getDrawable(R.drawable.switch_on);
-                default:
-                    if (primary)
-                        return getResources().getDrawable(R.drawable.switch_off);
-                    else
-                        return getResources().getDrawable(R.drawable.switch_on);
-            }
+            return getResources().getDrawable(ControlTypes.GetSwitchDrawableId(resourceId, primary));
         }
     }
 
@@ -354,5 +315,31 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(newWidth, newHeight);
         view.setLayoutParams(layout);
         view.invalidate();
+    }
+
+    protected void setProgressIndicator(boolean show) {
+        if (show)
+            showLoadingIndicator();
+        else
+            hideLoadingIndicator();
+    }
+
+    private void showLoadingIndicator() {
+        buildLoadWindow();
+        dialog.show();
+    }
+
+    private void hideLoadingIndicator() {
+        buildLoadWindow();
+        dialog.dismiss();
+    }
+
+    private void buildLoadWindow() {
+        if (dialog == null) {
+            //prepare our dialog
+            dialog = new ProgressDialog(this);
+            dialog.setMessage(getString(R.string.loading));
+            dialog.setIndeterminate(true);
+        }
     }
 }
