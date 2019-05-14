@@ -32,7 +32,6 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.main.MainActivity;
-import pub.devrel.easypermissions.EasyPermissions;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
@@ -242,7 +241,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
         // Create a file with the requested MIME type.
         intent.setType("application/zip");
-        intent.putExtra(Intent.EXTRA_TITLE, screenList.valueAt(spinner.getSelectedItemPosition()));
+        intent.putExtra(Intent.EXTRA_TITLE, "GIC-" + screenList.valueAt(spinner.getSelectedItemPosition()) + ".zip");
         startActivityForResult(intent, REQUEST_CODE_EXPORT);
     }
 

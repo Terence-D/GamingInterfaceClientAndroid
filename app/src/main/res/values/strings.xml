@@ -104,7 +104,7 @@
     <string name="connecting">Connecting…</string>
     <string name="need_permission">This action requires you to enable write access.  After accepting, you will need to click on the button again to begin the Import/Export.</string>
     <string name="export_complete">Export Complete!</string>
-    <string name="zip_successful">File successfully exported: Downloads/</string>
+    <string name="zip_successful">File successfully exported/</string>
     <string name="activity_main_screen_manager">Screen Manager</string>
     <string name="cannot_delete_last_item">Cannot remove last screen!</string>
     <string name="activity_screens_confirm_delete"><![CDATA[Are you sure you wish to PERMANENTLY delete <b>%1$s</b>?]]></string>
