@@ -20,8 +20,12 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.AbstractAdapter;
  */
 class ImageGridDialog extends AbstractGridDialog {
 
-    ImageGridDialog(Fragment fragment, AbstractAdapter abstractAdapter) {
-        super(fragment, abstractAdapter);
+    ImageGridDialog(Fragment fragment, AbstractAdapter adapter) {
+        super(fragment, adapter);
+    }
+
+    @Override
+    public void init () {
         setImagePrefix("button");
         setActionRequestCode(EditActivity.OPEN_REQUEST_CODE_IMPORT_BUTTON);
     }

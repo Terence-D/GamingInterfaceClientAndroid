@@ -97,7 +97,7 @@ public abstract class AbstractAdapter extends BaseAdapter {
             else
                 holder.textView.setText(R.string.item_grid_text_image);
             //show "add" item
-        } else if (position <= getCustomCount()) {
+        } else if (position <= getCustomCount() + 1) {
             holder.textView.setVisibility(View.GONE);
             String path = context.getFilesDir() + "/" + imagePrefix + "_" + (position - 2) + ".png";
             Picasso.get().setLoggingEnabled(true);
@@ -116,7 +116,7 @@ public abstract class AbstractAdapter extends BaseAdapter {
                             holder.imageView.setVisibility(View.INVISIBLE);
                         }
                     });
-        } else if (position - getCustomCount() <= getBuiltInResources().length + 2) {
+        } else { //if (position - getCustomCount() <= getBuiltInResources().length + 1) {
             holder.textView.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageResource(getBuiltInResources()[position - getCustomCount() - 2]);
