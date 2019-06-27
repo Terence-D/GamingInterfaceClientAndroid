@@ -20,8 +20,12 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.AbstractAdapter;
  */
 class ToggleGridDialog extends AbstractGridDialog {
 
-    ToggleGridDialog(Fragment fragment, AbstractAdapter abstractAdapter) {
-        super(fragment, abstractAdapter);
+    ToggleGridDialog(Fragment fragment, AbstractAdapter adapter) {
+        super(fragment, adapter);
+    }
+
+    @Override
+    public void init () {
         setImagePrefix("switch");
         setActionRequestCode(EditActivity.OPEN_REQUEST_CODE_IMPORT_SWITCH);
     }

@@ -5,11 +5,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
 import java.io.File;
 import java.util.Objects;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AbstractAdapter;
 
@@ -28,13 +29,16 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.AbstractAdapter;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class AbstractGridDialog extends AlertDialog {
+abstract class AbstractGridDialog extends AlertDialog {
     private int customCount = 0;
     private String imagePrefix;
     private int actionRequestCode;
 
+    abstract void init();
+
     AbstractGridDialog(final Fragment fragment, final AbstractAdapter adapter) {
         super(Objects.requireNonNull(fragment.getActivity()));
+        init();
         File file;
         for (int i = 0; i < Integer.MAX_VALUE; i++) {
             file = new File(getContext().getFilesDir(), imagePrefix + "_" + i + ".png");
@@ -61,11 +65,11 @@ class AbstractGridDialog extends AlertDialog {
                     intent.setType("image/*");
                     fragment.startActivityForResult(intent, actionRequestCode);
                     dismiss();
-                } else if (position <= customCount) {
+                } else if (position <= customCount + 1) {
                     String path = fragment.getActivity().getFilesDir() + "/" + imagePrefix + "_" + (position - 2) + ".png";
                     ((GridDialogListener) fragment).onImageSelected(path, actionRequestCode);
                     dismiss();
-                } else if (position - customCount <= adapter.getBuiltInResources().length + 1) {
+                } else { // if (position - customCount <= adapter.getBuiltInResources().length + 1) {
                     ((GridDialogListener) fragment).onImageSelected(adapter.getBuiltInResources()[position - customCount - 2], actionRequestCode);
                     dismiss();
                 }
