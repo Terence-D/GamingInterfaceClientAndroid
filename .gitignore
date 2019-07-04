@@ -79,3 +79,9 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+gic_android/.idea/caches/                                                                                               
+gic_android/.idea/gradle.xml                                                                                          
+gic_android/.idea/libraries/                                                                                            
+gic_android/.idea/modules.xml                                                                                         
+gic_android/.idea/workspace.xml          
