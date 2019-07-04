@@ -200,7 +200,7 @@
         <strong>Save</strong><br/>
         Saves the above options you chose.<br/><br/>
         <strong>Delete</strong><br/>
-        Deletes the control - this can't be undone!<br/><br/>
+        Deletes the control - this can\'t be undone!<br/><br/>
     ]]></string>
     <string name="help_edit_button"><![CDATA[
         <strong>Text</strong><br/>
@@ -232,7 +232,7 @@
         <strong>Save</strong><br/>
         Saves the above options you chose.<br/><br/>
         <strong>Delete</strong><br/>
-        Deletes the control - this can't be undone!<br/><br/>
+        Deletes the control - this can\'t be undone!<br/><br/>
     ]]></string>
     <string name="help_edit_toggle"><![CDATA[
         <strong>Text</strong><br/>
@@ -258,7 +258,7 @@
         <strong>Save</strong><br/>
         Saves the above options you chose.<br/><br/>
         <strong>Delete</strong><br/>
-        Deletes the control - this can't be undone!<br/><br/>
+        Deletes the control - this can\'t be undone!<br/><br/>
     ]]></string>
     <string name="help_edit_image"><![CDATA[
         <strong>Image</strong><br/>
@@ -270,7 +270,7 @@
         <strong>Save</strong><br/>
         Saves the above options you chose.<br/><br/>
         <strong>Delete</strong><br/>
-        Deletes the control - this can't be undone!<br/><br/>
+        Deletes the control - this can\'t be undone!<br/><br/>
     ]]></string>
     <string name="help_dialog_title">Help</string>
     <string name="edit_help">Help</string>
