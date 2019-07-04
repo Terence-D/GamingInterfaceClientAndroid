@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
 import 'package:gic_flutter/screens/main/main.dart';
+import 'package:gic_flutter/services/setting/settingRepository.dart';
 import 'package:gic_flutter/theme/style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
-  final sharedPreferences = await SharedPreferences.getInstance();
-  var myApp = MyApp(sharedPreferences);
+  var myApp = MyApp(SettingRepository(await SharedPreferences.getInstance()));
     runApp(myApp);
 }
 
 class MyApp extends StatelessWidget {
-  SharedPreferences _sharedPreferences;
+  SettingRepository _settingRepository;
 
-  MyApp (SharedPreferences sharedPreferences) {
-    _sharedPreferences = sharedPreferences;
+  MyApp (SettingRepository sharedPreferences) {
+    _settingRepository = sharedPreferences;
   }
 
   @override
@@ -23,12 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'Gaming Interface Client',
       theme: appTheme(),
       darkTheme: darkTheme(),
-      home: MainScreen(_sharedPreferences),
+      home: MainScreen(_settingRepository),
     );
-  }
-
-  @override
-  void initState() {
-
   }
 }

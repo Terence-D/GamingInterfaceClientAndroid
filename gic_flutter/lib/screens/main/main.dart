@@ -1,35 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:gic_flutter/services/setting/settingRepository.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'dart:async';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
   final String title = "Gaming Interface Client";
-  SharedPreferences _sharedPreferences;
+  SettingRepository _settingRepo;
 
-  MainScreen(SharedPreferences sharedPreferences, {Key key}) : super(key: key) {
-    _sharedPreferences = sharedPreferences;
+  MainScreen(SettingRepository settingRepo, {Key key}) : super(key: key) {
+    _settingRepo = settingRepo;
   }
 
   @override
-  _MainScreenState createState() => _MainScreenState(_sharedPreferences);
+  _MainScreenState createState() => _MainScreenState(_settingRepo);
 }
 
 class _MainScreenState extends State<MainScreen> {
   static const String channelAbout = "ca.coffeeshopstudio.gic.views.about";
-  String _prefPassword = "password";
-  String _prefPort = "port";
-  String _prefAddress = "address";
 
   String password;
   String address;
   String port;
 
-  _MainScreenState(SharedPreferences sharedPreferences) {
-    password = sharedPreferences.getString(_prefPassword) ?? "";
-    address = sharedPreferences.getString(_prefAddress) ?? "";
-    port = sharedPreferences.getString(_prefPort) ?? "8091";
+  _MainScreenState(SettingRepository settingRepo) {
+    password = settingRepo.getPassword();
+    address = settingRepo.getAddress();
+    port = settingRepo.getPort();
   }
 
   @override
@@ -143,7 +140,8 @@ class _MainScreenState extends State<MainScreen> {
 
   //action to take when picking from the menu
   void _select(MenuOptions choice) {
-      _getNewActivity(channelAbout);
+    if (choice == choices[2])
+        _getNewActivity(channelAbout);
   }
 }
 
