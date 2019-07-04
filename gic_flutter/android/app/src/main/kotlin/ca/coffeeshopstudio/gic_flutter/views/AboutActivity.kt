@@ -1,4 +1,4 @@
-package ca.coffeeshopstudio.gic_flutter.views
+package ca.coffeeshopstudio.gaminginterfaceclient.views
 
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import ca.coffeeshopstudio.gic_flutter.R
+import ca.coffeeshopstudio.gaminginterfaceclient.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**

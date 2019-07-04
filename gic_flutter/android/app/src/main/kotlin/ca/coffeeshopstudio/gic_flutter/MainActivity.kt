@@ -1,9 +1,9 @@
-package ca.coffeeshopstudio.gic_flutter
+package ca.coffeeshopstudio.gaminginterfaceclient
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import ca.coffeeshopstudio.gic_flutter.views.AboutActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.AboutActivity
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
