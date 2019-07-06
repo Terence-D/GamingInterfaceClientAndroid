@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'dart:async';
@@ -17,16 +18,12 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  static const String channelAbout = "ca.coffeeshopstudio.gic.views.about";
-
   String password;
   String address;
   String port;
 
   _MainScreenState(SettingRepository settingRepo) {
-    password = settingRepo.getPassword();
-    address = settingRepo.getAddress();
-    port = settingRepo.getPort();
+    getPreferences(settingRepo);
   }
 
   @override
@@ -110,7 +107,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          _getNewActivity(channelAbout);
+                          _getNewActivity(Channel.viewAbout);
                         },
                         child: Text('Screen Manager'),
                       ),
@@ -123,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            _getNewActivity(channelAbout);
+            _getNewActivity(Channel.viewAbout);
           },
           label: Text('Start'),
         )); //
@@ -140,8 +137,13 @@ class _MainScreenState extends State<MainScreen> {
 
   //action to take when picking from the menu
   void _select(MenuOptions choice) {
-    if (choice == choices[2])
-        _getNewActivity(channelAbout);
+    if (choice == choices[2]) _getNewActivity(Channel.viewAbout);
+  }
+
+  void getPreferences(SettingRepository settingRepo) async {
+    await settingRepo.getPassword();
+    address = settingRepo.getAddress();
+    port = settingRepo.getPort();
   }
 }
 
