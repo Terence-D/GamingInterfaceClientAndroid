@@ -1,29 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/channel.dart';
+import 'package:gic_flutter/screens/main/mainPresentation.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
-import 'dart:async';
-import 'package:flutter/services.dart';
 
 class MainScreen extends StatefulWidget {
-  final String title = "Gaming Interface Client";
-  SettingRepository _settingRepo;
+  final SettingRepository repository;
 
-  MainScreen(SettingRepository settingRepo, {Key key}) : super(key: key) {
-    _settingRepo = settingRepo;
+  MainScreen(this.repository, {Key key}) : super(key: key) {}
+
+  @override
+  MainScreenState createState() {
+    return MainScreenState();
+  }
+}
+
+class MainScreenState extends State<MainScreen> {
+  MainPresentation presentation;
+  TextEditingController passwordController = TextEditingController();
+
+  MainScreenState() {}
+
+  @override
+  void dispose() {
+    super.dispose();
+    passwordController.dispose();
   }
 
   @override
-  _MainScreenState createState() => _MainScreenState(_settingRepo);
-}
+  void initState() {
+    super.initState();
 
-class _MainScreenState extends State<MainScreen> {
-  String password;
-  String address;
-  String port;
+    presentation = new MainPresentation(this, widget.repository);
 
-  _MainScreenState(SettingRepository settingRepo) {
-    getPreferences(settingRepo);
+    passwordController.addListener(passwordListener());
+    presentation.loadSettings().then((_) {
+      setState(() {
+        passwordListener();
+      });
+    });
+  }
+
+  passwordListener() {
+    if (presentation.password != null)
+      passwordController.text = presentation.password;
   }
 
   @override
@@ -37,16 +57,16 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
         appBar: AppBar(
           leading: Icon(Icons.apps),
-          title: Text(widget.title),
+          title: Text(presentation.toolbarTitle),
           actions: <Widget>[
             // action button
             IconButton(icon: Icon(Icons.help_outline), onPressed: () {}),
             // overflow menu
-            PopupMenuButton<MenuOptions>(
+            PopupMenuButton<_MenuOptions>(
               onSelected: _select,
               itemBuilder: (BuildContext context) {
-                return choices.map((MenuOptions choice) {
-                  return PopupMenuItem<MenuOptions>(
+                return _choices.map((_MenuOptions choice) {
+                  return PopupMenuItem<_MenuOptions>(
                     value: choice,
                     child: Text(choice.title),
                   );
@@ -62,22 +82,21 @@ class _MainScreenState extends State<MainScreen> {
               child: Column(
                 children: <Widget>[
                   Text(
-                    'GIC',
+                    presentation.screenTitle,
                     style: Theme.of(context).textTheme.title,
                   ),
                   TextFormField(
-                    initialValue: address,
+                    initialValue: presentation.address,
                     decoration: InputDecoration(hintText: "Address"),
                   ),
                   TextFormField(
-                    initialValue: port,
+                    initialValue: presentation.port,
                     decoration: InputDecoration(
                       hintText: "Port",
                     ),
                   ),
                   TextFormField(
-                    obscureText: true,
-                    initialValue: password,
+                    controller: passwordController,
                     decoration: InputDecoration(
                       hintText: "Password",
                     ),
@@ -107,7 +126,7 @@ class _MainScreenState extends State<MainScreen> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          _getNewActivity(Channel.viewAbout);
+                          presentation.getNewActivity(Channel.actionViewAbout);
                         },
                         child: Text('Screen Manager'),
                       ),
@@ -120,42 +139,28 @@ class _MainScreenState extends State<MainScreen> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            _getNewActivity(Channel.viewAbout);
+            presentation.getNewActivity(Channel.actionViewAbout);
           },
           label: Text('Start'),
         )); //
   }
 
-  _getNewActivity(String channel) async {
-    MethodChannel platform = new MethodChannel(channel);
-    try {
-      await platform.invokeMethod('startNewActivity');
-    } on PlatformException catch (e) {
-      print(e.message);
-    }
-  }
-
   //action to take when picking from the menu
-  void _select(MenuOptions choice) {
-    if (choice == choices[2]) _getNewActivity(Channel.viewAbout);
-  }
-
-  void getPreferences(SettingRepository settingRepo) async {
-    await settingRepo.getPassword();
-    address = settingRepo.getAddress();
-    port = settingRepo.getPort();
+  void _select(_MenuOptions choice) {
+    if (choice == _choices[2])
+      presentation.getNewActivity(Channel.actionViewAbout);
   }
 }
 
-class MenuOptions {
-  const MenuOptions({this.title, this.icon});
+class _MenuOptions {
+  const _MenuOptions({this.title, this.icon});
 
   final String title;
   final IconData icon;
 }
 
-const List<MenuOptions> choices = const <MenuOptions>[
-  const MenuOptions(title: 'Toggle Theme', icon: Icons.color_lens),
-  const MenuOptions(title: 'Show Intro', icon: Icons.thumb_up),
-  const MenuOptions(title: 'About', icon: Icons.info_outline),
+const List<_MenuOptions> _choices = const <_MenuOptions>[
+  const _MenuOptions(title: 'Toggle Theme', icon: Icons.color_lens),
+  const _MenuOptions(title: 'Show Intro', icon: Icons.thumb_up),
+  const _MenuOptions(title: 'About', icon: Icons.info_outline),
 ];

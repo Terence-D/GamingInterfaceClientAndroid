@@ -13,8 +13,13 @@ class MainActivity: FlutterActivity() {
 
   companion object {
     private const val channelName = "ca.coffeeshopstudio.gic"
-    const val viewAbout = "$channelName/views/about"
-    const val utilCrypto = "$channelName/util/crypto"
+    const val channelUtil = "$channelName/utils"
+    const val channelView = "$channelName/views"
+
+    const val actionAbout = "about";
+    const val actionIntro = "intro";
+
+    const val actionDecrypt = "decrypt";
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,21 +31,30 @@ class MainActivity: FlutterActivity() {
   }
 
   private fun buildActivityChannel() {
-    MethodChannel(flutterView, viewAbout).setMethodCallHandler { call, result ->
-      if (call.method == "startNewActivity") {
-        Log.d("tag", call.method)
-        val intent = Intent(this, AboutActivity::class.java)
-        startActivity(intent)
-        result.success(true)
-      } else {
-        result.notImplemented()
+    MethodChannel(flutterView, channelView).setMethodCallHandler { call, result ->
+      when (call.method) {
+        actionIntro -> {
+          Log.d("tag", call.method)
+          val intent = Intent(this, AboutActivity::class.java)
+          startActivity(intent)
+          result.success(true)
+        }
+        actionAbout -> {
+          Log.d("tag", call.method)
+          val intent = Intent(this, AboutActivity::class.java)
+          startActivity(intent)
+          result.success(true)
+        }
+        else -> {
+          result.notImplemented()
+        }
       }
     }
   }
 
   private fun buildUtilChannel() {
-    MethodChannel(flutterView, utilCrypto).setMethodCallHandler { call, result ->
-      if (call.method == "decrypt") {
+    MethodChannel(flutterView, channelUtil).setMethodCallHandler { call, result ->
+      if (call.method == actionDecrypt) {
         val password = CryptoHelper.decrypt(call.argument("code"))
         result.success(password)
       }

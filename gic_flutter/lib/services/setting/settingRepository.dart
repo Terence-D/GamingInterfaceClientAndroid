@@ -4,32 +4,39 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingRepository {
   SharedPreferences prefs;
-  final String _nightMode = "NIGHT_MODE";
-  final String _firstRun = "prefSplash";
-  final String _prefPassword = "password";
-  final String _prefPort = "port";
-  final String _prefAddress = "address";
+  static const String _prefNightMode = "NIGHT_MODE";
+  static const String _prefFirstRun = "prefSplash";
+  static const String _prefPassword = "password";
+  static const String _prefPort = "port";
+  static const String _prefAddress = "address";
+
+  bool _firstRun;
+  bool _darkMode;
+  String _address;
+  String _port;
 
   SettingRepository(SharedPreferences sharedPrefs) {
     this.prefs = sharedPrefs;
+    _firstRun = prefs.getBool(_prefFirstRun) ?? true;
+    _darkMode = prefs.getBool(_prefNightMode) ?? true;
+    _port = prefs.getString(_prefPort) ?? "8091";
+    _address = prefs.getString(_prefAddress) ?? "192.168.x.x";
   }
 
-  bool getDarkMode() {
-    return prefs.getBool(_nightMode) ?? true;
-  }
+  bool get darkMode => _darkMode;
+  bool get firstRun => _firstRun;
+  String get port => _port;
+  String get address => _address;
+  Future<String> get password => _getPassword();//  _password;
 
-  bool getFirstRun() {
-    return prefs.getBool(_firstRun) ?? true;
-  }
-
-  Future<String> getPassword()  async {
+  Future<String> _getPassword() async {
     String response = "";
     String encrypted = prefs.getString(_prefPassword) ?? "";
 
-    const platform = const MethodChannel(Channel.utilCrypto);
+    const platform = const MethodChannel(Channel.channelUtil);
     if (encrypted.isNotEmpty) {
       try {
-        final String result = await platform.invokeMethod('decrypt', {"code": encrypted});
+        final String result = await platform.invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
         response = result;
       } on PlatformException catch (e) {
         response = "Failed to Invoke: '${e.message}'.";
@@ -38,11 +45,4 @@ class SettingRepository {
     return response;
   }
 
-  String getPort() {
-    return prefs.getString(_prefPort) ?? "";
-  }
-
-  String getAddress() {
-    return prefs.getString(_prefAddress) ?? "8091";
-  }
 }
