@@ -27,7 +27,7 @@ class SettingRepository {
   bool get firstRun => _firstRun;
   String get port => _port;
   String get address => _address;
-  Future<String> get password => _getPassword();//  _password;
+  Future<String> get password => _getPassword();
 
   Future<String> _getPassword() async {
     String response = "";

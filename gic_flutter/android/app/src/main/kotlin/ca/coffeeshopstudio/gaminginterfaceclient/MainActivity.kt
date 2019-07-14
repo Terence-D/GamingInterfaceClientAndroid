@@ -8,6 +8,9 @@ import ca.coffeeshopstudio.gaminginterfaceclient.views.AboutActivity
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
+import androidx.annotation.NonNull
+import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity
+
 
 class MainActivity: FlutterActivity() {
 
@@ -32,15 +35,14 @@ class MainActivity: FlutterActivity() {
 
   private fun buildActivityChannel() {
     MethodChannel(flutterView, channelView).setMethodCallHandler { call, result ->
+      Log.d("tag", call.method)
       when (call.method) {
         actionIntro -> {
-          Log.d("tag", call.method)
-          val intent = Intent(this, AboutActivity::class.java)
+          val intent = Intent(this, SplashIntroActivity::class.java)
           startActivity(intent)
           result.success(true)
         }
         actionAbout -> {
-          Log.d("tag", call.method)
           val intent = Intent(this, AboutActivity::class.java)
           startActivity(intent)
           result.success(true)

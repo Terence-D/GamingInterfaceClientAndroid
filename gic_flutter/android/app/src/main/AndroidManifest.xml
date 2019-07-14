@@ -31,6 +31,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".views.launch.SplashIntroActivity"
+            android:label="@string/title_activity_intro"
+            android:theme="@style/Theme.Intro"/>
         <activity android:name=".views.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>

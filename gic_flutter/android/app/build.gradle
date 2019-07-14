@@ -36,10 +36,14 @@ android {
         disable 'InvalidPackage'
     }
 
+    dataBinding {
+        enabled = true
+    }
+
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "ca.coffeeshopstudio.gaminginterfaceclient"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 28
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -66,4 +70,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.github.adrcotfas:material-intro:e1228'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
 }

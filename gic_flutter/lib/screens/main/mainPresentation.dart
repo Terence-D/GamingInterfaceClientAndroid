@@ -21,12 +21,12 @@ class MainPresentation {
   }
 
   getNewActivity(String activity) async {
-    // MethodChannel platform = new MethodChannel(Channel.channelView);
-    // try {
-    //   await platform.invokeMethod(activity);
-    // } on PlatformException catch (e) {
-    //   print(e.message);
-    // }
+    MethodChannel platform = new MethodChannel(Channel.channelView);
+    try {
+      await platform.invokeMethod(activity);
+    } on PlatformException catch (e) {
+      print(e.message);
+    }
   }
 
   String get toolbarTitle => _viewModel.toolbarTitle;
