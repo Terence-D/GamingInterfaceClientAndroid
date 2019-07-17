@@ -24,7 +24,6 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.NumberFilter;
@@ -78,12 +77,12 @@ public class EditImageFragment extends DialogFragment implements View.OnClickLis
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (((App) Objects.requireNonNull(getContext()).getApplicationContext()).isNightModeEnabled())
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
-            } else {
-                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
-            }
+//        if (((App) Objects.requireNonNull(getContext()).getApplicationContext()).isNightModeEnabled())
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
+//            } else {
+//                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
+//            }
     }
 
     @Override

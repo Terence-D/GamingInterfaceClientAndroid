@@ -37,5 +37,22 @@
             android:theme="@style/Theme.Intro"/>
         <activity android:name=".views.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".views.screenmanager.ScreenManagerActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".views.edit.EditActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_edit"
+            android:theme="@style/FullscreenTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".views.GameActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_game_interface"
+            android:theme="@style/ActivityTheme.Primary.Base.Dark"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
     </application>
 </manifest>

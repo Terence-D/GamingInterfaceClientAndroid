@@ -27,16 +27,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.io.FileNotFoundException;
 
-import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity;
-import ca.coffeeshopstudio.gaminginterfaceclient.views.main.MainActivity;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 import uk.co.samuelwall.materialtaptargetprompt.extras.focals.RectanglePromptFocal;
 
 public class ScreenManagerActivity extends AppCompatActivity implements IContract.IView, AdapterView.OnItemSelectedListener, View.OnClickListener {
     // permissions request code
+    public static final String INTENT_SCREEN_INDEX = "screen_index";
     private static final int REQUEST_CODE_EXPORT = 520;
     private final static int REQUEST_CODE_IMPORT = 510;
 
@@ -49,8 +48,8 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (((App) getApplication()).isNightModeEnabled())
-            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
+//        if (((App) getApplication()).isNightModeEnabled())
+//            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_manager);
@@ -150,7 +149,7 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     private void editApp() {
         Intent myIntent = new Intent(this, EditActivity.class);
         int screenIndex = screenList.keyAt(spinner.getSelectedItemPosition());
-        myIntent.putExtra(MainActivity.INTENT_SCREEN_INDEX, screenIndex);
+        myIntent.putExtra(INTENT_SCREEN_INDEX, screenIndex);
         this.startActivity(myIntent);
     }
 

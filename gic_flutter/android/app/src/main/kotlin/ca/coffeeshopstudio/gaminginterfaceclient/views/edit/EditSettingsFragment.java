@@ -27,7 +27,6 @@ import java.io.IOException;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
 import static ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity.PREF_KEY_GRID_SIZE;
@@ -88,12 +87,12 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
-            } else {
-                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
-            }
+//        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
+//            } else {
+//                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
+//            }
     }
 
     private void setupControls(View view) {

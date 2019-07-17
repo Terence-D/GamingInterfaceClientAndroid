@@ -31,7 +31,8 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
-import ca.coffeeshopstudio.gaminginterfaceclient.views.main.MainActivity;
+
+import static ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity.INTENT_SCREEN_INDEX;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -61,7 +62,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
 
         if (getIntent() != null)
-            currentScreenId = getIntent().getIntExtra(MainActivity.INTENT_SCREEN_INDEX, 0);
+            currentScreenId = getIntent().getIntExtra(INTENT_SCREEN_INDEX, 0);
 
         setProgressIndicator(true);
         screenRepository = new ScreenRepository(getApplicationContext());

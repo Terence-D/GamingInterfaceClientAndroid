@@ -15,6 +15,8 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import android.util.SparseArray
 import androidx.core.util.forEach
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository
+import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
 
 
 class MainActivity: FlutterActivity() {
@@ -55,13 +57,13 @@ class MainActivity: FlutterActivity() {
           startActivity(intent)
           result.success(true)
         }
-//        actionStart-> {
-//          val intent = Intent(this, AboutActivity::class.java)
-//          startActivity(intent)
-//          result.success(true)
-//        }
+        actionStart-> {
+          val intent = Intent(this, GameActivity::class.java)
+          startActivity(intent)
+          result.success(true)
+        }
         actionManager -> {
-          val intent = Intent(this, GameManagerActivity::class.java)
+          val intent = Intent(this, ScreenManagerActivity::class.java)
           startActivity(intent)
           result.success(true)
         }

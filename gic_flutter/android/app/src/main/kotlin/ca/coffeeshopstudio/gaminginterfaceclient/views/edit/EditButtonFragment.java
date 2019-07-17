@@ -50,7 +50,6 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import ca.coffeeshopstudio.gaminginterfaceclient.App;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
@@ -151,12 +150,12 @@ public class EditButtonFragment extends DialogFragment implements
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (((App) Objects.requireNonNull(getContext()).getApplicationContext()).isNightModeEnabled())
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
-            } else {
-                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
-            }
+//        if (((App) Objects.requireNonNull(getContext()).getApplicationContext()).isNightModeEnabled())
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
+//            } else {
+//                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
+//            }
     }
 
     @Override
@@ -302,8 +301,8 @@ public class EditButtonFragment extends DialogFragment implements
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
-            ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
+//        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
+//            ((TextView) adapterView.getChildAt(0)).setTextColor(Color.WHITE);
     }
 
     @Override
