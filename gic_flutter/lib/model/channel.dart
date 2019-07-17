@@ -6,6 +6,8 @@ class Channel {
 
   static const String actionViewIntro ="intro";
   static const String actionViewAbout = "about";
+  static const String actionViewStart = "start";
+  static const String actionViewManager = "manager";
   
   static const String actionUtilDecrypt = "decrypt";
   static const String actionUtilGetScreens = "screens/get";

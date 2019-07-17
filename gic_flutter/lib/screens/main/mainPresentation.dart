@@ -17,7 +17,7 @@ class MainPresentation {
   }
 
   Future loadSettings() async {
-    _viewModel.loadSettings();
+    await _viewModel.loadSettings();
     if (firstRun)
       getNewActivity(Channel.actionViewIntro);
   }

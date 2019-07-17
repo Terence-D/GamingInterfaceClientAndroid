@@ -26,6 +26,8 @@ class MainActivity: FlutterActivity() {
 
     const val actionAbout = "about"
     const val actionIntro = "intro"
+    const val actionStart = "start"
+    const val actionManager = "manager"
 
     const val actionDecrypt = "decrypt"
     const val actionGetScreens = "screens/get"
@@ -50,6 +52,16 @@ class MainActivity: FlutterActivity() {
         }
         actionAbout -> {
           val intent = Intent(this, AboutActivity::class.java)
+          startActivity(intent)
+          result.success(true)
+        }
+//        actionStart-> {
+//          val intent = Intent(this, AboutActivity::class.java)
+//          startActivity(intent)
+//          result.success(true)
+//        }
+        actionManager -> {
+          val intent = Intent(this, GameManagerActivity::class.java)
           startActivity(intent)
           result.success(true)
         }

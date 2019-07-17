@@ -17,7 +17,9 @@ class SettingRepository {
   bool _darkMode;
   String _address;
   String _port;
+  String _password;
   int _selectedScreenId;
+  LinkedHashMap _screenList;
 
   SettingRepository(SharedPreferences sharedPrefs) {
     this.prefs = sharedPrefs;
@@ -36,12 +38,15 @@ class SettingRepository {
   String get port => _port;
   String get address => _address;
   int get selectedScreenId => _selectedScreenId;
-  Future<String> get password => _getPassword();
-  Future<LinkedHashMap> get screenList => _getScreenList();
+  String get password => _password;
+  LinkedHashMap get screenList => _screenList;
 
   loadSettings() async {
+    _screenList = await _getScreenList();
+    _password = await _getPassword();
 
   }
+
   Future<String> _getPassword() async {
     String response = "";
     String encrypted = prefs.getString(_prefPassword) ?? "";
@@ -52,10 +57,10 @@ class SettingRepository {
         final String result = await platform.invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
         response = result;
       } on PlatformException catch (e) {
-        response = "Failed to Invoke: '${e.message}'.";
+        response = "";
       }
     }
-    return "hi";//response;
+    return response;
   }
 
   Future<LinkedHashMap> _getScreenList() async {

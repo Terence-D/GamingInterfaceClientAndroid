@@ -53,7 +53,7 @@ class MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called
-    if (presentation.password == null || presentation.password.isEmpty) {
+    if (presentation.password == null) {
       return new Center(
         child: new CircularProgressIndicator(),
       );
@@ -122,15 +122,18 @@ class MainScreenState extends State<MainScreen> {
                             value: item,
                             child: new Text(
                               item.name,
-                              style: new TextStyle(color: Colors.black),
                             ),
                           );
                         }).toList(),
-                        onChanged: (_) {},
+                        onChanged: (ScreenListItem item) {
+                          setState(() {
+                            selectedScreen = item;
+                          });
+                        },
                       ),
                       RaisedButton(
                         onPressed: () {
-                          presentation.getNewActivity(Channel.actionViewAbout);
+                          presentation.getNewActivity(Channel.actionViewManager);
                         },
                         child: Text('Screen Manager'),
                       ),
@@ -143,7 +146,7 @@ class MainScreenState extends State<MainScreen> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            presentation.getNewActivity(Channel.actionViewAbout);
+            presentation.getNewActivity(Channel.actionViewStart);
           },
           label: Text('Start'),
         )); //

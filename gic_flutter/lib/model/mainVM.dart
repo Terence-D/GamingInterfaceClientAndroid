@@ -18,15 +18,15 @@ class MainVM extends Equatable {
     _settingRepo = settingRepo;
   }
 
-  void loadSettings() async {
-    _settingRepo.loadSettings();
+  Future<void> loadSettings() async {
+    await _settingRepo.loadSettings();
     _selectedScreenId = _settingRepo.selectedScreenId;
     _address = _settingRepo.address;
     _port = _settingRepo.port;
     _firstRun = _settingRepo.firstRun;
     _darkMode = _settingRepo.darkMode;
-    _password = await _settingRepo.password;
-    LinkedHashMap _screenListMap = await _settingRepo.screenList;
+    _password = _settingRepo.password;
+    LinkedHashMap _screenListMap = _settingRepo.screenList;
     _screenListMap.forEach((k, v) => _screenList.add(new ScreenListItem(k, v)) );
   }
 
