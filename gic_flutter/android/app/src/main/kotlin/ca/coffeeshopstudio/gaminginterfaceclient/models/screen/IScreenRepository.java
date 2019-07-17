@@ -1,5 +1,6 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.models.screen;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.SparseArray;
@@ -45,6 +46,7 @@ public interface IScreenRepository {
 
     void removeScreen(int id, @NonNull LoadScreenCallback callback);
 
+    SparseArray<String> screenListGetterSync(Context context);
 
     interface LoadCallback {
         void onLoaded(List<IScreen> screens);

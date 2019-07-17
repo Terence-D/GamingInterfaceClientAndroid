@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/channel.dart';
+import 'package:gic_flutter/model/mainVM.dart';
 import 'package:gic_flutter/screens/main/mainPresentation.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
@@ -7,7 +8,7 @@ import 'package:gic_flutter/theme/dimensions.dart' as dim;
 class MainScreen extends StatefulWidget {
   final SettingRepository repository;
 
-  MainScreen(this.repository, {Key key}) : super(key: key) {}
+  MainScreen(this.repository, {Key key}) : super(key: key); // {}
 
   @override
   MainScreenState createState() {
@@ -17,14 +18,13 @@ class MainScreen extends StatefulWidget {
 
 class MainScreenState extends State<MainScreen> {
   MainPresentation presentation;
-  TextEditingController passwordController = TextEditingController();
+  ScreenListItem selectedScreen;
 
-  MainScreenState() {}
+  MainScreenState(); // {}
 
   @override
   void dispose() {
     super.dispose();
-    passwordController.dispose();
   }
 
   @override
@@ -33,28 +33,31 @@ class MainScreenState extends State<MainScreen> {
 
     presentation = new MainPresentation(this, widget.repository);
 
-    passwordController.addListener(passwordListener());
     presentation.loadSettings().then((_) {
+      // if (presentation.password != null && passwordController.hasListeners)
+      //   passwordController.text = presentation.password;
       setState(() {
-        passwordListener();
+        if (presentation.screenList.length > 0)
+          selectedScreen = presentation.screenList[0];
+        else
+          selectedScreen = new ScreenListItem(0, "test");
       });
     });
   }
 
   passwordListener() {
-    if (presentation.password != null)
-      passwordController.text = presentation.password;
+    // if (presentation.password != null)
+    //   passwordController.text = presentation.password;
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
+    // This method is rerun every time setState is called
+    if (presentation.password == null || presentation.password.isEmpty) {
+      return new Center(
+        child: new CircularProgressIndicator(),
+      );
+    } else return Scaffold(
         appBar: AppBar(
           leading: Icon(Icons.apps),
           title: Text(presentation.toolbarTitle),
@@ -96,7 +99,8 @@ class MainScreenState extends State<MainScreen> {
                     ),
                   ),
                   TextFormField(
-                    controller: passwordController,
+                    //controller: passwordController,
+                    initialValue: presentation.password,
                     decoration: InputDecoration(
                       hintText: "Password",
                     ),
@@ -110,16 +114,16 @@ class MainScreenState extends State<MainScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      DropdownButton<String>(
-                        items: <String>[
-                          'Screen A',
-                          'Screen B',
-                          'Screen C',
-                          'Screen D'
-                        ].map((String value) {
-                          return new DropdownMenuItem<String>(
-                            value: value,
-                            child: new Text(value),
+                      DropdownButton<ScreenListItem>(
+                        value: selectedScreen,
+                        items:
+                            presentation.screenList.map((ScreenListItem item) {
+                          return new DropdownMenuItem<ScreenListItem>(
+                            value: item,
+                            child: new Text(
+                              item.name,
+                              style: new TextStyle(color: Colors.black),
+                            ),
                           );
                         }).toList(),
                         onChanged: (_) {},
@@ -149,6 +153,8 @@ class MainScreenState extends State<MainScreen> {
   void _select(_MenuOptions choice) {
     if (choice == _choices[2])
       presentation.getNewActivity(Channel.actionViewAbout);
+    else if (choice == _choices[1])
+      presentation.getNewActivity(Channel.actionViewIntro);
   }
 }
 

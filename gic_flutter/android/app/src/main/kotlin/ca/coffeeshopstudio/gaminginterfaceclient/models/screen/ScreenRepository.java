@@ -94,6 +94,22 @@ public class ScreenRepository implements IScreenRepository {
         return rv;
     }
 
+    public SparseArray<String> screenListGetterSync(Context context) {
+        SparseArray<String> rv = new SparseArray<>();
+        if (cache != null) {
+            for (IScreen screen : cache) {
+                rv.put(screen.getScreenId(), screen.getName());
+            }
+        } else {
+            screenLoader(context);
+            for (IScreen screen : cache) {
+                rv.put(screen.getScreenId(), screen.getName());
+            }
+        }
+
+        return rv;
+    }
+
     private static IScreen parseJson(String fullPath) {
         ObjectMapper objectMapper = new ObjectMapper();
         File file = new File(fullPath + "data.json");

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
@@ -29,6 +31,18 @@ class MainPresentation {
     }
   }
 
+  // Future<LinkedHashMap> asyncgetScreenList() async {
+  //   MethodChannel platform = new MethodChannel(Channel.channelUtil);
+  //   try {
+  //     final LinkedHashMap result = await platform.invokeMethod(Channel.actionUtilGetScreens);
+  //     debugPrint(result.toString());
+  //     return result;
+  //   } on PlatformException catch (e) {
+  //     print(e.message);
+  //   }
+  //   return null;
+  // }
+
   String get toolbarTitle => _viewModel.toolbarTitle;
   String get screenTitle => _viewModel.screenTitle;
 
@@ -36,4 +50,5 @@ class MainPresentation {
   String get address => _viewModel.address;
   String get port => _viewModel.port;
   String get password => _viewModel.password;
+  List<ScreenListItem> get screenList => _viewModel.screenList;
 }

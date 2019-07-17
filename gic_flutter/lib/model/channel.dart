@@ -8,4 +8,5 @@ class Channel {
   static const String actionViewAbout = "about";
   
   static const String actionUtilDecrypt = "decrypt";
+  static const String actionUtilGetScreens = "screens/get";
 } 
