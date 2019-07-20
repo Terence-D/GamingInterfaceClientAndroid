@@ -17,6 +17,11 @@ import androidx.core.util.forEach
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
+import android.content.Context.MODE_PRIVATE
+import android.R.id.edit
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
+import java.util.prefs.Preferences
 
 
 class MainActivity: FlutterActivity() {
@@ -33,6 +38,7 @@ class MainActivity: FlutterActivity() {
 
     const val actionDecrypt = "decrypt"
     const val actionGetScreens = "screens/get"
+    const val actionGetSettings = "settings/get"
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +80,6 @@ class MainActivity: FlutterActivity() {
     }
   }
 
-  private val PREFS_CHOSEN_ID = "chosen_id"
   private fun buildUtilChannel() {
     MethodChannel(flutterView, channelUtil).setMethodCallHandler { call, result ->
       Log.d("tag", call.method)
@@ -91,10 +96,62 @@ class MainActivity: FlutterActivity() {
           screenList.forEach { key, value -> returnValue.put(key, value) }
           result.success(returnValue)
         }
+        actionGetSettings -> {
+          val keys = loadLegacyPreferences();
+          result.success(keys)
+        }
         else -> {
           result.notImplemented()
         }
       }
     }
+  }
+
+  val PREFS_HELP_FIRST_TIME = "seenHelp";
+  val PREF_KEY_FIRST_START = "prefSplash"
+  val PREFS_CHOSEN_ID = "chosen_id"
+  val prefAddress = "address"
+  val prefPort = "port"
+  val prefPassword = "password"
+  val prefNightMode = "NIGHT_MODE"
+  fun loadLegacyPreferences(): HashMap<String, Any?> {
+    val keys = HashMap<String, Any?>()
+
+    val defaultPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+    val gicsPrefs = applicationContext.getSharedPreferences("gics", MODE_PRIVATE)
+    val screenPrefs = applicationContext.getSharedPreferences(ScreenRepository.PREFS_NAME, MODE_PRIVATE)
+
+    if (defaultPrefs.contains(PREF_KEY_FIRST_START)) {
+      val firstStart = defaultPrefs.getBoolean(PREF_KEY_FIRST_START, true)
+      keys[PREF_KEY_FIRST_START] = firstStart
+    } else {}
+    if (defaultPrefs.contains(prefNightMode)) {
+      val night = defaultPrefs.getBoolean(prefNightMode, true)
+      keys[prefNightMode] = night
+    } else {}
+
+    if (gicsPrefs.contains(prefAddress)) {
+      val address = gicsPrefs.getString(prefAddress, "")
+      keys[prefAddress] = address
+    } else {}
+    if (gicsPrefs.contains(prefPort)) {
+      val port = gicsPrefs.getString(prefPort, "8091")
+      keys[prefPort] = port
+    } else {}
+    if (gicsPrefs.contains(prefPassword)) {
+      val password = gicsPrefs.getString(prefPassword, "")
+      keys[prefPassword] = password
+    } else {}
+    if (gicsPrefs.contains(PREFS_HELP_FIRST_TIME)) {
+      val helpFirst = gicsPrefs.getBoolean(PREFS_HELP_FIRST_TIME, false)
+      keys[PREFS_HELP_FIRST_TIME] = helpFirst
+    } else {}
+
+    if (screenPrefs.contains(PREFS_CHOSEN_ID)) {
+      val chosenId = screenPrefs.getInt(PREFS_CHOSEN_ID, 0)
+      keys[PREFS_CHOSEN_ID] = chosenId
+    } else {}
+
+    return keys
   }
 }
