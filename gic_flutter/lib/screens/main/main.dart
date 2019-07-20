@@ -34,8 +34,6 @@ class MainScreenState extends State<MainScreen> {
     presentation = new MainPresentation(this, widget.repository);
 
     presentation.loadSettings().then((_) {
-      // if (presentation.password != null && passwordController.hasListeners)
-      //   passwordController.text = presentation.password;
       setState(() {
         if (presentation.screenList.length > 0)
           selectedScreen = presentation.screenList[0];
@@ -43,11 +41,6 @@ class MainScreenState extends State<MainScreen> {
           selectedScreen = new ScreenListItem(0, "test");
       });
     });
-  }
-
-  passwordListener() {
-    // if (presentation.password != null)
-    //   passwordController.text = presentation.password;
   }
 
   @override
@@ -59,7 +52,7 @@ class MainScreenState extends State<MainScreen> {
       );
     } else return Scaffold(
         appBar: AppBar(
-          leading: Icon(Icons.apps),
+          //leading: Icon(Icons.apps),
           title: Text(presentation.toolbarTitle),
           actions: <Widget>[
             // action button
