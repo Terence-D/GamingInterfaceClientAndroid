@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.Button.Danger" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorButtonNormal">@color/colorDanger</item>
+        <item name="android:colorButtonNormal">@color/colorDanger</item>
+    </style>
+</resources>
