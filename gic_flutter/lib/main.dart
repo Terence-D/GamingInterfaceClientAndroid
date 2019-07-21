@@ -11,7 +11,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  SettingRepository _settingRepository;
+  SettingRepository _settingRepository  ;
 
   MyApp (SettingRepository sharedPreferences) {
     _settingRepository = sharedPreferences;
