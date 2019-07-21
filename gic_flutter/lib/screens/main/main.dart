@@ -4,6 +4,7 @@ import 'package:gic_flutter/model/mainVM.dart';
 import 'package:gic_flutter/screens/main/mainPresentation.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
+import 'package:gic_flutter/theme/theme.dart';
 
 class MainScreen extends StatefulWidget {
   final SettingRepository repository;
@@ -19,6 +20,7 @@ class MainScreen extends StatefulWidget {
 class MainScreenState extends State<MainScreen> {
   MainPresentation presentation;
   ScreenListItem selectedScreen;
+  bool _darkTheme = false;
 
   MainScreenState(); // {}
 
@@ -145,12 +147,23 @@ class MainScreenState extends State<MainScreen> {
         )); //
   }
 
+  void _changeTheme(BuildContext buildContext, ThemeKeys key) {
+    CustomTheme.instanceOf(buildContext).changeTheme(key);
+  }
+  
   //action to take when picking from the menu
   void _select(_MenuOptions choice) {
     if (choice == _choices[2])
       presentation.getNewActivity(Channel.actionViewAbout);
     else if (choice == _choices[1])
       presentation.getNewActivity(Channel.actionViewIntro);
+    else if (choice == _choices[0]) {
+      if (_darkTheme)
+        _changeTheme(context, ThemeKeys.LIGHT);
+      else
+        _changeTheme(context, ThemeKeys.DARK);
+      _darkTheme = !_darkTheme;
+    }
   }
 }
 
