@@ -11,5 +11,6 @@ class Channel {
   
   static const String actionUtilDecrypt = "decrypt";
   static const String actionUtilGetScreens = "screens/get";
-  static const String actionutilGetSettings = "settings/get";
+  static const String actionUtilGetSettings = "settings/get";
+  static const String actionUtilUpdateDarkMode = "darkmode/set";
 } 

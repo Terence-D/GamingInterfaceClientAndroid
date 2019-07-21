@@ -39,6 +39,7 @@ class MainActivity: FlutterActivity() {
     const val actionDecrypt = "decrypt"
     const val actionGetScreens = "screens/get"
     const val actionGetSettings = "settings/get"
+    const val actionUpdateDarkMode = "darkmode/set";
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,6 +100,16 @@ class MainActivity: FlutterActivity() {
         actionGetSettings -> {
           val keys = loadLegacyPreferences();
           result.success(keys)
+        }
+        actionUpdateDarkMode -> {
+          val defaultPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+          val editor = defaultPrefs.edit()
+          val darkMode: Boolean? = call.argument("darkMode")
+          if (darkMode == true)
+            editor.putBoolean(prefNightMode, true)
+          else
+            editor.putBoolean(prefNightMode, false)
+          editor.apply()
         }
         else -> {
           result.notImplemented()

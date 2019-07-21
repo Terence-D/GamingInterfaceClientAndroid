@@ -39,9 +39,15 @@ class MainVM extends Equatable {
 
   List<ScreenListItem> get screenList => _screenList;
 
-
   String get toolbarTitle => "Gaming Interface Client";
   String get screenTitle => "GIC";
+
+  set darkMode(bool newValue) => _setDarkMode(newValue);
+
+  _setDarkMode(bool newValue) {
+    _darkMode = newValue;
+    _settingRepo.setDarkMode (newValue);
+  }
 
 }
 

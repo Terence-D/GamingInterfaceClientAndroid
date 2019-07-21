@@ -49,14 +49,22 @@ class SettingRepository {
     _address = prefs.getString(_prefAddress) ?? "192.168.x.x";
     _selectedScreenId = prefs.getInt(_prefSelectedScreenId) ?? 0;
     //if first run is true, we set it to false automatically
-    if (_firstRun)
-      prefs.setBool(_prefFirstRun, false);
+    if (_firstRun) prefs.setBool(_prefFirstRun, false);
     _screenList = await _getScreenList();
     _password = await _getPassword();
-
   }
 
-//legacy code
+  setDarkMode(bool newValue) {
+    _darkMode = newValue;
+    prefs.setBool(_prefNightMode, newValue);
+    const platform = const MethodChannel(Channel.channelUtil);
+    try {
+      platform.invokeMethod(Channel.actionUtilUpdateDarkMode, {"darkMode": newValue});
+      } on PlatformException catch (e) {
+    }
+  }
+
+  //legacy code
   Future<String> _getPassword() async {
     String response = "";
     String encrypted = prefs.getString(_prefPassword) ?? "";
@@ -64,7 +72,8 @@ class SettingRepository {
     const platform = const MethodChannel(Channel.channelUtil);
     if (encrypted.isNotEmpty) {
       try {
-        final String result = await platform.invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
+        final String result = await platform
+            .invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
         response = result;
       } on PlatformException catch (e) {
         response = "";
@@ -76,7 +85,8 @@ class SettingRepository {
   Future<LinkedHashMap> _getScreenList() async {
     MethodChannel platform = new MethodChannel(Channel.channelUtil);
     try {
-      final LinkedHashMap result = await platform.invokeMethod(Channel.actionUtilGetScreens);
+      final LinkedHashMap result =
+          await platform.invokeMethod(Channel.actionUtilGetScreens);
       return result;
     } on PlatformException catch (e) {
       print(e.message);
@@ -87,37 +97,37 @@ class SettingRepository {
   Future _convertLegacy() async {
     MethodChannel platform = new MethodChannel(Channel.channelUtil);
     try {
-      final LinkedHashMap result = await platform.invokeMethod(Channel.actionutilGetSettings);
+      final LinkedHashMap result =
+          await platform.invokeMethod(Channel.actionUtilGetSettings);
       if (result != null && result.length > 0) {
-          result.forEach((key, value) {
-            switch (key) {
-              case "prefSplash":
-                prefs.setBool(_prefFirstRun, value);                
-               break;             
-              case "NIGHT_MODE":
-                prefs.setBool(_prefNightMode, value);                
-               break;             
-              case "address":
-                prefs.setString(_prefAddress, value);                
-               break;             
-              case "port":
-                prefs.setString(_prefPort, value);                
-               break;             
-              case "password":
-                prefs.setString(_prefPassword, value);                
-               break;             
-              case "chosen_id":
-                prefs.setInt(_prefSelectedScreenId, value);                
-               break;             
-              case "seenHelp":
-                prefs.setBool(_prefShowHints, value);                
-               break;             
-            }
-          });
+        result.forEach((key, value) {
+          switch (key) {
+            case "prefSplash":
+              prefs.setBool(_prefFirstRun, value);
+              break;
+            case "NIGHT_MODE":
+              prefs.setBool(_prefNightMode, value);
+              break;
+            case "address":
+              prefs.setString(_prefAddress, value);
+              break;
+            case "port":
+              prefs.setString(_prefPort, value);
+              break;
+            case "password":
+              prefs.setString(_prefPassword, value);
+              break;
+            case "chosen_id":
+              prefs.setInt(_prefSelectedScreenId, value);
+              break;
+            case "seenHelp":
+              prefs.setBool(_prefShowHints, value);
+              break;
+          }
+        });
       }
     } on PlatformException catch (e) {
       print(e.message);
     }
-  } 
-
+  }
 }

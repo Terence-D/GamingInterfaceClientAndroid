@@ -20,7 +20,6 @@ class MainScreen extends StatefulWidget {
 class MainScreenState extends State<MainScreen> {
   MainPresentation presentation;
   ScreenListItem selectedScreen;
-  bool _darkTheme = false;
 
   MainScreenState(); // {}
 
@@ -37,6 +36,8 @@ class MainScreenState extends State<MainScreen> {
 
     presentation.loadSettings().then((_) {
       setState(() {
+        if (presentation.darkTheme)
+          _changeTheme(context, ThemeKeys.DARK);
         if (presentation.screenList.length > 0)
           selectedScreen = presentation.screenList[0];
         else
@@ -158,11 +159,11 @@ class MainScreenState extends State<MainScreen> {
     else if (choice == _choices[1])
       presentation.getNewActivity(Channel.actionViewIntro);
     else if (choice == _choices[0]) {
-      if (_darkTheme)
+      if (presentation.darkTheme)
         _changeTheme(context, ThemeKeys.LIGHT);
       else
         _changeTheme(context, ThemeKeys.DARK);
-      _darkTheme = !_darkTheme;
+      presentation.darkTheme = !presentation.darkTheme;
     }
   }
 }

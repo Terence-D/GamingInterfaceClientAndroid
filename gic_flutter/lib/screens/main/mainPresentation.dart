@@ -45,10 +45,13 @@ class MainPresentation {
 
   String get toolbarTitle => _viewModel.toolbarTitle;
   String get screenTitle => _viewModel.screenTitle;
-
+  bool get darkTheme => _viewModel.darkMode;
   bool get firstRun => _viewModel.firstRun;
   String get address => _viewModel.address;
   String get port => _viewModel.port;
   String get password => _viewModel.password;
   List<ScreenListItem> get screenList => _viewModel.screenList;
+  set darkTheme(bool newValue) => {
+    _viewModel.darkMode = newValue
+  };
 }

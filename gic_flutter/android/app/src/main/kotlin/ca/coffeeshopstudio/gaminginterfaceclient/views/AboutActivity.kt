@@ -1,15 +1,19 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import ca.coffeeshopstudio.gaminginterfaceclient.R
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import io.flutter.app.FlutterActivity
 
 /**
  * Copyright [2019] [Terence Doerksen]
@@ -31,9 +35,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
  */
 class AboutActivity : AppCompatActivity() {
 
+    val prefNightMode = "NIGHT_MODE"
+    fun darkMode () : Boolean {
+        val defaultPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        return defaultPrefs.getBoolean(prefNightMode, true)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        //        if (((App) getApplication()).isNightModeEnabled())
-        //            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
+        if (darkMode())
+            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_about)

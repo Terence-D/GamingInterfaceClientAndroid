@@ -5,9 +5,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -46,10 +48,16 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     private Spinner spinner;
     private int selectedScreenIndex = 0;
 
+    private String prefNightMode = "NIGHT_MODE";
+    boolean darkMode () {
+        SharedPreferences defaultPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        return defaultPrefs.getBoolean(prefNightMode, true);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        if (((App) getApplication()).isNightModeEnabled())
-//            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
+        if (darkMode())
+            setTheme(R.style.ActivityTheme_Primary_Base_Dark);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_screen_manager);
