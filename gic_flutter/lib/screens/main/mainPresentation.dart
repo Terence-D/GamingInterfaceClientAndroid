@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/mainVM.dart';
@@ -10,6 +10,7 @@ import 'package:gic_flutter/services/setting/settingRepository.dart';
 class MainPresentation {
   MainVM _viewModel;
   MainScreenState _state;
+  static const String _Version = "1.3.0.0"; 
 
   MainPresentation(MainScreenState state, SettingRepository repo) {
     _viewModel = new MainVM(repo);
@@ -31,17 +32,37 @@ class MainPresentation {
     }
   }
 
-  // Future<LinkedHashMap> asyncgetScreenList() async {
-  //   MethodChannel platform = new MethodChannel(Channel.channelUtil);
-  //   try {
-  //     final LinkedHashMap result = await platform.invokeMethod(Channel.actionUtilGetScreens);
-  //     debugPrint(result.toString());
-  //     return result;
-  //   } on PlatformException catch (e) {
-  //     print(e.message);
-  //   }
-  //   return null;
-  // }
+  Future<http.Response> _restGet(String address) async {
+    try {
+      return await http.get(address);
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
+
+  void startGame() async {
+    String url = "http://" + address + ":" + port + "/";
+    http.Response response = await _restGet(url).catchError((_) {
+      _state.showMessage("Error connecting, is the server running and firewall ports opened?");
+    }
+    );    
+    try {
+      if (response == null)
+        _state.showMessage("Error connecting, is the server running and firewall ports opened?");
+
+      if (response.statusCode == 200) {
+        if (response.body == _Version) {
+          _state.startGame();
+        } else {
+          _state.showUpgradeWarning();
+        }
+      } else {
+          _state.showMessage(response.statusCode.toString());
+      }
+    } catch (e) {
+          _state.showMessage(e.toString());
+    }
+  }
 
   String get toolbarTitle => _viewModel.toolbarTitle;
   String get screenTitle => _viewModel.screenTitle;
