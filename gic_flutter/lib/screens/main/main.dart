@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/mainVM.dart';
@@ -34,6 +35,17 @@ class MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
+    //when control is returned from the legacy android, this will update the screen list
+    SystemChannels.lifecycle.setMessageHandler((msg){
+      if ( msg==AppLifecycleState.resumed.toString())
+        presentation.loadSettings().then((_) {
+          setState(() {
+            if (presentation.screenList.length > 0)
+              selectedScreen = presentation.screenList[0];
+          });
+        });
+    });
+
     presentation = new MainPresentation(this, widget.repository);
 
     presentation.loadSettings().then((_) {
@@ -41,8 +53,6 @@ class MainScreenState extends State<MainScreen> {
         if (presentation.darkTheme) _changeTheme(context, ThemeKeys.DARK);
         if (presentation.screenList.length > 0)
           selectedScreen = presentation.screenList[0];
-        else
-          selectedScreen = new ScreenListItem(0, "test");
       });
     });
   }

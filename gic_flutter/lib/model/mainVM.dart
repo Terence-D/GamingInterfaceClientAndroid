@@ -27,6 +27,7 @@ class MainVM extends Equatable {
     _darkMode = _settingRepo.darkMode;
     _password = _settingRepo.password;
     LinkedHashMap _screenListMap = _settingRepo.screenList;
+    _screenList = new List();
     _screenListMap.forEach((k, v) => _screenList.add(new ScreenListItem(k, v)) );
   }
 
