@@ -35,6 +35,8 @@ class MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
 
+    presentation = new MainPresentation(this, widget.repository);
+
     //when control is returned from the legacy android, this will update the screen list
     SystemChannels.lifecycle.setMessageHandler((msg){
       if ( msg==AppLifecycleState.resumed.toString())
@@ -45,8 +47,6 @@ class MainScreenState extends State<MainScreen> {
           });
         });
     });
-
-    presentation = new MainPresentation(this, widget.repository);
 
     presentation.loadSettings().then((_) {
       setState(() {
@@ -124,7 +124,7 @@ class MainScreenState extends State<MainScreen> {
                       children: <Widget>[
                         DropdownButton<ScreenListItem>(
                           value: selectedScreen,
-                          items: presentation.screenList
+                          items:  presentation.screenList
                               .map((ScreenListItem item) {
                             return new DropdownMenuItem<ScreenListItem>(
                               value: item,
@@ -155,6 +155,8 @@ class MainScreenState extends State<MainScreen> {
           ),
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
+              if (presentation.screenList.length < 1)
+                showMessage("You need to add a screen from the screen manager first!");
               presentation.startGame();
             },
             label: Text('Start'),

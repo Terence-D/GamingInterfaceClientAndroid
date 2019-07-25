@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   var myApp = MyApp(SettingRepository(await SharedPreferences.getInstance()));
   var myTheme =  CustomTheme(
-      initialThemeKey: ThemeKeys.LIGHT,
+      initialThemeKey: ThemeKeys.DARK,
       child: myApp,
     );
 

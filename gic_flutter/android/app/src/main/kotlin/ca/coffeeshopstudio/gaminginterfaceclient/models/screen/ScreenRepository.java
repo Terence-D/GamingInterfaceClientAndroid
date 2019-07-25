@@ -94,9 +94,22 @@ public class ScreenRepository implements IScreenRepository {
         return rv;
     }
 
+    public void checkForScreens() {
+        Log.d("tag", "checkscreens");
+        if (cache.size() == 0) {
+            Screen screen = new Screen(0, context);
+            SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = prefs.edit();
+            prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
+            prefsEditor.apply();
+            cache.add(screen);
+            Log.d("tag", "checkscreens added");
+        }
+    }
+
     public SparseArray<String> screenListGetterSync(Context context) {
         SparseArray<String> rv = new SparseArray<>();
-        if (cache != null) {
+        if (cache != null) { // && cache.size() > 0) {
             for (IScreen screen : cache) {
                 rv.put(screen.getScreenId(), screen.getName());
             }
@@ -106,6 +119,7 @@ public class ScreenRepository implements IScreenRepository {
                 rv.put(screen.getScreenId(), screen.getName());
             }
         }
+
 
         return rv;
     }

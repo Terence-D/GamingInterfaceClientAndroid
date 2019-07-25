@@ -1,27 +1,19 @@
 package ca.coffeeshopstudio.gaminginterfaceclient
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
+import androidx.core.util.forEach
+import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
 import ca.coffeeshopstudio.gaminginterfaceclient.views.AboutActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
-import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity
-import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
-import android.util.SparseArray
-import androidx.core.util.forEach
-import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository
-import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
-import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
-import android.content.Context.MODE_PRIVATE
-import android.R.id.edit
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
-import java.util.prefs.Preferences
 
 
 class MainActivity: FlutterActivity() {
@@ -42,6 +34,8 @@ class MainActivity: FlutterActivity() {
     const val actionUpdateDarkMode = "darkmode/set";
   }
 
+  private lateinit var _result: MethodChannel.Result
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     GeneratedPluginRegistrant.registerWith(this)
@@ -52,12 +46,12 @@ class MainActivity: FlutterActivity() {
 
   private fun buildActivityChannel() {
     MethodChannel(flutterView, channelView).setMethodCallHandler { call, result ->
+      _result = result
       Log.d("tag", call.method)
       when (call.method) {
         actionIntro -> {
           val intent = Intent(this, SplashIntroActivity::class.java)
-          startActivity(intent)
-          result.success(true)
+          startActivityForResult(intent, 1234)
         }
         actionAbout -> {
           val intent = Intent(this, AboutActivity::class.java)
@@ -79,6 +73,14 @@ class MainActivity: FlutterActivity() {
         }
       }
     }
+  }
+
+  override fun onActivityResult(requestCode: Int, result: Int, intent: Intent?) {
+    if(requestCode != 1234)
+      return super.onActivityResult(requestCode, result, intent)
+    val screenRepository = ScreenRepository(applicationContext)
+    screenRepository.checkForScreens()
+    _result.success(true)
   }
 
   private fun buildUtilChannel() {
