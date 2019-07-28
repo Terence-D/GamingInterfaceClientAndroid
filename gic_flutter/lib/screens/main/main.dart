@@ -23,6 +23,10 @@ class MainScreen extends StatefulWidget {
 class MainScreenState extends State<MainScreen> {
   MainPresentation presentation;
   ScreenListItem selectedScreen;
+  TextEditingController passwordController = new TextEditingController();
+  TextEditingController addressController = new TextEditingController();
+  TextEditingController portController = new TextEditingController();
+  bool _loading = false;
 
   MainScreenState(); // {}
 
@@ -53,6 +57,9 @@ class MainScreenState extends State<MainScreen> {
         if (presentation.darkTheme) _changeTheme(context, ThemeKeys.DARK);
         if (presentation.screenList.length > 0)
           selectedScreen = presentation.screenList[0];
+        passwordController.text = presentation.password;
+        portController.text = presentation.port;
+        addressController.text = presentation.address;
       });
     });
   }
@@ -60,9 +67,17 @@ class MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called
-    if (presentation.password == null) {
-      return new Center(
-        child: new CircularProgressIndicator(),
+    if (presentation.password == null || _loading) {
+      return new Stack(
+        children: [
+          new Opacity(
+            opacity: 0.3,
+            child: const ModalBarrier(dismissible: false, color: Colors.grey),
+          ),
+          new Center(
+            child: new CircularProgressIndicator(),
+          ),
+        ],
       );
     } else
       return Scaffold(
@@ -97,18 +112,18 @@ class MainScreenState extends State<MainScreen> {
                       style: Theme.of(context).textTheme.title,
                     ),
                     TextFormField(
-                      initialValue: presentation.address,
+                      controller: addressController,
                       decoration: InputDecoration(hintText: "Address"),
                     ),
                     TextFormField(
-                      initialValue: presentation.port,
+                      controller: portController,
                       decoration: InputDecoration(
                         hintText: "Port",
                       ),
                     ),
                     TextFormField(
-                      //controller: passwordController,
-                      initialValue: presentation.password,
+                      controller: passwordController,
+                      obscureText: true,
                       decoration: InputDecoration(
                         hintText: "Password",
                       ),
@@ -142,7 +157,7 @@ class MainScreenState extends State<MainScreen> {
                         RaisedButton(
                           onPressed: () {
                             presentation
-                                .getNewActivity(Channel.actionViewManager);
+                              .getNewActivity(Channel.actionViewManager);
                           },
                           child: Text('Screen Manager'),
                         ),
@@ -157,7 +172,7 @@ class MainScreenState extends State<MainScreen> {
             onPressed: () {
               if (presentation.screenList.length < 1)
                 showMessage("You need to add a screen from the screen manager first!");
-              presentation.startGame();
+              presentation.startGame(passwordController.text, addressController.text, portController.text);
             },
             label: Text('Start'),
           )); //
@@ -165,6 +180,12 @@ class MainScreenState extends State<MainScreen> {
 
   void _changeTheme(BuildContext buildContext, ThemeKeys key) {
     CustomTheme.instanceOf(buildContext).changeTheme(key);
+  }
+
+  void setConnectingIndicator(bool visible) {
+    setState(() {
+    _loading = visible;
+    });
   }
 
   //action to take when picking from the menu

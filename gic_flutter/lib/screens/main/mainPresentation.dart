@@ -32,6 +32,15 @@ class MainPresentation {
     }
   }
 
+  getStartActivity() async {
+    MethodChannel platform = new MethodChannel(Channel.channelView);
+    try {
+      await platform.invokeMethod(Channel.actionViewStart, [password, address, port]);
+    } on PlatformException catch (e) {
+      print(e.message);
+    }
+  }
+
   Future<http.Response> _restGet(String address) async {
     try {
       return await http.get(address);
@@ -40,7 +49,23 @@ class MainPresentation {
     }
   }
 
-  void startGame() async {
+  void startGame(String password, String address, String port) async {
+    _state.setConnectingIndicator(true);
+    if (password.length < 6) {
+        _state.showMessage("invalid password, it must be at least 6 digits long");
+        _state.setConnectingIndicator(false);
+        return;
+    }
+    if (int.tryParse(port) == null) {
+        _state.showMessage("invalid port number");
+        _state.setConnectingIndicator(false);
+        return;
+    }
+
+    _viewModel.password = password;
+    _viewModel.address = address;
+    _viewModel.port = port;
+    _viewModel.saveSettings();
     String url = "http://" + address + ":" + port + "/";
     http.Response response = await _restGet(url).catchError((_) {
       _state.showMessage("Error connecting, is the server running and firewall ports opened?");
@@ -49,10 +74,9 @@ class MainPresentation {
     try {
       if (response == null)
         _state.showMessage("Error connecting, is the server running and firewall ports opened?");
-
-      if (response.statusCode == 200) {
+      else if (response.statusCode == 200) {
         if (response.body == _Version) {
-          _state.startGame();
+            _state.startGame();
         } else {
           _state.showUpgradeWarning();
         }
@@ -61,6 +85,8 @@ class MainPresentation {
       }
     } catch (e) {
           _state.showMessage(e.toString());
+    } finally {
+        _state.setConnectingIndicator(false);
     }
   }
 

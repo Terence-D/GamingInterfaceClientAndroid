@@ -29,6 +29,7 @@ class MainActivity: FlutterActivity() {
     const val actionManager = "manager"
 
     const val actionDecrypt = "decrypt"
+    const val actionEncrypt = "encrypt"
     const val actionGetScreens = "screens/get"
     const val actionGetSettings = "settings/get"
     const val actionUpdateDarkMode = "darkmode/set";
@@ -59,7 +60,13 @@ class MainActivity: FlutterActivity() {
           result.success(true)
         }
         actionStart-> {
+          val password = CryptoHelper.encrypt (call.argument("password"))
+          val address: String? = call.argument("address")
+          val port: String? = call.argument("port")
           val intent = Intent(this, GameActivity::class.java)
+          intent.putExtra("password", password)
+          intent.putExtra("address", address)
+          intent.putExtra("port", port)
           startActivity(intent)
           result.success(true)
         }
@@ -91,6 +98,11 @@ class MainActivity: FlutterActivity() {
           val password = CryptoHelper.decrypt(call.argument("code"))
           result.success(password)
         }
+        actionEncrypt -> {
+          Log.d("tag", "encrypt")
+          val encrypted = CryptoHelper.encrypt(call.argument("password"))
+          result.success(encrypted)
+        }
         actionGetScreens -> {
           val screenRepository = ScreenRepository(applicationContext)
           val screenList = screenRepository.screenListGetterSync(applicationContext)
@@ -114,6 +126,7 @@ class MainActivity: FlutterActivity() {
           editor.apply()
         }
         else -> {
+          Log.d("tag", call.method)
           result.notImplemented()
         }
       }

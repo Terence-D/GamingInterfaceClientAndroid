@@ -18,6 +18,10 @@ class MainVM extends Equatable {
     _settingRepo = settingRepo;
   }
 
+  Future<void> saveSettings() async {
+    await _settingRepo.saveMainSettings(_address, _port, _password);
+  }
+
   Future<void> loadSettings() async {
     await _settingRepo.loadSettings();
     _selectedScreenId = _settingRepo.selectedScreenId;
@@ -37,6 +41,15 @@ class MainVM extends Equatable {
   String get address => _address;
   String get password => _password;
   String get port => _port;
+  set password(String newValue)  {
+     _password = newValue;
+  }
+  set address(String newValue) { 
+  _address = newValue;
+  }
+  set port(String newValue) { 
+  _port = newValue;
+  }
 
   List<ScreenListItem> get screenList => _screenList;
 
@@ -49,7 +62,6 @@ class MainVM extends Equatable {
     _darkMode = newValue;
     _settingRepo.setDarkMode (newValue);
   }
-
 }
 
 class ScreenListItem {

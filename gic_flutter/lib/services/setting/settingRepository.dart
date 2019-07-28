@@ -35,6 +35,15 @@ class SettingRepository {
   String get password => _password;
   LinkedHashMap get screenList => _screenList;
 
+  saveMainSettings(String address, String port, String password) async {
+    _address = address;
+    _port = port;
+    _password = password;
+    prefs.setString(_prefAddress, address);
+    prefs.setString(_prefPort, port);
+    prefs.setString(_prefPassword, await _encryptPassword());
+  }
+
   loadSettings() async {
     //this handles reading in legacy settings
     bool needToConvert = prefs.getBool(_prefConvert) ?? true;
@@ -62,6 +71,22 @@ class SettingRepository {
       platform.invokeMethod(Channel.actionUtilUpdateDarkMode, {"darkMode": newValue});
       } on PlatformException catch (e) {
     }
+  }
+
+  Future<String> _encryptPassword() async {
+    String response = "";
+
+    const platform = const MethodChannel(Channel.channelUtil);
+    if (_password.isNotEmpty) {
+      try {
+        final String result = await platform
+            .invokeMethod(Channel.actionUtilEncrypt, {"password": password});
+        response = result;
+      } on PlatformException catch (e) {
+        response = "";
+      }
+    }
+    return response;
   }
 
   //legacy code
