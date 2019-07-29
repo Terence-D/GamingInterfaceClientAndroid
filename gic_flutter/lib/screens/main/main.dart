@@ -172,7 +172,7 @@ class MainScreenState extends State<MainScreen> {
             onPressed: () {
               if (presentation.screenList.length < 1)
                 showMessage("You need to add a screen from the screen manager first!");
-              presentation.startGame(passwordController.text, addressController.text, portController.text);
+              presentation.startGame(passwordController.text, addressController.text, portController.text, selectedScreen.id);
             },
             label: Text('Start'),
           )); //
@@ -228,7 +228,7 @@ class MainScreenState extends State<MainScreen> {
   }
 
   void startGame() {
-    presentation.getNewActivity(Channel.actionViewStart);
+    presentation.getStartActivity();
   }
 }
 

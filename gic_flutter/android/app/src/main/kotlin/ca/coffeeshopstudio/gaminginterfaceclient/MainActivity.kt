@@ -60,13 +60,16 @@ class MainActivity: FlutterActivity() {
           result.success(true)
         }
         actionStart-> {
+          Log.d("tag", "starting")
           val password = CryptoHelper.encrypt (call.argument("password"))
           val address: String? = call.argument("address")
           val port: String? = call.argument("port")
+          val screen: Int? = call.argument("selectedScreenId")
           val intent = Intent(this, GameActivity::class.java)
           intent.putExtra("password", password)
           intent.putExtra("address", address)
           intent.putExtra("port", port)
+          intent.putExtra("screen_index", screen)
           startActivity(intent)
           result.success(true)
         }

@@ -10,7 +10,7 @@ import 'package:gic_flutter/services/setting/settingRepository.dart';
 class MainPresentation {
   MainVM _viewModel;
   MainScreenState _state;
-  static const String _Version = "1.3.0.0"; 
+  static const String _Version = "\"1.3.0.0\"";
 
   MainPresentation(MainScreenState state, SettingRepository repo) {
     _viewModel = new MainVM(repo);
@@ -35,7 +35,7 @@ class MainPresentation {
   getStartActivity() async {
     MethodChannel platform = new MethodChannel(Channel.channelView);
     try {
-      await platform.invokeMethod(Channel.actionViewStart, [password, address, port]);
+      await platform.invokeMethod(Channel.actionViewStart, {"password": password, "address": address, "port":port, "selectedScreenId": selectedScreenID});
     } on PlatformException catch (e) {
       print(e.message);
     }
@@ -49,7 +49,7 @@ class MainPresentation {
     }
   }
 
-  void startGame(String password, String address, String port) async {
+  void startGame(String password, String address, String port, int selectedScreenId) async {
     _state.setConnectingIndicator(true);
     if (password.length < 6) {
         _state.showMessage("invalid password, it must be at least 6 digits long");
@@ -65,8 +65,9 @@ class MainPresentation {
     _viewModel.password = password;
     _viewModel.address = address;
     _viewModel.port = port;
+    _viewModel.selectedScreenId = selectedScreenId;
     _viewModel.saveSettings();
-    String url = "http://" + address + ":" + port + "/";
+    String url = "http://" + address + ":" + port + "/api/Version";
     http.Response response = await _restGet(url).catchError((_) {
       _state.showMessage("Error connecting, is the server running and firewall ports opened?");
     }
@@ -98,6 +99,7 @@ class MainPresentation {
   String get port => _viewModel.port;
   String get password => _viewModel.password;
   List<ScreenListItem> get screenList => _viewModel.screenList;
+  int get selectedScreenID => _viewModel.selectedScreenId;
   set darkTheme(bool newValue) => {
     _viewModel.darkMode = newValue
   };

@@ -35,13 +35,14 @@ class SettingRepository {
   String get password => _password;
   LinkedHashMap get screenList => _screenList;
 
-  saveMainSettings(String address, String port, String password) async {
+  saveMainSettings(String address, String port, String password, int screenId) async {
     _address = address;
     _port = port;
     _password = password;
     prefs.setString(_prefAddress, address);
     prefs.setString(_prefPort, port);
     prefs.setString(_prefPassword, await _encryptPassword());
+    prefs.setInt(_prefSelectedScreenId, screenId);
   }
 
   loadSettings() async {

@@ -19,7 +19,7 @@ class MainVM extends Equatable {
   }
 
   Future<void> saveSettings() async {
-    await _settingRepo.saveMainSettings(_address, _port, _password);
+    await _settingRepo.saveMainSettings(_address, _port, _password, selectedScreenId);
   }
 
   Future<void> loadSettings() async {
@@ -49,6 +49,9 @@ class MainVM extends Equatable {
   }
   set port(String newValue) { 
   _port = newValue;
+  }
+  set selectedScreenId(int newValue) {
+    _selectedScreenId = newValue;
   }
 
   List<ScreenListItem> get screenList => _screenList;
