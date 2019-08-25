@@ -7,6 +7,7 @@ import 'package:gic_flutter/screens/main/mainPresentation.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
+import 'package:highlighter_coachmark/highlighter_coachmark.dart';
 import 'package:toast/toast.dart';
 
 class MainScreen extends StatefulWidget {
@@ -27,6 +28,12 @@ class MainScreenState extends State<MainScreen> {
   TextEditingController addressController = new TextEditingController();
   TextEditingController portController = new TextEditingController();
   bool _loading = false;
+  GlobalKey _fabKey = GlobalObjectKey("fab");
+  GlobalKey _addressKey = GlobalObjectKey("address");
+  GlobalKey _portKey = GlobalObjectKey("port");
+  GlobalKey _passwordKey = GlobalObjectKey("password");
+  GlobalKey _listKey = GlobalObjectKey("list");
+  GlobalKey _manageKey = GlobalObjectKey("manage");
 
   MainScreenState(); // {}
 
@@ -42,8 +49,8 @@ class MainScreenState extends State<MainScreen> {
     presentation = new MainPresentation(this, widget.repository);
 
     //when control is returned from the legacy android, this will update the screen list
-    SystemChannels.lifecycle.setMessageHandler((msg){
-      if ( msg==AppLifecycleState.resumed.toString())
+    SystemChannels.lifecycle.setMessageHandler((msg) {
+      if (msg == AppLifecycleState.resumed.toString())
         presentation.loadSettings().then((_) {
           setState(() {
             if (presentation.screenList.length > 0)
@@ -86,7 +93,11 @@ class MainScreenState extends State<MainScreen> {
             title: Text(presentation.toolbarTitle),
             actions: <Widget>[
               // action button
-              IconButton(icon: Icon(Icons.help_outline), onPressed: () {}),
+              IconButton(
+                  icon: Icon(Icons.help_outline),
+                  onPressed: () {
+                    _showHelp();
+                  }),
               // overflow menu
               PopupMenuButton<_MenuOptions>(
                 onSelected: _select,
@@ -139,7 +150,7 @@ class MainScreenState extends State<MainScreen> {
                       children: <Widget>[
                         DropdownButton<ScreenListItem>(
                           value: selectedScreen,
-                          items:  presentation.screenList
+                          items: presentation.screenList
                               .map((ScreenListItem item) {
                             return new DropdownMenuItem<ScreenListItem>(
                               value: item,
@@ -157,7 +168,7 @@ class MainScreenState extends State<MainScreen> {
                         RaisedButton(
                           onPressed: () {
                             presentation
-                              .getNewActivity(Channel.actionViewManager);
+                                .getNewActivity(Channel.actionViewManager);
                           },
                           child: Text('Screen Manager'),
                         ),
@@ -169,10 +180,16 @@ class MainScreenState extends State<MainScreen> {
             ),
           ),
           floatingActionButton: FloatingActionButton.extended(
+            key: _fabKey,
             onPressed: () {
               if (presentation.screenList.length < 1)
-                showMessage("You need to add a screen from the screen manager first!");
-              presentation.startGame(passwordController.text, addressController.text, portController.text, selectedScreen.id);
+                showMessage(
+                    "You need to add a screen from the screen manager first!");
+              presentation.startGame(
+                  passwordController.text,
+                  addressController.text,
+                  portController.text,
+                  selectedScreen.id);
             },
             label: Text('Start'),
           )); //
@@ -184,7 +201,7 @@ class MainScreenState extends State<MainScreen> {
 
   void setConnectingIndicator(bool visible) {
     setState(() {
-    _loading = visible;
+      _loading = visible;
     });
   }
 
@@ -204,31 +221,62 @@ class MainScreenState extends State<MainScreen> {
   }
 
   void showMessage(String text) {
-    Toast.show("Error " + text, context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);    
+    Toast.show("Error " + text, context,
+        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
   }
 
   void showUpgradeWarning() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text("Wrong Version"),
-          content: new Text("The GIC Server appears to be out of date - please upgrade to the latest version by clicking on the \"Website\" link on the server.  If you did not yet install the server, click the Help button"), 
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ],
-        );
-      }
-    );
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Wrong Version"),
+            content: new Text(
+                "The GIC Server appears to be out of date - please upgrade to the latest version by clicking on the \"Website\" link on the server.  If you did not yet install the server, click the Help button"),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("Close"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        });
   }
 
   void startGame() {
     presentation.getStartActivity();
+  }
+
+  void _showHelp() {
+    _helpDisplay("address", _addressKey);
+  }
+
+  void _helpDisplay(String text, GlobalKey key) {
+    CoachMark coachMarkFAB = CoachMark();
+    RenderBox target = _fabKey.currentContext.findRenderObject();
+
+    Rect markRect = target.localToGlobal(Offset.zero) & target.size;
+    markRect = Rect.fromCircle(
+        center: markRect.center, radius: markRect.longestSide * 0.6);
+
+    coachMarkFAB.show(
+        targetContext: _fabKey.currentContext,
+        markRect: markRect,
+        children: [
+          Center(
+              child: Text("Tap on button\nto add a friend",
+                  style: const TextStyle(
+                    fontSize: 24.0,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.white,
+                  )))
+        ],
+        duration: null,
+        onClose: () {
+          //Timer(Duration(seconds: 3), () => showCoachMarkTile());
+        });
   }
 }
 
