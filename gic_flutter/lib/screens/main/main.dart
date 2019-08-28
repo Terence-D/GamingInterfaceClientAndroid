@@ -123,16 +123,19 @@ class MainScreenState extends State<MainScreen> {
                       style: Theme.of(context).textTheme.title,
                     ),
                     TextFormField(
+                      key: _addressKey,
                       controller: addressController,
                       decoration: InputDecoration(hintText: "Address"),
                     ),
                     TextFormField(
+                      key: _portKey,
                       controller: portController,
                       decoration: InputDecoration(
                         hintText: "Port",
                       ),
                     ),
                     TextFormField(
+                      key: _passwordKey,
                       controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
@@ -149,6 +152,7 @@ class MainScreenState extends State<MainScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         DropdownButton<ScreenListItem>(
+                          key: _listKey,
                           value: selectedScreen,
                           items: presentation.screenList
                               .map((ScreenListItem item) {
@@ -166,6 +170,7 @@ class MainScreenState extends State<MainScreen> {
                           },
                         ),
                         RaisedButton(
+                          key: _manageKey,
                           onPressed: () {
                             presentation
                                 .getNewActivity(Channel.actionViewManager);
@@ -250,23 +255,34 @@ class MainScreenState extends State<MainScreen> {
   }
 
   void _showHelp() {
-    _helpDisplay("address", _addressKey);
+    _helpDisplay("Enter the IP Address of the server here, or tap outside the circle for the next hint (1/4)",
+      _addressKey,
+      lengthModifier: .25
+     );
   }
 
-  void _helpDisplay(String text, GlobalKey key) {
+  void _helpDisplay(String text, GlobalKey key, {double lengthModifier = -1}) {
     CoachMark coachMarkFAB = CoachMark();
-    RenderBox target = _fabKey.currentContext.findRenderObject();
+    RenderBox target = key.currentContext.findRenderObject();
 
     Rect markRect = target.localToGlobal(Offset.zero) & target.size;
-    markRect = Rect.fromCircle(
-        center: markRect.center, radius: markRect.longestSide * 0.6);
+
+    double _length = markRect.longestSide;
+    if (lengthModifier > 0)
+      _length = markRect.longestSide * lengthModifier;
+
+
+    markRect = Rect.fromLTWH(
+      markRect.left, markRect.top, _length, markRect.height);
+    // markRect = Rect.fromCircle(
+    //     center: markRect.centerLeft, radius: _length * 0.6);
 
     coachMarkFAB.show(
         targetContext: _fabKey.currentContext,
         markRect: markRect,
         children: [
           Center(
-              child: Text("Tap on button\nto add a friend",
+              child: Text(text,
                   style: const TextStyle(
                     fontSize: 24.0,
                     fontStyle: FontStyle.italic,
