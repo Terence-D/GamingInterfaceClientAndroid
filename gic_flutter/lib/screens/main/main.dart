@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,7 +23,21 @@ class MainScreen extends StatefulWidget {
   }
 }
 
+class HighligherHelp {
+  HighligherHelp (String text, GlobalKey highlight, double highlightSize, MainAxisAlignment alignment) {
+    this.text = text;
+    this.highlight = highlight;
+    this.highlightSize = highlightSize;
+    this.alignment = alignment;;
+  }
+  String text;
+  GlobalKey highlight;
+  double highlightSize;
+  MainAxisAlignment alignment;
+}
+
 class MainScreenState extends State<MainScreen> {
+
   MainPresentation presentation;
   ScreenListItem selectedScreen;
   TextEditingController passwordController = new TextEditingController();
@@ -34,6 +50,8 @@ class MainScreenState extends State<MainScreen> {
   GlobalKey _passwordKey = GlobalObjectKey("password");
   GlobalKey _listKey = GlobalObjectKey("list");
   GlobalKey _manageKey = GlobalObjectKey("manage");
+
+  Queue<HighligherHelp> highlights = new Queue();
 
   MainScreenState(); // {}
 
@@ -96,7 +114,7 @@ class MainScreenState extends State<MainScreen> {
               IconButton(
                   icon: Icon(Icons.help_outline),
                   onPressed: () {
-                    _showHelp();
+                    _loadHelp();
                   }),
               // overflow menu
               PopupMenuButton<_MenuOptions>(
@@ -254,14 +272,34 @@ class MainScreenState extends State<MainScreen> {
     presentation.getStartActivity();
   }
 
-  void _showHelp() {
-    _helpDisplay("Enter the IP Address of the server here, or tap outside the circle for the next hint (1/4)",
-      _addressKey,
-      lengthModifier: .25
-     );
+  void _loadHelp() {
+    highlights = new Queue();
+    highlights.add(new HighligherHelp("IP Address: The network address of the computer running the server.  This can be found  in Windows 10 by going into Settings, then Network and Internet, and usually starts with \"192\"", 
+        _addressKey, .25, MainAxisAlignment.center));
+    highlights.add(new HighligherHelp("Password: this has to match on the server as well, and is used to provide some security", 
+      _passwordKey, .25, MainAxisAlignment.center));
+    highlights.add(new HighligherHelp("Screen List: This will let you select different screens you have created to use", 
+      _listKey, 1, MainAxisAlignment.end));
+    highlights.add(new HighligherHelp("Manager: Tapping on this will open up the Screen Manager where you can create, edit, delete, and import/export other screens", 
+      _manageKey, 1, MainAxisAlignment.end));
+    highlights.add(new HighligherHelp("Start: Tapping this will connect to the server and let you start with the screen you\'ve selected", 
+    _fabKey, 1, MainAxisAlignment.center));
+
+    _showHelp();
   }
 
-  void _helpDisplay(String text, GlobalKey key, {double lengthModifier = -1}) {
+  void _showHelp() {
+    if (highlights.isNotEmpty) {
+      HighligherHelp toShow = highlights.removeFirst();
+      _helpDisplay(toShow.text,
+        toShow.highlight,
+        toShow.highlightSize,
+        toShow.alignment
+      );
+    }
+  }
+
+  void _helpDisplay(String text, GlobalKey key, lengthModifier, MainAxisAlignment alignment) {
     CoachMark coachMarkFAB = CoachMark();
     RenderBox target = key.currentContext.findRenderObject();
 
@@ -281,18 +319,27 @@ class MainScreenState extends State<MainScreen> {
         targetContext: _fabKey.currentContext,
         markRect: markRect,
         children: [
-          Center(
-              child: Text(text,
-                  style: const TextStyle(
-                    fontSize: 24.0,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.white,
-                  )))
+          Column(
+            mainAxisAlignment: alignment,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children:[ 
+              Text(text,
+              style: const TextStyle(
+                fontSize: 24.0,
+                fontStyle: FontStyle.italic,
+                color: Colors.white,
+              )),
+              RaisedButton(
+                child: new Text("Next"),
+                onPressed: () {
+                  _showHelp();
+                }
+              ),
+            ]
+          )
         ],
         duration: null,
-        onClose: () {
-          //Timer(Duration(seconds: 3), () => showCoachMarkTile());
-        });
+        onClose: () { });
   }
 }
 
