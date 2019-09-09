@@ -12,7 +12,7 @@ void main() async {
       initialThemeKey: ThemeKeys.DARK,
       child: myApp,
     );
-
+    WidgetsFlutterBinding.ensureInitialized();
     runApp(myTheme);
 }
 
