@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: CustomTheme.of(context),
       title: 'Gaming Interface Client',
       //theme: lightTheme(),
-      darkTheme: darkTheme(),
+      //darkTheme: darkTheme(),
       home: MainScreen(_settingRepository),
     );
   }

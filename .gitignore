@@ -86,3 +86,4 @@ gic_android/.idea/libraries/
 gic_android/.idea/modules.xml                                                                                         
 gic_android/.idea/workspace.xml          
 gic_flutter/android/key.properties
+gic_flutter/ios/Flutter/flutter_export_environment.sh

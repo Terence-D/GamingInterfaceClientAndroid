@@ -92,6 +92,7 @@ class MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called
+    // This if statement breaks themeing?!?!
     if (presentation.password == null || _loading) {
       return new Stack(
         children: [
