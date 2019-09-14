@@ -245,8 +245,8 @@ class MainScreenState extends State<MainScreen> {
   }
 
   void showMessage(String text) {
-    Toast.show("Error " + text, context,
-        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+    Toast.show( text, context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
   }
 
   void showUpgradeWarning() {

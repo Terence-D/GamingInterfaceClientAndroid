@@ -68,11 +68,9 @@ class MainPresentation {
     _viewModel.selectedScreenId = selectedScreenId;
     _viewModel.saveSettings();
     String url = "http://" + address + ":" + port + "/api/Version";
-    http.Response response = await _restGet(url).catchError((_) {
-      _state.showMessage("Error connecting, is the server running and firewall ports opened?");
-    }
-    );    
+    
     try {
+      http.Response response = await _restGet(url);    
       if (response == null)
         _state.showMessage("Error connecting, is the server running and firewall ports opened?");
       else if (response.statusCode == 200) {
