@@ -64,6 +64,13 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.app_name);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         setPresentation(new ScreenManagerPresentation(new ScreenRepository(getApplicationContext()), this));
         presentation.load();

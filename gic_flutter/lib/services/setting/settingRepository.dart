@@ -72,14 +72,12 @@ class SettingRepository {
     if (prefs.containsKey(_prefDonate)) 
       _donate = prefs.getBool(_prefDonate);
     else {
-      debugPrint(_prefDonate + " not found");
       _donate = false;  
     }
     
      if (prefs.containsKey(_prefDonateStar))
       _donateStar = prefs.getBool(_prefDonateStar);
     else {
-      debugPrint(_prefDonateStar + " not found");
       _donateStar = false;  
     }
   }

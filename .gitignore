@@ -87,3 +87,6 @@ gic_android/.idea/modules.xml
 gic_android/.idea/workspace.xml          
 gic_flutter/android/key.properties
 gic_flutter/ios/Flutter/flutter_export_environment.sh
+gic_flutter/android/.settings/org.eclipse.buildship.core.prefs
+gic_flutter/android/app/.classpath
+gic_flutter/android/app/.settings/org.eclipse.buildship.core.prefs

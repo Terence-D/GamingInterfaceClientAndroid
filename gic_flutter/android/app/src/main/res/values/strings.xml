@@ -287,4 +287,6 @@
     </string>
     <string name="donation_link">More Information on GIC</string>
     <string name="refresh_purchases">Refresh Purchases</string>
+    <string name="slideSupport">Support Development</string>
+    <string name="slideSupportDesc">Although this app is completely free and open source (and will remain as such!), if you like the app and wish to support development, I appreciate any support you can provide.  There is a Donate menu option for more information.  Thank you :)</string>
 </resources>

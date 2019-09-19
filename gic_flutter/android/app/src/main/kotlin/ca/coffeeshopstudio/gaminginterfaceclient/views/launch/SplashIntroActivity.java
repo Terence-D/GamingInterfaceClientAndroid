@@ -86,5 +86,13 @@ public class SplashIntroActivity extends IntroActivity {
                 .background(R.color.slideBackground)
                 .backgroundDark(R.color.colorPrimaryDark)
                 .build());
+
+        addSlide(new SimpleSlide.Builder()
+                .title(R.string.slideSupport)
+                .image(R.drawable.ic_free_breakfast_white_192dp)
+                .description(R.string.slideSupportDesc)
+                .background(R.color.slideBackground)
+                .backgroundDark(R.color.colorPrimaryDark)
+                .build());
     }
 }

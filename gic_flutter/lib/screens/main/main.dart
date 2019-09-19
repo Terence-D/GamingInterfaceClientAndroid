@@ -76,6 +76,11 @@ class MainScreenState extends State<MainScreen> {
           setState(() {
             if (presentation.screenList.length > 0)
               selectedScreen = presentation.screenList[0];
+            passwordController.text = presentation.password;
+            portController.text = presentation.port;
+            addressController.text = presentation.address;
+            donate = presentation.donate;
+            donateStar = presentation.donateStar;
           });
         });
     });

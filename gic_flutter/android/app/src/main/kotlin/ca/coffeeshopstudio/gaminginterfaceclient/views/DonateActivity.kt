@@ -46,6 +46,10 @@ class DonateActivity : AppCompatActivity(), PurchasesUpdatedListener, View.OnCli
     val toolbar = findViewById<Toolbar>(R.id.toolbar)
     setSupportActionBar(toolbar)
     toolbar.setTitle(R.string.app_name)
+    toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp)
+    toolbar.setNavigationOnClickListener {
+      finish()
+    }
     btnDonateWiki = this.findViewById<Button>(R.id.btnDonateWiki)
     btnDonateWiki.setOnClickListener(this)
 
