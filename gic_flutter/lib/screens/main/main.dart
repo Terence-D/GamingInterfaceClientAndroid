@@ -24,11 +24,13 @@ class MainScreen extends StatefulWidget {
 }
 
 class HighligherHelp {
-  HighligherHelp (String text, GlobalKey highlight, double highlightSize, MainAxisAlignment alignment) {
+  HighligherHelp(String text, GlobalKey highlight, double highlightSize,
+      MainAxisAlignment alignment) {
     this.text = text;
     this.highlight = highlight;
     this.highlightSize = highlightSize;
-    this.alignment = alignment;;
+    this.alignment = alignment;
+    ;
   }
   String text;
   GlobalKey highlight;
@@ -37,13 +39,14 @@ class HighligherHelp {
 }
 
 class MainScreenState extends State<MainScreen> {
-
   MainPresentation presentation;
   ScreenListItem selectedScreen;
   TextEditingController passwordController = new TextEditingController();
   TextEditingController addressController = new TextEditingController();
   TextEditingController portController = new TextEditingController();
   bool _loading = false;
+  bool donate = false;
+  bool donateStar = false;
   GlobalKey _fabKey = GlobalObjectKey("fab");
   GlobalKey _addressKey = GlobalObjectKey("address");
   GlobalKey _portKey = GlobalObjectKey("port");
@@ -85,6 +88,8 @@ class MainScreenState extends State<MainScreen> {
         passwordController.text = presentation.password;
         portController.text = presentation.port;
         addressController.text = presentation.address;
+        donate = presentation.donate;
+        donateStar = presentation.donateStar;
       });
     });
   }
@@ -132,74 +137,90 @@ class MainScreenState extends State<MainScreen> {
             ],
           ),
           body: SingleChildScrollView(
-            child: Center(
-              child: Container(
-                margin: EdgeInsets.all(dim.activityMargin),
-                child: Column(
-                  children: <Widget>[
+            child: Container(
+              margin: EdgeInsets.all(dim.activityMargin),
+              child: Column(
+                children: <Widget>[
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text(
                       presentation.screenTitle,
                       style: Theme.of(context).textTheme.title,
                     ),
-                    TextFormField(
-                      key: _addressKey,
-                      controller: addressController,
-                      decoration: InputDecoration(hintText: "Address"),
-                    ),
-                    TextFormField(
-                      key: _portKey,
-                      controller: portController,
-                      decoration: InputDecoration(
-                        hintText: "Port",
+                    Visibility(
+                      visible: donate,
+                      child: Icon(
+                        Icons.free_breakfast,
+                        color: Colors.green,
+                        size: 30.0,
                       ),
                     ),
-                    TextFormField(
-                      key: _passwordKey,
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: "Password",
+                    Visibility(
+                      visible: donateStar,
+                      child: Icon(
+                        Icons.star,
+                        color: Colors.yellow,
+                        size: 30.0,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(dim.activityMargin),
-                      child: Text(
-                        'Warning - do NOT use an existing password that you use ANYWHERE else',
+                  ]),
+                  TextFormField(
+                    key: _addressKey,
+                    controller: addressController,
+                    decoration: InputDecoration(hintText: "Address"),
+                  ),
+                  TextFormField(
+                    key: _portKey,
+                    controller: portController,
+                    decoration: InputDecoration(
+                      hintText: "Port",
+                    ),
+                  ),
+                  TextFormField(
+                    key: _passwordKey,
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      hintText: "Password",
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(dim.activityMargin),
+                    child: Text(
+                      'Warning - do NOT use an existing password that you use ANYWHERE else',
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      DropdownButton<ScreenListItem>(
+                        key: _listKey,
+                        value: selectedScreen,
+                        items:
+                            presentation.screenList.map((ScreenListItem item) {
+                          return new DropdownMenuItem<ScreenListItem>(
+                            value: item,
+                            child: new Text(
+                              item.name,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (ScreenListItem item) {
+                          setState(() {
+                            selectedScreen = item;
+                          });
+                        },
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        DropdownButton<ScreenListItem>(
-                          key: _listKey,
-                          value: selectedScreen,
-                          items: presentation.screenList
-                              .map((ScreenListItem item) {
-                            return new DropdownMenuItem<ScreenListItem>(
-                              value: item,
-                              child: new Text(
-                                item.name,
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (ScreenListItem item) {
-                            setState(() {
-                              selectedScreen = item;
-                            });
-                          },
-                        ),
-                        RaisedButton(
-                          key: _manageKey,
-                          onPressed: () {
-                            presentation
-                                .getNewActivity(Channel.actionViewManager);
-                          },
-                          child: Text('Screen Manager'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      RaisedButton(
+                        key: _manageKey,
+                        onPressed: () {
+                          presentation
+                              .getNewActivity(Channel.actionViewManager);
+                        },
+                        child: Text('Screen Manager'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -231,6 +252,8 @@ class MainScreenState extends State<MainScreen> {
 
   //action to take when picking from the menu
   void _select(_MenuOptions choice) {
+    if (choice == _choices[3])
+      presentation.getNewActivity(Channel.actionViewDonate);
     if (choice == _choices[2])
       presentation.getNewActivity(Channel.actionViewAbout);
     else if (choice == _choices[1])
@@ -245,7 +268,7 @@ class MainScreenState extends State<MainScreen> {
   }
 
   void showMessage(String text) {
-    Toast.show( text, context,
+    Toast.show(text, context,
         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
   }
 
@@ -275,16 +298,31 @@ class MainScreenState extends State<MainScreen> {
 
   void _loadHelp() {
     highlights = new Queue();
-    highlights.add(new HighligherHelp("IP Address: The network address of the computer running the server.  This can be found  in Windows 10 by going into Settings, then Network and Internet, and usually starts with \"192\"", 
-        _addressKey, .25, MainAxisAlignment.center));
-    highlights.add(new HighligherHelp("Password: this has to match on the server as well, and is used to provide some security", 
-      _passwordKey, .25, MainAxisAlignment.center));
-    highlights.add(new HighligherHelp("Screen List: This will let you select different screens you have created to use", 
-      _listKey, 1, MainAxisAlignment.end));
-    highlights.add(new HighligherHelp("Manager: Tapping on this will open up the Screen Manager where you can create, edit, delete, and import/export other screens", 
-      _manageKey, 1, MainAxisAlignment.end));
-    highlights.add(new HighligherHelp("Start: Tapping this will connect to the server and let you start with the screen you\'ve selected", 
-    _fabKey, 1, MainAxisAlignment.center));
+    highlights.add(new HighligherHelp(
+        "IP Address: The network address of the computer running the server.  This can be found  in Windows 10 by going into Settings, then Network and Internet, and usually starts with \"192\"",
+        _addressKey,
+        .25,
+        MainAxisAlignment.center));
+    highlights.add(new HighligherHelp(
+        "Password: this has to match on the server as well, and is used to provide some security",
+        _passwordKey,
+        .25,
+        MainAxisAlignment.center));
+    highlights.add(new HighligherHelp(
+        "Screen List: This will let you select different screens you have created to use",
+        _listKey,
+        1,
+        MainAxisAlignment.end));
+    highlights.add(new HighligherHelp(
+        "Manager: Tapping on this will open up the Screen Manager where you can create, edit, delete, and import/export other screens",
+        _manageKey,
+        1,
+        MainAxisAlignment.end));
+    highlights.add(new HighligherHelp(
+        "Start: Tapping this will connect to the server and let you start with the screen you\'ve selected",
+        _fabKey,
+        1,
+        MainAxisAlignment.center));
 
     _showHelp();
   }
@@ -292,27 +330,23 @@ class MainScreenState extends State<MainScreen> {
   void _showHelp() {
     if (highlights.isNotEmpty) {
       HighligherHelp toShow = highlights.removeFirst();
-      _helpDisplay(toShow.text,
-        toShow.highlight,
-        toShow.highlightSize,
-        toShow.alignment
-      );
+      _helpDisplay(toShow.text, toShow.highlight, toShow.highlightSize,
+          toShow.alignment);
     }
   }
 
-  void _helpDisplay(String text, GlobalKey key, lengthModifier, MainAxisAlignment alignment) {
+  void _helpDisplay(
+      String text, GlobalKey key, lengthModifier, MainAxisAlignment alignment) {
     CoachMark coachMarkFAB = CoachMark();
     RenderBox target = key.currentContext.findRenderObject();
 
     Rect markRect = target.localToGlobal(Offset.zero) & target.size;
 
     double _length = markRect.longestSide;
-    if (lengthModifier > 0)
-      _length = markRect.longestSide * lengthModifier;
+    if (lengthModifier > 0) _length = markRect.longestSide * lengthModifier;
 
-
-    markRect = Rect.fromLTWH(
-      markRect.left, markRect.top, _length, markRect.height);
+    markRect =
+        Rect.fromLTWH(markRect.left, markRect.top, _length, markRect.height);
     // markRect = Rect.fromCircle(
     //     center: markRect.centerLeft, radius: _length * 0.6);
 
@@ -321,26 +355,24 @@ class MainScreenState extends State<MainScreen> {
         markRect: markRect,
         children: [
           Column(
-            mainAxisAlignment: alignment,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children:[ 
-              Text(text,
-              style: const TextStyle(
-                fontSize: 24.0,
-                fontStyle: FontStyle.italic,
-                color: Colors.white,
-              )),
-              RaisedButton(
-                child: new Text("Next"),
-                onPressed: () {
-                  _showHelp();
-                }
-              ),
-            ]
-          )
+              mainAxisAlignment: alignment,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(text,
+                    style: const TextStyle(
+                      fontSize: 24.0,
+                      fontStyle: FontStyle.italic,
+                      color: Colors.white,
+                    )),
+                RaisedButton(
+                    child: new Text("Next"),
+                    onPressed: () {
+                      _showHelp();
+                    }),
+              ])
         ],
         duration: null,
-        onClose: () { });
+        onClose: () {});
   }
 }
 
@@ -355,4 +387,5 @@ const List<_MenuOptions> _choices = const <_MenuOptions>[
   const _MenuOptions(title: 'Toggle Theme', icon: Icons.color_lens),
   const _MenuOptions(title: 'Show Intro', icon: Icons.thumb_up),
   const _MenuOptions(title: 'About', icon: Icons.info_outline),
+  const _MenuOptions(title: 'Donate', icon: Icons.present_to_all),
 ];

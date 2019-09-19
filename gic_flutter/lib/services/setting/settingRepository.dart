@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +15,8 @@ class SettingRepository {
   static const String _prefAddress = "address";
   static const String _prefConvert = "legacyConvert";
   static const String _prefSelectedScreenId = "chosenId";
+  static const String _prefDonate = "coffee";
+  static const String _prefDonateStar = "star";
 
   bool _firstRun;
   bool _darkMode;
@@ -22,11 +25,15 @@ class SettingRepository {
   String _password;
   int _selectedScreenId;
   LinkedHashMap _screenList;
+  bool _donate;
+  bool _donateStar;
 
   SettingRepository(SharedPreferences sharedPrefs) {
     this.prefs = sharedPrefs;
   }
 
+  bool get donate => _donate;
+  bool get donateStar => _donateStar;
   bool get darkMode => _darkMode;
   bool get firstRun => _firstRun;
   String get port => _port;
@@ -62,6 +69,19 @@ class SettingRepository {
     if (_firstRun) prefs.setBool(_prefFirstRun, false);
     _screenList = await _getScreenList();
     _password = await _getPassword();
+    if (prefs.containsKey(_prefDonate)) 
+      _donate = prefs.getBool(_prefDonate);
+    else {
+      debugPrint(_prefDonate + " not found");
+      _donate = false;  
+    }
+    
+     if (prefs.containsKey(_prefDonateStar))
+      _donateStar = prefs.getBool(_prefDonateStar);
+    else {
+      debugPrint(_prefDonateStar + " not found");
+      _donateStar = false;  
+    }
   }
 
   setDarkMode(bool newValue) {

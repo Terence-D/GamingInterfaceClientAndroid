@@ -9,6 +9,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
 import ca.coffeeshopstudio.gaminginterfaceclient.views.AboutActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.DonateActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
 import io.flutter.app.FlutterActivity
@@ -24,6 +25,7 @@ class MainActivity: FlutterActivity() {
     const val channelView = "$channelName/views"
 
     const val actionAbout = "about"
+    const val actionDonate = "donate"
     const val actionIntro = "intro"
     const val actionStart = "start"
     const val actionManager = "manager"
@@ -56,6 +58,11 @@ class MainActivity: FlutterActivity() {
         }
         actionAbout -> {
           val intent = Intent(this, AboutActivity::class.java)
+          startActivity(intent)
+          result.success(true)
+        }
+        actionDonate -> {
+          val intent = Intent(this, DonateActivity::class.java)
           startActivity(intent)
           result.success(true)
         }

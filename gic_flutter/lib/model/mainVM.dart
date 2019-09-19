@@ -12,6 +12,8 @@ class MainVM extends Equatable {
   String _address;
   String _password;
   String _port;
+  bool _donate;
+  bool _donateStar;
   List<ScreenListItem> _screenList = new List<ScreenListItem>();
 
   MainVM(SettingRepository settingRepo) {
@@ -28,6 +30,8 @@ class MainVM extends Equatable {
     _address = _settingRepo.address;
     _port = _settingRepo.port;
     _firstRun = _settingRepo.firstRun;
+    _donate = _settingRepo.donate;
+    _donateStar = _settingRepo.donateStar;
     _darkMode = _settingRepo.darkMode;
     _password = _settingRepo.password;
     LinkedHashMap _screenListMap = _settingRepo.screenList;
@@ -38,6 +42,8 @@ class MainVM extends Equatable {
   int get selectedScreenId => _selectedScreenId;
   bool get firstRun => _firstRun;
   bool get darkMode => _darkMode;
+  bool get donate => _donate;
+  bool get donateStar => _donateStar;
   String get address => _address;
   String get password => _password;
   String get port => _port;

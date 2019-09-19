@@ -274,4 +274,17 @@
     ]]></string>
     <string name="help_dialog_title">Help</string>
     <string name="edit_help">Help</string>
+    <string name="title_activity_donate">Donation</string>
+    <string name="donation_text">
+    <![CDATA[
+        <strong>Donate</strong><br/>
+        The Gaming Interface Client application on android will remain free and open source, and you can find more details at the link below!<br/><br/>
+        However, if you like the work that I\'ve done and would like to support continued development and features, you can send me a donation using one of the options below!<br/><br/>
+        As a small way of saying thank you, you will also see a icon on the main screen showing off your support!<br/><br/>
+        <br/><br/><strong>If you have reinstalled the application, you'll need to restart the application once to see the flair appear on your main screen.</strong>
+        Thank you - Terence<br/><br/>
+    ]]>
+    </string>
+    <string name="donation_link">More Information on GIC</string>
+    <string name="refresh_purchases">Refresh Purchases</string>
 </resources>

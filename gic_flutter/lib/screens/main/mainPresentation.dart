@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
@@ -96,6 +94,8 @@ class MainPresentation {
   String get address => _viewModel.address;
   String get port => _viewModel.port;
   String get password => _viewModel.password;
+  bool get donate => _viewModel.donate;
+  bool get donateStar => _viewModel.donateStar;
   List<ScreenListItem> get screenList => _viewModel.screenList;
   int get selectedScreenID => _viewModel.selectedScreenId;
   set darkTheme(bool newValue) => {
