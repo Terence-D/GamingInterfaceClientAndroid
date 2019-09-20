@@ -53,6 +53,7 @@ class SettingRepository {
   }
 
   loadSettings() async {
+    prefs.reload();
     //this handles reading in legacy settings
     bool needToConvert = prefs.getBool(_prefConvert) ?? true;
     if (needToConvert) {
@@ -74,7 +75,7 @@ class SettingRepository {
     else {
       _donate = false;  
     }
-    
+
      if (prefs.containsKey(_prefDonateStar))
       _donateStar = prefs.getBool(_prefDonateStar);
     else {
@@ -98,8 +99,7 @@ class SettingRepository {
     const platform = const MethodChannel(Channel.channelUtil);
     if (_password.isNotEmpty) {
       try {
-        final String result = await platform
-            .invokeMethod(Channel.actionUtilEncrypt, {"password": password});
+        final String result = await platform.invokeMethod(Channel.actionUtilEncrypt, {"password": password});
         response = result;
       } on PlatformException catch (e) {
         response = "";

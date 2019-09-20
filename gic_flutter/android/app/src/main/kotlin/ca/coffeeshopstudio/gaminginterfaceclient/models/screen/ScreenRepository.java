@@ -95,7 +95,6 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     public void checkForScreens() {
-        Log.d("tag", "checkscreens");
         if (cache.size() == 0) {
             Screen screen = new Screen(0, context);
             SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
@@ -103,7 +102,6 @@ public class ScreenRepository implements IScreenRepository {
             prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
             prefsEditor.apply();
             cache.add(screen);
-            Log.d("tag", "checkscreens added");
         }
     }
 

@@ -30,7 +30,6 @@ class HighligherHelp {
     this.highlight = highlight;
     this.highlightSize = highlightSize;
     this.alignment = alignment;
-    ;
   }
   String text;
   GlobalKey highlight;
@@ -63,6 +62,16 @@ class MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
+  void loadSettings() {
+    if (presentation.screenList.length > 0)
+      selectedScreen = presentation.screenList[0];
+    passwordController.text = presentation.password;
+    portController.text = presentation.port;
+    addressController.text = presentation.address;
+    donate = presentation.donate;
+    donateStar = presentation.donateStar;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -74,13 +83,7 @@ class MainScreenState extends State<MainScreen> {
       if (msg == AppLifecycleState.resumed.toString())
         presentation.loadSettings().then((_) {
           setState(() {
-            if (presentation.screenList.length > 0)
-              selectedScreen = presentation.screenList[0];
-            passwordController.text = presentation.password;
-            portController.text = presentation.port;
-            addressController.text = presentation.address;
-            donate = presentation.donate;
-            donateStar = presentation.donateStar;
+            loadSettings();
           });
         });
     });
@@ -88,13 +91,7 @@ class MainScreenState extends State<MainScreen> {
     presentation.loadSettings().then((_) {
       setState(() {
         if (presentation.darkTheme) _changeTheme(context, ThemeKeys.DARK);
-        if (presentation.screenList.length > 0)
-          selectedScreen = presentation.screenList[0];
-        passwordController.text = presentation.password;
-        portController.text = presentation.port;
-        addressController.text = presentation.address;
-        donate = presentation.donate;
-        donateStar = presentation.donateStar;
+        loadSettings();
       });
     });
   }

@@ -50,7 +50,6 @@ class MainActivity: FlutterActivity() {
   private fun buildActivityChannel() {
     MethodChannel(flutterView, channelView).setMethodCallHandler { call, result ->
       _result = result
-      Log.d("tag", call.method)
       when (call.method) {
         actionIntro -> {
           val intent = Intent(this, SplashIntroActivity::class.java)
@@ -67,7 +66,6 @@ class MainActivity: FlutterActivity() {
           result.success(true)
         }
         actionStart-> {
-          Log.d("tag", "starting")
           val password = CryptoHelper.encrypt (call.argument("password"))
           val address: String? = call.argument("address")
           val port: String? = call.argument("port")
@@ -102,14 +100,12 @@ class MainActivity: FlutterActivity() {
 
   private fun buildUtilChannel() {
     MethodChannel(flutterView, channelUtil).setMethodCallHandler { call, result ->
-      Log.d("tag", call.method)
       when (call.method) {
         actionDecrypt -> {
           val password = CryptoHelper.decrypt(call.argument("code"))
           result.success(password)
         }
         actionEncrypt -> {
-          Log.d("tag", "encrypt")
           val encrypted = CryptoHelper.encrypt(call.argument("password"))
           result.success(encrypted)
         }
@@ -136,7 +132,6 @@ class MainActivity: FlutterActivity() {
           editor.apply()
         }
         else -> {
-          Log.d("tag", call.method)
           result.notImplemented()
         }
       }
