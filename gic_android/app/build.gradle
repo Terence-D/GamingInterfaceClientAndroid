@@ -1,0 +1,99 @@
+apply plugin: 'com.android.application'
+
+int MILLIS_IN_MINUTE = 1000 * 60
+int minutesSinceEpoch = System.currentTimeMillis() / MILLIS_IN_MINUTE
+
+android {
+    compileSdkVersion 28
+    dataBinding {
+        enabled = true
+    }
+    defaultConfig {
+        applicationId "ca.coffeeshopstudio.gaminginterfaceclient"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 21
+        versionName "3.01"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions "version"
+    productFlavors {
+        // When building a variant that uses this flavor, the following configurations
+        // override those in the defaultConfig block.
+        dev {
+            dimension "version"
+            versionNameSuffix "-dev"
+            applicationIdSuffix '.dev'
+            // The following configuration limits the "dev" flavor to using
+            // English string resources and xxhdpi screen-density resources.
+            resConfigs "en", "xxhdpi"
+        }
+
+        prod {
+            dimension "version"
+            // If you've configured the defaultConfig block for the release version of
+            // your app, you can leave this block empty and Gradle uses configurations in
+            // the defaultConfig block instead. You still need to create this flavor.
+            // Otherwise, all variants use the "dev" flavor configurations.
+
+        }
+
+        amazon {
+            dimension "version"
+            minSdkVersion 21
+            // If you've configured the defaultConfig block for the release version of
+            // your app, you can leave this block empty and Gradle uses configurations in
+            // the defaultConfig block instead. You still need to create this flavor.
+            // Otherwise, all variants use the "dev" flavor configurations.
+
+        }
+    }
+    // The defaultConfig values above are fixed, so your incremental builds don't
+    // need to rebuild the manifest (and therefore the whole APK, slowing build times).
+    // But for release builds, it's okay. So the following script iterates through
+    // all the known variants, finds those that are "release" build types, and
+    // changes those properties to something dynamic.
+    applicationVariants.all { variant ->
+        if (!variant.buildType.isDebuggable()) {
+            variant.outputs.all { output ->
+                output.setVersionCodeOverride(minutesSinceEpoch)
+            }
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.core:core:1.2.0-alpha01'
+    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0-beta01'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-beta01'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.0'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
+    implementation files('libs/commons-codec-1.10-rep.jar')
+    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
+    //https://android-arsenal.com/details/1/1693
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'pub.devrel:easypermissions:2.0.1'
+    implementation 'com.github.adrcotfas:material-intro:e1228'
+        //implementation 'com.heinrichreimersoftware:material-intro:1.6.2'
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0-alpha01'
+}
