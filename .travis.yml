@@ -7,7 +7,7 @@ addons:
 env:
   global:
     - FLUTTER_CHANNEL=stable
-before_script:
+before_install:
   cd gic_flutter
 install:
   - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL
