@@ -90,3 +90,4 @@ gic_flutter/ios/Flutter/flutter_export_environment.sh
 gic_flutter/android/.settings/org.eclipse.buildship.core.prefs
 gic_flutter/android/app/.classpath
 gic_flutter/android/app/.settings/org.eclipse.buildship.core.prefs
+.vscode/settings.json
