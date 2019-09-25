@@ -19,7 +19,6 @@ install:
   - export PATH="$PATH:`pwd`/flutter/bin/cache/dart-sdk/bin"
   - export PATH="$PATH:`pwd`/flutter/bin"
   - flutter packages get
-  - flutter test
   - flutter build apk
 cache:
   directories:
