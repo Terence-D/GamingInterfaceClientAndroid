@@ -11,8 +11,8 @@ install:
   - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL
   - export PATH="$PATH:`pwd`/flutter/bin/cache/dart-sdk/bin"
   - export PATH="$PATH:`pwd`/flutter/bin"
-  - flutter doctor -v
-  - flutter packages get
+  - gic_flutter/flutter doctor -v
+  - gic_flutter/flutter packages get
 cache:
   directories:
   - $HOME/.pub-cache
