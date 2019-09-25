@@ -1,4 +1,9 @@
-language: generic
+language: android
+jdk: openjdk8
+android:
+  components:
+  - build-tools-28.0.3
+  - android-28
 dist: xenial
 addons:
   apt:
@@ -8,13 +13,14 @@ env:
   global:
     - FLUTTER_CHANNEL=stable
 before_install:
-  cd gic_flutter
+  - cd gic_flutter
 install:
   - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL
   - export PATH="$PATH:`pwd`/flutter/bin/cache/dart-sdk/bin"
   - export PATH="$PATH:`pwd`/flutter/bin"
-  - flutter doctor -v
   - flutter packages get
+  - flutter test
+  - flutter build apk
 cache:
   directories:
   - $HOME/.pub-cache
