@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:gic_flutter/screens/main/main.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
-import 'package:gic_flutter/theme/style.dart';
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

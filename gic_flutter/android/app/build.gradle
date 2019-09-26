@@ -33,6 +33,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    flavorDimensions "version"
     compileSdkVersion 28
 
     sourceSets {
@@ -57,6 +58,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    productFlavors {
+ 
+        gplay {
+        }
+ 
+        other {
+        }
+    }
+    
     signingConfigs {
         release {
             keyAlias keystoreProperties['keyAlias']
