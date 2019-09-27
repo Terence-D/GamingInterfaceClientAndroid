@@ -61,6 +61,10 @@ android {
     productFlavors {
  
         gplay {
+            dependencies {
+                implementation 'com.android.billingclient:billing:2.0.3'
+            }
+
         }
  
         other {
@@ -110,5 +114,4 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
-    implementation 'com.android.billingclient:billing:2.0.3'
 }
