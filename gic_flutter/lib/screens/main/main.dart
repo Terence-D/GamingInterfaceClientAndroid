@@ -12,6 +12,8 @@ import 'package:gic_flutter/theme/theme.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
 import 'package:toast/toast.dart';
 
+import '../../flavor.dart';
+
 class MainScreen extends StatefulWidget {
   final SettingRepository repository;
 
@@ -128,7 +130,16 @@ class MainScreenState extends State<MainScreen> {
               PopupMenuButton<_MenuOptions>(
                 onSelected: _select,
                 itemBuilder: (BuildContext context) {
-                  return _choices.map((_MenuOptions choice) {
+                  BuildEnvironment.init(flavor: BuildFlavor.gplay);
+                  assert(env != null);
+
+                  List<_MenuOptions> rv;
+                  if (env.flavor == BuildFlavor.gplay) {
+                    rv = _choices;
+                  }  else {
+                    rv = _choicesOther;
+                  }
+                  return rv.map((_MenuOptions choice) {
                     return PopupMenuItem<_MenuOptions>(
                       value: choice,
                       child: Text(choice.title),
@@ -390,4 +401,10 @@ const List<_MenuOptions> _choices = const <_MenuOptions>[
   const _MenuOptions(title: 'Show Intro', icon: Icons.thumb_up),
   const _MenuOptions(title: 'About', icon: Icons.info_outline),
   const _MenuOptions(title: 'Donate', icon: Icons.present_to_all),
+];
+
+const List<_MenuOptions> _choicesOther = const <_MenuOptions>[
+  const _MenuOptions(title: 'Toggle Theme', icon: Icons.color_lens),
+  const _MenuOptions(title: 'Show Intro', icon: Icons.thumb_up),
+  const _MenuOptions(title: 'About', icon: Icons.info_outline),
 ];
