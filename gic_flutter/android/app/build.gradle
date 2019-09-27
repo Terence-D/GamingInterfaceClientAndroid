@@ -64,6 +64,7 @@ android {
         }
  
         other {
+            minSdkVersion 21
         }
     }
     
