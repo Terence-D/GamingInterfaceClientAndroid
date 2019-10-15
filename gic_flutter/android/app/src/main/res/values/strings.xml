@@ -274,4 +274,7 @@
     ]]></string>
     <string name="help_dialog_title">Help</string>
     <string name="edit_help">Help</string>
+    <string name="slideJellybeanTitle">Old Android Version</string>
+    <string name="slideJellybeanDesc">You are running an older version of Android.  Certain functions are disabled (such as import/export) for now.  This may change if I can find the time to work around the limitations.</string>
+    <string name="android_too_old">Your version of android is too old to support this</string>
 </resources>

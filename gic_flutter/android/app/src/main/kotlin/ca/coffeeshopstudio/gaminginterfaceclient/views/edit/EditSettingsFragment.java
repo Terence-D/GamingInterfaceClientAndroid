@@ -129,10 +129,14 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
                 displayColorPicker(view);
                 break;
             case R.id.btnBackgroundImage:
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-                startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_BACKGROUND);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    Toast.makeText(getContext(), R.string.android_too_old, Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, EditActivity.OPEN_REQUEST_CODE_BACKGROUND);
+                }
                 break;
             default:
                 break;

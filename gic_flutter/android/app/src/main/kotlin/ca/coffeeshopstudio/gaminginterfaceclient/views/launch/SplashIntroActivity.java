@@ -1,6 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.launch;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -72,12 +73,21 @@ public class SplashIntroActivity extends IntroActivity {
                 })
                 .build());
 
-
-        addSlide(new FragmentSlide.Builder()
-                .fragment(new ScreenFragment())
-                .background(R.color.slideBackground)
-                .backgroundDark(R.color.colorPrimaryDark)
-                .build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            addSlide(new FragmentSlide.Builder()
+                    .fragment(new ScreenFragment())
+                    .background(R.color.slideBackground)
+                    .backgroundDark(R.color.colorPrimaryDark)
+                    .build());
+        } else {
+            addSlide(new SimpleSlide.Builder()
+                    .title(R.string.slideJellybeanTitle)
+                    .image(R.drawable.ic_warning_white_192dp)
+                    .description(R.string.slideJellybeanDesc)
+                    .background(R.color.slideBackground)
+                    .backgroundDark(R.color.colorPrimaryDark)
+                    .build());
+        }
 
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.slideLetsGoTitle)
