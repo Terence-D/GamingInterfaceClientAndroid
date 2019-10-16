@@ -6,12 +6,14 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -194,14 +196,16 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     private static String loadJSONFromAsset(Context context, String filename) {
-        String json;
+        String json = "";
         try {
             InputStream is = context.getAssets().open("screens/" + filename + ".json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            json = new String(buffer, StandardCharsets.UTF_8);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                json = new String(buffer, StandardCharsets.UTF_8);
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;

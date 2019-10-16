@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -85,6 +87,11 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
         findViewById(R.id.btnDelete).setOnClickListener(this);
         findViewById(R.id.btnImport).setOnClickListener(this);
         findViewById(R.id.btnEdit).setOnClickListener(this);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            findViewById(R.id.btnExport).setVisibility(View.GONE);
+            findViewById(R.id.btnImport).setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -247,25 +254,29 @@ public class ScreenManagerActivity extends AppCompatActivity implements IContrac
     }
 
     private void export() {
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            // Filter to only show results that can be "opened", such as
+            // a file (as opposed to a list of contacts or timezones).
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
 
-        // Filter to only show results that can be "opened", such as
-        // a file (as opposed to a list of contacts or timezones).
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+            // Create a file with the requested MIME type.
+            intent.setType("application/zip");
+            intent.putExtra(Intent.EXTRA_TITLE, "GIC-" + screenList.valueAt(spinner.getSelectedItemPosition()) + ".zip");
+            startActivityForResult(intent, REQUEST_CODE_EXPORT);
+        }
 
-        // Create a file with the requested MIME type.
-        intent.setType("application/zip");
-        intent.putExtra(Intent.EXTRA_TITLE, "GIC-" + screenList.valueAt(spinner.getSelectedItemPosition()) + ".zip");
-        startActivityForResult(intent, REQUEST_CODE_EXPORT);
     }
 
 
     private void importScreen() {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("application/zip");
-        startActivityForResult(intent, REQUEST_CODE_IMPORT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("application/zip");
+            startActivityForResult(intent, REQUEST_CODE_IMPORT);
+        }
     }
 
     @Override

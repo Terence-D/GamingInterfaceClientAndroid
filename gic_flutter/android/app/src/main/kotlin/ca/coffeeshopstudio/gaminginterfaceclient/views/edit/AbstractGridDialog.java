@@ -1,9 +1,11 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.edit;
 
 import android.content.Intent;
+import android.os.Build;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
@@ -60,11 +62,16 @@ abstract class AbstractGridDialog extends AlertDialog {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position < 2) { //import
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
-                    fragment.startActivityForResult(intent, actionRequestCode);
-                    dismiss();
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                        Toast.makeText(getContext(), R.string.android_too_old, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("image/*");
+                        fragment.startActivityForResult(intent, actionRequestCode);
+                        dismiss();
+                    }
+
                 } else if (position <= customCount + 1) {
                     String path = fragment.getActivity().getFilesDir() + "/" + imagePrefix + "_" + (position - 2) + ".png";
                     ((GridDialogListener) fragment).onImageSelected(path, actionRequestCode);
