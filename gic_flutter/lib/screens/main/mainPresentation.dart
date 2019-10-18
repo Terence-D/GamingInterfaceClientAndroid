@@ -1,3 +1,4 @@
+import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
@@ -50,12 +51,12 @@ class MainPresentation {
   void startGame(String password, String address, String port, int selectedScreenId) async {
     _state.setConnectingIndicator(true);
     if (password.length < 6) {
-        _state.showMessage("invalid password, it must be at least 6 digits long");
+        _state.showMessage(Intl.mainPasswordError);
         _state.setConnectingIndicator(false);
         return;
     }
     if (int.tryParse(port) == null) {
-        _state.showMessage("invalid port number");
+        _state.showMessage(Intl.mainInvalidPort);
         _state.setConnectingIndicator(false);
         return;
     }
@@ -70,7 +71,7 @@ class MainPresentation {
     try {
       http.Response response = await _restGet(url);    
       if (response == null)
-        _state.showMessage("Error connecting, is the server running and firewall ports opened?");
+        _state.showMessage(Intl.mainFirewallError);
       else if (response.statusCode == 200) {
         if (response.body == _Version) {
             _state.startGame();
