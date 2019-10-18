@@ -2,8 +2,10 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gic_flutter/flavor.dart';
 
 import 'package:gic_flutter/model/channel.dart';
+import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/model/mainVM.dart';
 import 'package:gic_flutter/screens/main/mainPresentation.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
@@ -11,8 +13,6 @@ import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
 import 'package:toast/toast.dart';
-
-import '../../flavor.dart';
 
 class MainScreen extends StatefulWidget {
   final SettingRepository repository;
@@ -142,7 +142,7 @@ class MainScreenState extends State<MainScreen> {
                   return rv.map((_MenuOptions choice) {
                     return PopupMenuItem<_MenuOptions>(
                       value: choice,
-                      child: Text(choice.title),
+                      child: Text( Intl.of(context).getText(choice.title)),
                     );
                   }).toList();
                 },
@@ -179,13 +179,13 @@ class MainScreenState extends State<MainScreen> {
                   TextFormField(
                     key: _addressKey,
                     controller: addressController,
-                    decoration: InputDecoration(hintText: "Address"),
+                    decoration: InputDecoration(hintText: Intl.of(context).mainAddress),
                   ),
                   TextFormField(
                     key: _portKey,
                     controller: portController,
                     decoration: InputDecoration(
-                      hintText: "Port",
+                      hintText: Intl.of(context).mainPort,
                     ),
                   ),
                   TextFormField(
@@ -193,13 +193,13 @@ class MainScreenState extends State<MainScreen> {
                     controller: passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: "Password",
+                      hintText: Intl.of(context).mainPassword,
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(dim.activityMargin),
                     child: Text(
-                      'Warning - do NOT use an existing password that you use ANYWHERE else',
+                      Intl.of(context).mainPasswordWarning,
                     ),
                   ),
                   Row(
@@ -229,7 +229,7 @@ class MainScreenState extends State<MainScreen> {
                           presentation
                               .getNewActivity(Channel.actionViewManager);
                         },
-                        child: Text('Screen Manager'),
+                        child: Text(Intl.of(context).mainScreenManager),
                       ),
                     ],
                   ),
@@ -242,14 +242,14 @@ class MainScreenState extends State<MainScreen> {
             onPressed: () {
               if (presentation.screenList.length < 1)
                 showMessage(
-                    "You need to add a screen from the screen manager first!");
+                    Intl.of(context).mainErrorNoScreen);
               presentation.startGame(
                   passwordController.text,
                   addressController.text,
                   portController.text,
                   selectedScreen.id);
             },
-            label: Text('Start'),
+            label: Text(Intl.of(context).mainStart),
           )); //
   }
 
@@ -281,7 +281,7 @@ class MainScreenState extends State<MainScreen> {
   }
 
   void showMessage(String text) {
-    Toast.show(text, context,
+    Toast.show(Intl.of(context).getText(text), context,
         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
   }
 
@@ -290,12 +290,11 @@ class MainScreenState extends State<MainScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: new Text("Wrong Version"),
-            content: new Text(
-                "The GIC Server appears to be out of date - please upgrade to the latest version by clicking on the \"Website\" link on the server.  If you did not yet install the server, click the Help button"),
+            title: new Text(Intl.of(context).mainWrongVersion),
+            content: new Text(Intl.of(context).mainOutOfDate),
             actions: <Widget>[
               new FlatButton(
-                child: new Text("Close"),
+                child: new Text(Intl.of(context).mainClose),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -312,27 +311,27 @@ class MainScreenState extends State<MainScreen> {
   void _loadHelp() {
     highlights = new Queue();
     highlights.add(new HighligherHelp(
-        "IP Address: The network address of the computer running the server.  This can be found  in Windows 10 by going into Settings, then Network and Internet, and usually starts with \"192\"",
+        Intl.of(context).mainHelpIpAddress,
         _addressKey,
         .25,
         MainAxisAlignment.center));
     highlights.add(new HighligherHelp(
-        "Password: this has to match on the server as well, and is used to provide some security",
+        Intl.of(context).mainHelpPassword,
         _passwordKey,
         .25,
         MainAxisAlignment.center));
     highlights.add(new HighligherHelp(
-        "Screen List: This will let you select different screens you have created to use",
+        Intl.of(context).mainHelpScreenList,
         _listKey,
         1,
         MainAxisAlignment.end));
     highlights.add(new HighligherHelp(
-        "Manager: Tapping on this will open up the Screen Manager where you can create, edit, delete, and import/export other screens",
+        Intl.of(context).mainHelpScreenManager,
         _manageKey,
         1,
         MainAxisAlignment.end));
     highlights.add(new HighligherHelp(
-        "Start: Tapping this will connect to the server and let you start with the screen you\'ve selected",
+        Intl.of(context).mainHelpStart,
         _fabKey,
         1,
         MainAxisAlignment.center));
@@ -378,7 +377,7 @@ class MainScreenState extends State<MainScreen> {
                       color: Colors.white,
                     )),
                 RaisedButton(
-                    child: new Text("Next"),
+                    child: new Text(Intl.of(context).mainNext),
                     onPressed: () {
                       _showHelp();
                     }),
@@ -396,15 +395,15 @@ class _MenuOptions {
   final IconData icon;
 }
 
-const List<_MenuOptions> _choices = const <_MenuOptions>[
-  const _MenuOptions(title: 'Toggle Theme', icon: Icons.color_lens),
-  const _MenuOptions(title: 'Show Intro', icon: Icons.thumb_up),
-  const _MenuOptions(title: 'About', icon: Icons.info_outline),
-  const _MenuOptions(title: 'Donate', icon: Icons.present_to_all),
+List<_MenuOptions> _choices = <_MenuOptions>[
+  _MenuOptions(title: Intl.menuTheme, icon: Icons.color_lens),
+  _MenuOptions(title: Intl.menuIntro, icon: Icons.thumb_up),
+  _MenuOptions(title: Intl.menuAbout, icon: Icons.info_outline),
+  _MenuOptions(title: Intl.menuDonate, icon: Icons.present_to_all),
 ];
 
-const List<_MenuOptions> _choicesOther = const <_MenuOptions>[
-  const _MenuOptions(title: 'Toggle Theme', icon: Icons.color_lens),
-  const _MenuOptions(title: 'Show Intro', icon: Icons.thumb_up),
-  const _MenuOptions(title: 'About', icon: Icons.info_outline),
+ List<_MenuOptions> _choicesOther = <_MenuOptions>[
+  _MenuOptions(title: Intl.menuTheme, icon: Icons.color_lens),
+  _MenuOptions(title: Intl.menuIntro, icon: Icons.thumb_up),
+  _MenuOptions(title: Intl.menuAbout, icon: Icons.info_outline),
 ];
