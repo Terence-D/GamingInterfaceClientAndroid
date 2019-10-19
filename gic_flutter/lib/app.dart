@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gic_flutter/screens/intro/intro.dart';
 import 'package:gic_flutter/screens/main/main.dart';
 
 import 'model/intl/localizations.dart';
@@ -9,8 +10,7 @@ import 'theme/theme.dart';
 class GicApp extends StatelessWidget {
   SettingRepository _settingRepository  ;
 
-  GicApp (SettingRepository 
-  sharedPreferences) {
+  GicApp (SettingRepository sharedPreferences) {
     _settingRepository = sharedPreferences;
   }
 

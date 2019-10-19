@@ -61,6 +61,21 @@ class Intl {
       'menuIntro': 'Show Intro',
       'menuAbout': 'About',
       'menuDonate': 'Donate',
+
+      'onboardIntroTitle': 'Welcome!',
+      'onboardIntroDesc': 'Thank you for installing GIC - the open source Game Interface Client.  Ahead are just a few tips to help you get started.  This will only be shown once - tap on the bottom right corner arrow to begin.',
+      'onboardServerTitle': 'Server',
+      'onboardServerDesc': 'GIC requires software on the computer your communicating with.  The link is in inside the "About" view from the main screen.  Alternatively clicking this button will open your email app with the link to the server inside.',
+      'onboardAboutTitle': 'About',
+      'onboardAboutDesc' :'GIC allows you to create fully customizable interfaces (screens) to send commands to an app on your computer.  Useful for complex sim type games, but GIC can be used for any app or game that you like.  You can also share your screens with others!',
+      'onboardLetsGoTitle' :'Questions?',
+      'onboardLetsGoDesc': 'I\'ve added Help sections to each part of this app - click the \'?\' at the top right corner of the app for help!  Thank you for using GIC!',
+      'onboardSendLink': 'Send Link',
+      'onboardScreenTitle': 'Screen Starter',
+      'onboardScreenDesc': 'If you like you can pick one (or more!) of the screens I\'ve built below as a starting point, or you can skip this step and build your own.!',
+      'onboardSkip': 'Skip',
+      'onboardDone': 'Done',
+      'onboardEmailSubject': 'Link to GIC Server',
     }
   };
 
@@ -91,5 +106,20 @@ class Intl {
   String get mainHelpScreenManager { return _localized[locale.languageCode]['mainHelpScreenManager']; }
   String get mainHelpStart { return _localized[locale.languageCode]['mainHelpStart']; }
   String get mainNext { return _localized[locale.languageCode]['mainNext']; }
+
+  String get onboardSkip { return _localized[locale.languageCode]['onboardSkip']; }
+  String get onboardDone { return _localized[locale.languageCode]['onboardDone']; }
+  String get onboardIntroTitle { return _localized[locale.languageCode]['onboardIntroTitle']; }
+  String get onboardIntroDesc { return _localized[locale.languageCode]['onboardIntroDesc']; }
+  String get onboardServerTitle { return _localized[locale.languageCode]['onboardServerTitle']; }
+  String get onboardServerDesc { return _localized[locale.languageCode]['onboardServerDesc']; }
+  String get onboardAboutTitle { return _localized[locale.languageCode]['onboardAboutTitle']; }
+  String get onboardAboutDesc { return _localized[locale.languageCode]['onboardAboutDesc']; }
+  String get onboardLetsGoTitle { return _localized[locale.languageCode]['onboardLetsGoTitle']; }
+  String get onboardLetsGoDesc { return _localized[locale.languageCode]['onboardLetsGoDesc']; }
+  String get onboardScreenTitle { return _localized[locale.languageCode]['onboardScreenTitle']; }
+  String get onboardScreenDesc { return _localized[locale.languageCode]['onboardScreenDesc']; }
+  String get onboardSendLink { return _localized[locale.languageCode]['onboardSendLink']; }
+  String get onboardEmailSubject { return _localized[locale.languageCode]['onboardEmailSubject']; }
 }
 

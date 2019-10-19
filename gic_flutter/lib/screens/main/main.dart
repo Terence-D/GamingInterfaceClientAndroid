@@ -7,11 +7,14 @@ import 'package:gic_flutter/flavor.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/model/mainVM.dart';
+import 'package:gic_flutter/screens/intro/intro.dart';
+import 'package:gic_flutter/screens/intro/introPresentation.dart';
 import 'package:gic_flutter/screens/main/mainPresentation.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 import 'package:toast/toast.dart';
 
 class MainScreen extends StatefulWidget {
@@ -269,8 +272,14 @@ class MainScreenState extends State<MainScreen> {
       presentation.getNewActivity(Channel.actionViewDonate);
     if (choice == _choices[2])
       presentation.getNewActivity(Channel.actionViewAbout);
-    else if (choice == _choices[1])
-      presentation.getNewActivity(Channel.actionViewIntro);
+    else if (choice == _choices[1]) {
+      IntroPresentation presentation = new IntroPresentation(context);
+      List<PageViewModel> pages = presentation.getPages();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => OnBoardingPage(pages: pages)),
+      );
+    }
     else if (choice == _choices[0]) {
       if (presentation.darkTheme)
         _changeTheme(context, ThemeKeys.LIGHT);
