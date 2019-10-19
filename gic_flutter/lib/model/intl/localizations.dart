@@ -76,6 +76,10 @@ class Intl {
       'onboardSkip': 'Skip',
       'onboardDone': 'Done',
       'onboardEmailSubject': 'Link to GIC Server',
+      'onboardOldAndroidTitle': 'Unsupported',
+      'onboardOldAndroidDesc': 'You are running an older version of Android.  Certain functions are disabled (such as import/export) for now.  This may change if I can find the time to work around the limitations.',
+      'onboardSupportTitle': 'Support Me',
+      'onboardSupportDesc': 'Although this app is completely free and open source (and will remain as such!), if you like the app and wish to support development, I appreciate any support you can provide.  There is a Donate menu option for more information.  Thank you :)',
     }
   };
 
@@ -121,5 +125,8 @@ class Intl {
   String get onboardScreenDesc { return _localized[locale.languageCode]['onboardScreenDesc']; }
   String get onboardSendLink { return _localized[locale.languageCode]['onboardSendLink']; }
   String get onboardEmailSubject { return _localized[locale.languageCode]['onboardEmailSubject']; }
+  String get onboardOldAndroidTitle { return _localized[locale.languageCode]['onboardOldAndroidTitle']; }
+  String get onboardOldAndroidDesc { return _localized[locale.languageCode]['onboardOldAndroidDesc']; }
+  String get onboardSupportTitle { return _localized[locale.languageCode]['onboardSupportTitle']; }
+  String get onboardSupportDesc { return _localized[locale.languageCode]['onboardSupportDesc']; }
 }
-

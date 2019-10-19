@@ -273,12 +273,13 @@ class MainScreenState extends State<MainScreen> {
     if (choice == _choices[2])
       presentation.getNewActivity(Channel.actionViewAbout);
     else if (choice == _choices[1]) {
-      IntroPresentation presentation = new IntroPresentation(context);
-      List<PageViewModel> pages = presentation.getPages();
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => OnBoardingPage(pages: pages)),
-      );
+      IntroPresentation presentation = new IntroPresentation();
+      presentation.loadPages(context).then((value) {
+        List<PageViewModel> pages = presentation.getPages();
+        Navigator.push(context,
+          MaterialPageRoute(builder: (context) => OnBoardingPage(pages: pages))
+        );
+      });
     }
     else if (choice == _choices[0]) {
       if (presentation.darkTheme)
