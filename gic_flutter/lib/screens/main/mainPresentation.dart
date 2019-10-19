@@ -1,10 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
+import 'package:gic_flutter/screens/intro/intro.dart';
+import 'package:gic_flutter/screens/intro/introPresentation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/mainVM.dart';
 import 'package:gic_flutter/screens/main/main.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 
 class MainPresentation {
   MainVM _viewModel;
@@ -88,6 +92,16 @@ class MainPresentation {
     }
   }
 
+  void loadOnboarding(BuildContext context) {
+    IntroPresentation presentation = new IntroPresentation();
+    presentation.loadPages(context).then((value) {
+      List<PageViewModel> pages = presentation.getPages();
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => OnBoardingPage(pages: pages))
+      );
+    });
+  }
+
   String get toolbarTitle => _viewModel.toolbarTitle;
   String get screenTitle => _viewModel.screenTitle;
   bool get darkTheme => _viewModel.darkMode;
@@ -102,4 +116,5 @@ class MainPresentation {
   set darkTheme(bool newValue) => {
     _viewModel.darkMode = newValue
   };
+
 }
