@@ -72,7 +72,9 @@ class Intl {
       'onboardLetsGoDesc': 'I\'ve added Help sections to each part of this app - click the \'?\' at the top right corner of the app for help!  Thank you for using GIC!',
       'onboardSendLink': 'Send Link',
       'onboardScreenTitle': 'Screen Starter',
-      'onboardScreenDesc': 'If you like you can pick one (or more!) of the screens I\'ve built below as a starting point, or you can skip this step and build your own.!',
+      'onboardScreenDesc': 'If you like you can pick one (or more!) of the screens I\'ve built below as a starting point, or you can skip this step and build your own!',
+      'onboardScreenDevice': 'Device Type',
+      'onboardScreenList': 'Pick a Screen:',
       'onboardSkip': 'Skip',
       'onboardDone': 'Done',
       'onboardEmailSubject': 'Link to GIC Server',
@@ -123,6 +125,8 @@ class Intl {
   String get onboardLetsGoDesc { return _localized[locale.languageCode]['onboardLetsGoDesc']; }
   String get onboardScreenTitle { return _localized[locale.languageCode]['onboardScreenTitle']; }
   String get onboardScreenDesc { return _localized[locale.languageCode]['onboardScreenDesc']; }
+  String get onboardScreenList { return _localized[locale.languageCode]['onboardScreenList']; }
+  String get onboardScreenDevice { return _localized[locale.languageCode]['onboardScreenDevice']; }
   String get onboardSendLink { return _localized[locale.languageCode]['onboardSendLink']; }
   String get onboardEmailSubject { return _localized[locale.languageCode]['onboardEmailSubject']; }
   String get onboardOldAndroidTitle { return _localized[locale.languageCode]['onboardOldAndroidTitle']; }
