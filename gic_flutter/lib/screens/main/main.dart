@@ -277,7 +277,7 @@ class MainScreenState extends State<MainScreen> {
         _changeTheme(context, ThemeKeys.LIGHT);
       else
         _changeTheme(context, ThemeKeys.DARK);
-      presentation.darkTheme = !presentation.darkTheme;
+      presentation.setDarkTheme(!presentation.darkTheme);
     }
   }
 

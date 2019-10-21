@@ -113,8 +113,8 @@ class MainPresentation {
   bool get donateStar => _viewModel.donateStar;
   List<ScreenListItem> get screenList => _viewModel.screenList;
   int get selectedScreenID => _viewModel.selectedScreenId;
-  set darkTheme(bool newValue) => {
-    _viewModel.darkMode = newValue
-  };
 
+  setDarkTheme(bool newValue) {
+    _viewModel.darkMode = newValue;
+  }
 }
