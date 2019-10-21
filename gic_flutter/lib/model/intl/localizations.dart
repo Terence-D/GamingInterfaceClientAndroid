@@ -77,6 +77,7 @@ class Intl {
       'onboardScreenList': 'Pick a Screen:',
       'onboardSkip': 'Skip',
       'onboardDone': 'Done',
+      'onboardImport': 'Import',
       'onboardEmailSubject': 'Link to GIC Server',
       'onboardOldAndroidTitle': 'Unsupported',
       'onboardOldAndroidDesc': 'You are running an older version of Android.  Certain functions are disabled (such as import/export) for now.  This may change if I can find the time to work around the limitations.',
@@ -115,6 +116,7 @@ class Intl {
 
   String get onboardSkip { return _localized[locale.languageCode]['onboardSkip']; }
   String get onboardDone { return _localized[locale.languageCode]['onboardDone']; }
+  String get onboardImport { return _localized[locale.languageCode]['onboardImport']; }
   String get onboardIntroTitle { return _localized[locale.languageCode]['onboardIntroTitle']; }
   String get onboardIntroDesc { return _localized[locale.languageCode]['onboardIntroDesc']; }
   String get onboardServerTitle { return _localized[locale.languageCode]['onboardServerTitle']; }

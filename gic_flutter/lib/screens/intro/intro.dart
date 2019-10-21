@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/screens/intro/introPresentation.dart';
-import 'package:gic_flutter/theme/theme.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class OnBoardingPage extends StatelessWidget {
