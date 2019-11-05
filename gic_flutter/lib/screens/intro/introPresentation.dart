@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:gic_flutter/model/GicControl.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/screens/intro/screenListWidget.dart';
 import 'package:gic_flutter/screens/intro/screenSizeWidget.dart';
@@ -81,9 +84,7 @@ class IntroPresentation {
               ScreenListWidget(_screens),
               RaisedButton(
                 onPressed: () {
-
-                  _screens.forEach((screen) => debugPrint(screen.selected.toString()));
-                  debugPrint(device);
+                  _screens.forEach((screen) => importScreen(screen, context));
                 },
                 child: Text(Intl.of(context).onboardImport, style: TextStyle(color: Colors.white)),
                 color: primaryColor,
@@ -112,5 +113,14 @@ class IntroPresentation {
 
   getPages() {
     return pages;
+  }
+
+  importScreen(Screen screen, BuildContext context) async {
+    String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
+
+    Map controlMap = jsonDecode(jsonString);
+    GicControl screen = GicControl.fromMappedJson(controlMap);
+
+    debugPrint(screen.toString());
   }
 }

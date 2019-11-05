@@ -16,8 +16,7 @@ class GicControl {
   //3 - switched on, ready for mouse up
   //after 3, we reset back to 0
   int stage = 0;
-
-  Command command = new Command();
+  Command command;// = new Command();
   String text = "NONE";
   double left = 140;
   int width = 320;
@@ -34,5 +33,53 @@ class GicControl {
   String secondaryImage = "";
   String fontName = "";
   int fontType = 0;
-  Command commandSecondary = new Command();
+  Command commandSecondary;// = new Command();
+
+  GicControl  (key, modifier, activatorType);
+
+  GicControl.fromMappedJson(Map<String, dynamic> json)
+      : stage = json['stage'],
+        command = json['command'],
+        text = json['text'],
+        left = json['left'],
+        width = json['width'],
+        top = json['top'],
+        height = json['height'],
+        fontColor = json['fontColor'],
+        primaryColor = json['primaryColor'],
+        secondaryColor = json['secondarycolor'],
+        fontSize = json['fontSize'],
+        viewType = json['viewType'],
+        primaryImageResource = json['primayImageResource'],
+        secondaryImageResource = json['secondaryImageResource'],
+        primaryImage = json['primaryImage'],
+        secondaryImage = json['secondaryImage'],
+        fontName = json['fontName'],
+        fontType = json['fontType'],
+        commandSecondary = json['commandSecondary'];
+
+  Map<String, dynamic> toJson() =>
+  {
+    'stage': stage,
+    'command': command,
+    'text': text,
+    'left': left,
+    'width': width,
+    'top': top,
+    'height': height,
+    'fontColor': fontColor,
+    'primaryColor': primaryColor,
+    'secondaryColor': secondaryColor,
+    'fontSize': fontSize,
+    'viewType': viewType,
+    'primaryImageResource': primaryImageResource,
+    'secondaryImageResource': secondaryImageResource,
+    'primaryImage': primaryImage,
+    'secondaryImage': secondaryImage,
+    'fontName': fontName,
+    'fontType': fontType,
+    'commandSecondary': commandSecondary
+  };
+
+
 }
