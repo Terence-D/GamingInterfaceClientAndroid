@@ -12,15 +12,30 @@ class Screen {
   //context;
   String name;
 
-  Screen(this.screenId, this.controls, this.backgroundColor, this.backgroundPath, this.newControlId, this.name);
+  Screen({this.screenId, this.controls, this.backgroundColor, this.backgroundPath, this.newControlId, this.name});
 
-  Screen.fromJson(Map<String, dynamic> json) :
-      screenId = json['screenId'],
-      controls = json['controls'],
-      backgroundColor = json['backgroundColor'],
-      backgroundPath = json['backgroundPath'],
-      newControlId = json['newControlId'],
-      name = json['name'];
+  factory Screen.fromJson(Map<String, dynamic> json) {
+    var list = json['controls'] as List;
+    List<GicControl> jsonControls = list.map((i) => GicControl.fromJson(i)).toList();
+
+    return Screen(
+      screenId: json['screenId'],
+      controls: jsonControls,
+      backgroundColor: json['backgroundColor'],
+      backgroundPath: json['backgroundPath'],
+      newControlId: json['newControlId'],
+      name: json['name']);
+  }
+
+
+
+  // Screen.fromMappedJson(Map<String, dynamic> json) :
+  //     screenId = json['screenId'],
+  //     controls = json['controls'],
+  //     backgroundColor = json['backgroundColor'],
+  //     backgroundPath = json['backgroundPath'],
+  //     newControlId = json['newControlId'],
+  //     name = json['name'];
 
   Map<String, dynamic> toJson() =>
       {

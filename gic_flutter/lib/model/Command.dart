@@ -6,7 +6,7 @@ class Command {
   List<String> modifier = new List<String>();
   int activatorType; //key down, key up, etc
 
-  Command (key, modifier, activatorType);
+  Command ({key, modifier, activatorType});
 
   Command.fromMappedJson(Map<String, dynamic> json)
       : key = json['key'],
@@ -19,5 +19,13 @@ class Command {
     'key': key,
     'modifier': modifier
   };
+
+  factory Command.fromJson(Map<String, dynamic> json) {
+    return Command(
+      key: json['key'],
+      modifier: json['modifier'],
+      activatorType: json['activtorType']
+    );
+  }
 
 }

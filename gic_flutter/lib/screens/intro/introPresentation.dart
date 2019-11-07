@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:gic_flutter/model/GicControl.dart';
+import 'package:gic_flutter/model/Screen.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/screens/intro/screenListWidget.dart';
 import 'package:gic_flutter/screens/intro/screenSizeWidget.dart';
@@ -12,8 +12,8 @@ import 'package:introduction_screen/introduction_screen.dart';
 
 class IntroPresentation {
   List<PageViewModel> pages;
-  List<Screen> _screens = <Screen>[new Screen("SC"), new Screen("Elite"), new Screen("Truck")];
-  String device;
+  List<ScreenItem> _screens = <ScreenItem>[new ScreenItem("SC"), new ScreenItem("Elite"), new ScreenItem("Truck")];
+  String device = "Phone";
 
   loadPages(BuildContext context) async {
     Color primaryColor = CustomTheme.of(context).primaryColor;
@@ -84,7 +84,7 @@ class IntroPresentation {
               ScreenListWidget(_screens),
               RaisedButton(
                 onPressed: () {
-                  _screens.forEach((screen) => importScreen(screen, context));
+                  _screens.forEach((screen) =>importScreen(device, screen, context));
                 },
                 child: Text(Intl.of(context).onboardImport, style: TextStyle(color: Colors.white)),
                 color: primaryColor,
@@ -115,12 +115,15 @@ class IntroPresentation {
     return pages;
   }
 
-  importScreen(Screen screen, BuildContext context) async {
-    String jsonString = await DefaultAssetBundle.of(context).loadString("assets/data.json");
-
+  importScreen(String device, ScreenItem screen, BuildContext context) async {
+    if (!screen.selected)
+      return;
+    device = device.replaceAll(" ", ""); //remove spaces
+    String jsonString = await DefaultAssetBundle.of(context).loadString("assets/screens/${screen.title}-$device.json");
+    
     Map controlMap = jsonDecode(jsonString);
-    GicControl screen = GicControl.fromMappedJson(controlMap);
+    Screen newScreen = Screen.fromJson(controlMap);
 
-    debugPrint(screen.toString());
+    debugPrint("${newScreen.controls.length}");
   }
 }

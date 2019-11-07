@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/theme/theme.dart';
 
-class Screen {
+class ScreenItem {
   String title;
   bool selected = false;
-  Screen(title) {
+  ScreenItem(title) {
     this.title = title;
   }
 }
 
 class ScreenListWidget extends StatefulWidget {
-  final List<Screen> _screens;
+  final List<ScreenItem> _screens;
   ScreenListWidget(this._screens, {Key key}) : super(key: key);
 
   @override

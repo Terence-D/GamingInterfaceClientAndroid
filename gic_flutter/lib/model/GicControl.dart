@@ -35,28 +35,78 @@ class GicControl {
   int fontType = 0;
   Command commandSecondary;// = new Command();
 
-  GicControl  (key, modifier, activatorType);
+  GicControl ({
+    this.stage, 
+    this.command,
+    this.text,
+    this.left,
+    this.width,
+    this.top,
+    this.height,
+    this.fontColor,
+    this.primaryColor,
+    this.secondaryColor,
+    this.fontSize,
+    this.viewType,
+    this.primaryImageResource,
+    this.secondaryImageResource,
+    this.primaryImage,
+    this.secondaryImage,
+    this.fontName,
+    this.fontType,
+    this.commandSecondary
+  });
+  //GicControl  (key, modifier, activatorType);
 
-  GicControl.fromMappedJson(Map<String, dynamic> json)
-      : stage = json['stage'],
-        command = json['command'],
-        text = json['text'],
-        left = json['left'],
-        width = json['width'],
-        top = json['top'],
-        height = json['height'],
-        fontColor = json['fontColor'],
-        primaryColor = json['primaryColor'],
-        secondaryColor = json['secondarycolor'],
-        fontSize = json['fontSize'],
-        viewType = json['viewType'],
-        primaryImageResource = json['primayImageResource'],
-        secondaryImageResource = json['secondaryImageResource'],
-        primaryImage = json['primaryImage'],
-        secondaryImage = json['secondaryImage'],
-        fontName = json['fontName'],
-        fontType = json['fontType'],
-        commandSecondary = json['commandSecondary'];
+// factory Source.fromJson(Map<String, dynamic> json) {
+//     return Source(
+//       id: json["id"] as String,
+//       name: json["name"] as String,
+//     );
+//   }
+  factory GicControl.fromJson(Map<String, dynamic> json) {
+    return GicControl(
+      stage: json['stage'],
+        command: Command.fromJson(json['command']),
+        text: json['text'],
+        left: json['left'],
+        width: json['width'],
+        top: json['top'],
+        height: json['height'],
+        fontColor: json['fontColor'],
+        primaryColor: json['primaryColor'],
+        secondaryColor: json['secondarycolor'],
+        fontSize: json['fontSize'],
+        viewType: json['viewType'],
+        primaryImageResource: json['primayImageResource'],
+        secondaryImageResource: json['secondaryImageResource'],
+        primaryImage: json['primaryImage'],
+        secondaryImage: json['secondaryImage'],
+        fontName: json['fontName'],
+        fontType: json['fontType'],
+        commandSecondary: Command.fromJson(json['commandSecondary']),
+    );
+  }
+    // GicControl.fromMappedJson(Map<String, dynamic> json)
+    //   : stage = json['stage'],
+    //     command = json['command'],
+    //     text = json['text'],
+    //     left = json['left'],
+    //     width = json['width'],
+    //     top = json['top'],
+    //     height = json['height'],
+    //     fontColor = json['fontColor'],
+    //     primaryColor = json['primaryColor'],
+    //     secondaryColor = json['secondarycolor'],
+    //     fontSize = json['fontSize'],
+    //     viewType = json['viewType'],
+    //     primaryImageResource = json['primayImageResource'],
+    //     secondaryImageResource = json['secondaryImageResource'],
+    //     primaryImage = json['primaryImage'],
+    //     secondaryImage = json['secondaryImage'],
+    //     fontName = json['fontName'],
+    //     fontType = json['fontType'],
+    //     commandSecondary = json['commandSecondary'];
 
   Map<String, dynamic> toJson() =>
   {
