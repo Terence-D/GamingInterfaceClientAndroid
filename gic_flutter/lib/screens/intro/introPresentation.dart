@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:gic_flutter/model/Screen.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
+import 'package:gic_flutter/model/screen/Screens.dart';
 import 'package:gic_flutter/screens/intro/screenListWidget.dart';
 import 'package:gic_flutter/screens/intro/screenSizeWidget.dart';
 import 'package:gic_flutter/theme/theme.dart';
@@ -118,12 +118,8 @@ class IntroPresentation {
   importScreen(String device, ScreenItem screen, BuildContext context) async {
     if (!screen.selected)
       return;
-    device = device.replaceAll(" ", ""); //remove spaces
-    String jsonString = await DefaultAssetBundle.of(context).loadString("assets/screens/${screen.title}-$device.json");
-    
-    Map controlMap = jsonDecode(jsonString);
-    Screen newScreen = Screen.fromJson(controlMap);
 
-    debugPrint("${newScreen.controls.length}");
+    Screens screens = new Screens();
+    screens.loadFromJson(screen.title, device, context);
   }
 }
