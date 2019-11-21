@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'GicControl.dart';
 
 class Screen {
@@ -16,7 +18,18 @@ class Screen {
 
   factory Screen.fromJson(Map<String, dynamic> json) {
     var list = json['controls'] as List;
-    List<GicControl> jsonControls = list.map((i) => GicControl.fromJson(i)).toList();
+//    List<GicControl> jsonControls = list.map((i) => GicControl.fromJson(i)).toList();
+    List<GicControl> jsonControls = new List<GicControl>();
+    debugPrint("CONTROLS SIZE: ${list.length}");
+
+    //list.forEach((value) => debugPrint("list value: $value") );
+    list.forEach((value) { jsonControls.add(GicControl.fromJson(value));});
+
+debugPrint("ALL CONTROLS: ${jsonControls.length}");
+    // list.map((i) { 
+    //   debugPrint ("CONTROL: $i");
+    //   //jsonControls.add(GicControl.fromJson(i));
+    // }).toList();
 
     return Screen(
       screenId: json['screenId'],

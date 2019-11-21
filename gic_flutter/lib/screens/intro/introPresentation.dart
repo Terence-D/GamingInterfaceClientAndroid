@@ -9,6 +9,7 @@ import 'package:gic_flutter/screens/intro/screenListWidget.dart';
 import 'package:gic_flutter/screens/intro/screenSizeWidget.dart';
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:toast/toast.dart';
 
 class IntroPresentation {
   List<PageViewModel> pages;
@@ -84,7 +85,7 @@ class IntroPresentation {
               ScreenListWidget(_screens),
               RaisedButton(
                 onPressed: () {
-                  _screens.forEach((screen) =>importScreen(device, screen, context));
+                  _screens.forEach((screen) =>_importScreen(device, screen, context));
                 },
                 child: Text(Intl.of(context).onboardImport, style: TextStyle(color: Colors.white)),
                 color: primaryColor,
@@ -115,11 +116,14 @@ class IntroPresentation {
     return pages;
   }
 
-  importScreen(String device, ScreenItem screen, BuildContext context) async {
+  _importScreen(String device, ScreenItem screen, BuildContext context) async {
     if (!screen.selected)
       return;
 
     Screens screens = new Screens();
     screens.loadFromJson(screen.title, device, context);
+
+    Toast.show(Intl.of(context).onboardImportSuccess, context,
+        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
   }
 }

@@ -59,7 +59,8 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class ScreenRepository implements IScreenRepository {
     private static List<IScreen> cache;
-    public static final String PREFS_NAME = "gicsScreen";
+    public static final String PREFS_NAME = "FlutterSharedPreferences";//"gicsScreen";
+    private static final String PREFS_FLUTTER_PREFIX = "flutter.";
     private static final String PREFS_SCREEN = "screen_";
     private static final String PREFS_BACKGROUND_SUFFIX = "_background";
     private static final String PREFS_BACKGROUND_PATH_SUFFIX = "_background_path";
@@ -101,7 +102,7 @@ public class ScreenRepository implements IScreenRepository {
             Screen screen = new Screen(0, context);
             SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             SharedPreferences.Editor prefsEditor = prefs.edit();
-            prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
+            prefsEditor.putInt(PREFS_FLUTTER_PREFIX + PREFS_SCREEN + screen.getScreenId(), 1);
             prefsEditor.apply();
             cache.add(screen);
         }
@@ -266,6 +267,7 @@ public class ScreenRepository implements IScreenRepository {
             Map<String, ?> keys = prefs.getAll();
             for (Map.Entry<String, ?> entry : keys.entrySet()) {
                 if (entry.getKey().contains(PREFS_SCREEN)) {
+                    Log.d("GICS", entry.getKey());
                     Matcher matcher = lastIntPattern.matcher(entry.getKey());
                     if (matcher.find()) {
                         String someNumberStr = matcher.group(1);
@@ -324,7 +326,7 @@ public class ScreenRepository implements IScreenRepository {
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
             if (entry.getKey().contains(screen.getScreenId() + "_control_")) {
                 try {
-                    screen.addControl(mapper.readValue(prefs.getString(entry.getKey(), ""), GICControl.class));
+                    screen.addControl(mapper.readValue(prefs.getString(PREFS_FLUTTER_PREFIX + entry.getKey(), ""), GICControl.class));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -335,8 +337,13 @@ public class ScreenRepository implements IScreenRepository {
     private static void loadBackground(Screen screen, Context context) {
         convertLegacyBackground(screen, context);
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        int backgroundColor = prefs.getInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, context.getResources().getColor(R.color.default_background));
-        String backgroundPath = prefs.getString(screen.getScreenId() + PREFS_BACKGROUND_PATH_SUFFIX, "");
+        int backgroundColor = R.color.default_background;// 0;
+        try {
+            backgroundColor = prefs.getInt(PREFS_FLUTTER_PREFIX + screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, context.getResources().getColor(R.color.default_background));
+        } catch (Exception e) {
+            Log.d("GICS", "unable to get background color");
+        }
+        String backgroundPath = prefs.getString(PREFS_FLUTTER_PREFIX + screen.getScreenId() + PREFS_BACKGROUND_PATH_SUFFIX, "");
         screen.setBackgroundColor(backgroundColor);
         screen.setBackgroundFile(backgroundPath);
     }
@@ -347,13 +354,13 @@ public class ScreenRepository implements IScreenRepository {
 
         Map<String, ?> keys = prefs.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            if (entry.getKey().startsWith("control_")) {
+            if (entry.getKey().startsWith(PREFS_FLUTTER_PREFIX + "control_")) {
                 prefsEditor.remove(entry.getKey());
 
                 if (entry.getValue() instanceof Integer) {
-                    prefsEditor.putInt(screen.getScreenId() + "_" + entry.getKey(), (Integer) entry.getValue());
+                    prefsEditor.putInt(PREFS_FLUTTER_PREFIX + screen.getScreenId() + "_" + entry.getKey(), (Integer) entry.getValue());
                 } else if (entry.getValue() instanceof String) {
-                    prefsEditor.putString(screen.getScreenId() + "_" + entry.getKey(), (String) entry.getValue());
+                    prefsEditor.putString(PREFS_FLUTTER_PREFIX + screen.getScreenId() + "_" + entry.getKey(), (String) entry.getValue());
                 } else {
                     Log.d("GICS", "convertLegacyControls: unknown type of pref " + entry.getValue());
                 }
@@ -366,10 +373,10 @@ public class ScreenRepository implements IScreenRepository {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         if (prefs.contains("background")) {
             SharedPreferences.Editor prefsEditor = prefs.edit();
-            int backgroundColor = prefs.getInt("background", -1);
-            prefsEditor.putInt(screen.getScreenId() + "_background", backgroundColor);
-            prefsEditor.remove("background");
-            prefsEditor.remove("background");
+            int backgroundColor = prefs.getInt(PREFS_FLUTTER_PREFIX + "background", -1);
+            prefsEditor.putInt(PREFS_FLUTTER_PREFIX + screen.getScreenId() + "_background", backgroundColor);
+            prefsEditor.remove(PREFS_FLUTTER_PREFIX + "background");
+            prefsEditor.remove(PREFS_FLUTTER_PREFIX + "background");
             prefsEditor.apply();
         }
         String backgroundPath = "background" + ".jpg";
@@ -439,17 +446,17 @@ public class ScreenRepository implements IScreenRepository {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
-        prefsEditor.putString(PREFS_SCREEN + screen.getScreenId(), screen.getName());
+        prefsEditor.putString(PREFS_FLUTTER_PREFIX + PREFS_SCREEN + screen.getScreenId(), screen.getName());
 
         //save the background image
 //        if (screen.getBackground() != null) {
 //            if (screen.getBackground() instanceof ColorDrawable) {
 //                ColorDrawable color = (ColorDrawable) screen.getBackground();
-        prefsEditor.putInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, screen.getBackgroundColor());
+        prefsEditor.putInt(PREFS_FLUTTER_PREFIX + screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, screen.getBackgroundColor());
 //            } else {
 //                prefsEditor.putInt(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, -1);
 //            }
-        prefsEditor.putString(screen.getScreenId() + PREFS_BACKGROUND_PATH_SUFFIX, screen.getBackgroundFile());
+        prefsEditor.putString(PREFS_FLUTTER_PREFIX + screen.getScreenId() + PREFS_BACKGROUND_PATH_SUFFIX, screen.getBackgroundFile());
 //            } else {
 //                screen.setBackgroundFile(context.getFilesDir() + "/" + screen.getScreenId() + PREFS_BACKGROUND_SUFFIX + ".png");
 //                saveBitmap(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX, ((BitmapDrawable) image).getBitmap());
@@ -472,7 +479,7 @@ public class ScreenRepository implements IScreenRepository {
             int i = 0;
             for (GICControl control : screen.getControls()) {
                 String json = mapper.writeValueAsString(control);
-                prefsEditor.putString(screen.getScreenId() + PREFS_CONTROLS + i, json);
+                prefsEditor.putString(PREFS_FLUTTER_PREFIX + screen.getScreenId() + PREFS_CONTROLS + i, json);
                 i++;
             }
             prefsEditor.apply();
@@ -486,8 +493,8 @@ public class ScreenRepository implements IScreenRepository {
     private static void deleteScreen(Context context, IScreen screen) {
         SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
-        prefsEditor.remove(PREFS_SCREEN + screen.getScreenId());
-        prefsEditor.remove(screen.getScreenId() + PREFS_BACKGROUND_SUFFIX);
+        prefsEditor.remove(PREFS_FLUTTER_PREFIX + PREFS_SCREEN + screen.getScreenId());
+        prefsEditor.remove(PREFS_FLUTTER_PREFIX + screen.getScreenId() + PREFS_BACKGROUND_SUFFIX);
 
         //first we need to remove all existing views
         Map<String, ?> keys = prefs.getAll();
@@ -578,7 +585,7 @@ public class ScreenRepository implements IScreenRepository {
                 SharedPreferences prefs = weakContext.get().getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
                 SharedPreferences.Editor prefsEditor = prefs.edit();
 
-                prefsEditor.putInt(PREFS_SCREEN + screen.getScreenId(), 1);
+                prefsEditor.putInt(PREFS_FLUTTER_PREFIX + PREFS_SCREEN + screen.getScreenId(), 1);
 
                 prefsEditor.apply();
 

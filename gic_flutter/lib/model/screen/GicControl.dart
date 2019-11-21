@@ -65,6 +65,7 @@ class GicControl {
 //     );
 //   }
   factory GicControl.fromJson(Map<String, dynamic> json) {
+    debugPrint("GIC CONTROL - $json");
     return GicControl(
       stage: json['stage'],
         command: Command.fromJson(json['command']),

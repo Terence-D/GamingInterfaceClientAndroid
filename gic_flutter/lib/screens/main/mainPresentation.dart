@@ -20,10 +20,10 @@ class MainPresentation {
     _state = state;
   }
 
-  Future loadSettings() async {
+  Future loadSettings(BuildContext context) async {
     await _viewModel.loadSettings();
     if (firstRun)
-      getNewActivity(Channel.actionViewIntro);
+    loadOnboarding(context);
   }
 
   getNewActivity(String activity) async {

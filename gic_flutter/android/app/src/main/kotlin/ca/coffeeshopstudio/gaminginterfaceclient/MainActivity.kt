@@ -26,7 +26,6 @@ class MainActivity: FlutterActivity() {
 
     const val actionAbout = "about"
     const val actionDonate = "donate"
-    const val actionIntro = "intro"
     const val actionStart = "start"
     const val actionManager = "manager"
 
@@ -51,10 +50,6 @@ class MainActivity: FlutterActivity() {
     MethodChannel(flutterView, channelView).setMethodCallHandler { call, result ->
       _result = result
       when (call.method) {
-        actionIntro -> {
-          val intent = Intent(this, SplashIntroActivity::class.java)
-          startActivityForResult(intent, 1234)
-        }
         actionAbout -> {
           val intent = Intent(this, AboutActivity::class.java)
           startActivity(intent)

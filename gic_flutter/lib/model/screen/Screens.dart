@@ -80,8 +80,8 @@ class Screens {
 
   _save(SharedPreferences prefs, Screen screen) {
     prefs.setString("$_prefsScreen${screen.screenId}", screen.name);
-    prefs.setInt("${screen.screenId}$_prefsBackgroundSuffix}", screen.backgroundColor);
-    prefs.setString("${screen.screenId}$_prefsBackgroundPathSuffix}", screen.backgroundPath);
+    prefs.setInt("${screen.screenId}$_prefsBackgroundSuffix", screen.backgroundColor);
+    prefs.setString("${screen.screenId}$_prefsBackgroundPathSuffix", screen.backgroundPath);
 
     //clear out the old
     prefs.getKeys().forEach((key) {
@@ -93,7 +93,12 @@ class Screens {
     int i=0;
     screen.controls.forEach((control) {
       String json = jsonEncode(control.toJson());
-      prefs.setString("${screen.screenId}$_prefsControl + i", json);
+      prefs.setString("${screen.screenId}$_prefsControl$i", json);
+      i++;
+    });
+
+    prefs.getKeys().forEach((key) {
+      debugPrint("${key.toString()}: ${prefs.get(key).toString()}");
     });
   }
 

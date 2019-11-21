@@ -83,14 +83,14 @@ class MainScreenState extends State<MainScreen> {
     //when control is returned from the legacy android, this will update the screen list
     SystemChannels.lifecycle.setMessageHandler((msg) {
       if (msg == AppLifecycleState.resumed.toString())
-        presentation.loadSettings().then((_) {
+        presentation.loadSettings(context).then((_) {
           setState(() {
             loadSettings();
           });
         });
     });
 
-    presentation.loadSettings().then((_) {
+    presentation.loadSettings(context).then((_) {
       setState(() {
         if (presentation.darkTheme) _changeTheme(context, ThemeKeys.DARK);
         loadSettings();
@@ -242,7 +242,7 @@ class MainScreenState extends State<MainScreen> {
             onPressed: () {
               if (presentation.screenList.length < 1)
                 showMessage(
-                    Intl.of(context).mainErrorNoScreen);
+                    Intl.of(context).onboardImportSuccess);
               presentation.startGame(
                   passwordController.text,
                   addressController.text,
@@ -282,8 +282,7 @@ class MainScreenState extends State<MainScreen> {
   }
 
   void showMessage(String text) {
-    Toast.show(Intl.of(context).getText(text), context,
-        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    Toast.show(text, context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
   }
 
   void showUpgradeWarning() {

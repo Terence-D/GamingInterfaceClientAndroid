@@ -36,7 +36,8 @@ class MainVM extends Equatable {
     _password = _settingRepo.password;
     LinkedHashMap _screenListMap = _settingRepo.screenList;
     _screenList = new List();
-    _screenListMap.forEach((k, v) => _screenList.add(new ScreenListItem(k, v)) );
+    if (_screenListMap != null && _screenListMap.length > 0)
+      _screenListMap.forEach((k, v) => _screenList.add(new ScreenListItem(k, v)) );
   }
 
   int get selectedScreenId => _selectedScreenId;
