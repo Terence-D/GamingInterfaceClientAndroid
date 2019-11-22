@@ -92,15 +92,13 @@ class Screens {
 
     //add the updated controls
     int i=0;
+    if (screen.controls != null && screen.controls.length > 0) {
     screen.controls.forEach((control) {
       String json = jsonEncode(control.toJson());
       prefs.setString("${screen.screenId}$_prefsControl$i", json);
       i++;
     });
-
-    prefs.getKeys().forEach((key) {
-      debugPrint("${key.toString()}: ${prefs.get(key).toString()}");
-    });
+    }
   }
 
   loadFromJson(String screen, String device, BuildContext context) async {
@@ -139,5 +137,11 @@ class Screens {
     });
 
     return rv;
+  }
+
+  void save(Screen newScreen) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _save(prefs, newScreen);
+    _cache.add(newScreen);
   }
 }

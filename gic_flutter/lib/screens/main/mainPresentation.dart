@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
+import 'package:gic_flutter/model/screen/Screen.dart';
+import 'package:gic_flutter/model/screen/Screens.dart';
 import 'package:gic_flutter/screens/intro/onBoardingPage.dart';
 import 'package:gic_flutter/screens/intro/introPresentation.dart';
 import 'package:http/http.dart' as http;
@@ -109,18 +111,26 @@ class MainPresentation {
     IntroPresentation presentation = new IntroPresentation();
     await presentation.loadPages(context).then((value) async {
       List<PageViewModel> pages = presentation.getPages();
-       await Navigator.push(context,
+      await Navigator.push(context,
           MaterialPageRoute(builder: (context) => OnBoardingPage(pages: pages))
       );
-      await _loadData(context);     
+
+      await _loadData(context, checkEmpty: true);     
     });
   }
 
-  Future _loadData(BuildContext context) async {
+  Future _loadData(BuildContext context, {bool checkEmpty = false}) async {
     await _viewModel.loadSettings(context);
     _state.loadSettings();
     if (_viewModel.screenList.length > 0)
       selectedScreen = _viewModel.screenList[0];
+    else if (checkEmpty) {
+      Screen newScreen = new Screen();
+      newScreen.screenId = 0;
+      newScreen.name = "Screen";
+      Screens screens = new Screens();
+      screens.save(newScreen);
+    }
     _state.selectedScreen = selectedScreen;     
   }
 
