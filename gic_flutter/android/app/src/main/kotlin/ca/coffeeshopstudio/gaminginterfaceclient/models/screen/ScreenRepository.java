@@ -326,7 +326,7 @@ public class ScreenRepository implements IScreenRepository {
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
             if (entry.getKey().contains(screen.getScreenId() + "_control_")) {
                 try {
-                    screen.addControl(mapper.readValue(prefs.getString(PREFS_FLUTTER_PREFIX + entry.getKey(), ""), GICControl.class));
+                    screen.addControl(mapper.readValue(prefs.getString(entry.getKey(), ""), GICControl.class));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

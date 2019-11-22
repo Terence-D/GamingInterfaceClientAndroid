@@ -3,27 +3,27 @@ class Command {
   static const int KEY_UP = 1;
 
   String key = "a";
-  List<String> modifier = new List<String>();
+  List<String> modifiers = new List<String>();
   int activatorType; //key down, key up, etc
 
-  Command ({key, modifier, activatorType});
+  Command ({key, modifiers, activatorType});
 
   Command.fromMappedJson(Map<String, dynamic> json)
       : key = json['key'],
-        modifier = json['modifier'],
+        modifiers = json['modifiers'],
         activatorType = json['activtorType'];
 
   Map<String, dynamic> toJson() =>
   {
     'activatorType': activatorType,
     'key': key,
-    'modifier': modifier
+    'modifiers': modifiers
   };
 
   factory Command.fromJson(Map<String, dynamic> json) {
     return Command(
       key: json['key'],
-      modifier: json['modifier'],
+      modifiers: json['modifiers'],
       activatorType: json['activtorType']
     );
   }
