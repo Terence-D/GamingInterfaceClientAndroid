@@ -34,7 +34,7 @@ class MainPresentation {
   }
 
   Future loadSettings(BuildContext context) async {
-    await _viewModel.loadSettings(context);
+    await _loadData(context);
     if (firstRun)
       loadOnboarding(context);
   }
@@ -112,13 +112,16 @@ class MainPresentation {
        await Navigator.push(context,
           MaterialPageRoute(builder: (context) => OnBoardingPage(pages: pages))
       );
-      await _viewModel.loadSettings(context);
-      _state.loadSettings();
-      if (_viewModel.screenList.length > 0)
-        selectedScreen = _viewModel.screenList[0];
-      _state.selectedScreen = selectedScreen;     
-      debugPrint("selected screen ${selectedScreen.name}");
+      await _loadData(context);     
     });
+  }
+
+  Future _loadData(BuildContext context) async {
+    await _viewModel.loadSettings(context);
+    _state.loadSettings();
+    if (_viewModel.screenList.length > 0)
+      selectedScreen = _viewModel.screenList[0];
+    _state.selectedScreen = selectedScreen;     
   }
 
   setDarkTheme(bool newValue) {
