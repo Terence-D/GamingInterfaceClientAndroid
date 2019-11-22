@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/screens/intro/intro.dart';
+import 'package:gic_flutter/screens/intro/onBoardingPage.dart';
 import 'package:gic_flutter/screens/intro/introPresentation.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
@@ -13,7 +13,20 @@ import 'package:introduction_screen/introduction_screen.dart';
 class MainPresentation {
   MainVM _viewModel;
   MainScreenState _state;
+  ScreenListItem selectedScreen;
   static const String _Version = "\"1.3.0.0\"";
+
+  String get toolbarTitle => _viewModel.toolbarTitle;
+  String get screenTitle => _viewModel.screenTitle;
+  bool get darkTheme => _viewModel.darkMode;
+  bool get firstRun => _viewModel.firstRun;
+  String get address => _viewModel.address;
+  String get port => _viewModel.port;
+  String get password => _viewModel.password;
+  bool get donate => _viewModel.donate;
+  bool get donateStar => _viewModel.donateStar;
+  List<ScreenListItem> get screenList => _viewModel.screenList;
+  int get selectedScreenID => _viewModel.selectedScreenId;
 
   MainPresentation(MainScreenState state, SettingRepository repo) {
     _viewModel = new MainVM(repo);
@@ -21,9 +34,9 @@ class MainPresentation {
   }
 
   Future loadSettings(BuildContext context) async {
-    await _viewModel.loadSettings();
+    await _viewModel.loadSettings(context);
     if (firstRun)
-    loadOnboarding(context);
+      loadOnboarding(context);
   }
 
   getNewActivity(String activity) async {
@@ -92,27 +105,21 @@ class MainPresentation {
     }
   }
 
-  void loadOnboarding(BuildContext context) {
+  void loadOnboarding(BuildContext context) async {
     IntroPresentation presentation = new IntroPresentation();
-    presentation.loadPages(context).then((value) {
+    await presentation.loadPages(context).then((value) async {
       List<PageViewModel> pages = presentation.getPages();
-      Navigator.push(context,
+       await Navigator.push(context,
           MaterialPageRoute(builder: (context) => OnBoardingPage(pages: pages))
       );
+      await _viewModel.loadSettings(context);
+      _state.loadSettings();
+      if (_viewModel.screenList.length > 0)
+        selectedScreen = _viewModel.screenList[0];
+      _state.selectedScreen = selectedScreen;     
+      debugPrint("selected screen ${selectedScreen.name}");
     });
   }
-
-  String get toolbarTitle => _viewModel.toolbarTitle;
-  String get screenTitle => _viewModel.screenTitle;
-  bool get darkTheme => _viewModel.darkMode;
-  bool get firstRun => _viewModel.firstRun;
-  String get address => _viewModel.address;
-  String get port => _viewModel.port;
-  String get password => _viewModel.password;
-  bool get donate => _viewModel.donate;
-  bool get donateStar => _viewModel.donateStar;
-  List<ScreenListItem> get screenList => _viewModel.screenList;
-  int get selectedScreenID => _viewModel.selectedScreenId;
 
   setDarkTheme(bool newValue) {
     _viewModel.darkMode = newValue;

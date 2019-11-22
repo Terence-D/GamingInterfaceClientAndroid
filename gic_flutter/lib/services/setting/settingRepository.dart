@@ -23,7 +23,6 @@ class SettingRepository {
   String _port;
   String _password;
   int _selectedScreenId;
-  LinkedHashMap _screenList;
   bool _donate;
   bool _donateStar;
 
@@ -39,8 +38,7 @@ class SettingRepository {
   String get address => _address;
   int get selectedScreenId => _selectedScreenId;
   String get password => _password;
-  LinkedHashMap get screenList => _screenList;
-
+  
   saveMainSettings(String address, String port, String password, int screenId) async {
     _address = address;
     _port = port;
@@ -67,7 +65,6 @@ class SettingRepository {
     _selectedScreenId = prefs.getInt(_prefSelectedScreenId) ?? 0;
     //if first run is true, we set it to false automatically
     if (_firstRun) prefs.setBool(_prefFirstRun, false);
-    _screenList = await _getScreenList();
     _password = await _getPassword();
     if (prefs.containsKey(_prefDonate)) 
       _donate = prefs.getBool(_prefDonate);
@@ -125,17 +122,17 @@ class SettingRepository {
     return response;
   }
 
-  Future<LinkedHashMap> _getScreenList() async {
-    MethodChannel platform = new MethodChannel(Channel.channelUtil);
-    try {
-      final LinkedHashMap result =
-          await platform.invokeMethod(Channel.actionUtilGetScreens);
-      return result;
-    } on PlatformException catch (e) {
-      print(e.message);
-    }
-    return null;
-  }
+  // Future<LinkedHashMap> _getScreenList() async {
+  //   MethodChannel platform = new MethodChannel(Channel.channelUtil);
+  //   try {
+  //     final LinkedHashMap result =
+  //         await platform.invokeMethod(Channel.actionUtilGetScreens);
+  //     return result;
+  //   } on PlatformException catch (e) {
+  //     print(e.message);
+  //   }
+  //   return null;
+  // }
 
   Future _convertLegacy() async {
     MethodChannel platform = new MethodChannel(Channel.channelUtil);

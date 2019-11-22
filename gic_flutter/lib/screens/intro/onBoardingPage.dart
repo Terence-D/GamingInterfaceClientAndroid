@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/screens/intro/introPresentation.dart';
+import 'package:gic_flutter/screens/main/mainPresentation.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class OnBoardingPage extends StatelessWidget {
-  final IntroPresentation presentation;
+  //final IntroPresentation presentation;
   final List<PageViewModel> pages;
-
-  const OnBoardingPage({Key key, this.presentation, this.pages}) : super(key: key);
+  
+  const OnBoardingPage({Key key, this.pages}) : super(key: key); 
 
   void _onIntroEnd(context) {
     Navigator.pop(context);

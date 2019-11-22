@@ -66,7 +66,7 @@ class MainScreenState extends State<MainScreen> {
 
   void loadSettings() {
     if (presentation.screenList.length > 0)
-      selectedScreen = presentation.screenList[0];
+      selectedScreen = presentation.selectedScreen;
     passwordController.text = presentation.password;
     portController.text = presentation.port;
     addressController.text = presentation.address;
@@ -219,7 +219,7 @@ class MainScreenState extends State<MainScreen> {
                         }).toList(),
                         onChanged: (ScreenListItem item) {
                           setState(() {
-                            selectedScreen = item;
+                            presentation.selectedScreen = item;
                           });
                         },
                       ),

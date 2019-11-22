@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:gic_flutter/model/screen/Screens.dart';
 import 'package:gic_flutter/services/setting/settingRepository.dart';
 
 class MainVM extends Equatable {
@@ -14,7 +16,7 @@ class MainVM extends Equatable {
   String _port;
   bool _donate;
   bool _donateStar;
-  List<ScreenListItem> _screenList = new List<ScreenListItem>();
+  List<ScreenListItem> screenList = new List<ScreenListItem>();
 
   MainVM(SettingRepository settingRepo) {
     _settingRepo = settingRepo;
@@ -24,7 +26,7 @@ class MainVM extends Equatable {
     await _settingRepo.saveMainSettings(_address, _port, _password, selectedScreenId);
   }
 
-  Future<void> loadSettings() async {
+  Future<void> loadSettings(BuildContext context) async {
     await _settingRepo.loadSettings();
     _selectedScreenId = _settingRepo.selectedScreenId;
     _address = _settingRepo.address;
@@ -34,10 +36,13 @@ class MainVM extends Equatable {
     _donateStar = _settingRepo.donateStar;
     _darkMode = _settingRepo.darkMode;
     _password = _settingRepo.password;
-    LinkedHashMap _screenListMap = _settingRepo.screenList;
-    _screenList = new List();
-    if (_screenListMap != null && _screenListMap.length > 0)
-      _screenListMap.forEach((k, v) => _screenList.add(new ScreenListItem(k, v)) );
+    Screens _screenRepo = new Screens();
+    LinkedHashMap _screenListMap = await _screenRepo.getScreenList(context);
+    screenList = new List();
+    if (_screenListMap != null && _screenListMap.length > 0) {
+      _screenListMap.forEach((k, v) => screenList.add(new ScreenListItem(k, v)) );
+      debugPrint("${screenList.length}");
+    }
   }
 
   int get selectedScreenId => _selectedScreenId;
@@ -60,8 +65,6 @@ class MainVM extends Equatable {
   set selectedScreenId(int newValue) {
     _selectedScreenId = newValue;
   }
-
-  List<ScreenListItem> get screenList => _screenList;
 
   String get toolbarTitle => "Gaming Interface Client";
   String get screenTitle => "GIC";

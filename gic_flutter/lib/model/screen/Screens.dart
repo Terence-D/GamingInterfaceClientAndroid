@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -124,5 +125,19 @@ class Screens {
     //save the new screen
     _save(prefs, newScreen);
     _cache.add(newScreen);
+  }
+
+  Future<LinkedHashMap> getScreenList(BuildContext context) async {
+    LinkedHashMap rv = new LinkedHashMap<int, String>();
+    if (_cache == null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      _load(prefs, context);
+    }
+
+    _cache.forEach((screen) {
+      rv[screen.screenId] = screen.name;
+    });
+
+    return rv;
   }
 }
