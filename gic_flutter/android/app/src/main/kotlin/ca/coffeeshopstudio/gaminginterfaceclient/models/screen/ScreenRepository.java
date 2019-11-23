@@ -13,7 +13,6 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -59,7 +58,8 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class ScreenRepository implements IScreenRepository {
     private static List<IScreen> cache;
-    public static final String PREFS_NAME = "FlutterSharedPreferences";//"gicsScreen";
+    public static final String PREFS_NAME = "FlutterSharedPreferences";
+    public static final String PREFS_LEGACY_NAME = "gicsScreen";
     private static final String PREFS_FLUTTER_PREFIX = "flutter.";
     private static final String PREFS_SCREEN = "screen_";
     private static final String PREFS_BACKGROUND_SUFFIX = "_background";
@@ -70,6 +70,47 @@ public class ScreenRepository implements IScreenRepository {
 
     public ScreenRepository(Context context) {
         this.context = context;
+        //on every check, remove any legacy values
+        cleanupLegacy();
+    }
+
+    private boolean containsKey (String key) {
+        if (key.contains(PREFS_SCREEN) ||
+                key.contains(PREFS_BACKGROUND_SUFFIX) ||
+                key.contains(PREFS_BACKGROUND_PATH_SUFFIX) ||
+                key.contains(PREFS_CONTROLS) ) {
+            return true;
+        }
+            return false;
+    }
+
+    private void cleanupLegacy() {
+        SharedPreferences legacyPrefs = context.getApplicationContext().getSharedPreferences(PREFS_LEGACY_NAME, MODE_PRIVATE);
+        SharedPreferences flutterPrefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor legacyEditor = legacyPrefs.edit();
+        SharedPreferences.Editor flutterEditor = flutterPrefs.edit();
+
+        if (legacyPrefs.contains("LEGACY_DONE"))
+            return;
+
+        Map<String, ?> keys = legacyPrefs.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            if ( containsKey(entry.getKey()) ) {
+                //we need to convert
+                if (entry.getValue() instanceof String)
+                    flutterEditor.putString(PREFS_FLUTTER_PREFIX + entry.getKey(), (String) entry.getValue());
+                else //gotta be an int
+                    flutterEditor.putInt(PREFS_FLUTTER_PREFIX + entry.getKey(), (Integer) entry.getValue());
+                //and remove
+                legacyEditor.remove(entry.getKey());
+            }
+        }
+        //ok lets never do this again
+        legacyEditor.putBoolean("LEGACY_DONE", true);
+
+        //apply
+        legacyEditor.apply();
+        flutterEditor.apply();
     }
 
 
