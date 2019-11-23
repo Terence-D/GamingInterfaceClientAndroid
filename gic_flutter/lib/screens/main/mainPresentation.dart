@@ -129,8 +129,11 @@ class MainPresentation {
       newScreen.screenId = 0;
       newScreen.name = "Screen";
       Screens screens = new Screens();
-      screens.save(newScreen);
+      await screens.save(newScreen);
+      await _viewModel.loadSettings(context); //reload
+      debugPrint("added empty screen by default");
     }
+
     _state.selectedScreen = selectedScreen;     
   }
 

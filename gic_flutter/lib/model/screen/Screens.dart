@@ -139,9 +139,12 @@ class Screens {
     return rv;
   }
 
-  void save(Screen newScreen) async {
+  Future save(Screen newScreen) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _save(prefs, newScreen);
-    _cache.add(newScreen);
+     if (_cache == null) {
+      _cache = new List<Screen>();
+    }
+   _cache.add(newScreen);
   }
 }

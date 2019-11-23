@@ -240,14 +240,14 @@ class MainScreenState extends State<MainScreen> {
           floatingActionButton: FloatingActionButton.extended(
             key: _fabKey,
             onPressed: () {
-              if (presentation.screenList.length < 1)
-                showMessage(
-                    Intl.of(context).onboardImportSuccess);
-              presentation.startGame(
-                  passwordController.text,
-                  addressController.text,
-                  portController.text,
-                  selectedScreen.id);
+              if (presentation.selectedScreen == null)
+                showMessage(Intl.of(context).mainErrorNoScreen);
+              else
+                presentation.startGame(
+                    passwordController.text,
+                    addressController.text,
+                    portController.text,
+                    selectedScreen.id);
             },
             label: Text(Intl.of(context).mainStart),
           )); //
