@@ -11,10 +11,20 @@ import 'package:gic_flutter/theme/theme.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:toast/toast.dart';
 
+abstract class IntroViewContract {
+  void onIntroLoadCompleted(List<PageViewModel> _pages);
+}
+
 class IntroPresentation {
-  List<PageViewModel> pages;
+  IntroViewContract _contract;
+
+  List<PageViewModel> _pages;
   List<ScreenItem> _screens = <ScreenItem>[new ScreenItem("SC"), new ScreenItem("Elite"), new ScreenItem("Truck")];
   String device = "Phone";
+
+  IntroPresentation(IntroViewContract contract) {
+    _contract = contract;    
+  }
 
   loadPages(BuildContext context) async {
     Color primaryColor = CustomTheme.of(context).primaryColor;
@@ -38,7 +48,7 @@ class IntroPresentation {
       );
     }
 
-    pages = [
+    _pages = [
       PageViewModel(
         title: Intl.of(context).onboardIntroTitle,
         body: Intl.of(context).onboardIntroDesc,
@@ -108,12 +118,10 @@ class IntroPresentation {
       ),
     ];
     if (oldApi != null) {
-      pages.add(oldApi);
+      _pages.add(oldApi);
     }
-  }
 
-  getPages() {
-    return pages;
+    _contract.onIntroLoadCompleted(_pages);
   }
 
   _importScreen(String device, ScreenItem screen, BuildContext context) async {

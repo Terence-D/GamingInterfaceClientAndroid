@@ -16,7 +16,7 @@ class Screens {
 
   int defaultBackground = 0xFF383838;
 
-  _load (SharedPreferences prefs, BuildContext context) async {
+  _load (SharedPreferences prefs) async {
     if (_cache == null) {
       _cache = new List<Screen>();
     }
@@ -32,14 +32,14 @@ class Screens {
         } catch (_) {
           screen.name = "Screen $screenId";
         }
-        _loadBackground(prefs, screen, context);
-        _loadControls(prefs, screen, context);
+        _loadBackground(prefs, screen);
+        _loadControls(prefs, screen);
         _cache.add(screen);
       }
     });
   }
 
-  _loadBackground(SharedPreferences prefs, Screen screen, BuildContext context) {
+  _loadBackground(SharedPreferences prefs, Screen screen) {
     
     int backgroundColor = prefs.getInt("${screen.screenId}$_prefsBackgroundSuffix");
     String backgroundPath = prefs.getString("${screen.screenId}$_prefsBackgroundPathSuffix");
@@ -47,7 +47,7 @@ class Screens {
     screen.backgroundPath = backgroundPath;
   }
 
-  _loadControls(SharedPreferences prefs, Screen screen, BuildContext context) {
+  _loadControls(SharedPreferences prefs, Screen screen) {
     prefs.getKeys().forEach((key) {
       if (key.contains("${screen.screenId}$_prefsControl")) {
         try {//legacy used an integer dummy value, so need to handle that
@@ -104,7 +104,7 @@ class Screens {
   loadFromJson(String screen, String device, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_cache == null || _cache.length < 1)
-      _load(prefs, context);
+      _load(prefs);
 
     //the name will have spaces, but the asset file does not.  so turn Large Tablet into LargeTablet
     device = device.replaceAll(" ", ""); //remove spaces
@@ -125,11 +125,11 @@ class Screens {
     _cache.add(newScreen);
   }
 
-  Future<LinkedHashMap> getScreenList(BuildContext context) async {
+  Future<LinkedHashMap> getScreenList() async {
     LinkedHashMap rv = new LinkedHashMap<int, String>();
     if (_cache == null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      _load(prefs, context);
+      _load(prefs);
     }
 
     _cache.forEach((screen) {

@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:gic_flutter/screens/main/main.dart';
+import 'package:gic_flutter/screens/main/mainView.dart';
 
 import 'model/intl/localizations.dart';
-import 'services/setting/settingRepository.dart';
 import 'theme/theme.dart';
 
 class GicApp extends StatelessWidget {
-  SettingRepository _settingRepository  ;
-
-  GicApp (SettingRepository sharedPreferences) {
-    _settingRepository = sharedPreferences;
+  GicApp () {
   }
 
   @override
@@ -20,7 +16,7 @@ class GicApp extends StatelessWidget {
       theme: CustomTheme.of(context),
       //theme: lightTheme(),
       //darkTheme: darkTheme(),
-      home: MainScreen(_settingRepository),
+      home: MainView(),
       localizationsDelegates: [
         const IntlDelegate(),
         GlobalMaterialLocalizations.delegate,

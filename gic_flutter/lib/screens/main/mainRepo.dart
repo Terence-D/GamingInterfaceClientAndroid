@@ -2,32 +2,19 @@ import 'dart:collection';
 
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
+import 'package:gic_flutter/model/screen/Screen.dart';
+import 'package:gic_flutter/model/screen/Screens.dart';
+import 'package:gic_flutter/screens/main/mainVM.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-abstract class PreferenceLoaderContract {
-  void preferencesLoaded(); 
+abstract class MainRepoContract {
+  void preferencesLoaded(MainVM viewModel); 
 }
 
-class SettingRepository {
+class MainRepo implements MainVMRepo {
   SharedPreferences _prefs;
-
-  bool _firstRun;
-  bool _darkMode;
-  String _address;
-  String _port;
-  String _password;
-  int _selectedScreenId;
-  bool _donate;
-  bool _donateStar;
-
-  bool get donate => _donate;
-  bool get donateStar => _donateStar;
-  bool get darkMode => _darkMode;
-  bool get firstRun => _firstRun;
-  String get port => _port;
-  String get address => _address;
-  int get selectedScreenId => _selectedScreenId;
-  String get password => _password;
+  MainRepoContract _mainContract;
+  MainVM _viewModel;
 
   static const String _prefNightMode = "nightMode";
   static const String _prefFirstRun = "firstRun"; //show the whole intro thing
@@ -40,16 +27,22 @@ class SettingRepository {
   static const String _prefDonate = "coffee";
   static const String _prefDonateStar = "star";
 
-  SettingRepository(PreferenceLoaderContract loader) {
+  MainRepo(MainRepoContract loader) {
+    _mainContract = loader;
+  }
+
+  @override
+  fetch() {
     SharedPreferences.getInstance().then((shared) {
       _prefs = shared;
-      _loadSettings().then((_) {
-        loader.preferencesLoaded();
+      _loadSettings().then((viewModel) {
+        this._viewModel = viewModel;
+        _mainContract.preferencesLoaded(viewModel);
       });
     });
   }
 
-  Future _loadSettings() async {
+  Future<MainVM> _loadSettings() async {
     _prefs.reload();
     //this handles reading in legacy settings
     bool needToConvert = _prefs.getBool(_prefConvert) ?? true;
@@ -58,25 +51,45 @@ class SettingRepository {
       _prefs.setBool(_prefConvert, false);
     }
 
-    _firstRun = _prefs.getBool(_prefFirstRun) ?? true;
-    _darkMode = _prefs.getBool(_prefNightMode) ?? true;
-    _port = _prefs.getString(_prefPort) ?? "8091";
-    _address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
-    _selectedScreenId = _prefs.getInt(_prefSelectedScreenId) ?? 0;
+    MainVM viewModel = new MainVM();
+
+    viewModel.firstRun = _prefs.getBool(_prefFirstRun) ?? true;
+    viewModel.darkMode = _prefs.getBool(_prefNightMode) ?? true;
+    viewModel.port = _prefs.getString(_prefPort) ?? "8091";
+    viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
+
+    Screens screenRepo = new Screens();
+    LinkedHashMap _screenListMap = await screenRepo.getScreenList();
+    viewModel.screenList = new List();
+    if (_screenListMap != null && _screenListMap.length > 0) {
+      _screenListMap.forEach((k, v) => viewModel.screenList.add(new ScreenListItem(k, v)) );
+    } else {
+      Screen newScreen = new Screen();
+      newScreen.screenId = 0;
+      newScreen.name = "Empty Screen";
+      await screenRepo.save(newScreen);
+    }
+    viewModel.selectedScreen = viewModel.screenList[_prefs.getInt(_prefSelectedScreenId) ?? 0];
+
     //if first run is true, we set it to false automatically
-    if (_firstRun) _prefs.setBool(_prefFirstRun, false);
-    _password = await _getPassword();
+    if (viewModel.firstRun) _prefs.setBool(_prefFirstRun, false);
+
+    //get encrypted password    
+    viewModel.password = await _getPassword();
+
     if (_prefs.containsKey(_prefDonate)) 
-      _donate = _prefs.getBool(_prefDonate);
+      viewModel.donate = _prefs.getBool(_prefDonate);
     else {
-      _donate = false;  
+      viewModel.donate = false;  
     }
 
      if (_prefs.containsKey(_prefDonateStar))
-      _donateStar = _prefs.getBool(_prefDonateStar);
+      viewModel.donateStar = _prefs.getBool(_prefDonateStar);
     else {
-      _donateStar = false;  
+      viewModel.donateStar = false;  
     }
+
+    return viewModel;
   }
 
   Future _convertLegacy() async {
@@ -120,9 +133,9 @@ class SettingRepository {
     String response = "";
 
     const platform = const MethodChannel(Channel.channelUtil);
-    if (_password.isNotEmpty) {
+    if (_viewModel.password.isNotEmpty) {
       try {
-        final String result = await platform.invokeMethod(Channel.actionUtilEncrypt, {"password": password});
+        final String result = await platform.invokeMethod(Channel.actionUtilEncrypt, {"password": _viewModel.password});
         response = result;
       } on PlatformException catch (e) {
         response = "";
@@ -150,9 +163,9 @@ class SettingRepository {
   }
 
   saveMainSettings(String address, String port, String password, int screenId) async {
-    _address = address;
-    _port = port;
-    _password = password;
+    _viewModel.address = address;
+    _viewModel.port = port;
+    _viewModel.password = password;
     _prefs.setString(_prefAddress, address);
     _prefs.setString(_prefPort, port);
     _prefs.setString(_prefPassword, await _encryptPassword());
@@ -160,7 +173,7 @@ class SettingRepository {
   }
 
   setDarkMode(bool newValue) {
-    _darkMode = newValue;
+    _viewModel.darkMode = newValue;
     _prefs.setBool(_prefNightMode, newValue);
     const platform = const MethodChannel(Channel.channelUtil);
     try {
@@ -168,4 +181,5 @@ class SettingRepository {
       } on PlatformException catch (e) {
     }
   }
+
 }
