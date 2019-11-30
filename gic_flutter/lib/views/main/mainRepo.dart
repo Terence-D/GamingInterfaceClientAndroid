@@ -1,10 +1,11 @@
 import 'dart:collection';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/screen/Screen.dart';
 import 'package:gic_flutter/model/screen/Screens.dart';
-import 'package:gic_flutter/screens/main/mainVM.dart';
+import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class MainRepoContract {
@@ -17,7 +18,6 @@ class MainRepo implements MainVMRepo {
   MainVM _viewModel;
 
   static const String _prefNightMode = "nightMode";
-  static const String _prefFirstRun = "firstRun"; //show the whole intro thing
   static const String _prefShowHints = "showHints"; //show the help page
   static const String _prefPassword = "password";
   static const String _prefPort = "port";
@@ -53,7 +53,6 @@ class MainRepo implements MainVMRepo {
 
     MainVM viewModel = new MainVM();
 
-    viewModel.firstRun = _prefs.getBool(_prefFirstRun) ?? true;
     viewModel.darkMode = _prefs.getBool(_prefNightMode) ?? true;
     viewModel.port = _prefs.getString(_prefPort) ?? "8091";
     viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
@@ -69,10 +68,7 @@ class MainRepo implements MainVMRepo {
       newScreen.name = "Empty Screen";
       await screenRepo.save(newScreen);
     }
-    viewModel.selectedScreen = viewModel.screenList[_prefs.getInt(_prefSelectedScreenId) ?? 0];
-
-    //if first run is true, we set it to false automatically
-    if (viewModel.firstRun) _prefs.setBool(_prefFirstRun, false);
+    //viewModel.selectedScreen = viewModel.screenList[_prefs.getInt(_prefSelectedScreenId) ?? 0];
 
     //get encrypted password    
     viewModel.password = await _getPassword();
@@ -100,9 +96,6 @@ class MainRepo implements MainVMRepo {
       if (result != null && result.length > 0) {
         result.forEach((key, value) {
           switch (key) {
-            case "prefSplash":
-              _prefs.setBool(_prefFirstRun, value);
-              break;
             case "NIGHT_MODE":
               _prefs.setBool(_prefNightMode, value);
               break;

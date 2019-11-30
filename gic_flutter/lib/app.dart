@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:gic_flutter/screens/main/mainView.dart';
+import 'package:gic_flutter/views/intro/introView.dart';
+import 'package:gic_flutter/views/main/mainView.dart';
+import 'package:gic_flutter/service_locator.dart';
+import 'package:gic_flutter/services/localStorageService.dart';
 
 import 'model/intl/localizations.dart';
 import 'theme/theme.dart';
@@ -16,7 +19,7 @@ class GicApp extends StatelessWidget {
       theme: CustomTheme.of(context),
       //theme: lightTheme(),
       //darkTheme: darkTheme(),
-      home: MainView(),
+      home: _getStartupScreen(),
       localizationsDelegates: [
         const IntlDelegate(),
         GlobalMaterialLocalizations.delegate,
@@ -26,5 +29,15 @@ class GicApp extends StatelessWidget {
         const Locale('en', ''),
       ],
     );
+  }
+
+  Widget _getStartupScreen() {
+    var localStorageService = locator<LocalStorageService>();
+
+    if(localStorageService.firstRun) {
+      return IntroView();
+    }
+
+    return MainView();
   }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/screens/intro/introPresentation.dart';
+import 'package:gic_flutter/theme/theme.dart';
+import 'package:gic_flutter/views/intro/introPresentation.dart';
+import 'package:gic_flutter/views/main/mainView.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
-class IntroView extends StatefulWidget {
+class IntroView extends StatefulWidget{
   
   const IntroView({Key key}) : super(key: key);
 
@@ -13,18 +15,23 @@ class IntroView extends StatefulWidget {
   }
 }
 
-class IntroViewState extends State<IntroView> implements IntroViewContract {
+class IntroViewState extends State<IntroView> implements IntroViewContract  {
   List<PageViewModel> _pages;
+  Color _primaryColor;
+  @override
+  initState() {
+    super.initState();
+  }
 
   @override
-  void initState() {
-    super.initState();
-
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     new IntroPresentation(this).loadPages(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    _primaryColor = CustomTheme.of(context).primaryColor;
     if (_pages == null) {
       return new Stack(
         children: [
@@ -37,10 +44,13 @@ class IntroViewState extends State<IntroView> implements IntroViewContract {
           ),
         ],
       );
-    } else {
+    } else
       return IntroductionScreen(
         pages: _pages,
-        onDone: () => _onIntroEnd(context),
+        dotsDecorator: DotsDecorator(
+          activeColor: _primaryColor,
+        ),
+              onDone: () => _onIntroEnd(context),
         //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
         showSkipButton: true,
         skipFlex: 0,
@@ -49,16 +59,19 @@ class IntroViewState extends State<IntroView> implements IntroViewContract {
         next: const Icon(Icons.arrow_forward),
         done: Text(Intl.of(context).onboardDone, style: TextStyle(fontWeight: FontWeight.w600)),
       );
-    }
-  }
-
-  void _onIntroEnd(context) {
-    Navigator.pop(context);
   }
 
   @override
   void onIntroLoadCompleted(List<PageViewModel> pages) {
-    _pages = pages;
+    setState(() {
+      _pages = pages;
+    });
+  }
+
+  void _onIntroEnd(context) {
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => MainView())
+    );
   }
 }
 

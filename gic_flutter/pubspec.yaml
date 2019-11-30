@@ -34,9 +34,10 @@ dependencies:
   http: ^0.12.0+2
   toast: ^0.1.5
   highlighter_coachmark: ^0.0.3
-  introduction_screen: ^1.0.6
+  introduction_screen: ^1.0.7
   flutter_email_sender: ^2.0.3
   device_info: ^0.4.0+4
+  get_it: ^1.0.3
 
 dev_dependencies:
   flutter_test:
