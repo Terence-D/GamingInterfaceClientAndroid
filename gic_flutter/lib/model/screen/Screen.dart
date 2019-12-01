@@ -20,8 +20,6 @@ class Screen {
     var list = json['controls'] as List;
 //    List<GicControl> jsonControls = list.map((i) => GicControl.fromJson(i)).toList();
     List<GicControl> jsonControls = new List<GicControl>();
-    debugPrint("CONTROLS SIZE: ${list.length}");
-
     //list.forEach((value) => debugPrint("list value: $value") );
     list.forEach((value) { jsonControls.add(GicControl.fromJson(value));});
 
