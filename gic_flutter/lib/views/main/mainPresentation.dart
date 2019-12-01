@@ -48,17 +48,15 @@ class MainPresentation implements MainRepoContract {
   }
 
   void startGame(String password, String address, String port, int selectedScreenId) async {
-    _view.setConnectingIndicator(true);
     if (password.length < 6) {
       _view.showMessage(Intl.mainPasswordError);
-      _view.setConnectingIndicator(false);
       return;
     }
     if (int.tryParse(port) == null) {
       _view.showMessage(Intl.mainInvalidPort);
-      _view.setConnectingIndicator(false);
       return;
     }
+    _repository.saveMainSettings(address, port, password, selectedScreenId);
     getStartActivity(password, address, port, selectedScreenId);
   }
 
@@ -73,7 +71,7 @@ class MainPresentation implements MainRepoContract {
   }
 
   void showIntro(BuildContext context) {
-    Navigator.push(context,
+    Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => IntroView())
     );
   }

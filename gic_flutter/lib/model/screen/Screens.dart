@@ -61,8 +61,11 @@ class Screens {
 
   String _findUniqueName(String baseName) {
     _cache.forEach((screen) {
-      if (screen.name == baseName)
-        return _findUniqueName(baseName + "1");
+      if (screen.name == baseName) {
+        baseName = baseName + " 1";
+        return _findUniqueName(baseName);
+      }
+      return baseName;
     });
     return baseName;
   }
@@ -72,8 +75,11 @@ class Screens {
       startingId = _cache.length;
 
     _cache.forEach((screen) {
-      if (screen.screenId == startingId)
+      if (screen.screenId == startingId) {
+        startingId++;
         return _findUniqueId(startingId: startingId);
+      }
+      return startingId;
     });
 
     return startingId;
