@@ -4,7 +4,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/model/screen/Screens.dart';
+import 'package:gic_flutter/model/screen/ScreenRepository.dart';
 import 'package:gic_flutter/views/intro/screenListWidget.dart';
 import 'package:gic_flutter/views/intro/screenSizeWidget.dart';
 import 'package:gic_flutter/theme/theme.dart';
@@ -116,7 +116,7 @@ class IntroPresentation {
     if (!screen.selected)
       return;
 
-    Screens screens = new Screens();
+    ScreenRepository screens = new ScreenRepository();
     screens.loadFromJson(screen.title, device, context);
 
     Toast.show(Intl.of(context).onboardImportSuccess, context,

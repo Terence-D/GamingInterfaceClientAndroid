@@ -1,10 +1,9 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/screen/Screen.dart';
-import 'package:gic_flutter/model/screen/Screens.dart';
+import 'package:gic_flutter/model/screen/ScreenRepository.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,7 +56,7 @@ class MainRepo implements MainVMRepo {
     viewModel.port = _prefs.getString(_prefPort) ?? "8091";
     viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
 
-    Screens screenRepo = new Screens();
+    ScreenRepository screenRepo = new ScreenRepository();
     LinkedHashMap _screenListMap = await screenRepo.getScreenList();
     viewModel.screenList = new List();
     if (_screenListMap != null && _screenListMap.length > 0) {

@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Screen.dart';
 
-class Screens {
+class ScreenRepository {
   List<Screen> _cache;
   String _prefsScreen = "screen_";
   String _prefsBackgroundSuffix = "_background";
