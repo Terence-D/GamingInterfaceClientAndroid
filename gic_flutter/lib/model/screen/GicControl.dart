@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'Command.dart';
 
 class GicControl {
@@ -56,14 +54,7 @@ class GicControl {
     this.fontType,
     this.commandSecondary
   });
-  //GicControl  (key, modifier, activatorType);
 
-// factory Source.fromJson(Map<String, dynamic> json) {
-//     return Source(
-//       id: json["id"] as String,
-//       name: json["name"] as String,
-//     );
-//   }
   factory GicControl.fromJson(Map<String, dynamic> json) {
     return GicControl(
       stage: json['stage'],
@@ -75,7 +66,7 @@ class GicControl {
         height: json['height'],
         fontColor: json['fontColor'],
         primaryColor: json['primaryColor'],
-        secondaryColor: json['secondarycolor'],
+        secondaryColor: json['secondaryColor'],
         fontSize: json['fontSize'],
         viewType: json['viewType'],
         primaryImageResource: json['primaryImageResource'],
@@ -87,26 +78,6 @@ class GicControl {
         commandSecondary: Command.fromJson(json['commandSecondary']),
     );
   }
-    // GicControl.fromMappedJson(Map<String, dynamic> json)
-    //   : stage = json['stage'],
-    //     command = json['command'],
-    //     text = json['text'],
-    //     left = json['left'],
-    //     width = json['width'],
-    //     top = json['top'],
-    //     height = json['height'],
-    //     fontColor = json['fontColor'],
-    //     primaryColor = json['primaryColor'],
-    //     secondaryColor = json['secondarycolor'],
-    //     fontSize = json['fontSize'],
-    //     viewType = json['viewType'],
-    //     primaryImageResource = json['primayImageResource'],
-    //     secondaryImageResource = json['secondaryImageResource'],
-    //     primaryImage = json['primaryImage'],
-    //     secondaryImage = json['secondaryImage'],
-    //     fontName = json['fontName'],
-    //     fontType = json['fontType'],
-    //     commandSecondary = json['commandSecondary'];
 
   Map<String, dynamic> toJson() =>
   {
@@ -130,6 +101,4 @@ class GicControl {
     'fontType': fontType,
     'commandSecondary': commandSecondary
   };
-
-
 }
