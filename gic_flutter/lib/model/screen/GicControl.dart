@@ -78,7 +78,7 @@ class GicControl {
         secondaryColor: json['secondarycolor'],
         fontSize: json['fontSize'],
         viewType: json['viewType'],
-        primaryImageResource: json['primayImageResource'],
+        primaryImageResource: json['primaryImageResource'],
         secondaryImageResource: json['secondaryImageResource'],
         primaryImage: json['primaryImage'],
         secondaryImage: json['secondaryImage'],
