@@ -1,10 +1,12 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.views.edit;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -24,7 +27,9 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
@@ -53,6 +58,14 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
     private int screenId;
     private boolean changedColor = false;
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        Objects.requireNonNull(dialog.getWindow()).requestFeature(Window.FEATURE_NO_TITLE);
+
+        return dialog;
+    }
     // Empty constructor is required for DialogFragment
     // Make sure not to add arguments to the constructor
     // Use `newInstance` instead as shown below
@@ -84,15 +97,13 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onStart() {
+        super.onStart();
 
-//        if (((App) getContext().getApplicationContext()).isNightModeEnabled())
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Material_Dialog);
-//            } else {
-//                setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog);
-//            }
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            Objects.requireNonNull(dialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 
     private void setupControls(View view) {
