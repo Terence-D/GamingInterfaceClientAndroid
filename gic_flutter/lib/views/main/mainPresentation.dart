@@ -9,7 +9,6 @@ import 'mainVM.dart';
 
 abstract class MainViewContract {
   void onLoadComplete(MainVM viewModel);
-  void showOnboarding();
 
   void setConnectingIndicator(bool show);
   void showMessage(String message);

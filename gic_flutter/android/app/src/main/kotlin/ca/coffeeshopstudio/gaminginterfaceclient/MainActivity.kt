@@ -34,6 +34,7 @@ class MainActivity: FlutterActivity() {
     const val actionGetScreens = "screens/get"
     const val actionGetSettings = "settings/get"
     const val actionUpdateDarkMode = "darkmode/set";
+    const val actionUtilUpdateScreens = "screens/upgrade";
   }
 
   private lateinit var _result: MethodChannel.Result
@@ -125,6 +126,11 @@ class MainActivity: FlutterActivity() {
           else
             editor.putBoolean(prefNightMode, false)
           editor.apply()
+        }
+        actionUtilUpdateScreens -> {
+          val screenRepository = ScreenRepository(applicationContext)
+          screenRepository.cleanupLegacy();
+          result.success(true);
         }
         else -> {
           result.notImplemented()

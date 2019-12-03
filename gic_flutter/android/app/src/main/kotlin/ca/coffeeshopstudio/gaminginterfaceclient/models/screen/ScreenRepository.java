@@ -84,7 +84,7 @@ public class ScreenRepository implements IScreenRepository {
             return false;
     }
 
-    private void cleanupLegacy() {
+    public void cleanupLegacy() {
         SharedPreferences legacyPrefs = context.getApplicationContext().getSharedPreferences(PREFS_LEGACY_NAME, MODE_PRIVATE);
         SharedPreferences flutterPrefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor legacyEditor = legacyPrefs.edit();

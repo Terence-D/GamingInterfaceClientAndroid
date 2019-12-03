@@ -12,7 +12,7 @@ class Channel {
   
   static const String actionUtilDecrypt = "decrypt";
   static const String actionUtilEncrypt = "encrypt";
-  static const String actionUtilGetScreens = "screens/get";
   static const String actionUtilGetSettings = "settings/get";
   static const String actionUtilUpdateDarkMode = "darkmode/set";
-} 
+  static const String actionUtilUpdateScreens = "screens/upgrade";
+}

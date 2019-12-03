@@ -48,33 +48,6 @@ class MainViewState extends State<MainView> implements MainViewContract {
 
     presentation = new MainPresentation(this);
     presentation.loadViewModel();
-
-    //when control is returned from the legacy android, this will update the screen list
-    // SystemChannels.lifecycle.setMessageHandler((msg) {
-    //   if (msg == AppLifecycleState.resumed.toString())
-    //     presentation.loadSettings(context).then((_) {
-    //       setState(() {
-    //         loadSettings();
-    //       });
-    //     });
-    // });
-
-    // presentation.loadSettings(context).then((_) {
-    //   setState(() {
-    //     if (presentation.darkTheme) _changeTheme(context, ThemeKeys.DARK);
-    //     loadSettings();
-    //   });
-    // });
-  }
-
-  @override
-  void showOnboarding() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => IntroView())
-    ).then((_) {
-      //reload
-      presentation.loadViewModel();
-    });
   }
 
   @override
