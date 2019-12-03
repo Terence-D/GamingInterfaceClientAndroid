@@ -160,6 +160,7 @@ public class EditSettingsFragment extends DialogFragment implements View.OnClick
                 .setTitle(getString(R.string.color_picker_title))
                 .initialColor(((Button) view).getCurrentTextColor())
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                .showAlphaSlider(false)
                 .density(12)
 //                .setOnColorSelectedListener(new OnColorSelectedListener() {
 //                    @Override
