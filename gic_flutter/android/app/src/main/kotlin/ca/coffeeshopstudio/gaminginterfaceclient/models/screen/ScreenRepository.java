@@ -124,16 +124,16 @@ public class ScreenRepository implements IScreenRepository {
 
     private static SparseArray<String> screenListGetter(Context context) {
         SparseArray<String> rv = new SparseArray<>();
-        if (cache != null) {
-            for (IScreen screen : cache) {
-                rv.put(screen.getScreenId(), screen.getName());
-            }
-        } else {
+//        if (cache != null) {
+//            for (IScreen screen : cache) {
+//                rv.put(screen.getScreenId(), screen.getName());
+//            }
+//        } else {
             screenLoader(context);
             for (IScreen screen : cache) {
                 rv.put(screen.getScreenId(), screen.getName());
             }
-        }
+//        }
 
         return rv;
     }
@@ -151,16 +151,16 @@ public class ScreenRepository implements IScreenRepository {
 
     public SparseArray<String> screenListGetterSync(Context context) {
         SparseArray<String> rv = new SparseArray<>();
-        if (cache != null) { // && cache.size() > 0) {
-            for (IScreen screen : cache) {
-                rv.put(screen.getScreenId(), screen.getName());
-            }
-        } else {
+//        if (cache != null) { // && cache.size() > 0) {
+//            for (IScreen screen : cache) {
+//                rv.put(screen.getScreenId(), screen.getName());
+//            }
+//        } else {
             screenLoader(context);
             for (IScreen screen : cache) {
                 rv.put(screen.getScreenId(), screen.getName());
             }
-        }
+//        }
 
 
         return rv;
@@ -298,7 +298,7 @@ public class ScreenRepository implements IScreenRepository {
     }
 
     private static void screenLoader(Context context) {
-        if (cache == null) {
+//        if (cache == null) {
             //init the cache
             cache = new ArrayList<>();
 
@@ -326,7 +326,7 @@ public class ScreenRepository implements IScreenRepository {
                     cache.add(screen);
                 }
             }
-        }
+//        }
     }
 
     @Override
