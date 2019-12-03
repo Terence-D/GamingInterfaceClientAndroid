@@ -66,8 +66,8 @@ class MainRepo implements MainVMRepo {
       newScreen.screenId = 0;
       newScreen.name = "Empty Screen";
       await screenRepo.save(newScreen);
+      viewModel.screenList.add(new ScreenListItem(newScreen.screenId, newScreen.name));
     }
-    //viewModel.selectedScreen = viewModel.screenList[_prefs.getInt(_prefSelectedScreenId) ?? 0];
 
     //get encrypted password    
     viewModel.password = await _getPassword();
