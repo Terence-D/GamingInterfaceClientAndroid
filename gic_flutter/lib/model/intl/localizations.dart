@@ -88,9 +88,6 @@ class Intl {
   };
 
   //these are used in view models where context aren't available... i should do all in here, but for now its as needed
-  static String get mainPasswordError { return 'mainPasswordError'; }
-  static String get mainInvalidPort { return 'mainInvalidPort'; }
-  static String get mainFirewallError { return 'mainFirewallError'; }
   static String get menuTheme { return 'menuTheme'; }
   static String get menuIntro { return 'menuIntro'; }
   static String get menuAbout { return 'menuAbout'; }
@@ -137,4 +134,7 @@ class Intl {
   String get onboardSupportTitle { return _localized[locale.languageCode]['onboardSupportTitle']; }
   String get onboardSupportDesc { return _localized[locale.languageCode]['onboardSupportDesc']; }
   String get onboardImportSuccess { return _localized[locale.languageCode]['onboardImportSuccess']; }
+  String get mainPasswordError { return _localized[locale.languageCode]['mainPasswordError'];}
+  String get mainInvalidPort { return _localized[locale.languageCode]['mainInvalidPort'];}
+  String get mainFirewallError { return _localized[locale.languageCode]['mainFirewallError'];}
 }

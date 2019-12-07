@@ -1,10 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {
   static LocalStorageService _instance;
   static SharedPreferences _preferences;
   static const String _prefFirstRun = "firstRun"; //show the whole intro thing
-  static const String _prefConvert = "needToConvert"; //show the whole intro thing
 
   static Future<LocalStorageService> getInstance() async {
     if (_instance == null) {
@@ -33,14 +33,7 @@ class LocalStorageService {
     bool firstRun = _getBoolFromDisk(_prefFirstRun);
     if (firstRun)
       _saveBoolToDisk(_prefFirstRun, false);
+    debugPrint("firstrun is ${firstRun.toString()}");
     return firstRun;
   }
-
-  bool get needToConvert {
-    bool _needToConvert = _getBoolFromDisk(_prefConvert);
-    if (_needToConvert)
-      _saveBoolToDisk(_prefConvert, false);
-    return _needToConvert;
-  }
-
 }

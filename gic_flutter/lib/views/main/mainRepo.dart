@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/screen/Screen.dart';
@@ -22,6 +23,7 @@ class MainRepo implements MainVMRepo {
   static const String _prefPort = "port";
   static const String _prefAddress = "address";
   static const String _prefConvert = "legacyConvert";
+  static const String _prefConvertB = "legacyConvertScreens"; //show the whole intro thing
   static const String _prefSelectedScreenId = "chosenId";
   static const String _prefDonate = "coffee";
   static const String _prefDonateStar = "star";
@@ -34,57 +36,86 @@ class MainRepo implements MainVMRepo {
   fetch() {
     SharedPreferences.getInstance().then((shared) {
       _prefs = shared;
-      _loadSettings().then((viewModel) {
-        this._viewModel = viewModel;
-        _mainContract.preferencesLoaded(viewModel);
-      });
+      _loadSettings();
     });
   }
 
-  Future<MainVM> _loadSettings() async {
+  _loadSettings() async {
+    debugPrint ("load ettings");
     _prefs.reload();
     //this handles reading in legacy settings
     bool needToConvert = _prefs.getBool(_prefConvert) ?? true;
     if (needToConvert) {
-      await _convertLegacy();
       _prefs.setBool(_prefConvert, false);
+      await _convertLegacy();
     }
+    bool convertScreens = _prefs.getBool(_prefConvertB) ?? true;
+    if (convertScreens) {
+      _prefs.setBool(_prefConvertB, false);
+      await _convertLegacyScreens();
+    } else {
+      await _loadVM();
+    }
+  }
 
+  Future _loadVM() async {
+    debugPrint ("load vms");
     MainVM viewModel = new MainVM();
 
-    viewModel.darkMode = _prefs.getBool(_prefNightMode) ?? true;
-    viewModel.port = _prefs.getString(_prefPort) ?? "8091";
-    viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
-
-    ScreenRepository screenRepo = new ScreenRepository();
-    LinkedHashMap _screenListMap = await screenRepo.getScreenList();
-    viewModel.screenList = new List();
-    if (_screenListMap != null && _screenListMap.length > 0) {
-      _screenListMap.forEach((k, v) => viewModel.screenList.add(new ScreenListItem(k, v)) );
-    } else {
-      Screen newScreen = new Screen();
-      newScreen.screenId = 0;
-      newScreen.name = "Empty Screen";
-      await screenRepo.save(newScreen);
-      viewModel.screenList.add(new ScreenListItem(newScreen.screenId, newScreen.name));
-    }
-
-    //get encrypted password    
+    //get encrypted password
     viewModel.password = await _getPassword();
 
-    if (_prefs.containsKey(_prefDonate)) 
-      viewModel.donate = _prefs.getBool(_prefDonate);
-    else {
-      viewModel.donate = false;  
-    }
+    ScreenRepository screenRepo = new ScreenRepository();
+    viewModel.screenList = new List();
+    screenRepo.getScreenList().then((result) {
+      LinkedHashMap _screenListMap = result;
+      debugPrint ("screens ready for insertion");
+      if (_screenListMap != null && _screenListMap.length > 0) {
+        _screenListMap.forEach((k, v) => viewModel.screenList.add(new ScreenListItem(k, v)) );
+      } else {
+        debugPrint("nothing found");
+        Screen newScreen = new Screen();
+        newScreen.screenId = 0;
+        newScreen.name = "Empty Screen";
+        screenRepo.save(newScreen);
+        viewModel.screenList.add(new ScreenListItem(newScreen.screenId, newScreen.name));
+      }
 
-     if (_prefs.containsKey(_prefDonateStar))
-      viewModel.donateStar = _prefs.getBool(_prefDonateStar);
-    else {
-      viewModel.donateStar = false;  
-    }
+      viewModel.darkMode = _prefs.getBool(_prefNightMode) ?? true;
+      viewModel.port = _prefs.getString(_prefPort) ?? "8091";
+      viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
 
-    return viewModel;
+      if (_prefs.containsKey(_prefDonate))
+        viewModel.donate = _prefs.getBool(_prefDonate);
+      else {
+        viewModel.donate = false;
+      }
+
+      if (_prefs.containsKey(_prefDonateStar))
+        viewModel.donateStar = _prefs.getBool(_prefDonateStar);
+      else {
+        viewModel.donateStar = false;
+      }
+
+      this._viewModel = viewModel;
+      debugPrint ("calling pref loaded");
+
+      _mainContract.preferencesLoaded(viewModel);
+    });
+
+
+  }
+
+  Future _convertLegacyScreens() async {
+    debugPrint ("load legacy");
+    MethodChannel platform = new MethodChannel(Channel.channelUtil);
+    try {
+      await platform.invokeMethod(Channel.actionUtilUpdateScreens);
+    } on PlatformException catch (e) {
+      print(e.message);
+    }
+    debugPrint ("loaded legacy");
+    await _loadVM();
   }
 
   Future _convertLegacy() async {

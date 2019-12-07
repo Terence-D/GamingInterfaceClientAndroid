@@ -17,13 +17,14 @@ class ScreenRepository {
   int defaultBackground = 0xFF383838;
 
   _load (SharedPreferences prefs) async {
-    if (_cache == null) {
-      _cache = new List<Screen>();
-    }
-    
+    _cache = new List<Screen>();
+
     Set<String> keys = prefs.getKeys();
 
+    debugPrint ("_load - ${keys.length}");
+
     keys.forEach((key) {
+      debugPrint(key);
       if (key.contains(_prefsScreen)) {
         int screenId = int.parse(key.substring(_prefsScreen.length));
         Screen screen = new Screen(screenId: screenId);
@@ -32,6 +33,7 @@ class ScreenRepository {
         } catch (_) {
           screen.name = "Screen $screenId";
         }
+        debugPrint("loading screen - " + screen.name);
         _loadBackground(prefs, screen);
         _loadControls(prefs, screen);
         _cache.add(screen);
@@ -132,16 +134,18 @@ class ScreenRepository {
   }
 
   Future<LinkedHashMap> getScreenList() async {
+    debugPrint("get screen list" );
     LinkedHashMap rv = new LinkedHashMap<int, String>();
-    if (_cache == null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      _load(prefs);
-    }
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
+    await _load(prefs);
 
     _cache.forEach((screen) {
+      debugPrint("screen name - ${screen.name}");
       rv[screen.screenId] = screen.name;
     });
-
+    debugPrint("get screen list - ${rv.length}" );
     return rv;
   }
 

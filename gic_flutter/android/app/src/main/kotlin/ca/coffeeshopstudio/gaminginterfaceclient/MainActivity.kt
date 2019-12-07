@@ -129,8 +129,8 @@ class MainActivity: FlutterActivity() {
         }
         actionUtilUpdateScreens -> {
           val screenRepository = ScreenRepository(applicationContext)
-          screenRepository.cleanupLegacy();
-          result.success(true);
+          screenRepository.cleanupLegacy()
+          result.success(true)
         }
         else -> {
           result.notImplemented()

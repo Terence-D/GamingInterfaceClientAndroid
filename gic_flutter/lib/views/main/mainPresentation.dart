@@ -24,6 +24,7 @@ class MainPresentation implements MainRepoContract {
 
   @override
   void preferencesLoaded(MainVM viewModel) {
+    debugPrint ("pref load");
     _view.onLoadComplete(viewModel);
   }
 
@@ -44,13 +45,13 @@ class MainPresentation implements MainRepoContract {
     }
   }
 
-  void startGame(String password, String address, String port, int selectedScreenId) async {
+  void startGame(BuildContext context, String password, String address, String port, int selectedScreenId) async {
     if (password.length < 6) {
-      _view.showMessage(Intl.mainPasswordError);
+      _view.showMessage(Intl.of(context).mainPasswordError);
       return;
     }
     if (int.tryParse(port) == null) {
-      _view.showMessage(Intl.mainInvalidPort);
+      _view.showMessage(Intl.of(context).mainInvalidPort);
       return;
     }
     _repository.saveMainSettings(address, port, password, selectedScreenId);

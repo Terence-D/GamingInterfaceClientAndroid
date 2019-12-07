@@ -35,21 +35,9 @@ class GicApp extends StatelessWidget {
 
   Widget _getStartupScreen() {
     var localStorageService = locator<LocalStorageService>();
-
     if(localStorageService.firstRun) {
       return IntroView();
-    } else if (localStorageService.needToConvert)
-      _convertLegacy();
-    return MainView();
-  }
-
-  //can be removed around 4.5 era
-  Future _convertLegacy() async {
-    MethodChannel platform = new MethodChannel(Channel.channelUtil);
-    try {
-      await platform.invokeMethod(Channel.actionUtilUpdateScreens);
-    } on PlatformException catch (e) {
-      print(e.message);
     }
+    return MainView();
   }
 }

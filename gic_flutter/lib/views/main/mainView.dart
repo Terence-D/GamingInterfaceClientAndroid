@@ -52,6 +52,7 @@ class MainViewState extends State<MainView> implements MainViewContract {
 
   @override
   void onLoadComplete(MainVM viewModel) {
+    debugPrint("load complete");
     this._viewModel = viewModel;
     setState(() {
       if (viewModel.screenList.length > 0)
@@ -219,6 +220,7 @@ class MainViewState extends State<MainView> implements MainViewContract {
                 showMessage(Intl.of(context).mainErrorNoScreen);
               else
                 presentation.startGame(
+                    context,
                     passwordController.text,
                     addressController.text,
                     portController.text,

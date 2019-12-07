@@ -71,7 +71,7 @@ public class ScreenRepository implements IScreenRepository {
     public ScreenRepository(Context context) {
         this.context = context;
         //on every check, remove any legacy values
-        cleanupLegacy();
+        //cleanupLegacy();
     }
 
     private boolean containsKey (String key) {
@@ -93,9 +93,13 @@ public class ScreenRepository implements IScreenRepository {
         if (legacyPrefs.contains("LEGACY_DONE"))
             return;
 
+        Log.d("GICS", "cleanupLegacy: ");
+
         Map<String, ?> keys = legacyPrefs.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            Log.d("GICS", "cleanupLegacy: " + entry.getKey());
             if ( containsKey(entry.getKey()) ) {
+                Log.d("GICS", "cleanupLegacy: " + "converting");
                 //we need to convert
                 if (entry.getValue() instanceof String)
                     flutterEditor.putString(PREFS_FLUTTER_PREFIX + entry.getKey(), (String) entry.getValue());
@@ -109,8 +113,8 @@ public class ScreenRepository implements IScreenRepository {
         legacyEditor.putBoolean("LEGACY_DONE", true);
 
         //apply
-        legacyEditor.apply();
-        flutterEditor.apply();
+        legacyEditor.commit();
+        flutterEditor.commit();
     }
 
 
