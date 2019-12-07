@@ -63,13 +63,9 @@ class Intl {
       'menuDonate': 'Donate',
 
       'onboardIntroTitle': 'Welcome!',
-      'onboardIntroDesc': 'Thank you for installing GIC - the open source Game Interface Client.  Ahead are just a few tips to help you get started.  This will only be shown once - tap on the bottom right corner arrow to begin.',
+      'onboardIntroDesc': 'Thank you for installing GIC - this app allows you to create unique screens to send commands to an app on your computer.  No need to memorize keyboard shortcuts!  Click on the ? icons in the app for help!',
       'onboardServerTitle': 'Server',
       'onboardServerDesc': 'GIC requires software on the computer your communicating with.  The link is in inside the "About" view from the main screen.  Alternatively clicking this button will open your email app with the link to the server inside.',
-      'onboardAboutTitle': 'About',
-      'onboardAboutDesc' :'GIC allows you to create fully customizable interfaces (screens) to send commands to an app on your computer.  Useful for complex sim type games, but GIC can be used for any app or game that you like.  You can also share your screens with others!',
-      'onboardLetsGoTitle' :'Questions?',
-      'onboardLetsGoDesc': 'I\'ve added Help sections to each part of this app - click the \'?\' at the top right corner of the app for help!  Thank you for using GIC!',
       'onboardSendLink': 'Send Link',
       'onboardScreenTitle': 'Screen Starter',
       'onboardScreenDesc': 'If you like you can pick one (or more!) of the screens I\'ve built below as a starting point, or you can skip this step and build your own!',
@@ -81,7 +77,7 @@ class Intl {
       'onboardEmailSubject': 'Link to GIC Server',
       'onboardOldAndroidTitle': 'Unsupported',
       'onboardOldAndroidDesc': 'You are running an older version of Android.  Certain functions are disabled (such as import/export) for now.  This may change if I can find the time to work around the limitations.',
-      'onboardSupportTitle': 'Support Me',
+      'onboardSupportTitle': 'Support',
       'onboardSupportDesc': 'Although this app is completely free and open source (and will remain as such!), if you like the app and wish to support development, I appreciate any support you can provide.  There is a Donate menu option for more information.  Thank you :)',
       'onboardImportSuccess': 'Import Complete!'
     }
@@ -119,10 +115,6 @@ class Intl {
   String get onboardIntroDesc { return _localized[locale.languageCode]['onboardIntroDesc']; }
   String get onboardServerTitle { return _localized[locale.languageCode]['onboardServerTitle']; }
   String get onboardServerDesc { return _localized[locale.languageCode]['onboardServerDesc']; }
-  String get onboardAboutTitle { return _localized[locale.languageCode]['onboardAboutTitle']; }
-  String get onboardAboutDesc { return _localized[locale.languageCode]['onboardAboutDesc']; }
-  String get onboardLetsGoTitle { return _localized[locale.languageCode]['onboardLetsGoTitle']; }
-  String get onboardLetsGoDesc { return _localized[locale.languageCode]['onboardLetsGoDesc']; }
   String get onboardScreenTitle { return _localized[locale.languageCode]['onboardScreenTitle']; }
   String get onboardScreenDesc { return _localized[locale.languageCode]['onboardScreenDesc']; }
   String get onboardScreenList { return _localized[locale.languageCode]['onboardScreenList']; }

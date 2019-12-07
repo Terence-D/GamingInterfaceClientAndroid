@@ -24,7 +24,6 @@ class MainPresentation implements MainRepoContract {
 
   @override
   void preferencesLoaded(MainVM viewModel) {
-    debugPrint ("pref load");
     _view.onLoadComplete(viewModel);
   }
 

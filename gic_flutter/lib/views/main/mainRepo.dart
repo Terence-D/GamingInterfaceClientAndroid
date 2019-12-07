@@ -41,7 +41,6 @@ class MainRepo implements MainVMRepo {
   }
 
   _loadSettings() async {
-    debugPrint ("load ettings");
     _prefs.reload();
     //this handles reading in legacy settings
     bool needToConvert = _prefs.getBool(_prefConvert) ?? true;
@@ -59,7 +58,6 @@ class MainRepo implements MainVMRepo {
   }
 
   Future _loadVM() async {
-    debugPrint ("load vms");
     MainVM viewModel = new MainVM();
 
     //get encrypted password
@@ -69,11 +67,9 @@ class MainRepo implements MainVMRepo {
     viewModel.screenList = new List();
     screenRepo.getScreenList().then((result) {
       LinkedHashMap _screenListMap = result;
-      debugPrint ("screens ready for insertion");
       if (_screenListMap != null && _screenListMap.length > 0) {
         _screenListMap.forEach((k, v) => viewModel.screenList.add(new ScreenListItem(k, v)) );
       } else {
-        debugPrint("nothing found");
         Screen newScreen = new Screen();
         newScreen.screenId = 0;
         newScreen.name = "Empty Screen";
@@ -98,7 +94,6 @@ class MainRepo implements MainVMRepo {
       }
 
       this._viewModel = viewModel;
-      debugPrint ("calling pref loaded");
 
       _mainContract.preferencesLoaded(viewModel);
     });
@@ -107,14 +102,12 @@ class MainRepo implements MainVMRepo {
   }
 
   Future _convertLegacyScreens() async {
-    debugPrint ("load legacy");
     MethodChannel platform = new MethodChannel(Channel.channelUtil);
     try {
       await platform.invokeMethod(Channel.actionUtilUpdateScreens);
     } on PlatformException catch (e) {
       print(e.message);
     }
-    debugPrint ("loaded legacy");
     await _loadVM();
   }
 

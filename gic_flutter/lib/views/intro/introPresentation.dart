@@ -49,11 +49,6 @@ class IntroPresentation {
         image: Icon(Icons.thumb_up, size: 175.0, color: primaryColor),
       ),
       PageViewModel(
-        title: Intl.of(context).onboardAboutTitle,
-        body: Intl.of(context).onboardAboutDesc,
-        image: Icon(Icons.info_outline, size: 175.0, color: primaryColor),
-      ),
-      PageViewModel(
         title: Intl.of(context).onboardServerTitle,
         body: Intl.of(context).onboardServerDesc,
         image: Icon(Icons.important_devices, size: 175.0, color: primaryColor),
@@ -93,11 +88,6 @@ class IntroPresentation {
             ],
           ),
         ) // Single child scroll view
-      ),
-      PageViewModel(
-        title: Intl.of(context).onboardLetsGoTitle,
-        body: Intl.of(context).onboardLetsGoDesc,
-        image: Icon(Icons.help_outline, size: 175.0, color: primaryColor),
       ),
       PageViewModel(
         title: Intl.of(context).onboardSupportTitle,

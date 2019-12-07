@@ -33,7 +33,6 @@ class LocalStorageService {
     bool firstRun = _getBoolFromDisk(_prefFirstRun);
     if (firstRun)
       _saveBoolToDisk(_prefFirstRun, false);
-    debugPrint("firstrun is ${firstRun.toString()}");
     return firstRun;
   }
 }

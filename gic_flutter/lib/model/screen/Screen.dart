@@ -18,16 +18,8 @@ class Screen {
 
   factory Screen.fromJson(Map<String, dynamic> json) {
     var list = json['controls'] as List;
-//    List<GicControl> jsonControls = list.map((i) => GicControl.fromJson(i)).toList();
     List<GicControl> jsonControls = new List<GicControl>();
-    //list.forEach((value) => debugPrint("list value: $value") );
     list.forEach((value) { jsonControls.add(GicControl.fromJson(value));});
-
-debugPrint("ALL CONTROLS: ${jsonControls.length}");
-    // list.map((i) { 
-    //   debugPrint ("CONTROL: $i");
-    //   //jsonControls.add(GicControl.fromJson(i));
-    // }).toList();
 
     return Screen(
       screenId: json['screenId'],
@@ -37,16 +29,6 @@ debugPrint("ALL CONTROLS: ${jsonControls.length}");
       newControlId: json['newControlId'],
       name: json['name']);
   }
-
-
-
-  // Screen.fromMappedJson(Map<String, dynamic> json) :
-  //     screenId = json['screenId'],
-  //     controls = json['controls'],
-  //     backgroundColor = json['backgroundColor'],
-  //     backgroundPath = json['backgroundPath'],
-  //     newControlId = json['newControlId'],
-  //     name = json['name'];
 
   Map<String, dynamic> toJson() =>
       {
@@ -63,44 +45,4 @@ debugPrint("ALL CONTROLS: ${jsonControls.length}");
     return newControlId - 1;
   }
 
-//  getBackground() {
-//    if (backgroundPath.isEmpty()) {
-//      //load a color
-//      //ColorDrawable color = new ColorDrawable();
-//      color.setColor(backgroundColor);
-//      background = color;
-//    } else {
-//      //load an image
-//      Bitmap bitmap = BitmapFactory.decodeFile(backgroundPath);
-//      if (bitmap == null) {
-//        background = new ColorDrawable(Color.BLACK);
-//      } else {
-//        Drawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
-//        background = bitmapDrawable;
-//      }
-//    }
-//
-//    return background;
-//  }
-
-//  @Override
-//  public void setBackground(Drawable background) {
-//    if (background != null)
-//      this.background = background;
-//  }
-
-//  @Override
-//  public Drawable getImage(String fileName) {
-////        if (fileName.contains(screenId + "_control")) {
-//    Bitmap bitmap = BitmapFactory.decodeFile(fileName);
-//    Drawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
-//    return bitmapDrawable;
-////        }
-//    //return null;
-//  }
-
-//  @Override
-//  public void addControl(GICControl control) {
-//    customControls.add(control);
-//  }
 }

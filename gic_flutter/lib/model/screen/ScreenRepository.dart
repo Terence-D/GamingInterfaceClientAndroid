@@ -21,10 +21,7 @@ class ScreenRepository {
 
     Set<String> keys = prefs.getKeys();
 
-    debugPrint ("_load - ${keys.length}");
-
     keys.forEach((key) {
-      debugPrint(key);
       if (key.contains(_prefsScreen)) {
         int screenId = int.parse(key.substring(_prefsScreen.length));
         Screen screen = new Screen(screenId: screenId);
@@ -33,7 +30,6 @@ class ScreenRepository {
         } catch (_) {
           screen.name = "Screen $screenId";
         }
-        debugPrint("loading screen - " + screen.name);
         _loadBackground(prefs, screen);
         _loadControls(prefs, screen);
         _cache.add(screen);
@@ -134,7 +130,6 @@ class ScreenRepository {
   }
 
   Future<LinkedHashMap> getScreenList() async {
-    debugPrint("get screen list" );
     LinkedHashMap rv = new LinkedHashMap<int, String>();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -142,10 +137,8 @@ class ScreenRepository {
     await _load(prefs);
 
     _cache.forEach((screen) {
-      debugPrint("screen name - ${screen.name}");
       rv[screen.screenId] = screen.name;
     });
-    debugPrint("get screen list - ${rv.length}" );
     return rv;
   }
 
