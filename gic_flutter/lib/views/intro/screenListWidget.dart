@@ -50,17 +50,6 @@ class _ScreenListWidgetState extends State<ScreenListWidget> {
                 },
               )
           ),
-          Ink(
-              color: widget._screens[2].selected ?  accent : Colors.transparent,
-              child: ListTile(
-                title: Text(widget._screens[2].title),
-                onTap: () {
-                  setState(() {
-                    widget._screens[2].selected = ! widget._screens[2].selected;
-                  });
-                },
-              )
-          ),
         ],
       ),
     );
