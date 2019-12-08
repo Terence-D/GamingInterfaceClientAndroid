@@ -18,7 +18,7 @@ abstract class IntroViewContract {
 class IntroPresentation {
 
   List<PageViewModel> _pages;
-  List<ScreenItem> _screens = <ScreenItem>[new ScreenItem("SC"), new ScreenItem("Elite"), new ScreenItem("Truck")];
+  List<ScreenItem> _screens = <ScreenItem>[new ScreenItem("SC"), new ScreenItem("Elite")]; //, new ScreenItem("Truck") next time..
   String device = "Phone";
   IntroViewContract _contract;
 

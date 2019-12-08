@@ -54,11 +54,7 @@ class MainPresentation implements MainRepoContract {
       return;
     }
     _repository.saveMainSettings(address, port, password, selectedScreenId);
-    getStartActivity(password, address, port, selectedScreenId);
-  }
 
-
-  getStartActivity(String password, String address, String port, int selectedScreenId) async {
     MethodChannel platform = new MethodChannel(Channel.channelView);
     try {
       await platform.invokeMethod(Channel.actionViewStart, {"password": password, "address": address, "port":port, "selectedScreenId": selectedScreenId});
