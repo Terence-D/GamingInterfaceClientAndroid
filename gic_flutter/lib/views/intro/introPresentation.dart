@@ -80,7 +80,7 @@ class IntroPresentation {
               ScreenListWidget(_screens),
               RaisedButton(
                 onPressed: () {
-                  _screens.forEach((screen) =>_importScreen(device, screen, context));
+                  _importScreen(device, _screens, context);
                 },
                 child: Text(Intl.of(context).onboardImport, style: TextStyle(color: Colors.white)),
                 color: primaryColor,
@@ -102,12 +102,9 @@ class IntroPresentation {
     _contract.onIntroLoadCompleted(_pages);
   }
 
-  _importScreen(String device, ScreenItem screen, BuildContext context) async {
-    if (!screen.selected)
-      return;
-
+  _importScreen(String device, List<ScreenItem> screenList, BuildContext context) async {
     ScreenRepository screens = new ScreenRepository();
-    screens.loadFromJson(screen.title, device, context);
+    await screens.loadFromJson(screenList, device, context);
 
     Toast.show(Intl.of(context).onboardImportSuccess, context,
         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);

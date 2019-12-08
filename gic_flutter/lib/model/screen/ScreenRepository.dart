@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/screen/GicControl.dart';
+import 'package:gic_flutter/views/intro/screenListWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Screen.dart';
@@ -105,7 +106,7 @@ class ScreenRepository {
     }
   }
 
-  loadFromJson(String screen, String device, BuildContext context) async {
+  loadFromJson(List<ScreenItem> screens, String device, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_cache == null || _cache.length < 1)
       _load(prefs);
@@ -114,19 +115,22 @@ class ScreenRepository {
     device = device.replaceAll(" ", ""); //remove spaces
 
     //load in the asset and decode the json
-    String jsonString = await DefaultAssetBundle.of(context).loadString("assets/screens/$screen-$device.json");
-    Map controlMap = jsonDecode(jsonString);
+    for (int n=0; n < screens.length; n++) {
+      String jsonString = await DefaultAssetBundle.of(context).loadString("assets/screens/${screens[n].title}-$device.json");
+      Map controlMap = jsonDecode(jsonString);
 
-    //build the new screen from the incoming json
-    Screen newScreen = new Screen.fromJson(controlMap);
+      //build the new screen from the incoming json
+      Screen newScreen = new Screen.fromJson(controlMap);
 
-    //get a unique name and ID
-    newScreen.name = _findUniqueName(newScreen.name);
-    newScreen.screenId = _findUniqueId();
+      //get a unique name and ID
+      newScreen.name = _findUniqueName(newScreen.name);
+      newScreen.screenId = _findUniqueId();
 
-    //save the new screen
-    _save(prefs, newScreen);
-    _cache.add(newScreen);
+      //save the new screen
+      debugPrint("added ${newScreen.name} ${newScreen.screenId}");
+      await _save(prefs, newScreen);
+      _cache.add(newScreen);
+    }
   }
 
   Future<LinkedHashMap> getScreenList() async {
