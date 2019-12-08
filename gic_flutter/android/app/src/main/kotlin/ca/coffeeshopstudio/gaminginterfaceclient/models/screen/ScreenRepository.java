@@ -14,8 +14,6 @@ import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedWriter;
@@ -37,7 +35,6 @@ import java.util.regex.Pattern;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.ZipHelper;
-import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.ScreenFragment;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -294,11 +291,6 @@ public class ScreenRepository implements IScreenRepository {
     @Override
     public void importScreen(Uri toImport, @NonNull ImportCallback callback) {
         new ImportScreenAsync(context, callback).execute(toImport);
-    }
-
-    @Override
-    public void importDefaultScreens(List<ScreenFragment.Model> toImport, @NonNull ImportCallback callback) {
-        new ImportDefaultScreensAsync(context, callback).execute(toImport);
     }
 
     private static void screenLoader(Context context) {
@@ -724,48 +716,6 @@ public class ScreenRepository implements IScreenRepository {
             screenSaver(weakContext.get(), newScreen);
             screenLoader(weakContext.get());
             return null;
-        }
-    }
-
-    private static class ImportDefaultScreensAsync extends AsyncTask<List<ScreenFragment.Model>, Void, Boolean> {
-        // Weak references will still allow the Activity to be garbage-collected
-        final WeakReference<Context> weakContext;
-        ImportCallback callback;
-        SparseArray<String> rv;
-
-        ImportDefaultScreensAsync(Context context, ImportCallback callback) {
-            weakContext = new WeakReference<>(context);
-            this.callback = callback;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            callback.onFinished(result, rv);
-        }
-
-        @Override
-        protected Boolean doInBackground(List<ScreenFragment.Model>... params) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            boolean anythingDone = false;
-            for (ScreenFragment.Model model : params[0]) {
-                if (model.isSelected()) {
-                    String json = loadJSONFromAsset(weakContext.get(), model.getText());
-                    try {
-                        Screen screen = objectMapper.readValue(json, Screen.class);
-                        screenImporter(weakContext.get(), screen);
-                        anythingDone = true;
-                    } catch (JsonParseException e) {
-                        e.printStackTrace();
-                    } catch (JsonMappingException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            return anythingDone;
         }
     }
 

@@ -21,7 +21,7 @@
         <activity
             android:name=".views.DonateActivity"
             android:label="@string/title_activity_donate"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -47,10 +47,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".views.launch.SplashIntroActivity"
-            android:label="@string/title_activity_intro"
-            android:theme="@style/Theme.Intro" />
-        <activity
             android:name=".views.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -68,7 +64,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_game_interface"
             android:theme="@style/ActivityTheme.Primary.Base.Dark"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>

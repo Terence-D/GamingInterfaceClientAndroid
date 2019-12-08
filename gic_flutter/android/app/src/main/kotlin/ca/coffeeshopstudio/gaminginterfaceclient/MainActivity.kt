@@ -3,14 +3,12 @@ package ca.coffeeshopstudio.gaminginterfaceclient
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.core.util.forEach
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
 import ca.coffeeshopstudio.gaminginterfaceclient.views.AboutActivity
-import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.DonateActivity
-import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel

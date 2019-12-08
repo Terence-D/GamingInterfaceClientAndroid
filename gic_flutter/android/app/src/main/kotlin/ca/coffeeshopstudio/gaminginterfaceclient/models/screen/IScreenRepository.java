@@ -5,10 +5,9 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.SparseArray;
 
-import java.util.List;
-
 import androidx.annotation.NonNull;
-import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.ScreenFragment;
+
+import java.util.List;
 
 /**
  Copyright [2019] [Terence Doerksen]
@@ -31,8 +30,6 @@ public interface IScreenRepository {
     void newScreen(@NonNull LoadScreenCallback callback);
 
     void importScreen(Uri toImport, @NonNull ImportCallback callback);
-
-    void importDefaultScreens(List<ScreenFragment.Model> toImport, @NonNull ImportCallback callback);
 
     void exportScreen(ParcelFileDescriptor pfd, int screenId, @NonNull ExportCallback callback);
 
