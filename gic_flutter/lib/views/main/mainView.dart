@@ -1,11 +1,11 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gic_flutter/flavor.dart';
 
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/views/intro/introView.dart';
 import 'package:gic_flutter/views/main/mainPresentation.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
@@ -22,7 +22,7 @@ class MainView extends StatefulWidget {
   }
 }
 
-class MainViewState extends State<MainView> implements MainViewContract {
+class MainViewState extends State<MainView> with WidgetsBindingObserver implements MainViewContract {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController addressController = new TextEditingController();
   TextEditingController portController = new TextEditingController();
@@ -44,10 +44,24 @@ class MainViewState extends State<MainView> implements MainViewContract {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
 
     presentation = new MainPresentation(this);
     presentation.loadViewModel();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      presentation.loadViewModel();
+    }
   }
 
   @override
@@ -154,6 +168,9 @@ class MainViewState extends State<MainView> implements MainViewContract {
                   ]),
                   TextFormField(
                     key: _addressKey,
+                    inputFormatters: [
+                      new BlacklistingTextInputFormatter(new RegExp('[\\ ]')),
+                    ],
                     controller: addressController,
                     decoration: InputDecoration(hintText: Intl.of(context).mainAddress),
                   ),

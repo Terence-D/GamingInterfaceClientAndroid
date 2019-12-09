@@ -80,7 +80,12 @@ class IntroPresentation {
               ScreenListWidget(_screens),
               RaisedButton(
                 onPressed: () {
-                  _importScreen(device, _screens, context);
+                  List<ScreenItem> screens = new List<ScreenItem>();
+                  _screens.forEach((screen) {
+                    if (screen.selected)
+                      screens.add(screen);
+                  });
+                  _importScreen(device, screens, context);
                 },
                 child: Text(Intl.of(context).onboardImport, style: TextStyle(color: Colors.white)),
                 color: primaryColor,
