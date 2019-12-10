@@ -1,0 +1,20 @@
+language: generic
+dist: xenial
+addons:
+  apt:
+    packages:
+      - lib32stdc++6
+env:
+  global:
+    - FLUTTER_CHANNEL=stable
+before_install:
+  cd gic_flutter
+install:
+  - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL
+  - export PATH="$PATH:`pwd`/flutter/bin/cache/dart-sdk/bin"
+  - export PATH="$PATH:`pwd`/flutter/bin"
+  - flutter doctor -v
+  - flutter packages get
+cache:
+  directories:
+  - $HOME/.pub-cache
