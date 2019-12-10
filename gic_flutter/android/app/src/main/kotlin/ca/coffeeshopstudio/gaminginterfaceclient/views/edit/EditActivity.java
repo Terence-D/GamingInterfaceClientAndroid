@@ -458,9 +458,10 @@ public class EditActivity extends AbstractGameActivity implements
 
     @Override
     public void onFinishEditSettingsDialog(int primaryColor, String image) {
-        gridSize = PreferenceManager.getDefaultSharedPreferences(this)
-                .getInt(PREF_KEY_GRID_SIZE, 64);
+        gridSize = PreferenceManager.getDefaultSharedPreferences(this).getInt(PREF_KEY_GRID_SIZE, 64);
         if (primaryColor != -1) {
+            //verify no alpha
+            primaryColor = Color.rgb(Color.red(primaryColor), Color.green(primaryColor), Color.blue(primaryColor));
             currentScreen.setBackgroundColor(primaryColor);
             currentScreen.setBackgroundFile("");
             findViewById(R.id.topLayout).setBackgroundColor(primaryColor);

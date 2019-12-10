@@ -11,7 +11,7 @@ description: Gaming Interface Client
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.0.0+26029873
+version: 4.1.0+26029883
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -34,7 +34,11 @@ dependencies:
   http: ^0.12.0+2
   toast: ^0.1.5
   highlighter_coachmark: ^0.0.3
-      
+  introduction_screen: ^1.0.7
+  flutter_email_sender: ^2.0.3
+  device_info: ^0.4.0+4
+  get_it: ^1.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -52,7 +56,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - assets/screens/
+
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
 

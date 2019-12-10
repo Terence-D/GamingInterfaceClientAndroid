@@ -3,14 +3,12 @@ package ca.coffeeshopstudio.gaminginterfaceclient
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import androidx.core.util.forEach
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
 import ca.coffeeshopstudio.gaminginterfaceclient.views.AboutActivity
-import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.DonateActivity
-import ca.coffeeshopstudio.gaminginterfaceclient.views.launch.SplashIntroActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
@@ -26,7 +24,6 @@ class MainActivity: FlutterActivity() {
 
     const val actionAbout = "about"
     const val actionDonate = "donate"
-    const val actionIntro = "intro"
     const val actionStart = "start"
     const val actionManager = "manager"
 
@@ -35,6 +32,7 @@ class MainActivity: FlutterActivity() {
     const val actionGetScreens = "screens/get"
     const val actionGetSettings = "settings/get"
     const val actionUpdateDarkMode = "darkmode/set";
+    const val actionUtilUpdateScreens = "screens/upgrade";
   }
 
   private lateinit var _result: MethodChannel.Result
@@ -51,10 +49,6 @@ class MainActivity: FlutterActivity() {
     MethodChannel(flutterView, channelView).setMethodCallHandler { call, result ->
       _result = result
       when (call.method) {
-        actionIntro -> {
-          val intent = Intent(this, SplashIntroActivity::class.java)
-          startActivityForResult(intent, 1234)
-        }
         actionAbout -> {
           val intent = Intent(this, AboutActivity::class.java)
           startActivity(intent)
@@ -130,6 +124,11 @@ class MainActivity: FlutterActivity() {
           else
             editor.putBoolean(prefNightMode, false)
           editor.apply()
+        }
+        actionUtilUpdateScreens -> {
+          val screenRepository = ScreenRepository(applicationContext)
+          screenRepository.cleanupLegacy()
+          result.success(true)
         }
         else -> {
           result.notImplemented()

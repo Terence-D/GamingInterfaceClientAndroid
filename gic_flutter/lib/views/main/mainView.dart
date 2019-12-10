@@ -6,48 +6,31 @@ import 'package:gic_flutter/flavor.dart';
 
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/model/mainVM.dart';
-import 'package:gic_flutter/screens/main/mainPresentation.dart';
-import 'package:gic_flutter/services/setting/settingRepository.dart';
+import 'package:gic_flutter/views/main/mainPresentation.dart';
+import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
 import 'package:toast/toast.dart';
 
-class MainScreen extends StatefulWidget {
-  final SettingRepository repository;
-
-  MainScreen(this.repository, {Key key}) : super(key: key); // {}
+class MainView extends StatefulWidget {
+  MainView({Key key}) : super(key: key); // {}
 
   @override
-  MainScreenState createState() {
-    return MainScreenState();
+  MainViewState createState() {
+    return MainViewState();
   }
 }
 
-class HighligherHelp {
-  HighligherHelp(String text, GlobalKey highlight, double highlightSize,
-      MainAxisAlignment alignment) {
-    this.text = text;
-    this.highlight = highlight;
-    this.highlightSize = highlightSize;
-    this.alignment = alignment;
-  }
-  String text;
-  GlobalKey highlight;
-  double highlightSize;
-  MainAxisAlignment alignment;
-}
-
-class MainScreenState extends State<MainScreen> {
-  MainPresentation presentation;
-  ScreenListItem selectedScreen;
+class MainViewState extends State<MainView> with WidgetsBindingObserver implements MainViewContract {
   TextEditingController passwordController = new TextEditingController();
   TextEditingController addressController = new TextEditingController();
   TextEditingController portController = new TextEditingController();
+
+  MainVM _viewModel;
+  MainPresentation presentation;
   bool _loading = false;
-  bool donate = false;
-  bool donateStar = false;
+
   GlobalKey _fabKey = GlobalObjectKey("fab");
   GlobalKey _addressKey = GlobalObjectKey("address");
   GlobalKey _portKey = GlobalObjectKey("port");
@@ -57,44 +40,51 @@ class MainScreenState extends State<MainScreen> {
 
   Queue<HighligherHelp> highlights = new Queue();
 
-  MainScreenState(); // {}
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  void loadSettings() {
-    if (presentation.screenList.length > 0)
-      selectedScreen = presentation.screenList[0];
-    passwordController.text = presentation.password;
-    portController.text = presentation.port;
-    addressController.text = presentation.address;
-    donate = presentation.donate;
-    donateStar = presentation.donateStar;
-  }
+  MainViewState(); // {}
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
 
-    presentation = new MainPresentation(this, widget.repository);
+    presentation = new MainPresentation(this);
+    presentation.loadViewModel();
+  }
 
-    //when control is returned from the legacy android, this will update the screen list
-    SystemChannels.lifecycle.setMessageHandler((msg) {
-      if (msg == AppLifecycleState.resumed.toString())
-        presentation.loadSettings().then((_) {
-          setState(() {
-            loadSettings();
-          });
-        });
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      presentation.loadViewModel();
+    }
+  }
+
+  @override
+  void onLoadComplete(MainVM viewModel) {
+    this._viewModel = viewModel;
+    setState(() {
+      if (viewModel.screenList.length > 0)
+        viewModel.selectedScreen = viewModel.screenList[0];
+      passwordController.text = viewModel.password;
+      portController.text = viewModel.port;
+      addressController.text = viewModel.address;
+      if (viewModel.darkMode)
+        _changeTheme(context, ThemeKeys.DARK);
+      else
+        _changeTheme(context, ThemeKeys.LIGHT);
+      _loading = false;
     });
+  }
 
-    presentation.loadSettings().then((_) {
-      setState(() {
-        if (presentation.darkTheme) _changeTheme(context, ThemeKeys.DARK);
-        loadSettings();
-      });
+  @override
+  void setConnectingIndicator(bool show) {
+    setState(() {
+      _loading = show;
     });
   }
 
@@ -102,7 +92,7 @@ class MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called
     // This if statement breaks themeing?!?!
-    if (presentation.password == null || _loading) {
+    if (_viewModel == null || _loading) {
       return new Stack(
         children: [
           new Opacity(
@@ -118,7 +108,7 @@ class MainScreenState extends State<MainScreen> {
       return Scaffold(
           appBar: AppBar(
             //leading: Icon(Icons.apps),
-            title: Text(presentation.toolbarTitle),
+            title: Text(_viewModel.toolbarTitle),
             actions: <Widget>[
               // action button
               IconButton(
@@ -128,7 +118,7 @@ class MainScreenState extends State<MainScreen> {
                   }),
               // overflow menu
               PopupMenuButton<_MenuOptions>(
-                onSelected: _select,
+                onSelected: _menuSelectAction,
                 itemBuilder: (BuildContext context) {
                   BuildEnvironment.init(flavor: BuildFlavor.gplay);
                   assert(env != null);
@@ -156,11 +146,11 @@ class MainScreenState extends State<MainScreen> {
                 children: <Widget>[
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text(
-                      presentation.screenTitle,
+                      _viewModel.screenTitle,
                       style: Theme.of(context).textTheme.title,
                     ),
                     Visibility(
-                      visible: donate,
+                      visible: _viewModel.donate,
                       child: Icon(
                         Icons.free_breakfast,
                         color: Colors.green,
@@ -168,7 +158,7 @@ class MainScreenState extends State<MainScreen> {
                       ),
                     ),
                     Visibility(
-                      visible: donateStar,
+                      visible: _viewModel.donateStar,
                       child: Icon(
                         Icons.star,
                         color: Colors.yellow,
@@ -178,6 +168,9 @@ class MainScreenState extends State<MainScreen> {
                   ]),
                   TextFormField(
                     key: _addressKey,
+                    inputFormatters: [
+                      new BlacklistingTextInputFormatter(new RegExp('[\\ ]')),
+                    ],
                     controller: addressController,
                     decoration: InputDecoration(hintText: Intl.of(context).mainAddress),
                   ),
@@ -207,9 +200,9 @@ class MainScreenState extends State<MainScreen> {
                     children: <Widget>[
                       DropdownButton<ScreenListItem>(
                         key: _listKey,
-                        value: selectedScreen,
+                        value: _viewModel.selectedScreen,
                         items:
-                            presentation.screenList.map((ScreenListItem item) {
+                            _viewModel.screenList.map((ScreenListItem item) {
                           return new DropdownMenuItem<ScreenListItem>(
                             value: item,
                             child: new Text(
@@ -219,15 +212,14 @@ class MainScreenState extends State<MainScreen> {
                         }).toList(),
                         onChanged: (ScreenListItem item) {
                           setState(() {
-                            selectedScreen = item;
+                            _viewModel.selectedScreen = item;
                           });
                         },
                       ),
                       RaisedButton(
                         key: _manageKey,
                         onPressed: () {
-                          presentation
-                              .getNewActivity(Channel.actionViewManager);
+                          presentation.getNewActivity(Channel.actionViewManager);
                         },
                         child: Text(Intl.of(context).mainScreenManager),
                       ),
@@ -240,14 +232,15 @@ class MainScreenState extends State<MainScreen> {
           floatingActionButton: FloatingActionButton.extended(
             key: _fabKey,
             onPressed: () {
-              if (presentation.screenList.length < 1)
-                showMessage(
-                    Intl.of(context).mainErrorNoScreen);
-              presentation.startGame(
-                  passwordController.text,
-                  addressController.text,
-                  portController.text,
-                  selectedScreen.id);
+              if (_viewModel.selectedScreen == null)
+                showMessage(Intl.of(context).mainErrorNoScreen);
+              else
+                presentation.startGame(
+                    context,
+                    passwordController.text,
+                    addressController.text,
+                    portController.text,
+                    _viewModel.selectedScreen.id);
             },
             label: Text(Intl.of(context).mainStart),
           )); //
@@ -257,32 +250,32 @@ class MainScreenState extends State<MainScreen> {
     CustomTheme.instanceOf(buildContext).changeTheme(key);
   }
 
-  void setConnectingIndicator(bool visible) {
-    setState(() {
-      _loading = visible;
-    });
-  }
+  // void setConnectingIndicator(bool visible) {
+  // }
 
   //action to take when picking from the menu
-  void _select(_MenuOptions choice) {
+  void _menuSelectAction(_MenuOptions choice) {
     if (choice == _choices[3])
       presentation.getNewActivity(Channel.actionViewDonate);
     if (choice == _choices[2])
       presentation.getNewActivity(Channel.actionViewAbout);
-    else if (choice == _choices[1])
-      presentation.getNewActivity(Channel.actionViewIntro);
+    else if (choice == _choices[1]) {
+      presentation.showIntro(context);
+    }
     else if (choice == _choices[0]) {
-      if (presentation.darkTheme)
+      if (_viewModel.darkMode) {
         _changeTheme(context, ThemeKeys.LIGHT);
-      else
+        presentation.setDarkTheme(false);
+      }
+      else {
         _changeTheme(context, ThemeKeys.DARK);
-      presentation.darkTheme = !presentation.darkTheme;
+        presentation.setDarkTheme(true);
+      }
     }
   }
 
   void showMessage(String text) {
-    Toast.show(Intl.of(context).getText(text), context,
-        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    Toast.show(text, context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
   }
 
   void showUpgradeWarning() {
@@ -302,10 +295,6 @@ class MainScreenState extends State<MainScreen> {
             ],
           );
         });
-  }
-
-  void startGame() {
-    presentation.getStartActivity();
   }
 
   void _loadHelp() {
@@ -386,6 +375,7 @@ class MainScreenState extends State<MainScreen> {
         duration: null,
         onClose: () {});
   }
+
 }
 
 class _MenuOptions {
@@ -407,3 +397,18 @@ List<_MenuOptions> _choices = <_MenuOptions>[
   _MenuOptions(title: Intl.menuIntro, icon: Icons.thumb_up),
   _MenuOptions(title: Intl.menuAbout, icon: Icons.info_outline),
 ];
+
+class HighligherHelp {
+  HighligherHelp(String text, GlobalKey highlight, double highlightSize,
+      MainAxisAlignment alignment) {
+    this.text = text;
+    this.highlight = highlight;
+    this.highlightSize = highlightSize;
+    this.alignment = alignment;
+  }
+  String text;
+  GlobalKey highlight;
+  double highlightSize;
+  MainAxisAlignment alignment;
+}
+

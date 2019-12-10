@@ -90,7 +90,10 @@ public class Screen implements IScreen {
         if (backgroundPath.isEmpty()) {
             //load a color
             ColorDrawable color = new ColorDrawable();
-            color.setColor(backgroundColor);
+            //verify no alpha
+            int primaryColor = Color.rgb(Color.red(backgroundColor), Color.green(backgroundColor), Color.blue(backgroundColor));
+
+            color.setColor(primaryColor);
             background = color;
         } else {
             //load an image

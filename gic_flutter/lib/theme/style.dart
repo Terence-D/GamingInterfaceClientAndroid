@@ -34,7 +34,7 @@ ThemeData lightTheme() {
     // Define the default TextTheme. Use this to specify the default
     // text styling for headlines, titles, bodies of text, and more.
     textTheme: TextTheme(
-      body1: TextStyle(color: Color(0xA1F8F8F8))
+      body1: TextStyle(color: Color(0xFF383838))
     ),
   );
 }
