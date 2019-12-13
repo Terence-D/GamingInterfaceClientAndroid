@@ -15,6 +15,8 @@ install:
   - export PATH="$PATH:`pwd`/flutter/bin"
   - flutter doctor -v
   - flutter packages get
+  - flutter test
+  - flutter build appbundle -v -t lib/main_gplay.dart --flavor gplay
 cache:
   directories:
   - $HOME/.pub-cache
