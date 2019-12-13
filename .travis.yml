@@ -1,20 +1,66 @@
-language: generic
-dist: xenial
+os:
+  - linux
+sudo: false
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
-      - lib32stdc++6
+      - libstdc++6
+      - fonts-noto
+git:
+  depth: 3
 env:
-  global:
-    - FLUTTER_CHANNEL=stable
-before_install:
-  cd gic_flutter
-install:
-  - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL
-  - export PATH="$PATH:`pwd`/flutter/bin/cache/dart-sdk/bin"
-  - export PATH="$PATH:`pwd`/flutter/bin"
-  - flutter doctor -v
-  - flutter packages get
+  - FLUTTER_VERSION=stable
+  - FLUTTER_VERSION=beta
+matrix:
+  allow_failures:
+    - env: FLUTTER_VERSION=beta
+before_script:
+  - git clone https://github.com/flutter/flutter.git -b $FLUTTER_VERSION
+  - ./flutter/bin/flutter doctor
+  - chmod +x travis_script.sh
+script:
+  - ./travis_script.sh
 cache:
   directories:
-  - $HOME/.pub-cache
+    - $HOME/shared/.pub-cache
+# notifications:
+#   email:
+#     brogdon+github@gmail.com
+
+# Only building master means that we don't run two builds for each pull request.
+branches:
+  only: [master]
+
+
+
+
+
+
+
+
+
+
+
+
+# language: generic
+# dist: xenial
+# addons:
+#   apt:
+#     packages:
+#       - lib32stdc++6
+# env:
+#   global:
+#     - FLUTTER_CHANNEL=stable
+# before_install:
+#   cd gic_flutter
+# install:
+#   - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL
+#   - export PATH="$PATH:`pwd`/flutter/bin/cache/dart-sdk/bin"
+#   - export PATH="$PATH:`pwd`/flutter/bin"
+#   - flutter doctor -v
+#   - flutter packages get
+# cache:
+#   directories:
+#   - $HOME/.pub-cache
