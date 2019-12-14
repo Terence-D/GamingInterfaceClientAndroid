@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/screen/Screen.dart';
@@ -32,11 +33,9 @@ class MainRepo implements MainVMRepo {
   }
 
   @override
-  fetch() {
-    SharedPreferences.getInstance().then((shared) {
-      _prefs = shared;
-      _loadSettings();
-    });
+  fetch() async {
+    _prefs = await SharedPreferences.getInstance();
+    await _loadSettings();
   }
 
 
@@ -47,6 +46,7 @@ class MainRepo implements MainVMRepo {
       _prefs.setBool(_prefConvert, false);
       await _convertLegacy();
     }
+
     bool convertScreens = _prefs.getBool(_prefConvertB) ?? true;
     if (convertScreens) {
       _prefs.setBool(_prefConvertB, false);
@@ -94,11 +94,8 @@ class MainRepo implements MainVMRepo {
       viewModel.donateStar = false;
     }
 
-      this._viewModel = viewModel;
-
-      _mainContract.preferencesLoaded(viewModel);
-    });
-
+    this._viewModel = viewModel;
+    _mainContract.preferencesLoaded(viewModel);
 
   }
 
