@@ -11,6 +11,15 @@ class MockRepoContract implements MainRepoContract {
   }
 }
 
+void initTestChannel() {
+  final List<MethodCall> log = <MethodCall>[];
+  MethodChannel channel = const MethodChannel('ca.coffeeshopstudio.gic/utils');
+  // Register the mock handler.
+  channel.setMockMethodCallHandler((MethodCall methodCall) async {
+    log.add(methodCall);
+  });
+}
+
 void main() {
   test('on new install need to convert should be true', () {
     //Assign
@@ -19,7 +28,7 @@ void main() {
     MainRepo repo = new MainRepo(contract);
 
     //Act
-    repo.fetch();
+    await repo.fetch();
 
     //Assert
     expect(true, contract.vm.firstRun);

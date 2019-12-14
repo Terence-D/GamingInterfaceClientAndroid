@@ -39,8 +39,8 @@ class MainRepo implements MainVMRepo {
     });
   }
 
+
   _loadSettings() async {
-    _prefs.reload();
     //this handles reading in legacy settings
     bool needToConvert = _prefs.getBool(_prefConvert) ?? true;
     if (needToConvert) {
@@ -56,41 +56,43 @@ class MainRepo implements MainVMRepo {
     }
   }
 
-  Future _loadVM() async {
+  _loadVM() async {
     MainVM viewModel = new MainVM();
 
     //get encrypted password
     viewModel.password = await _getPassword();
 
+    //load screens
     ScreenRepository screenRepo = new ScreenRepository();
     viewModel.screenList = new List();
-    screenRepo.getScreenList().then((result) {
-      LinkedHashMap _screenListMap = result;
-      if (_screenListMap != null && _screenListMap.length > 0) {
-        _screenListMap.forEach((k, v) => viewModel.screenList.add(new ScreenListItem(k, v)) );
-      } else {
-        Screen newScreen = new Screen();
-        newScreen.screenId = 0;
-        newScreen.name = "Empty Screen";
-        screenRepo.save(newScreen);
-        viewModel.screenList.add(new ScreenListItem(newScreen.screenId, newScreen.name));
-      }
+    LinkedHashMap _screenListMap = await screenRepo.getScreenList();
+    if (_screenListMap != null && _screenListMap.length > 0) {
+      _screenListMap.forEach((k, v) => viewModel.screenList.add(new ScreenListItem(k, v)) );
+    } else {
+      Screen newScreen = new Screen();
+      newScreen.screenId = 0;
+      newScreen.name = "Empty Screen";
+      screenRepo.save(newScreen);
+      viewModel.screenList.add(new ScreenListItem(newScreen.screenId, newScreen.name));
+    }
 
-      viewModel.darkMode = _prefs.getBool(_prefNightMode) ?? true;
-      viewModel.port = _prefs.getString(_prefPort) ?? "8091";
-      viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
+    //get generic info
+    viewModel.darkMode = _prefs.getBool(_prefNightMode) ?? true;
+    viewModel.port = _prefs.getString(_prefPort) ?? "8091";
+    viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
 
-      if (_prefs.containsKey(_prefDonate))
-        viewModel.donate = _prefs.getBool(_prefDonate);
-      else {
-        viewModel.donate = false;
-      }
+    //donation settings
+    if (_prefs.containsKey(_prefDonate))
+      viewModel.donate = _prefs.getBool(_prefDonate);
+    else {
+      viewModel.donate = false;
+    }
 
-      if (_prefs.containsKey(_prefDonateStar))
-        viewModel.donateStar = _prefs.getBool(_prefDonateStar);
-      else {
-        viewModel.donateStar = false;
-      }
+    if (_prefs.containsKey(_prefDonateStar))
+      viewModel.donateStar = _prefs.getBool(_prefDonateStar);
+    else {
+      viewModel.donateStar = false;
+    }
 
       this._viewModel = viewModel;
 
@@ -100,21 +102,20 @@ class MainRepo implements MainVMRepo {
 
   }
 
-  Future _convertLegacyScreens() async {
+  _convertLegacyScreens() async {
     MethodChannel platform = new MethodChannel(Channel.channelUtil);
     try {
-      await platform.invokeMethod(Channel.actionUtilUpdateScreens);
+      platform.invokeMethod(Channel.actionUtilUpdateScreens);
     } on PlatformException catch (e) {
       print(e.message);
     }
     await _loadVM();
   }
 
-  Future _convertLegacy() async {
+  _convertLegacy() async {
     MethodChannel platform = new MethodChannel(Channel.channelUtil);
     try {
-      final LinkedHashMap result =
-          await platform.invokeMethod(Channel.actionUtilGetSettings);
+      final LinkedHashMap result = await platform.invokeMethod(Channel.actionUtilGetSettings);
       if (result != null && result.length > 0) {
         result.forEach((key, value) {
           switch (key) {
@@ -167,8 +168,7 @@ class MainRepo implements MainVMRepo {
     const platform = const MethodChannel(Channel.channelUtil);
     if (encrypted.isNotEmpty) {
       try {
-        final String result = await platform
-            .invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
+        String result = await platform.invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
         response = result;
       } on PlatformException catch (_) {
         response = "";
