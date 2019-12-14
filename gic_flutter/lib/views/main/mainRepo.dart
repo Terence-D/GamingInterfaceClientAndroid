@@ -168,8 +168,7 @@ class MainRepo implements MainVMRepo {
     const platform = const MethodChannel(Channel.channelUtil);
     if (encrypted.isNotEmpty) {
       try {
-        String result = await platform.invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
-        response = result;
+        response = await platform.invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
       } on PlatformException catch (_) {
         response = "";
       }

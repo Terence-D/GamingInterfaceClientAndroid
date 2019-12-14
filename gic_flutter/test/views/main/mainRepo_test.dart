@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/views/main/mainRepo.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,15 +10,6 @@ class MockRepoContract implements MainRepoContract {
   void preferencesLoaded(MainVM viewModel) {
     vm = viewModel;
   }
-}
-
-void initTestChannel() {
-  final List<MethodCall> log = <MethodCall>[];
-  MethodChannel channel = const MethodChannel('ca.coffeeshopstudio.gic/utils');
-  // Register the mock handler.
-  channel.setMockMethodCallHandler((MethodCall methodCall) async {
-    log.add(methodCall);
-  });
 }
 
 void main() {
