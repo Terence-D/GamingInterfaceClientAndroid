@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/screen/Screen.dart';
@@ -96,7 +95,6 @@ class MainRepo implements MainVMRepo {
 
     this._viewModel = viewModel;
     _mainContract.preferencesLoaded(viewModel);
-
   }
 
   _convertLegacyScreens() async {
@@ -173,13 +171,26 @@ class MainRepo implements MainVMRepo {
     return response;
   }
 
+  bool _isNumeric(String str) {
+    if(str == null) {
+      return false;
+    }
+    return double.tryParse(str) != null;
+  }
+
   saveMainSettings(String address, String port, String password, int screenId) async {
-    _viewModel.address = address;
-    _viewModel.port = port;
-    _viewModel.password = password;
-    _prefs.setString(_prefAddress, address);
-    _prefs.setString(_prefPort, port);
-    _prefs.setString(_prefPassword, await _encryptPassword());
+    if (address != null && port.isNotEmpty) {
+      _viewModel.address = address;
+      _prefs.setString(_prefAddress, address);
+    }
+    if (port != null && port.isNotEmpty && _isNumeric(port)) {
+      _viewModel.port = port;
+      _prefs.setString(_prefPort, port);
+    }
+    if (password != null && password.isNotEmpty) {
+      _viewModel.password = password;
+      _prefs.setString(_prefPassword, await _encryptPassword());
+    }
     _prefs.setInt(_prefSelectedScreenId, screenId);
   }
 
