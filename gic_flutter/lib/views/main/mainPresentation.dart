@@ -44,13 +44,17 @@ class MainPresentation implements MainRepoContract {
     }
   }
 
-  void startGame(BuildContext context, String password, String address, String port, int selectedScreenId) async {
+  startGame(String password, String address, String port, int selectedScreenId) async {
     if (password.length < 6) {
-      _view.showMessage(Intl.of(context).mainPasswordError);
+      _view.showMessage(Intl.mainPasswordError);
       return;
     }
     if (int.tryParse(port) == null) {
-      _view.showMessage(Intl.of(context).mainInvalidPort);
+      _view.showMessage(Intl.mainInvalidPort);
+      return;
+    }
+    if (address == null || address.length == 0) {
+      _view.showMessage(Intl.mainInvalidServerError);
       return;
     }
     _repository.saveMainSettings(address, port, password, selectedScreenId);

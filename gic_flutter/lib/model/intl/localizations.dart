@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show SynchronousFuture;
+import 'package:flutter/material.dart';
 
 class IntlDelegate extends LocalizationsDelegate<Intl> {
   const IntlDelegate();
@@ -39,6 +39,7 @@ class Intl {
 
       'mainPasswordError': 'invalid password, it must be at least 6 digits long',
       'mainInvalidPort': 'invalid port number',
+      'mainInvalidServerError': 'invalid server address',
       'mainFirewallError': 'Error connecting, is the server running and firewall ports opened?',
       'mainAddress': 'Address',
       'mainPort': 'Port',
@@ -89,6 +90,12 @@ class Intl {
   static String get menuAbout { return 'menuAbout'; }
   static String get menuDonate { return 'menuDonate'; }
 
+  static String get mainPasswordError { return 'mainPasswordError'; }
+  static String get mainInvalidPort { return 'mainInvalidPort'; }
+  static String get mainFirewallError { return 'mainFirewallError'; }
+  static String get mainInvalidServerError
+  { return 'mainInvalidServerError'; }
+
   //useful where context is available.. as above i should do this for all
   String get title { return _localized[locale.languageCode]['title']; }
   String get mainAddress { return _localized[locale.languageCode]['mainAddress']; }
@@ -126,7 +133,4 @@ class Intl {
   String get onboardSupportTitle { return _localized[locale.languageCode]['onboardSupportTitle']; }
   String get onboardSupportDesc { return _localized[locale.languageCode]['onboardSupportDesc']; }
   String get onboardImportSuccess { return _localized[locale.languageCode]['onboardImportSuccess']; }
-  String get mainPasswordError { return _localized[locale.languageCode]['mainPasswordError'];}
-  String get mainInvalidPort { return _localized[locale.languageCode]['mainInvalidPort'];}
-  String get mainFirewallError { return _localized[locale.languageCode]['mainFirewallError'];}
 }
