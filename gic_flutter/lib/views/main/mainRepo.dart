@@ -14,7 +14,7 @@ abstract class MainRepoContract {
 class MainRepo implements MainVMRepo {
   SharedPreferences _prefs;
   MainRepoContract _mainContract;
-  MainVM _viewModel;
+  MainVM _viewModel = new MainVM();
 
   static const String _prefNightMode = "nightMode";
   static const String _prefShowHints = "showHints"; //show the help page

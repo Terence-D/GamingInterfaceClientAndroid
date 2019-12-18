@@ -6,6 +6,7 @@ import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/views/main/mainPresentation.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MockViewContract implements MainViewContract {
   bool loadCompleted = false;
@@ -36,8 +37,10 @@ class MockViewContract implements MainViewContract {
 
 void main() {
   MethodChannel channel = const MethodChannel(Channel.channelView);
+  MethodChannel channelUtil = const MethodChannel(Channel.channelUtil);
   MockViewContract mockContract = new MockViewContract();
   MainVM model = new MainVM();
+  bool startedNewActivity = false;
   MainPresentation pres;
   
   setUp(() {
@@ -45,7 +48,21 @@ void main() {
     pres = new MainPresentation(mockContract);
     channel.setMockMethodCallHandler((MethodCall methodCall) async {
       if (methodCall.method == Channel.actionViewStart) {
+        startedNewActivity = true;
         return "started";
+      }
+      LinkedHashMap result = new LinkedHashMap<String, String>();
+      return result;
+    });
+    channelUtil.setMockMethodCallHandler((MethodCall methodCall) async {
+      if (methodCall.method == Channel.actionUtilDecrypt) {
+        return "test";
+      }
+      if (methodCall.method == Channel.actionUtilEncrypt) {
+        return "password";
+      }
+      if (methodCall.method == Channel.actionUtilUpdateDarkMode) {
+        return true;
       }
       LinkedHashMap result = new LinkedHashMap<String, String>();
       return result;
@@ -143,12 +160,14 @@ void main() {
       //Assign
       MockViewContract mockContract = new MockViewContract();
       MainPresentation pres = new MainPresentation(mockContract);
+      SharedPreferences.setMockInitialValues({}); //set values here
 
       //Act
+      await pres.loadViewModel();
       await pres.startGame("123456", "asdf", "4", 1);
 
-      //Assert
-      expect (true, mockContract.showedPasswordError);
+     //Assert
+      expect(true, startedNewActivity);
     });
   });
 
