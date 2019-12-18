@@ -3,13 +3,12 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/flavor.dart';
-
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/views/main/mainPresentation.dart';
-import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
+import 'package:gic_flutter/views/main/mainPresentation.dart';
+import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
 import 'package:toast/toast.dart';
 
@@ -236,7 +235,6 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
                 showMessage(Intl.of(context).mainErrorNoScreen);
               else
                 presentation.startGame(
-                    context,
                     passwordController.text,
                     addressController.text,
                     portController.text,

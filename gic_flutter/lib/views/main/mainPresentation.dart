@@ -27,8 +27,8 @@ class MainPresentation implements MainRepoContract {
     _view.onLoadComplete(viewModel);
   }
 
-  void loadViewModel() {
-    _repository.fetch(); //this will wind up calling the preferencesLoaded above
+  loadViewModel() async {
+    await _repository.fetch(); //this will wind up calling the preferencesLoaded above
   }
 
   setDarkTheme(bool newValue) {
@@ -44,13 +44,17 @@ class MainPresentation implements MainRepoContract {
     }
   }
 
-  void startGame(BuildContext context, String password, String address, String port, int selectedScreenId) async {
-    if (password.length < 6) {
-      _view.showMessage(Intl.of(context).mainPasswordError);
+  startGame(String password, String address, String port, int selectedScreenId) async {
+    if (password == null || password.length < 6) {
+      _view.showMessage(Intl.mainPasswordError);
       return;
     }
-    if (int.tryParse(port) == null) {
-      _view.showMessage(Intl.of(context).mainInvalidPort);
+    if (port == null || int.tryParse(port) == null) {
+      _view.showMessage(Intl.mainInvalidPort);
+      return;
+    }
+    if (address == null || address.length == 0) {
+      _view.showMessage(Intl.mainInvalidServerError);
       return;
     }
     _repository.saveMainSettings(address, port, password, selectedScreenId);
