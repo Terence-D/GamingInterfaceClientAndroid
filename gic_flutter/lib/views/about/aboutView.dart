@@ -38,6 +38,7 @@ class AboutViewState extends State<AboutView> with WidgetsBindingObserver implem
   @override
   void didChangeDependencies() {
       _presentation.buildVM(context);
+      super.didChangeDependencies();
   }
 
   @override
@@ -59,27 +60,11 @@ class AboutViewState extends State<AboutView> with WidgetsBindingObserver implem
             margin: EdgeInsets.all(dim.activityMargin),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(
-                  _viewModel.versionText,
-                ),
-                Text(
-                  _viewModel.server.title,
-                  style: Theme.of(context).textTheme.headline,
-                ),
-                Text(
-                  _viewModel.server.text,
-                ),
-
-                Linkify(
-                  onOpen: (link) async {
-                    if (await canLaunch(link.url)) {
-                      await launch(link.url);
-                    } else {
-                      throw 'Could not launch $link';
-                    }
-                  },
-                  text: _viewModel.server.url,
-                )
+                Text(_viewModel.versionText),
+                _link(_viewModel.url),
+                _section(_viewModel.server),
+                _header(_viewModel.libraryTitle),
+                _section(_viewModel.legal),
               ],
             ),
           ),
@@ -91,4 +76,36 @@ class AboutViewState extends State<AboutView> with WidgetsBindingObserver implem
         )); //
   }
 
+  Widget _section(AboutModel model) {
+    return
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>
+        [_header(model.title),
+          Text(
+            model.text,
+          ),
+          _link(model.url)]
+      );
+  }
+
+  Widget _link(String link) {
+    return Linkify(
+      onOpen: (link) async {
+        if (await canLaunch(link.url)) {
+          await launch(link.url);
+        } else {
+          throw 'Could not launch $link';
+        }
+      },
+      text: link
+    );
+  }
+
+  Widget _header(String text) {
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.headline,
+    );
+  }
 }
