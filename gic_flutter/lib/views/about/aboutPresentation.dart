@@ -22,6 +22,9 @@ class AboutPresentation implements BasePresentation {
     _viewModel.emailTitle = Intl.of(context).about(AboutText.emailTitle);
     _viewModel.emailTo = Intl.of(context).about(AboutText.emailTo);
     _viewModel.libraryTitle = Intl.of(context).about(AboutText.libraryTitle);
+    _viewModel.url = Intl.of(context).about(AboutText.url);
+
+    _viewModel.versionText = await _buildVersion(context);
 
     _viewModel.legal = new ViewSection(
       Intl.of(context).about(AboutText.legalTitle),
@@ -35,10 +38,7 @@ class AboutPresentation implements BasePresentation {
       Intl.of(context).about(AboutText.serverUrl),
     );
 
-    _viewModel.versionText = await _buildVersion(context);
-
     _contract.onLoadComplete(_viewModel);
-
   }
 
   Future<String> _buildVersion(BuildContext context) async {
