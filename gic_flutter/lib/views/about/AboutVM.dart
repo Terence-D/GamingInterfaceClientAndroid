@@ -1,6 +1,9 @@
 import 'dart:core';
 
-class AboutVM {
+import 'package:gic_flutter/model/ViewModel.dart';
+import 'package:gic_flutter/model/ViewSection.dart';
+
+class AboutVM implements ViewModel {
   String toolbarTitle = "";
   String versionText = "";
   String libraryTitle = "";
@@ -8,14 +11,7 @@ class AboutVM {
   String emailTitle = "";
   String url = "";
   var libraries;
-  AboutModel legal = new AboutModel("","","");
-  AboutModel server = new AboutModel("","","");
+  ViewSection legal = new ViewSection("","","");
+  ViewSection server = new ViewSection("","","");
 }
 
-class AboutModel {
-  String title = "";
-  String text = "";
-  String url = "";
-
-  AboutModel (this.title, this.text, this.url);
-}

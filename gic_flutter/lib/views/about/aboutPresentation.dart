@@ -1,19 +1,17 @@
 import 'package:flutter/cupertino.dart';
+import 'package:gic_flutter/model/ViewSection.dart';
 import 'package:gic_flutter/model/intl/IntlAbout.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
+import 'package:gic_flutter/views/BasePage.dart';
 import 'package:package_info/package_info.dart';
 import 'package:sprintf/sprintf.dart';
 
 import 'AboutVM.dart';
 
-abstract class AboutViewContract {
-  void onLoadComplete(AboutVM viewModel);
-}
+class AboutPresentation implements BasePresentation {
+  BaseState _contract;
 
-class AboutPresentation {
-  AboutViewContract _contract;
-
-  AboutPresentation(AboutViewContract contract) {
+  AboutPresentation(BaseState contract) {
     _contract = contract;
   }
 
@@ -25,13 +23,13 @@ class AboutPresentation {
     _viewModel.emailTo = Intl.of(context).about(AboutText.emailTo);
     _viewModel.libraryTitle = Intl.of(context).about(AboutText.libraryTitle);
 
-    _viewModel.legal = new AboutModel(
+    _viewModel.legal = new ViewSection(
       Intl.of(context).about(AboutText.legalTitle),
       Intl.of(context).about(AboutText.legalText),
       Intl.of(context).about(AboutText.legalUrl),
     );
 
-    _viewModel.server = new AboutModel(
+    _viewModel.server = new ViewSection(
       Intl.of(context).about(AboutText.serverTitle),
       Intl.of(context).about(AboutText.serverText),
       Intl.of(context).about(AboutText.serverUrl),
