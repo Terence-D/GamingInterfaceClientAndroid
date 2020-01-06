@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:gic_flutter/model/ViewSection.dart';
 import 'package:gic_flutter/model/intl/IntlAbout.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/views/BasePage.dart';
+import 'package:gic_flutter/views/basePage.dart';
 import 'package:package_info/package_info.dart';
 import 'package:sprintf/sprintf.dart';
 

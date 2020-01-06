@@ -4,7 +4,7 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:gic_flutter/model/ViewModel.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 
-import '../BasePage.dart';
+import '../basePage.dart';
 import 'AboutVM.dart';
 import 'aboutPresentation.dart';
 
