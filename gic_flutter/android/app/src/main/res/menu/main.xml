@@ -17,9 +17,4 @@
         android:orderInCategory="400"
         android:title="@string/menu_show_intro"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/menu_about"
-        android:orderInCategory="500"
-        android:title="@string/menu_about"
-        app:showAsAction="never" />
 </menu>
