@@ -146,7 +146,7 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text(
                       _viewModel.screenTitle,
-                      style: Theme.of(context).textTheme.title,
+                      style: Theme.of(context).textTheme.headline,
                     ),
                     Visibility(
                       visible: _viewModel.donate,
@@ -253,14 +253,14 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
 
   //action to take when picking from the menu
   void _menuSelectAction(_MenuOptions choice) {
-    if (choice == _choices[3])
+    if (choice.title == Intl.menuDonate)
       presentation.getNewActivity(Channel.actionViewDonate);
-    if (choice == _choices[2])
-      presentation.getNewActivity(Channel.actionViewAbout);
-    else if (choice == _choices[1]) {
+    else if (choice.title == Intl.menuAbout)
+      presentation.showAbout(context);
+    else if (choice.title == Intl.menuIntro) {
       presentation.showIntro(context);
     }
-    else if (choice == _choices[0]) {
+    else if (choice.title == Intl.menuTheme) {
       if (_viewModel.darkMode) {
         _changeTheme(context, ThemeKeys.LIGHT);
         presentation.setDarkTheme(false);
@@ -269,6 +269,8 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
         _changeTheme(context, ThemeKeys.DARK);
         presentation.setDarkTheme(true);
       }
+    } else {
+      debugPrint ("not found");
     }
   }
 

@@ -38,6 +38,10 @@ dependencies:
   flutter_email_sender: ^2.0.3
   device_info: ^0.4.0+4
   get_it: ^1.0.3
+  sprintf: ^4.0.2
+  package_info: ^0.4.0+13
+  flutter_linkify: ^3.0.0
+  url_launcher: ^5.4.1
 
 dev_dependencies:
   mockito: 4.1.1

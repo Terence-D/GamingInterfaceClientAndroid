@@ -127,7 +127,6 @@ class ScreenRepository {
       newScreen.screenId = _findUniqueId();
 
       //save the new screen
-      debugPrint("added ${newScreen.name} ${newScreen.screenId}");
       await _save(prefs, newScreen);
       _cache.add(newScreen);
     }
