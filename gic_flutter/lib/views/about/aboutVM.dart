@@ -10,7 +10,7 @@ class AboutVM implements ViewModel {
   String emailTo = "";
   String emailTitle = "";
   String url = "";
-  var libraries;
+  List<ViewSection> libraries;
   ViewSection legal = new ViewSection("","","");
   ViewSection server = new ViewSection("","","");
 }
