@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:gic_flutter/model/ViewModel.dart';
+import 'package:gic_flutter/model/viewModel.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 
 import '../basePage.dart';
