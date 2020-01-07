@@ -253,8 +253,6 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
 
   //action to take when picking from the menu
   void _menuSelectAction(_MenuOptions choice) {
-    debugPrint(choice.title);
-
     if (choice.title == Intl.menuDonate)
       presentation.getNewActivity(Channel.actionViewDonate);
     else if (choice.title == Intl.menuAbout)

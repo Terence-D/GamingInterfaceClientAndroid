@@ -3,7 +3,6 @@ enum AboutText {
   versionText,
   libraryTitle,
   emailTo,
-  emailTitle,
   legalTitle,
   legalText,
   legalUrl,
@@ -33,16 +32,18 @@ class IntlAbout {
     'en': {
       AboutText.toolbarTitle: 'About',
       AboutText.versionText: 'Version: %s (build %s)',
-      AboutText.libraryTitle: '3rd Party Libraries',
-      AboutText.emailTo: 'support@coffeeshopstudio.ca',
-      AboutText.emailTitle: 'GIC',
+      AboutText.emailTo: 'mailto:support@coffeeshopstudio.ca?subject=GIC',
+      AboutText.url: 'https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki',
+
       AboutText.legalTitle: 'Legal',
       AboutText.legalText: 'GIC Client (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2019 Terence Doerksen',
       AboutText.legalUrl: 'http://www.apache.org/licenses/LICENSE-2.0',
-      AboutText.url: 'https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki',
+
       AboutText.serverTitle: 'Server',
       AboutText.serverText: 'To use this you need to run GIC Server (also Open Source) on your Windows computer where the game resides.  Please visit the link below for further information',
       AboutText.serverUrl: 'https://github.com/Terence-D/GameInputCommandServer',
+
+      AboutText.libraryTitle: '3rd Party Libraries',
       AboutText.cryptoTitle: 'Encryption library by Mataprasad',
       AboutText.cryptoText: 'Licensed under the MIT License.  See below for details',
       AboutText.cryptoUrl: 'https://github.com/mataprasad/Cross-platform-AES-encryption-128bit/blob/master/LICENSE',

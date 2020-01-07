@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
 
-import 'IntlAbout.dart';
+import 'intlAbout.dart';
 
 class IntlDelegate extends LocalizationsDelegate<Intl> {
   const IntlDelegate();

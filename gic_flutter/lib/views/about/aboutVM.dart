@@ -1,7 +1,7 @@
 import 'dart:core';
 
-import 'package:gic_flutter/model/ViewModel.dart';
-import 'package:gic_flutter/model/ViewSection.dart';
+import 'package:gic_flutter/model/viewModel.dart';
+import 'package:gic_flutter/model/viewSection.dart';
 
 class AboutVM implements ViewModel {
   String toolbarTitle = "";
@@ -10,7 +10,7 @@ class AboutVM implements ViewModel {
   String emailTo = "";
   String emailTitle = "";
   String url = "";
-  var libraries;
+  List<ViewSection> libraries;
   ViewSection legal = new ViewSection("","","");
   ViewSection server = new ViewSection("","","");
 }

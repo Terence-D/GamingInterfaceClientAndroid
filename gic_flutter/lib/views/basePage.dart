@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:gic_flutter/model/ViewModel.dart';
-import 'package:gic_flutter/model/ViewSection.dart';
+import 'package:gic_flutter/model/viewModel.dart';
+import 'package:gic_flutter/model/viewSection.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 abstract class BasePresentation {
@@ -35,12 +35,12 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
     super.dispose();
   }
 
-  Widget section(ViewSection model) {
+  Widget section(ViewSection model, [TextStyle optionalHeaderStyle]) {
     return
       Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>
-          [header(model.title),
+          [header(model.title, optionalHeaderStyle),
             Text(
               model.text,
             ),
@@ -61,13 +61,12 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
     );
   }
 
-  Widget header(String text) {
+  Widget header(String text, [TextStyle textStyle]) {
+    if (textStyle == null)
+      textStyle = Theme.of(context).textTheme.headline;
     return Text(
       text,
-      style: Theme
-          .of(context)
-          .textTheme
-          .headline,
+      style: textStyle,
     );
   }
 }
