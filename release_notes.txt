@@ -1,0 +1,4 @@
+- Small bugfix updates
+- Updated About view
+- Tweaked Main view
+- Initial Splash view is dark theme - feedback welcome!

@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/screen/Screen.dart';
@@ -15,7 +14,7 @@ abstract class MainRepoContract {
 class MainRepo implements MainVMRepo {
   SharedPreferences _prefs;
   MainRepoContract _mainContract;
-  MainVM _viewModel;
+  MainVM _viewModel = new MainVM();
 
   static const String _prefNightMode = "nightMode";
   static const String _prefShowHints = "showHints"; //show the help page
@@ -33,21 +32,20 @@ class MainRepo implements MainVMRepo {
   }
 
   @override
-  fetch() {
-    SharedPreferences.getInstance().then((shared) {
-      _prefs = shared;
-      _loadSettings();
-    });
+  fetch() async {
+    _prefs = await SharedPreferences.getInstance();
+    await _loadSettings();
   }
 
+
   _loadSettings() async {
-    _prefs.reload();
     //this handles reading in legacy settings
     bool needToConvert = _prefs.getBool(_prefConvert) ?? true;
     if (needToConvert) {
       _prefs.setBool(_prefConvert, false);
       await _convertLegacy();
     }
+
     bool convertScreens = _prefs.getBool(_prefConvertB) ?? true;
     if (convertScreens) {
       _prefs.setBool(_prefConvertB, false);
@@ -57,65 +55,62 @@ class MainRepo implements MainVMRepo {
     }
   }
 
-  Future _loadVM() async {
+  _loadVM() async {
     MainVM viewModel = new MainVM();
 
     //get encrypted password
     viewModel.password = await _getPassword();
 
+    //load screens
     ScreenRepository screenRepo = new ScreenRepository();
     viewModel.screenList = new List();
-    screenRepo.getScreenList().then((result) {
-      LinkedHashMap _screenListMap = result;
-      if (_screenListMap != null && _screenListMap.length > 0) {
-        _screenListMap.forEach((k, v) => viewModel.screenList.add(new ScreenListItem(k, v)) );
-      } else {
-        Screen newScreen = new Screen();
-        newScreen.screenId = 0;
-        newScreen.name = "Empty Screen";
-        screenRepo.save(newScreen);
-        viewModel.screenList.add(new ScreenListItem(newScreen.screenId, newScreen.name));
-      }
+    LinkedHashMap _screenListMap = await screenRepo.getScreenList();
+    if (_screenListMap != null && _screenListMap.length > 0) {
+      _screenListMap.forEach((k, v) => viewModel.screenList.add(new ScreenListItem(k, v)) );
+    } else {
+      Screen newScreen = new Screen();
+      newScreen.screenId = 0;
+      newScreen.name = "Empty Screen";
+      screenRepo.save(newScreen);
+      viewModel.screenList.add(new ScreenListItem(newScreen.screenId, newScreen.name));
+    }
 
-      viewModel.darkMode = _prefs.getBool(_prefNightMode) ?? true;
-      viewModel.port = _prefs.getString(_prefPort) ?? "8091";
-      viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
+    //get generic info
+    viewModel.darkMode = _prefs.getBool(_prefNightMode) ?? true;
+    viewModel.port = _prefs.getString(_prefPort) ?? "8091";
+    viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
 
-      if (_prefs.containsKey(_prefDonate))
-        viewModel.donate = _prefs.getBool(_prefDonate);
-      else {
-        viewModel.donate = false;
-      }
+    //donation settings
+    if (_prefs.containsKey(_prefDonate))
+      viewModel.donate = _prefs.getBool(_prefDonate);
+    else {
+      viewModel.donate = false;
+    }
 
-      if (_prefs.containsKey(_prefDonateStar))
-        viewModel.donateStar = _prefs.getBool(_prefDonateStar);
-      else {
-        viewModel.donateStar = false;
-      }
+    if (_prefs.containsKey(_prefDonateStar))
+      viewModel.donateStar = _prefs.getBool(_prefDonateStar);
+    else {
+      viewModel.donateStar = false;
+    }
 
-      this._viewModel = viewModel;
-
-      _mainContract.preferencesLoaded(viewModel);
-    });
-
-
+    this._viewModel = viewModel;
+    _mainContract.preferencesLoaded(viewModel);
   }
 
-  Future _convertLegacyScreens() async {
+  _convertLegacyScreens() async {
     MethodChannel platform = new MethodChannel(Channel.channelUtil);
     try {
-      await platform.invokeMethod(Channel.actionUtilUpdateScreens);
+      platform.invokeMethod(Channel.actionUtilUpdateScreens);
     } on PlatformException catch (e) {
       print(e.message);
     }
     await _loadVM();
   }
 
-  Future _convertLegacy() async {
+  _convertLegacy() async {
     MethodChannel platform = new MethodChannel(Channel.channelUtil);
     try {
-      final LinkedHashMap result =
-          await platform.invokeMethod(Channel.actionUtilGetSettings);
+      final LinkedHashMap result = await platform.invokeMethod(Channel.actionUtilGetSettings);
       if (result != null && result.length > 0) {
         result.forEach((key, value) {
           switch (key) {
@@ -168,9 +163,7 @@ class MainRepo implements MainVMRepo {
     const platform = const MethodChannel(Channel.channelUtil);
     if (encrypted.isNotEmpty) {
       try {
-        final String result = await platform
-            .invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
-        response = result;
+        response = await platform.invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
       } on PlatformException catch (_) {
         response = "";
       }
@@ -178,13 +171,26 @@ class MainRepo implements MainVMRepo {
     return response;
   }
 
+  bool _isNumeric(String str) {
+    if(str == null) {
+      return false;
+    }
+    return double.tryParse(str) != null;
+  }
+
   saveMainSettings(String address, String port, String password, int screenId) async {
-    _viewModel.address = address;
-    _viewModel.port = port;
-    _viewModel.password = password;
-    _prefs.setString(_prefAddress, address);
-    _prefs.setString(_prefPort, port);
-    _prefs.setString(_prefPassword, await _encryptPassword());
+    if (address != null && port.isNotEmpty) {
+      _viewModel.address = address;
+      _prefs.setString(_prefAddress, address);
+    }
+    if (port != null && port.isNotEmpty && _isNumeric(port)) {
+      _viewModel.port = port;
+      _prefs.setString(_prefPort, port);
+    }
+    if (password != null && password.isNotEmpty) {
+      _viewModel.password = password;
+      _prefs.setString(_prefPassword, await _encryptPassword());
+    }
     _prefs.setInt(_prefSelectedScreenId, screenId);
   }
 

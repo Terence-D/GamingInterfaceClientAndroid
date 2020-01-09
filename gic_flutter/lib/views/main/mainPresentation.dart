@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
+import 'package:gic_flutter/views/about/aboutView.dart';
 import 'package:gic_flutter/views/intro/introView.dart';
 
 import 'mainRepo.dart';
@@ -27,8 +28,8 @@ class MainPresentation implements MainRepoContract {
     _view.onLoadComplete(viewModel);
   }
 
-  void loadViewModel() {
-    _repository.fetch(); //this will wind up calling the preferencesLoaded above
+  loadViewModel() async {
+    await _repository.fetch(); //this will wind up calling the preferencesLoaded above
   }
 
   setDarkTheme(bool newValue) {
@@ -44,13 +45,17 @@ class MainPresentation implements MainRepoContract {
     }
   }
 
-  void startGame(BuildContext context, String password, String address, String port, int selectedScreenId) async {
-    if (password.length < 6) {
-      _view.showMessage(Intl.of(context).mainPasswordError);
+  startGame(String password, String address, String port, int selectedScreenId) async {
+    if (password == null || password.length < 6) {
+      _view.showMessage(Intl.mainPasswordError);
       return;
     }
-    if (int.tryParse(port) == null) {
-      _view.showMessage(Intl.of(context).mainInvalidPort);
+    if (port == null || int.tryParse(port) == null) {
+      _view.showMessage(Intl.mainInvalidPort);
+      return;
+    }
+    if (address == null || address.length == 0) {
+      _view.showMessage(Intl.mainInvalidServerError);
       return;
     }
     _repository.saveMainSettings(address, port, password, selectedScreenId);
@@ -66,6 +71,12 @@ class MainPresentation implements MainRepoContract {
   void showIntro(BuildContext context) {
     Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => IntroView())
+    );
+  }
+
+  void showAbout(BuildContext context) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => AboutView())
     );
   }
 }

@@ -1,7 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show SynchronousFuture;
+import 'package:flutter/material.dart';
+
+import 'intlAbout.dart';
 
 class IntlDelegate extends LocalizationsDelegate<Intl> {
   const IntlDelegate();
@@ -29,8 +31,12 @@ class Intl {
     return Localizations.of<Intl>(context, Intl);
   }
 
-  String getText(String resource) { 
+  String getText(String resource) {
     return _localized[locale.languageCode][resource];
+  }
+
+  String about(AboutText resource) {
+    return IntlAbout.localizedStrings[locale.languageCode][resource];
   }
 
   static Map<String, Map<String, String>> _localized = {
@@ -39,6 +45,7 @@ class Intl {
 
       'mainPasswordError': 'invalid password, it must be at least 6 digits long',
       'mainInvalidPort': 'invalid port number',
+      'mainInvalidServerError': 'invalid server address',
       'mainFirewallError': 'Error connecting, is the server running and firewall ports opened?',
       'mainAddress': 'Address',
       'mainPort': 'Port',
@@ -83,13 +90,20 @@ class Intl {
     }
   };
 
-  //these are used in view models where context aren't available... i should do all in here, but for now its as needed
   static String get menuTheme { return 'menuTheme'; }
   static String get menuIntro { return 'menuIntro'; }
   static String get menuAbout { return 'menuAbout'; }
   static String get menuDonate { return 'menuDonate'; }
 
+  static String get mainPasswordError { return 'mainPasswordError'; }
+  static String get mainInvalidPort { return 'mainInvalidPort'; }
+  static String get mainFirewallError { return 'mainFirewallError'; }
+  static String get mainInvalidServerError
+  { return 'mainInvalidServerError'; }
+
   //useful where context is available.. as above i should do this for all
+  //String get menuTheme { return _localized[locale.languageCode]['menuTheme'];}
+
   String get title { return _localized[locale.languageCode]['title']; }
   String get mainAddress { return _localized[locale.languageCode]['mainAddress']; }
   String get mainPassword { return _localized[locale.languageCode]['mainPassword']; }
@@ -126,7 +140,4 @@ class Intl {
   String get onboardSupportTitle { return _localized[locale.languageCode]['onboardSupportTitle']; }
   String get onboardSupportDesc { return _localized[locale.languageCode]['onboardSupportDesc']; }
   String get onboardImportSuccess { return _localized[locale.languageCode]['onboardImportSuccess']; }
-  String get mainPasswordError { return _localized[locale.languageCode]['mainPasswordError'];}
-  String get mainInvalidPort { return _localized[locale.languageCode]['mainInvalidPort'];}
-  String get mainFirewallError { return _localized[locale.languageCode]['mainFirewallError'];}
 }

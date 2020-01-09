@@ -3,13 +3,12 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/flavor.dart';
-
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/views/main/mainPresentation.dart';
-import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
+import 'package:gic_flutter/views/main/mainPresentation.dart';
+import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
 import 'package:toast/toast.dart';
 
@@ -107,7 +106,7 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
     } else
       return Scaffold(
           appBar: AppBar(
-            //leading: Icon(Icons.apps),
+            leading: Image.asset("assets/images/icons/app_icon.png", fit: BoxFit.cover),
             title: Text(_viewModel.toolbarTitle),
             actions: <Widget>[
               // action button
@@ -147,7 +146,7 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text(
                       _viewModel.screenTitle,
-                      style: Theme.of(context).textTheme.title,
+                      style: Theme.of(context).textTheme.headline,
                     ),
                     Visibility(
                       visible: _viewModel.donate,
@@ -236,7 +235,6 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
                 showMessage(Intl.of(context).mainErrorNoScreen);
               else
                 presentation.startGame(
-                    context,
                     passwordController.text,
                     addressController.text,
                     portController.text,
@@ -255,14 +253,14 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
 
   //action to take when picking from the menu
   void _menuSelectAction(_MenuOptions choice) {
-    if (choice == _choices[3])
+    if (choice.title == Intl.menuDonate)
       presentation.getNewActivity(Channel.actionViewDonate);
-    if (choice == _choices[2])
-      presentation.getNewActivity(Channel.actionViewAbout);
-    else if (choice == _choices[1]) {
+    else if (choice.title == Intl.menuAbout)
+      presentation.showAbout(context);
+    else if (choice.title == Intl.menuIntro) {
       presentation.showIntro(context);
     }
-    else if (choice == _choices[0]) {
+    else if (choice.title == Intl.menuTheme) {
       if (_viewModel.darkMode) {
         _changeTheme(context, ThemeKeys.LIGHT);
         presentation.setDarkTheme(false);
@@ -271,6 +269,8 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
         _changeTheme(context, ThemeKeys.DARK);
         presentation.setDarkTheme(true);
       }
+    } else {
+      debugPrint ("not found");
     }
   }
 

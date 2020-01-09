@@ -6,7 +6,6 @@ import android.preference.PreferenceManager
 import androidx.core.util.forEach
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
-import ca.coffeeshopstudio.gaminginterfaceclient.views.AboutActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.DonateActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
@@ -49,11 +48,6 @@ class MainActivity: FlutterActivity() {
     MethodChannel(flutterView, channelView).setMethodCallHandler { call, result ->
       _result = result
       when (call.method) {
-        actionAbout -> {
-          val intent = Intent(this, AboutActivity::class.java)
-          startActivity(intent)
-          result.success(true)
-        }
         actionDonate -> {
           val intent = Intent(this, DonateActivity::class.java)
           startActivity(intent)

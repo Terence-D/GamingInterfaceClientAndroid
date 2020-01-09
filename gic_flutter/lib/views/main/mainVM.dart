@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class MainVM extends Equatable {
   String get toolbarTitle => "Gaming Interface Client";
-  String get screenTitle => "GIC";
+  String get screenTitle => " ";
 
   ScreenListItem selectedScreen;
   bool firstRun;
