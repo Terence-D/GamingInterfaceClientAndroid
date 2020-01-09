@@ -106,7 +106,7 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
     } else
       return Scaffold(
           appBar: AppBar(
-            //leading: Icon(Icons.apps),
+            leading: Image.asset("assets/images/icons/app_icon.png", fit: BoxFit.cover),
             title: Text(_viewModel.toolbarTitle),
             actions: <Widget>[
               // action button
