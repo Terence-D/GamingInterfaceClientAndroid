@@ -1,0 +1,2 @@
+- Small bugfix updates
+- Updated About view
