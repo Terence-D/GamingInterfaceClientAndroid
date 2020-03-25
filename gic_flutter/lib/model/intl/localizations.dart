@@ -86,7 +86,15 @@ class Intl {
       'onboardOldAndroidDesc': 'You are running an older version of Android.  Certain functions are disabled (such as import/export) for now.  This may change if I can find the time to work around the limitations.',
       'onboardSupportTitle': 'Support',
       'onboardSupportDesc': 'Although this app is completely free and open source (and will remain as such!), if you like the app and wish to support development, I appreciate any support you can provide.  There is a Donate menu option for more information.  Thank you :)',
-      'onboardImportSuccess': 'Import Complete!'
+      'onboardImportSuccess': 'Import Complete!',
+
+      'manageTitle': 'Screen Manager',
+      'manageNew': 'New',
+      'manageImport': 'Import',
+      'manageUpdate': 'Update',
+      'manageEdit': 'Edit',
+      'manageExport': 'Export',
+      'manageDelete': 'Delete',
     }
   };
 
@@ -140,4 +148,11 @@ class Intl {
   String get onboardSupportTitle { return _localized[locale.languageCode]['onboardSupportTitle']; }
   String get onboardSupportDesc { return _localized[locale.languageCode]['onboardSupportDesc']; }
   String get onboardImportSuccess { return _localized[locale.languageCode]['onboardImportSuccess']; }
+
+  String get manageNew {return _localized[locale.languageCode]['manageNew'];}
+  String get manageImport {return _localized[locale.languageCode]['manageImport'];}
+  String get manageUpdate {return _localized[locale.languageCode]['manageUpdate'];}
+  String get manageEdit {return _localized[locale.languageCode]['manageEdit'];}
+  String get manageExport {return _localized[locale.languageCode]['manageExport'];}
+  String get manageDelete {return _localized[locale.languageCode]['manageDelete'];}
 }
