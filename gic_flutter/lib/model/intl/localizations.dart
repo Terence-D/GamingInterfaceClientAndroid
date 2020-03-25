@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
 
 import 'intlAbout.dart';
+import 'intlManage.dart';
 
 class IntlDelegate extends LocalizationsDelegate<Intl> {
   const IntlDelegate();
@@ -37,6 +38,10 @@ class Intl {
 
   String about(AboutText resource) {
     return IntlAbout.localizedStrings[locale.languageCode][resource];
+  }
+
+  String manage(ManageText resource) {
+    return IntlManage.localizedStrings[locale.languageCode][resource];
   }
 
   static Map<String, Map<String, String>> _localized = {
@@ -87,14 +92,6 @@ class Intl {
       'onboardSupportTitle': 'Support',
       'onboardSupportDesc': 'Although this app is completely free and open source (and will remain as such!), if you like the app and wish to support development, I appreciate any support you can provide.  There is a Donate menu option for more information.  Thank you :)',
       'onboardImportSuccess': 'Import Complete!',
-
-      'manageTitle': 'Screen Manager',
-      'manageNew': 'New',
-      'manageImport': 'Import',
-      'manageUpdate': 'Update',
-      'manageEdit': 'Edit',
-      'manageExport': 'Export',
-      'manageDelete': 'Delete',
     }
   };
 
@@ -106,8 +103,7 @@ class Intl {
   static String get mainPasswordError { return 'mainPasswordError'; }
   static String get mainInvalidPort { return 'mainInvalidPort'; }
   static String get mainFirewallError { return 'mainFirewallError'; }
-  static String get mainInvalidServerError
-  { return 'mainInvalidServerError'; }
+  static String get mainInvalidServerError { return 'mainInvalidServerError'; }
 
   //useful where context is available.. as above i should do this for all
   //String get menuTheme { return _localized[locale.languageCode]['menuTheme'];}
@@ -148,11 +144,4 @@ class Intl {
   String get onboardSupportTitle { return _localized[locale.languageCode]['onboardSupportTitle']; }
   String get onboardSupportDesc { return _localized[locale.languageCode]['onboardSupportDesc']; }
   String get onboardImportSuccess { return _localized[locale.languageCode]['onboardImportSuccess']; }
-
-  String get manageNew {return _localized[locale.languageCode]['manageNew'];}
-  String get manageImport {return _localized[locale.languageCode]['manageImport'];}
-  String get manageUpdate {return _localized[locale.languageCode]['manageUpdate'];}
-  String get manageEdit {return _localized[locale.languageCode]['manageEdit'];}
-  String get manageExport {return _localized[locale.languageCode]['manageExport'];}
-  String get manageDelete {return _localized[locale.languageCode]['manageDelete'];}
 }

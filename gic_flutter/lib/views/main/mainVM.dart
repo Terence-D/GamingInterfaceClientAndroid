@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:gic_flutter/model/viewModel.dart';
 
-class MainVM extends Equatable {
-  String get toolbarTitle => "Gaming Interface Client";
+class MainVM extends Equatable implements ViewModel {
+  String toolbarTitle = "Gaming Interface Client";
   String get screenTitle => " ";
 
   ScreenListItem selectedScreen;

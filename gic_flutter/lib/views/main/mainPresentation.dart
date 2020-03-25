@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/views/about/aboutView.dart';
 import 'package:gic_flutter/views/intro/introView.dart';
+import 'package:gic_flutter/views/manage/manageView.dart';
 
 import 'mainRepo.dart';
 import 'mainVM.dart';
@@ -76,7 +76,7 @@ class MainPresentation implements MainRepoContract {
 
   void showAbout(BuildContext context) {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => AboutView())
+        MaterialPageRoute(builder: (context) => ManageView()) // AboutView())
     );
   }
 }
