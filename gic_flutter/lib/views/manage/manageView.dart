@@ -43,6 +43,8 @@ class ManageViewState extends BaseState<ManageView> {
         screenNameController.text = _viewModel.screens[0].name;
       else
         screenNameController.text = "";
+      if (_viewModel.screens.length > 0)
+        _viewModel.selectedScreen = _viewModel.screens[0];
     });
   }
 
@@ -61,39 +63,48 @@ class ManageViewState extends BaseState<ManageView> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    RaisedButton(
-                      key: _newKey,
-                      onPressed: () {
-                        (presentation as ManagePresentation).newScreen();
-                      },
-                      child: Text(_viewModel.btnNew),
+                    Padding(
+                      padding: EdgeInsets.all(dim.activityMargin),
+                      child:
+                      RaisedButton(
+                        key: _newKey,
+                        onPressed: () {
+                          (presentation as ManagePresentation).newScreen();
+                        },
+                        child: Text(_viewModel.btnNew),
+                      ),
                     ),
-                    RaisedButton(
-                      key: _importKey,
-                      onPressed: () {
-                        (presentation as ManagePresentation).importScreen();
-                      },
-                      child: Text(_viewModel.btnImport),
+                    Padding(
+                      padding: EdgeInsets.all(dim.activityMargin),
+                      child:
+                      RaisedButton(
+                        key: _importKey,
+                        onPressed: () {
+                          (presentation as ManagePresentation).importScreen();
+                        },
+                        child: Text(_viewModel.btnImport),
+                      ),
                     ),
                   ],
                 ),
-                DropdownButton<ScreenListItem>(
-                  key: _screenListKey,
-                  value: _viewModel.selectedScreen,
-                  items:
-                  _viewModel.screens.map((ScreenListItem item) {
-                    return new DropdownMenuItem<ScreenListItem>(
-                      value: item,
-                      child: new Text(
-                        item.name,
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (ScreenListItem item) {
-                    setState(() {
-                      _viewModel.selectedScreen = item;
-                    });
-                  },
+                  DropdownButton<ScreenListItem>(
+                    key: _screenListKey,
+                    value: _viewModel.selectedScreen,
+                    items:
+                    _viewModel.screens.map((ScreenListItem item) {
+                      return new DropdownMenuItem<ScreenListItem>(
+                        value: item,
+                        child: new Text(
+                          item.name,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (ScreenListItem item) {
+                      setState(() {
+                        _viewModel.selectedScreen = item;
+                        screenNameController.text = _viewModel.selectedScreen.name;
+                      });
+                    },
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -106,31 +117,43 @@ class ManageViewState extends BaseState<ManageView> {
                         decoration: InputDecoration(hintText: _viewModel.screenName),
                       ),
                     ),
-                    RaisedButton(
-                      key: _updateKey,
-                      onPressed: () {
-                        (presentation as ManagePresentation).updateScreen(screenNameController.text);
-                      },
-                      child: Text(_viewModel.btnUpdate),
+                    Padding(
+                      padding: EdgeInsets.all(dim.activityMargin),
+                      child:
+                      RaisedButton(
+                        key: _updateKey,
+                        onPressed: () {
+                          (presentation as ManagePresentation).updateScreen(screenNameController.text);
+                        },
+                        child: Text(_viewModel.btnUpdate),
+                      ),
                     ),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
-                    AccentButton(
-                      key: _deleteKey,
-                      onPressed: () {
-                        (presentation as ManagePresentation).deleteScreen();
-                      },
-                      child: Text(_viewModel.btnDelete),
+                    Padding(
+                      padding: EdgeInsets.all(dim.activityMargin),
+                      child:
+                      AccentButton(
+                        key: _deleteKey,
+                        onPressed: () {
+                          (presentation as ManagePresentation).deleteScreen();
+                        },
+                        child: Text(_viewModel.btnDelete),
+                      ),
                     ),
-                    RaisedButton(
-                      key: _exportKey,
-                      onPressed: () {
-                        (presentation as ManagePresentation).exportScreen();
-                      },
-                      child: Text(_viewModel.btnExport),
+                    Padding(
+                      padding: EdgeInsets.all(dim.activityMargin),
+                      child:
+                      RaisedButton(
+                        key: _exportKey,
+                        onPressed: () {
+                          (presentation as ManagePresentation).exportScreen();
+                        },
+                        child: Text(_viewModel.btnExport),
+                      ),
                     ),
                   ],
                 ),
