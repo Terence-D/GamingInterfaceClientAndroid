@@ -8,6 +8,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
 import ca.coffeeshopstudio.gaminginterfaceclient.views.DonateActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
@@ -21,7 +22,7 @@ class MainActivity: FlutterActivity() {
     const val channelUtil = "$channelName/utils"
     const val channelView = "$channelName/views"
 
-    const val actionAbout = "about"
+    const val actionEdit = "editor"
     const val actionDonate = "donate"
     const val actionStart = "start"
     const val actionManager = "manager"
@@ -68,6 +69,13 @@ class MainActivity: FlutterActivity() {
         }
         actionManager -> {
           val intent = Intent(this, ScreenManagerActivity::class.java)
+          startActivity(intent)
+          result.success(true)
+        }
+        actionEdit -> {
+          val screen: Int? = call.argument("selectedScreenId")
+          val intent = Intent(this, EditActivity::class.java)
+          intent.putExtra("screen_index", screen)
           startActivity(intent)
           result.success(true)
         }
