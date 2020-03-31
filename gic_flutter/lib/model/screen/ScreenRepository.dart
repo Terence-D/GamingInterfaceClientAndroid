@@ -153,4 +153,6 @@ class ScreenRepository {
     }
    _cache.add(newScreen);
   }
+
+  void import(String path) {}
 }

@@ -1,7 +1,10 @@
 import 'dart:collection';
+import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_file_picker/flutter_document_picker.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/intlManage.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
@@ -57,8 +60,21 @@ class ManagePresentation implements BasePresentation {
     _saveScreen(_getUniqueName("New"), _getUniqueId(0));
   }
 
-  void importScreen() {
-    _screenRepo.import()
+  Future<void> importScreen() async {
+    if (Platform.isAndroid) {
+      var androidInfo = await DeviceInfoPlugin().androidInfo;
+      var sdkInt = androidInfo.version.sdkInt;
+      if (sdkInt >= 19) {
+        FlutterDocumentPickerParams params = FlutterDocumentPickerParams(
+          allowedFileExtensions: ['zip'],
+          allowedMimeTypes: ['application/zip'],
+          invalidFileNameSymbols: ['/'],
+        );
+
+        final path = await FlutterDocumentPicker.openDocument(params: params);
+        _screenRepo.import(path);
+      }
+    }
   }
 
   void updateScreen(String text) {
