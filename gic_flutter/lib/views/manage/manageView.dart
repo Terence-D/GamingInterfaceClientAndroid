@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/viewModel.dart';
-import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/views/main/mainVM.dart';
 
-import '../accentButton.dart';
 import '../basePage.dart';
 import 'managePresentation.dart';
 import 'manageVM.dart';
@@ -54,112 +52,110 @@ class ManageViewState extends BaseState<ManageView> {
         appBar: AppBar(
           automaticallyImplyLeading: true,
           title: Text(_viewModel.toolbarTitle),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.all(dim.activityMargin),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(dim.activityMargin),
-                      child:
-                      RaisedButton(
-                        key: _newKey,
-                        onPressed: () {
-                          (presentation as ManagePresentation).newScreen();
-                        },
-                        child: Text(_viewModel.btnNew),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(dim.activityMargin),
-                      child:
-                      RaisedButton(
-                        key: _importKey,
-                        onPressed: () {
-                          (presentation as ManagePresentation).importScreen();
-                        },
-                        child: Text(_viewModel.btnImport),
-                      ),
-                    ),
-                  ],
-                ),
-                  DropdownButton<ScreenListItem>(
-                    key: _screenListKey,
-                    value: _viewModel.selectedScreen,
-                    items:
-                    _viewModel.screens.map((ScreenListItem item) {
-                      return new DropdownMenuItem<ScreenListItem>(
-                        value: item,
-                        child: new Text(
-                          item.name,
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (ScreenListItem item) {
-                      setState(() {
-                        _viewModel.selectedScreen = item;
-                        screenNameController.text = _viewModel.selectedScreen.name;
-                      });
-                    },
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    new Flexible(
-
-                      child: new TextFormField(
-                        key: _screenNameKey,
-                        controller: screenNameController,
-                        decoration: InputDecoration(hintText: _viewModel.screenName),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(dim.activityMargin),
-                      child:
-                      RaisedButton(
-                        key: _updateKey,
-                        onPressed: () {
-                          (presentation as ManagePresentation).updateScreen(screenNameController.text);
-                        },
-                        child: Text(_viewModel.btnUpdate),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(dim.activityMargin),
-                      child:
-                      AccentButton(
-                        key: _deleteKey,
-                        onPressed: () {
-                          (presentation as ManagePresentation).deleteScreen();
-                        },
-                        child: Text(_viewModel.btnDelete),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(dim.activityMargin),
-                      child:
-                      RaisedButton(
-                        key: _exportKey,
-                        onPressed: () {
-                          (presentation as ManagePresentation).exportScreen();
-                        },
-                        child: Text(_viewModel.btnExport),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.help_outline),
+                onPressed: () {
+//                  _loadHelp();
+                }),
+            // overflow menu
+            PopupMenuButton<int>(
+              onSelected: _menuSelectAction,
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
+                PopupMenuItem<int>(
+                  value: 0,
+                  child: Text(_viewModel.btnImport)
+                )]
+              )],
             ),
+        body: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+// scrollDirection: Axis.horizontal,
+                    itemCount: _viewModel.screens.length,
+                    itemBuilder: (context, index) {
+                      return screenCard(_viewModel.screens[index]);
+                    }),
+              ),
+            ],
           ),
+//            margin: EdgeInsets.all(dim.activityMargin),
+//            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+//              children: <Widget>[
+//                Row(
+//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                  children: <Widget>[
+//                    Padding(
+//                      padding: EdgeInsets.all(dim.activityMargin),
+//                      child:
+//                      RaisedButton(
+//                        key: _newKey,
+//                        onPressed: () {
+//                          (presentation as ManagePresentation).newScreen();
+//                        },
+//                        child: Text(_viewModel.btnNew),
+//                      ),
+//                    ),
+//                  ],
+//                ),
+//                Row(
+//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                  children: <Widget>[
+//                    new Flexible(
+//
+//                      child: new TextFormField(
+//                        key: _screenNameKey,
+//                        controller: screenNameController,
+//                        decoration: InputDecoration(hintText: _viewModel.screenName),
+//                      ),
+//                    ),
+//                    Padding(
+//                      padding: EdgeInsets.all(dim.activityMargin),
+//                      child:
+//                      RaisedButton(
+//                        key: _updateKey,
+//                        onPressed: () {
+//                          (presentation as ManagePresentation).updateScreen(screenNameController.text);
+//                        },
+//                        child: Text(_viewModel.btnUpdate),
+//                      ),
+//                    ),
+//                  ],
+//                ),
+//                Row(
+//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                  children: <Widget>[
+//                    Padding(
+//                      padding: EdgeInsets.all(dim.activityMargin),
+//                      child:
+//                      AccentButton(
+//                        key: _deleteKey,
+//                        onPressed: () {
+//                          (presentation as ManagePresentation).deleteScreen();
+//                        },
+//                        child: Text(_viewModel.btnDelete),
+//                      ),
+//                    ),
+//                    Padding(
+//                      padding: EdgeInsets.all(dim.activityMargin),
+//                      child:
+//                      RaisedButton(
+//                        key: _exportKey,
+//                        onPressed: () {
+//                          (presentation as ManagePresentation).exportScreen();
+//                        },
+//                        child: Text(_viewModel.btnExport),
+//                      ),
+//                    ),
+//                  ],
+//                ),
+//              ],
+//            ),
+//          ),
         ),
         floatingActionButton: FloatingActionButton.extended (
           key: _editKey,
@@ -169,4 +165,62 @@ class ManageViewState extends BaseState<ManageView> {
           label: Text(_viewModel.btnEdit)
         )); //
   }
+
+  void _menuSelectAction(int choice) {
+    (presentation as ManagePresentation).importScreen();
+  }
+}
+
+Container screenCard(ScreenListItem screen) {
+  return Container(
+    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+    height: 220,
+    width: double.maxFinite,
+    child: Card(
+      elevation: 5,
+      child: Container(
+        child: Padding(
+          padding: EdgeInsets.all(7),
+          child: Stack(children: <Widget>[
+            Align(
+              alignment: Alignment.centerRight,
+              child: Stack(
+                children: <Widget>[
+                  Padding(
+                      padding: const EdgeInsets.only(left: 10, top: 5),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              screenName(screen),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                            ],
+                          )
+                        ],
+                      ))
+                ],
+              ),
+            )
+          ]),
+        ),
+      ),
+    ),
+  );
+}
+
+
+Widget screenName(ScreenListItem screen) {
+  return Align(
+    alignment: Alignment.centerLeft,
+    child: RichText(
+      text: TextSpan(
+        text: "${screen.name}",
+        style: TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 20),
+      ),
+    ),
+  );
 }
