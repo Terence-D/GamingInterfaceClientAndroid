@@ -15,7 +15,7 @@ class IntlManage {
       ManageText.toolbarTitle: 'Screen Manager',
       ManageText.buttonNew: 'New',
       ManageText.buttonImport: 'Import',
-      ManageText.buttonUpdate: 'Update',
+      ManageText.buttonUpdate: 'Update Name',
       ManageText.buttonDelete: 'Delete',
       ManageText.buttonEdit: 'Edit',
       ManageText.buttonExport: 'Export',

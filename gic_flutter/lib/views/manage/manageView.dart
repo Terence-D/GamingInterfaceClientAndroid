@@ -60,14 +60,17 @@ class ManageViewState extends BaseState<ManageView> {
                 }),
             // overflow menu
             PopupMenuButton<int>(
-              onSelected: _menuSelectAction,
-              itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
-                PopupMenuItem<int>(
-                  value: 0,
-                  child: Text(_viewModel.btnImport)
-                )]
-              )],
-            ),
+                onSelected: _menuSelectAction,
+                itemBuilder: (BuildContext context) =>
+                <PopupMenuEntry<int>>[
+                  PopupMenuItem<int>(
+                      value: 0,
+                      child: Text(_viewModel.btnImport)
+                  )
+                ]
+            )
+          ],
+        ),
         body: Container(
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -157,70 +160,99 @@ class ManageViewState extends BaseState<ManageView> {
 //            ),
 //          ),
         ),
-        floatingActionButton: FloatingActionButton.extended (
-          key: _editKey,
-          onPressed: () {
-            (presentation as ManagePresentation).editScreen();
-          },
-          label: Text(_viewModel.btnEdit)
+        floatingActionButton: FloatingActionButton.extended(
+            key: _editKey,
+            onPressed: () {
+              (presentation as ManagePresentation).editScreen();
+            },
+            label: Text(_viewModel.btnEdit)
         )); //
   }
 
   void _menuSelectAction(int choice) {
     (presentation as ManagePresentation).importScreen();
   }
-}
 
-Container screenCard(ScreenListItem screen) {
-  return Container(
-    padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-    height: 220,
-    width: double.maxFinite,
-    child: Card(
-      elevation: 5,
-      child: Container(
-        child: Padding(
-          padding: EdgeInsets.all(7),
-          child: Stack(children: <Widget>[
-            Align(
-              alignment: Alignment.centerRight,
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                      padding: const EdgeInsets.only(left: 10, top: 5),
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              screenName(screen),
-                            ],
-                          ),
-                          Row(
-                            children: <Widget>[
-                            ],
-                          )
-                        ],
-                      ))
-                ],
+  Container screenCard(ScreenListItem screen) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+      height: 220,
+      width: double.maxFinite,
+      child: Card(
+        elevation: 5,
+        child: new InkWell(
+          onTap: () {
+
+          },
+          child: new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Expanded(
+                child:
+                screenName(screen),
               ),
-            )
-          ]),
+              Container(
+                child: new ButtonBar(
+                  children: <Widget>[
+                    new FlatButton(
+                      child: Text(_viewModel.btnEdit),
+                      onPressed: () {
+                        /* ... */
+                      },
+                    ),
+                    new FlatButton(
+                      child: Text(_viewModel.btnExport),
+                      onPressed: () {
+                        /* ... */
+                      },
+                    ),
+                    new FlatButton(
+                      color: Theme.of(context).errorColor,
+                      child: Text(
+                          _viewModel.btnDelete),
+                      onPressed: () {
+                        /* ... */
+                      },
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-    ),
-  );
-}
+      )
+    );
+  }
 
+  Widget screenName(ScreenListItem screen) {
+    return
+      Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            new Flexible(
 
-Widget screenName(ScreenListItem screen) {
-  return Align(
-    alignment: Alignment.centerLeft,
-    child: RichText(
-      text: TextSpan(
-        text: "${screen.name}",
-        style: TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 20),
-      ),
-    ),
-  );
+              child: new TextFormField(
+  //                        key: _screenNameKey,
+                controller: screenNameController,
+                decoration: InputDecoration(hintText: _viewModel.screenName),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(4),
+              child:
+              RaisedButton(
+  //                        key: _updateKey,
+                onPressed: () {
+                  (presentation as ManagePresentation).updateScreen(screenNameController.text);
+                },
+                child: Text(_viewModel.btnUpdate),
+              ),
+            ),
+          ],
+        )
+    );
+  }
 }
