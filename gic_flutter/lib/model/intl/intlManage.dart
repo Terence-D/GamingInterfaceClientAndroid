@@ -6,7 +6,14 @@ enum ManageText {
   buttonEdit,
   buttonExport,
   buttonDelete,
-  screenName
+  screenName,
+  helpNew,
+  helpScreenList,
+  helpExport,
+  helpEdit,
+  helpDelete,
+  helpUpdate,
+  helpImport
 }
 
 class IntlManage {
@@ -18,8 +25,16 @@ class IntlManage {
       ManageText.buttonUpdate: 'Update Name',
       ManageText.buttonDelete: 'Delete',
       ManageText.buttonEdit: 'Edit',
-      ManageText.buttonExport: 'Export',
+      ManageText.buttonExport: 'Share',
       ManageText.screenName: 'Screen Name',
+
+      ManageText.helpNew: 'To add a new Screen, tap here',
+      ManageText.helpScreenList: 'You can change the name here, then tap on Update Name',
+      ManageText.helpImport: 'Tap here to Import an existing screen saved on your device',
+      ManageText.helpExport: 'Share your screen with others by exporting with this',
+      ManageText.helpEdit: 'This will open the Screen Editor',
+      ManageText.helpDelete: 'This will PERMANENTLY delete this screen',
+      ManageText.helpUpdate: 'After changing the name above, tap here to save the change'
     }
   };
 }

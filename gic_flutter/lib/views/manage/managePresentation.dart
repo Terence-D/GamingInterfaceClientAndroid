@@ -28,6 +28,13 @@ class ManagePresentation implements BasePresentation {
     _viewModel.btnNew = Intl.of(context).manage(ManageText.buttonNew);
     _viewModel.btnUpdate = Intl.of(context).manage(ManageText.buttonUpdate);
     _viewModel.screenName = Intl.of(context).manage(ManageText.screenName);
+    _viewModel.helpImport = Intl.of(context).manage(ManageText.helpImport);
+    _viewModel.helpNew  = Intl.of(context).manage(ManageText.helpNew);
+    _viewModel.helpScreenList = Intl.of(context).manage(ManageText.helpScreenList);
+    _viewModel.helpEdit = Intl.of(context).manage(ManageText.helpEdit);
+    _viewModel.helpExport = Intl.of(context).manage(ManageText.helpExport);
+    _viewModel.helpDelete = Intl.of(context).manage(ManageText.helpDelete);
+    _viewModel.helpUpdate = Intl.of(context).manage(ManageText.helpUpdate);
 
     ScreenRepository screenRepo = new ScreenRepository();
     _viewModel.screens = new List();

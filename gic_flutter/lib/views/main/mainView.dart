@@ -7,6 +7,7 @@ import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
+import 'package:gic_flutter/views/HighlighterHelp.dart';
 import 'package:gic_flutter/views/main/mainPresentation.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
@@ -397,18 +398,3 @@ List<_MenuOptions> _choices = <_MenuOptions>[
   _MenuOptions(title: Intl.menuIntro, icon: Icons.thumb_up),
   _MenuOptions(title: Intl.menuAbout, icon: Icons.info_outline),
 ];
-
-class HighligherHelp {
-  HighligherHelp(String text, GlobalKey highlight, double highlightSize,
-      MainAxisAlignment alignment) {
-    this.text = text;
-    this.highlight = highlight;
-    this.highlightSize = highlightSize;
-    this.alignment = alignment;
-  }
-  String text;
-  GlobalKey highlight;
-  double highlightSize;
-  MainAxisAlignment alignment;
-}
-
