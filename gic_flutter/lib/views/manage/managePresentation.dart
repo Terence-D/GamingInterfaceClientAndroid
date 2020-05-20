@@ -49,7 +49,7 @@ class ManagePresentation implements BasePresentation {
     _viewModel.screens.add(new ScreenListItem(newScreen.screenId, newScreen.name));
   }
 
-  void editScreen() {
+  void editScreen(int index) {
 
   }
 
@@ -59,9 +59,9 @@ class ManagePresentation implements BasePresentation {
 
   void importScreen() {}
 
-  void updateScreen(String text) {}
+  void updateScreenName(int index, String text) {}
 
-  void deleteScreen() {}
+  void deleteScreen(int index) {}
 
-  void exportScreen() {}
+  void exportScreen(int index) {}
 }

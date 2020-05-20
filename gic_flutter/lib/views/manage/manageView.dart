@@ -15,14 +15,8 @@ class ManageView extends BasePage {
 class ManageViewState extends BaseState<ManageView> {
   ManageVM _viewModel;
 
-  GlobalKey _exportKey = GlobalObjectKey("manageExport");
   GlobalKey _newKey = GlobalObjectKey("manageNew");
-  GlobalKey _importKey = GlobalObjectKey("manageImport");
-  GlobalKey _deleteKey = GlobalObjectKey("manageDelete");
-  GlobalKey _editKey = GlobalObjectKey("manageEdit");
-  GlobalKey _updateKey = GlobalObjectKey("manageUpdate");
   GlobalKey _screenListKey = GlobalObjectKey("manageScreenList");
-  GlobalKey _screenNameKey = GlobalObjectKey("manageScreenNameList");
 
   List<TextEditingController> screenNameController = new List<TextEditingController>();
 
@@ -55,7 +49,7 @@ class ManageViewState extends BaseState<ManageView> {
             IconButton(
                 icon: Icon(Icons.help_outline),
                 onPressed: () {
-//                  _loadHelp();
+                  _loadHelp();
                 }),
             // overflow menu
             PopupMenuButton<int>(
@@ -77,6 +71,7 @@ class ManageViewState extends BaseState<ManageView> {
             children: <Widget>[
               Expanded(
                 child: ListView.builder(
+                    key: _screenListKey,
                     itemCount: screenNameController.length,
                     itemBuilder: (context, index) {
                       return screenCard(index);
@@ -84,69 +79,6 @@ class ManageViewState extends BaseState<ManageView> {
               ),
             ],
           ),
-//                      RaisedButton(
-//                        key: _newKey,
-//                        onPressed: () {
-//                        },
-//                        child: Text(_viewModel.btnNew),
-//                      ),
-//                    ),
-//                  ],
-//                ),
-//                Row(
-//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                  children: <Widget>[
-//                    new Flexible(
-//
-//                      child: new TextFormField(
-//                        key: _screenNameKey,
-//                        controller: screenNameController,
-//                        decoration: InputDecoration(hintText: _viewModel.screenName),
-//                      ),
-//                    ),
-//                    Padding(
-//                      padding: EdgeInsets.all(dim.activityMargin),
-//                      child:
-//                      RaisedButton(
-//                        key: _updateKey,
-//                        onPressed: () {
-//                          (presentation as ManagePresentation).updateScreen(screenNameController.text);
-//                        },
-//                        child: Text(_viewModel.btnUpdate),
-//                      ),
-//                    ),
-//                  ],
-//                ),
-//                Row(
-//                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                  children: <Widget>[
-//                    Padding(
-//                      padding: EdgeInsets.all(dim.activityMargin),
-//                      child:
-//                      AccentButton(
-//                        key: _deleteKey,
-//                        onPressed: () {
-//                          (presentation as ManagePresentation).deleteScreen();
-//                        },
-//                        child: Text(_viewModel.btnDelete),
-//                      ),
-//                    ),
-//                    Padding(
-//                      padding: EdgeInsets.all(dim.activityMargin),
-//                      child:
-//                      RaisedButton(
-//                        key: _exportKey,
-//                        onPressed: () {
-//                          (presentation as ManagePresentation).exportScreen();
-//                        },
-//                        child: Text(_viewModel.btnExport),
-//                      ),
-//                    ),
-//                  ],
-//                ),
-//              ],
-//            ),
-//          ),
         ),
         floatingActionButton: FloatingActionButton.extended(
             key: _newKey,
@@ -186,29 +118,28 @@ class ManageViewState extends BaseState<ManageView> {
       child: new ButtonBar(
         children: <Widget>[
           new FlatButton(
-            onPressed: () {
-//              (presentation as ManagePresentation).updateScreen(screenNameController.text);
-            },
             child: Text(_viewModel.btnUpdate),
+            onPressed: () {
+              (presentation as ManagePresentation).updateScreenName(index, screenNameController[index].text);
+            },
           ),
           new FlatButton(
             child: Text(_viewModel.btnEdit),
             onPressed: () {
-              /* ... */
+              (presentation as ManagePresentation).editScreen(index);
             },
           ),
           new FlatButton(
             child: Text(_viewModel.btnExport),
             onPressed: () {
-              /* ... */
+              (presentation as ManagePresentation).exportScreen(index);
             },
           ),
           new FlatButton(
             color: Theme.of(context).errorColor,
-            child: Text(
-                _viewModel.btnDelete),
+            child: Text(_viewModel.btnDelete),
             onPressed: () {
-              /* ... */
+              (presentation as ManagePresentation).deleteScreen(index);
             },
           ),
         ],
@@ -237,4 +168,6 @@ class ManageViewState extends BaseState<ManageView> {
     )
       );
     }
+
+  void _loadHelp() {}
 }
