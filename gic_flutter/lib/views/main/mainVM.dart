@@ -31,8 +31,8 @@ class FetchDataException implements Exception {
 }
 
 class ScreenListItem {
-  const ScreenListItem(this.id, this.name);
+  ScreenListItem(this.id, this.name);
 
-  final String name;
+  String name;
   final int id;
 }
