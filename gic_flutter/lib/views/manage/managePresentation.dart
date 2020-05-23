@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/intlManage.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/model/screen/Screen.dart';
@@ -12,13 +12,14 @@ import 'manageVM.dart';
 
 class ManagePresentation implements BasePresentation {
   BaseState _contract;
+  ManageVM _viewModel;
 
   ManagePresentation(BaseState contract) {
     _contract = contract;
   }
 
   Future<void> buildVM(BuildContext context) async {
-    ManageVM _viewModel = new ManageVM();
+    _viewModel = new ManageVM();
 
     _viewModel.toolbarTitle = Intl.of(context).manage(ManageText.toolbarTitle);
     _viewModel.btnDelete = Intl.of(context).manage(ManageText.buttonDelete);
@@ -28,6 +29,13 @@ class ManagePresentation implements BasePresentation {
     _viewModel.btnNew = Intl.of(context).manage(ManageText.buttonNew);
     _viewModel.btnUpdate = Intl.of(context).manage(ManageText.buttonUpdate);
     _viewModel.screenName = Intl.of(context).manage(ManageText.screenName);
+    _viewModel.helpImport = Intl.of(context).manage(ManageText.helpImport);
+    _viewModel.helpNew  = Intl.of(context).manage(ManageText.helpNew);
+    _viewModel.helpScreenList = Intl.of(context).manage(ManageText.helpScreenList);
+    _viewModel.helpEdit = Intl.of(context).manage(ManageText.helpEdit);
+    _viewModel.helpExport = Intl.of(context).manage(ManageText.helpExport);
+    _viewModel.helpDelete = Intl.of(context).manage(ManageText.helpDelete);
+    _viewModel.helpUpdate = Intl.of(context).manage(ManageText.helpUpdate);
 
     ScreenRepository screenRepo = new ScreenRepository();
     _viewModel.screens = new List();
@@ -35,13 +43,13 @@ class ManagePresentation implements BasePresentation {
     if (_screenListMap != null && _screenListMap.length > 0) {
       _screenListMap.forEach((k, v) => _viewModel.screens.add(new ScreenListItem(k, v)) );
     } else {
-      _saveScreen(screenRepo, _viewModel, "Empty Screen", 0);
+      _saveScreen(screenRepo, "Empty Screen", 0);
     }
 
     _contract.onLoadComplete(_viewModel);
   }
 
-  void _saveScreen(ScreenRepository screenRepo, ManageVM _viewModel, String name, int id) {
+  void _saveScreen(ScreenRepository screenRepo, String name, int id) {
     Screen newScreen = new Screen();
     newScreen.screenId = id;
     newScreen.name = name;
@@ -49,19 +57,52 @@ class ManagePresentation implements BasePresentation {
     _viewModel.screens.add(new ScreenListItem(newScreen.screenId, newScreen.name));
   }
 
-  void editScreen() {
+  void editScreen(int index) {
 
   }
 
   void newScreen() {
+    int id=0;
+    for(int i=0; i < _viewModel.screens.length; i++) {
+      if (id == _viewModel.screens[i].id) {
+        id++;
+        i = 0; //restart our search
+      }
+    }
+    ScreenRepository screenRepo = new ScreenRepository();
+    _saveScreen(screenRepo, "New Screen", id);
+  }
+
+  Future<void> updateScreenName(int index, String text) async {
+    ScreenRepository screenRepo = new ScreenRepository();
+    for(int i=0; i < _viewModel.screens.length; i++) {
+      if (i == index) {
+        screenRepo.updateName(
+            _viewModel.screens[i].id,
+            text
+        );
+        break;
+      }
+    }
+  }
+
+  void deleteScreen(int index) {
+    ScreenRepository screenRepo = new ScreenRepository();
+
+    for(int i=0; i < _viewModel.screens.length; i++) {
+      if (i == index) {
+        screenRepo.delete(_viewModel.screens[i].id);
+        break;
+      }
+    }
+  }
+
+  void exportScreen(int index) {
 
   }
 
-  void importScreen() {}
+  void importScreen() {
 
-  void updateScreen(String text) {}
+  }
 
-  void deleteScreen() {}
-
-  void exportScreen() {}
 }

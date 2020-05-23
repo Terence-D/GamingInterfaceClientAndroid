@@ -98,12 +98,17 @@ class ScreenRepository {
     //add the updated controls
     int i=0;
     if (screen.controls != null && screen.controls.length > 0) {
-    screen.controls.forEach((control) {
-      String json = jsonEncode(control.toJson());
-      prefs.setString("${screen.screenId}$_prefsControl$i", json);
-      i++;
-    });
+      screen.controls.forEach((control) {
+        String json = jsonEncode(control.toJson());
+        prefs.setString("${screen.screenId}$_prefsControl$i", json);
+        i++;
+      });
     }
+  }
+
+  updateName (int id, String newName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("$_prefsScreen$id", newName);
   }
 
   loadFromJson(List<ScreenItem> screens, String device, BuildContext context) async {
@@ -152,5 +157,15 @@ class ScreenRepository {
       _cache = new List<Screen>();
     }
    _cache.add(newScreen);
+  }
+
+  Future delete(int id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("$_prefsScreen$id");
+
+    for (int i=0; i < _cache.length; i++) {
+      if (_cache[i].screenId == id)
+        _cache.removeAt(i);
+    }
   }
 }

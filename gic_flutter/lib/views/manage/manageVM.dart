@@ -12,6 +12,13 @@ class ManageVM implements ViewModel {
   String btnExport = "";
   String btnDelete  = "";
   String screenName = "";
+  String helpNew = "";
+  String helpImport = "";
+  String helpExport = "";
+  String helpEdit = "";
+  String helpDelete = "";
+  String helpUpdate = "";
+  String helpScreenList = "";
   List<ScreenListItem> screens;
   ScreenListItem selectedScreen;
 }
