@@ -13,7 +13,10 @@ enum ManageText {
   helpEdit,
   helpDelete,
   helpUpdate,
-  helpImport
+  helpImport,
+  deleteError,
+  deleteConfirm,
+  deleteConfirmTitle
 }
 
 class IntlManage {
@@ -34,7 +37,11 @@ class IntlManage {
       ManageText.helpExport: 'Share your screen with others by exporting with this',
       ManageText.helpEdit: 'This will open the Screen Editor',
       ManageText.helpDelete: 'This will PERMANENTLY delete this screen',
-      ManageText.helpUpdate: 'After changing the name above, tap here to save the change'
+      ManageText.helpUpdate: 'After changing the name above, tap here to save the change',
+
+      ManageText.deleteError: 'Cannot remove last screen!',
+      ManageText.deleteConfirm: 'Are you sure you wish to PERMANENTLY delete ',
+      ManageText.deleteConfirmTitle: 'Confirm Delete'
     }
   };
 }

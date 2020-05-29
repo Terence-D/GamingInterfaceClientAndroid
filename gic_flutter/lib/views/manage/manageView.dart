@@ -5,6 +5,7 @@ import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/model/viewModel.dart';
 import 'package:gic_flutter/views/HighlighterHelp.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
+import 'package:toast/toast.dart';
 
 import '../basePage.dart';
 import 'managePresentation.dart';
@@ -28,7 +29,8 @@ class ManageViewState extends BaseState<ManageView> {
   GlobalKey _screenListDeleteKey = GlobalObjectKey("manageScreenDelete0");
   GlobalKey _importKey = GlobalObjectKey("manageImport");
 
-  List<TextEditingController> screenNameController = new List<TextEditingController>();
+  List<TextEditingController> screenNameController = new List<
+      TextEditingController>();
 
   Queue<HighligherHelp> highlights = new Queue();
 
@@ -113,21 +115,21 @@ class ManageViewState extends BaseState<ManageView> {
       screenCard = new GlobalObjectKey("manageScreenList" + index.toString());
 
     return Container(
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
-      height: 160,
-      width: double.maxFinite,
-      key: screenCard,
-      child: Card(
-        elevation: 5,
-        child:
-        new Column(
+        padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
+        height: 160,
+        width: double.maxFinite,
+        key: screenCard,
+        child: Card(
+          elevation: 5,
+          child:
+          new Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               screenName(index),
               screenButtons(index)
             ],
           ),
-      )
+        )
     );
   }
 
@@ -154,7 +156,8 @@ class ManageViewState extends BaseState<ManageView> {
             child: Text(_viewModel.btnUpdate),
             key: update,
             onPressed: () {
-              (presentation as ManagePresentation).updateScreenName(index, screenNameController[index].text);
+              (presentation as ManagePresentation).updateScreenName(
+                  index, screenNameController[index].text);
             },
           ),
           new FlatButton(
@@ -172,11 +175,13 @@ class ManageViewState extends BaseState<ManageView> {
             },
           ),
           new FlatButton(
-            color: Theme.of(context).errorColor,
+            color: Theme
+                .of(context)
+                .errorColor,
             key: delete,
             child: Text(_viewModel.btnDelete),
             onPressed: () {
-              (presentation as ManagePresentation).deleteScreen(index);
+              _confirmDialog(index, _viewModel.screens[index].name);
             },
           ),
         ],
@@ -187,24 +192,25 @@ class ManageViewState extends BaseState<ManageView> {
   Widget screenName(int index) {
     return
       Expanded(
-        child:
-      Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              new Flexible(
-               child: new TextFormField(
-                 controller: screenNameController[index],
-                 decoration: InputDecoration(hintText: _viewModel.screenName),
-               ),
-              ),
-            ],
+          child:
+          Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  new Flexible(
+                    child: new TextFormField(
+                      controller: screenNameController[index],
+                      decoration: InputDecoration(
+                          hintText: _viewModel.screenName),
+                    ),
+                  ),
+                ],
+              )
           )
-    )
       );
-    }
+  }
 
   void _loadHelp() {
     highlights = new Queue();
@@ -250,12 +256,13 @@ class ManageViewState extends BaseState<ManageView> {
   void _showHelp() {
     if (highlights.isNotEmpty) {
       HighligherHelp toShow = highlights.removeFirst();
-      _helpDisplay(toShow.text, toShow.highlight, toShow.highlightSize, toShow.alignment);
+      _helpDisplay(toShow.text, toShow.highlight, toShow.highlightSize,
+          toShow.alignment);
     }
   }
 
-  void _helpDisplay(
-    String text, GlobalKey key, lengthModifier, MainAxisAlignment alignment) {
+  void _helpDisplay(String text, GlobalKey key, lengthModifier,
+      MainAxisAlignment alignment) {
     CoachMark coachMarkFAB = CoachMark();
     RenderBox target = key.currentContext.findRenderObject();
 
@@ -264,7 +271,8 @@ class ManageViewState extends BaseState<ManageView> {
     double _length = markRect.longestSide;
     if (lengthModifier > 0) _length = markRect.longestSide * lengthModifier;
 
-    markRect = Rect.fromLTWH(markRect.left, markRect.top, _length, markRect.height);
+    markRect =
+        Rect.fromLTWH(markRect.left, markRect.top, _length, markRect.height);
 
     coachMarkFAB.show(
         targetContext: _newKey.currentContext,
@@ -281,7 +289,9 @@ class ManageViewState extends BaseState<ManageView> {
                       color: Colors.white,
                     )),
                 RaisedButton(
-                    child: new Text(Intl.of(context).mainNext),
+                    child: new Text(Intl
+                        .of(context)
+                        .mainNext),
                     onPressed: () {
                       _showHelp();
                     }),
@@ -289,5 +299,44 @@ class ManageViewState extends BaseState<ManageView> {
         ],
         duration: null,
         onClose: () {});
+  }
+
+  Future<void> _confirmDialog(int index, String name) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_viewModel.deleteConfirmTitle),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(_viewModel.deleteConfirm + name),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                (presentation as ManagePresentation).deleteScreen(index);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  void onError(int errorType) {
+    Toast.show(_viewModel.deleteError, context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
   }
 }

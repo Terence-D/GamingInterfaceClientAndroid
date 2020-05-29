@@ -19,7 +19,12 @@ class ManageVM implements ViewModel {
   String helpDelete = "";
   String helpUpdate = "";
   String helpScreenList = "";
+  String deleteError = "";
+  String deleteConfirm = "";
+  String deleteConfirmTitle = "";
+
   List<ScreenListItem> screens;
   ScreenListItem selectedScreen;
+
 }
 

@@ -29,6 +29,8 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
 
   void onLoadComplete(ViewModel viewModel);
 
+  void onError(int errorType);
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
