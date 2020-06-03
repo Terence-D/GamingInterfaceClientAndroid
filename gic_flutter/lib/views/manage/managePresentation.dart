@@ -44,7 +44,7 @@ class ManagePresentation implements BasePresentation {
     _viewModel.screens = new List();
     LinkedHashMap _screenListMap = await screenRepo.getScreenList();
     if (_screenListMap != null && _screenListMap.length > 0) {
-      _screenListMap.forEach((k, v) => _viewModel.screens.add(new ScreenListItem(k, v)) );
+      _screenListMap.forEach((k, v) => _viewModel.screens.insert(0, new ScreenListItem(k, v)) );
     } else {
       _saveScreen(screenRepo, "Empty Screen", 0);
     }
@@ -57,7 +57,7 @@ class ManagePresentation implements BasePresentation {
     newScreen.screenId = id;
     newScreen.name = name;
     screenRepo.save(newScreen);
-    _viewModel.screens.add(new ScreenListItem(newScreen.screenId, newScreen.name));
+    _viewModel.screens.insert(0, new ScreenListItem(newScreen.screenId, newScreen.name));
   }
 
   void editScreen(int index) {
@@ -69,11 +69,12 @@ class ManagePresentation implements BasePresentation {
     for(int i=0; i < _viewModel.screens.length; i++) {
       if (id == _viewModel.screens[i].id) {
         id++;
-        i = 0; //restart our search
+        i = -1; //restart our search
       }
     }
     ScreenRepository screenRepo = new ScreenRepository();
-    _saveScreen(screenRepo, "New Screen", id);
+    _saveScreen(screenRepo, "New Screen $id", id);
+    _contract.onLoadComplete(_viewModel);
   }
 
   Future<void> updateScreenName(int index, String text) async {
