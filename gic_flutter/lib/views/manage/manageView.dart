@@ -152,34 +152,36 @@ class ManageViewState extends BaseState<ManageView> {
     return Container(
       child: new ButtonBar(
         children: <Widget>[
-          new FlatButton(
-            child: Text(_viewModel.btnUpdate),
+          new IconButton(
+            icon: Icon(Icons.save),
+            tooltip:_viewModel.btnUpdate,
             key: update,
             onPressed: () {
               (presentation as ManagePresentation).updateScreenName(
                   index, screenNameController[index].text);
             },
           ),
-          new FlatButton(
-            child: Text(_viewModel.btnEdit),
+          new IconButton(
+            icon: Icon(Icons.edit),
+            tooltip:_viewModel.btnEdit,
             key: edit,
             onPressed: () {
               (presentation as ManagePresentation).editScreen(index);
             },
           ),
-          new FlatButton(
-            child: Text(_viewModel.btnExport),
+          new IconButton(
+            icon: Icon(Icons.share),
+            tooltip: _viewModel.btnExport,
             key: export,
             onPressed: () {
               (presentation as ManagePresentation).exportScreen(index);
             },
           ),
-          new FlatButton(
-            color: Theme
-                .of(context)
-                .errorColor,
+          new IconButton(
+            color: Theme.of(context).errorColor,
+            icon: Icon(Icons.delete_forever),
+            tooltip: _viewModel.btnDelete,
             key: delete,
-            child: Text(_viewModel.btnDelete),
             onPressed: () {
               _confirmDialog(index, _viewModel.screens[index].name);
             },
