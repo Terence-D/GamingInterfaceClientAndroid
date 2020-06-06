@@ -13,9 +13,11 @@ class LauncherBloc {
     _modelFetcher.sink.add(itemModel);
   }
 
+  setDarkTheme(bool newValue) {
+    _repository.setDarkMode(newValue);
+  }
+
   dispose() {
     _modelFetcher.close();
   }
 }
-
-final launcherBloc = LauncherBloc();

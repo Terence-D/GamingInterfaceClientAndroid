@@ -76,7 +76,6 @@ class ScreenList extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             new AccentButton(
-
               child: Text(_translations.text(LauncherText.start)),
 //            key: update,
               onPressed: () {

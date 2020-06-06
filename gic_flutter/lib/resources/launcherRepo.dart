@@ -12,11 +12,9 @@ class LauncherRepo {
   SharedPreferences _prefs;
 
   static const String _prefNightMode = "nightMode";
-  static const String _prefShowHints = "showHints"; //show the help page
   static const String _prefPassword = "password";
   static const String _prefPort = "port";
   static const String _prefAddress = "address";
-  static const String _prefConvert = "legacyConvert";
   static const String _prefConvertB = "legacyConvertScreens"; //show the whole intro thing
   static const String _prefSelectedScreenId = "chosenId";
   static const String _prefDonate = "coffee";
@@ -24,13 +22,6 @@ class LauncherRepo {
 
   Future<LauncherModel> fetch() async {
     _prefs = await SharedPreferences.getInstance();
-
-    //this handles reading in legacy settings
-    bool needToConvert = _prefs.getBool(_prefConvert) ?? true;
-    if (needToConvert) {
-      _prefs.setBool(_prefConvert, false);
-      await _convertLegacy();
-    }
 
     bool convertScreens = _prefs.getBool(_prefConvertB) ?? true;
     if (convertScreens) {
@@ -92,39 +83,6 @@ class LauncherRepo {
     return _loadVM();
   }
 
-  _convertLegacy() async {
-    MethodChannel platform = new MethodChannel(Channel.channelUtil);
-    try {
-      final LinkedHashMap result = await platform.invokeMethod(Channel.actionUtilGetSettings);
-      if (result != null && result.length > 0) {
-        result.forEach((key, value) {
-          switch (key) {
-            case "NIGHT_MODE":
-              _prefs.setBool(_prefNightMode, value);
-              break;
-            case "address":
-              _prefs.setString(_prefAddress, value);
-              break;
-            case "port":
-              _prefs.setString(_prefPort, value);
-              break;
-            case "password":
-              _prefs.setString(_prefPassword, value);
-              break;
-            case "chosen_id":
-              _prefs.setInt(_prefSelectedScreenId, value);
-              break;
-            case "seenHelp":
-              _prefs.setBool(_prefShowHints, value);
-              break;
-          }
-        });
-      }
-    } on PlatformException catch (e) {
-      print(e.message);
-    }
-  }
-
   //calls legacy code
   Future<String> _getPassword() async {
     String response = "";
@@ -141,52 +99,42 @@ class LauncherRepo {
     return response;
   }
 
-//  Future<String> _encryptPassword(String password) async {
-//    String response = "";
-//
-//    const platform = const MethodChannel(Channel.channelUtil);
-//    if (password.isNotEmpty) {
-//      try {
-//        final String result = await platform.invokeMethod(Channel.actionUtilEncrypt, {"password": password});
-//        response = result;
-//      } on PlatformException catch (_) {
-//        response = "";
-//      }
-//    }
-//    return response;
-//  }
+  Future<String> _encryptPassword(String password) async {
+    String response = "";
 
-//  bool _isNumeric(String str) {
-//    if(str == null) {
-//      return false;
-//    }
-//    return double.tryParse(str) != null;
-//  }
+    const platform = const MethodChannel(Channel.channelUtil);
+    if (password.isNotEmpty) {
+      try {
+        final String result = await platform.invokeMethod(Channel.actionUtilEncrypt, {"password": password});
+        response = result;
+      } on PlatformException catch (_) {
+        response = "";
+      }
+    }
+    return response;
+  }
 
-//  saveMainSettings(String address, String port, String password, int screenId) async {
-//    if (address != null && port.isNotEmpty) {
-//      _viewModel.address = address;
-//      _prefs.setString(_prefAddress, address);
-//    }
-//    if (port != null && port.isNotEmpty && _isNumeric(port)) {
-//      _viewModel.port = port;
-//      _prefs.setString(_prefPort, port);
-//    }
-//    if (password != null && password.isNotEmpty) {
-//      _viewModel.password = password;
-//      _prefs.setString(_prefPassword, await _encryptPassword());
-//    }
-//    _prefs.setInt(_prefSelectedScreenId, screenId);
-//  }
-//
-//  setDarkMode(bool newValue) {
-//    _viewModel.darkMode = newValue;
-//    _prefs.setBool(_prefNightMode, newValue);
-//    const platform = const MethodChannel(Channel.channelUtil);
-//    try {
-//      platform.invokeMethod(Channel.actionUtilUpdateDarkMode, {"darkMode": newValue});
-//      } on PlatformException catch (e) {
-//    }
-//  }
+  bool _isNumeric(String str) {
+    if(str == null) {
+      return false;
+    }
+    return double.tryParse(str) != null;
+  }
 
+  saveMainSettings(String address, String port, String password, int screenId) async {
+    if (address != null && port.isNotEmpty) {
+      _prefs.setString(_prefAddress, address);
+    }
+    if (port != null && port.isNotEmpty && _isNumeric(port)) {
+      _prefs.setString(_prefPort, port);
+    }
+    if (password != null && password.isNotEmpty) {
+      _prefs.setString(_prefPassword, await _encryptPassword(password));
+    }
+    _prefs.setInt(_prefSelectedScreenId, screenId);
+  }
+
+  setDarkMode(bool newValue) {
+    _prefs.setBool(_prefNightMode, newValue);
+  }
 }
