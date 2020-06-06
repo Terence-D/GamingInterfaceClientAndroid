@@ -23,15 +23,18 @@ class ServerLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _passwordController.text = _viewModel.password;
-    _portController.text = _viewModel.port;
-    _addressController.text = _viewModel.address;
-
     if (_orientation == Orientation.portrait)
-      return Wrap(children: _serverInput(context));
+      return SingleChildScrollView(child:
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children:_serverInput(context))
+
+      );
+
     else
       return Expanded(
-        child: Column(children: _serverInput(context))
+        child: SingleChildScrollView(
+        child: Column(children: _serverInput(context)))
       );
   }
 

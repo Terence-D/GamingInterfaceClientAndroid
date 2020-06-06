@@ -39,12 +39,16 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   void initState() {
     super.initState();
     translation = new IntlLauncher(context);
+    _passwordController.addListener(_passwordListener);
     launcherBloc.fetchAllPreferences();
   }
 
   @override
   void dispose() {
     launcherBloc.dispose();
+    _passwordController.dispose();
+    _portController.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 
@@ -76,10 +80,16 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
     _viewModel = snapshot.data;
-    return OrientationBuilder(
-      builder: (context, orientation) {
-        if (orientation == Orientation.portrait) {
-          return Padding(
+    _passwordController.text = _viewModel.password;
+    _portController.text = _viewModel.port;
+    _addressController.text = _viewModel.address;
+    _passwordController.selection = TextSelection.fromPosition(TextPosition(offset: _passwordController.text.length));
+    _portController.selection = TextSelection.fromPosition(TextPosition(offset: _portController.text.length));
+    _addressController.selection = TextSelection.fromPosition(TextPosition(offset: _addressController.text.length));
+
+
+    return Scaffold(
+      body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
@@ -248,4 +258,8 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 //
 //  @override
 //  String get helpTextNext => translation.text(LauncherText.next);
+
+  void _passwordListener() {
+    _viewModel.password = _passwordController.text;
+  }
 }
