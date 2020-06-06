@@ -1,3 +1,3 @@
 abstract class ViewModel {
-  String toolbarTitle;
+  String get toolbarTitle;
 }
