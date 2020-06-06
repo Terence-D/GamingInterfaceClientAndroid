@@ -1,11 +1,11 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/model/viewModel.dart';
 import 'package:gic_flutter/views/HighlighterHelp.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
-import 'package:toast/toast.dart';
 
 import '../basePage.dart';
 import 'managePresentation.dart';
@@ -339,6 +339,8 @@ class ManageViewState extends BaseState<ManageView> {
 
   @override
   void onError(int errorType) {
-    Toast.show(_viewModel.deleteError, context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    Fluttertoast.showToast(
+      msg: _viewModel.deleteError,
+    );
   }
 }

@@ -13,6 +13,11 @@ class LauncherBloc {
     _modelFetcher.sink.add(itemModel);
   }
 
+  saveMainSettings(String address, String port, String password, int screenId) {
+    _repository.saveMainSettings(address, port, password, screenId);
+  }
+
+
   setDarkTheme(bool newValue) {
     _repository.setDarkMode(newValue);
   }

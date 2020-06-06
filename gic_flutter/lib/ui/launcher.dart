@@ -31,6 +31,10 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   LauncherModel _viewModel;
   final launcherBloc = LauncherBloc();
 
+  final TextEditingController _passwordController = new TextEditingController();
+  final TextEditingController _addressController = new TextEditingController();
+  final TextEditingController _portController = new TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -72,16 +76,27 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
     _viewModel = snapshot.data;
-
     return OrientationBuilder(
       builder: (context, orientation) {
         if (orientation == Orientation.portrait) {
           return Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 48),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
-                ServerLogin(snapshot.data, translation, orientation),
-                ScreenList(snapshot.data.screens, translation)
+                ServerLogin(
+                    _addressController,
+                    _passwordController,
+                    _portController,
+                    snapshot.data,
+                    translation,
+                    orientation),
+                ScreenList(
+                    launcherBloc,
+                    _addressController,
+                    _passwordController,
+                    _portController,
+                    snapshot.data.screens,
+                    translation)
               ],
             ),
           );
@@ -90,8 +105,20 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: <Widget>[
-                ServerLogin(snapshot.data, translation, orientation),
-                ScreenList(snapshot.data.screens, translation)
+                ServerLogin(
+                    _addressController,
+                    _passwordController,
+                    _portController,
+                    snapshot.data,
+                    translation,
+                    orientation),
+                ScreenList(
+                    launcherBloc,
+                    _addressController,
+                    _passwordController,
+                    _portController,
+                    snapshot.data.screens,
+                    translation)
               ],
             ),
           );

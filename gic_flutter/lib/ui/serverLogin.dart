@@ -9,12 +9,17 @@ class ServerLogin extends StatelessWidget {
   final LauncherModel _viewModel;
   final IntlLauncher _translations;
   final Orientation _orientation;
+  final TextEditingController _passwordController;
+  final TextEditingController _addressController;
+  final TextEditingController _portController;
 
-  final TextEditingController _passwordController = new TextEditingController();
-  final TextEditingController _addressController = new TextEditingController();
-  final TextEditingController _portController = new TextEditingController();
-
-  ServerLogin(this._viewModel, this._translations, this._orientation);
+  ServerLogin(
+      this._addressController,
+      this._passwordController,
+      this._portController,
+      this._viewModel,
+      this._translations,
+      this._orientation);
 
   @override
   Widget build(BuildContext context) {

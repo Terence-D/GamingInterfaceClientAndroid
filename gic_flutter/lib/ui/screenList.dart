@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gic_flutter/bloc/launcherBloc.dart';
+import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/views/accentButton.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
@@ -8,8 +12,12 @@ class ScreenList extends StatelessWidget {
   final List<ScreenListItem> _screens;
   final IntlLauncher _translations;
   final List<TextEditingController> _screenNameController = new List<TextEditingController>();
+  final TextEditingController _passwordController;
+  final TextEditingController _addressController;
+  final TextEditingController _portController;
+  final LauncherBloc _launcherBloc;
 
-  ScreenList(this._screens, this._translations);
+  ScreenList(this._launcherBloc, this._addressController, this._passwordController, this._portController, this._screens, this._translations);
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +30,7 @@ class ScreenList extends StatelessWidget {
 
     return Expanded(
       child: ListView.builder(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 48),
           itemCount: _screenNameController.length,
           itemBuilder: (context, index) {
             return screenCard(index, context);
@@ -79,8 +88,7 @@ class ScreenList extends StatelessWidget {
               child: Text(_translations.text(LauncherText.start)),
 //            key: update,
               onPressed: () {
-//              (presentation as ManagePresentation).updateScreenName(
-//                  index, screenNameController[index].text);
+                _startGame(index);
               },
             ),
             new IconButton(
@@ -145,4 +153,39 @@ class ScreenList extends StatelessWidget {
           )
       );
   }
+
+  void _showMessage(String text) {
+    Fluttertoast.showToast(
+        msg: text,
+        toastLength: Toast.LENGTH_SHORT,
+    );
+  }
+
+  _startGame(int selectedScreenIndex) async {
+    String password = _passwordController.text;
+    String address = _addressController.text;
+    String port = _portController.text;
+
+    if (password == null || password.length < 6) {
+      _showMessage(_translations.text(LauncherText.errorPassword));
+      return;
+    }
+    if (port == null || int.tryParse(port) == null) {
+      _showMessage(_translations.text(LauncherText.errorPort));
+      return;
+    }
+    if (address == null || address.length == 0) {
+      _showMessage(_translations.text(LauncherText.errorServerInvalid));
+      return;
+    }
+    _launcherBloc.saveMainSettings(address, port, password, selectedScreenIndex);
+
+    MethodChannel platform = new MethodChannel(Channel.channelView);
+    try {
+      await platform.invokeMethod(Channel.actionViewStart, {"password": password, "address": address, "port":port, "selectedScreenId": selectedScreenIndex});
+    } on PlatformException catch (e) {
+      print(e.message);
+    }
+  }
+
 }
