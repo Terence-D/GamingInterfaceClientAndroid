@@ -156,6 +156,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   PopupMenuButton<MenuOption> menuButtons () {
     List<MenuOption> rv = <MenuOption>[
+      MenuOption(title: translation.text(LauncherText.menuImport), icon: Icons.import_export),
       MenuOption(title: translation.text(LauncherText.menuTheme), icon: Icons.color_lens),
       MenuOption(title: translation.text(LauncherText.menuIntro), icon: Icons.thumb_up),
       MenuOption(title: translation.text(LauncherText.menuAbout), icon: Icons.info_outline),
@@ -189,6 +190,9 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
       _showUi(context, AboutView());
     else if (choice.title == translation.text(LauncherText.menuIntro)) {
       _showUi(context, IntroView());
+    }
+    else if (choice.title == translation.text(LauncherText.menuImport)) {
+      _import();
     }
     else if (choice.title == translation.text(LauncherText.menuTheme)) {
       if (_viewModel.darkMode) {
@@ -262,4 +266,6 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   void _passwordListener() {
     _viewModel.password = _passwordController.text;
   }
+
+  void _import() {}
 }

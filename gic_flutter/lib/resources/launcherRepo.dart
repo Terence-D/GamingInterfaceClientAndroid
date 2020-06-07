@@ -19,6 +19,10 @@ class LauncherRepo {
   static const String _prefSelectedScreenId = "chosenId";
   static const String _prefDonate = "coffee";
   static const String _prefDonateStar = "star";
+  static const String _prefsScreen = "screen_";
+  static const String _prefsBackgroundSuffix = "_background";
+  static const String _prefsBackgroundPathSuffix = "_background_path";
+  static const String _prefsControl = "_control_";
 
   Future<LauncherModel> fetch() async {
     _prefs = await SharedPreferences.getInstance();
@@ -132,6 +136,11 @@ class LauncherRepo {
       _prefs.setString(_prefPassword, await _encryptPassword(password));
     }
     _prefs.setInt(_prefSelectedScreenId, screenId);
+  }
+
+  updateName (int id, String newName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("$_prefsScreen$id", newName);
   }
 
   setDarkMode(bool newValue) {

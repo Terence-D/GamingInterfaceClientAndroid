@@ -144,8 +144,7 @@ class ScreenList extends StatelessWidget {
                     tooltip:_translations.text(LauncherText.buttonUpdate),
 //            key: update,
                     onPressed: () {
-//              (presentation as ManagePresentation).updateScreenName(
-//                  index, screenNameController[index].text);
+                      _updateScreen(index);
                     },
                   ),
                 ],
@@ -188,4 +187,7 @@ class ScreenList extends StatelessWidget {
     }
   }
 
+  void _updateScreen(int index) {
+    _launcherBloc.updateScreenName (_screens[index].id, _screenNameController[index].text);
+  }
 }

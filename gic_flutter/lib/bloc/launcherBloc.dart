@@ -25,4 +25,8 @@ class LauncherBloc {
   dispose() {
     _modelFetcher.close();
   }
+
+  Future<void> updateScreenName(int id, String text) async {
+    _repository.updateName(id, text);
+  }
 }

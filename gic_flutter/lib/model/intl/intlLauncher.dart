@@ -44,6 +44,7 @@ enum LauncherText {
   menuIntro,
   menuAbout,
   menuDonate,
+  menuImport,
 
   deleteError,
   deleteConfirm,
@@ -104,6 +105,7 @@ class IntlLauncher {
       LauncherText.menuDonate: 'Donate',
       LauncherText.menuIntro: 'Show Intro',
       LauncherText.menuTheme: 'Change Theme',
+      LauncherText.menuImport: 'Import',
     }
   };
 }
