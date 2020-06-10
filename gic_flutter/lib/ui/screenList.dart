@@ -22,7 +22,7 @@ class ScreenList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _screenNameController.clear();
-    for (var i = 0; i < _screens.length; i++) {
+    for (var i = _screens.length-1; i>=0; i--) {
       TextEditingController tec = new TextEditingController();
       tec.text = _screens[i].name;
       _screenNameController.add(tec);
@@ -96,7 +96,7 @@ class ScreenList extends StatelessWidget {
               tooltip:_translations.text(LauncherText.buttonEdit),
 //            key: edit,
               onPressed: () {
-//              (presentation as ManagePresentation).editScreen(index);
+                _editScreen(index);
               },
             ),
             new IconButton(
@@ -160,6 +160,15 @@ class ScreenList extends StatelessWidget {
     );
   }
 
+  _editScreen(int selectedScreenIndex) async {
+    MethodChannel platform = new MethodChannel(Channel.channelView);
+    try {
+      await platform.invokeMethod(Channel.actionViewEdit, {"selectedScreenIndex": selectedScreenIndex});
+    } on PlatformException catch (e) {
+      print(e.message);
+    }
+  }
+
   _startGame(int selectedScreenIndex) async {
     String password = _passwordController.text;
     String address = _addressController.text;
@@ -189,5 +198,6 @@ class ScreenList extends StatelessWidget {
 
   void _updateScreen(int index) {
     _launcherBloc.updateScreenName (_screens[index].id, _screenNameController[index].text);
+    _screens[index].name = _screenNameController[index].text;
   }
 }

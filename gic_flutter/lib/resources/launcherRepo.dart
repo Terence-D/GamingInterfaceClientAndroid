@@ -146,4 +146,26 @@ class LauncherRepo {
   setDarkMode(bool newValue) {
     _prefs.setBool(_prefNightMode, newValue);
   }
+
+  newScreen() async {
+    LauncherModel _viewModel = new LauncherModel();
+    ScreenRepository screenRepo = new ScreenRepository();
+
+    _viewModel.screens = new List();
+    LinkedHashMap _screenListMap = await screenRepo.getScreenList();
+    _screenListMap.forEach((k, v) => _viewModel.screens.add(new ScreenListItem(k, v)) );
+
+    int id=0;
+    for(int i=0; i < _viewModel.screens.length; i++) {
+      if (id == _viewModel.screens[i].id) {
+        id++;
+        i = -1; //restart our search
+      }
+    }
+    Screen newScreen = new Screen();
+    newScreen.screenId = id;
+    newScreen.name = "New Screen $id";
+    screenRepo.save(newScreen);
+    _viewModel.screens.insert(0, new ScreenListItem(newScreen.screenId, newScreen.name));
+  }
 }

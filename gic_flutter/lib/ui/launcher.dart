@@ -70,7 +70,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
         floatingActionButton: FloatingActionButton.extended(
 //            key: _newKey,
             onPressed: () {
-//              (presentation as ManagePresentation).newScreen();
+              launcherBloc.newScreen();
             },
             backgroundColor: Theme.of(context).primaryColor,
             label: Text(translation.text(LauncherText.buttonNew))
