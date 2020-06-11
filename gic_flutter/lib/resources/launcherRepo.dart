@@ -183,10 +183,8 @@ class LauncherRepo {
 //          _contract.onError(1);
         } else {
           _viewModel.screens.removeAt(i);
-//          _contract.onLoadComplete(_viewModel);
         }
         return rv;
-        break;
       }
     }
     return -2;
