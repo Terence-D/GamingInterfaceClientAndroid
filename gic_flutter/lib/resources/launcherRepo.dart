@@ -149,11 +149,7 @@ class LauncherRepo {
 
   newScreen() async {
     LauncherModel _viewModel = new LauncherModel();
-    ScreenRepository screenRepo = new ScreenRepository();
-
-    _viewModel.screens = new List();
-    LinkedHashMap _screenListMap = await screenRepo.getScreenList();
-    _screenListMap.forEach((k, v) => _viewModel.screens.add(new ScreenListItem(k, v)) );
+    ScreenRepository screenRepo = await _getScreen(_viewModel);
 
     int id=0;
     for(int i=0; i < _viewModel.screens.length; i++) {
@@ -167,5 +163,32 @@ class LauncherRepo {
     newScreen.name = "New Screen $id";
     screenRepo.save(newScreen);
     _viewModel.screens.insert(0, new ScreenListItem(newScreen.screenId, newScreen.name));
+  }
+
+  Future<ScreenRepository> _getScreen(LauncherModel _viewModel) async {
+    ScreenRepository screenRepo = new ScreenRepository();
+    _viewModel.screens = new List();
+    LinkedHashMap _screenListMap = await screenRepo.getScreenList();
+    _screenListMap.forEach((k, v) => _viewModel.screens.add(new ScreenListItem(k, v)) );
+    return screenRepo;
+  }
+
+  Future<int> deleteScreen(int index) async {
+    LauncherModel _viewModel = new LauncherModel();
+    ScreenRepository screenRepo = await _getScreen(_viewModel);
+    for(int i=0; i <  _viewModel.screens.length; i++) {
+      if (i == index) {
+        int rv = await screenRepo.delete(_viewModel.screens[i].id);
+        if (rv < 0) {
+//          _contract.onError(1);
+        } else {
+          _viewModel.screens.removeAt(i);
+//          _contract.onLoadComplete(_viewModel);
+        }
+        return rv;
+        break;
+      }
+    }
+    return -2;
   }
 }

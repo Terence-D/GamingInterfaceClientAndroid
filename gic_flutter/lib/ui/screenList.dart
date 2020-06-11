@@ -22,7 +22,8 @@ class ScreenList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _screenNameController.clear();
-    for (var i = _screens.length-1; i>=0; i--) {
+    for (var i = 0; i < _screens.length; i++) {
+//      for (var i = _screens.length-1; i>=0; i--) {
       TextEditingController tec = new TextEditingController();
       tec.text = _screens[i].name;
       _screenNameController.add(tec);
@@ -113,12 +114,46 @@ class ScreenList extends StatelessWidget {
               tooltip: _translations.text(LauncherText.buttonDelete),
 //            key: delete,
               onPressed: () {
-//              _confirmDialog(index, _viewModel.screens[index].name);
+                _confirmDialog(index, _screens[index].name, context);
               },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _confirmDialog(int index, String name, BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(_translations.text(LauncherText.deleteConfirmTitle)),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(_translations.text(LauncherText.deleteConfirm) + name),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () {
+                _launcherBloc.deleteScreen(index);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 

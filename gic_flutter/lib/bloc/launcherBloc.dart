@@ -37,4 +37,14 @@ class LauncherBloc {
   Future<void> updateScreenName(int id, String text) async {
     _repository.updateName(id, text);
   }
+
+  void deleteScreen(int index) async {
+    int rv = await _repository.deleteScreen(index);
+
+    if (rv < 0) {
+//          _contract.onError(1);
+    } else {
+      fetchAllPreferences();
+    }
+  }
 }
