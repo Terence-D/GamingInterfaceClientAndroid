@@ -78,6 +78,25 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     );
   }
 
+  List<Widget>  _widgets(snapshot, orientation) {
+    return <Widget>[
+      ServerLogin(
+        _addressController,
+        _passwordController,
+        _portController,
+        snapshot.data,
+        translation,
+        orientation),
+      ScreenList(
+        launcherBloc,
+        _addressController,
+        _passwordController,
+        _portController,
+        snapshot.data.screens,
+        translation)
+    ];
+  }
+
   Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
     _viewModel = snapshot.data;
     _passwordController.text = _viewModel.password;
@@ -88,53 +107,17 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     _addressController.selection = TextSelection.fromPosition(TextPosition(offset: _addressController.text.length));
 
 
+    Orientation orientation = MediaQuery.of(context).orientation;
+    var widgets;
+    if (orientation == Orientation.portrait) {
+      widgets = Column(children: _widgets(snapshot, orientation));
+    } else {
+      widgets = Row(children: _widgets(snapshot, orientation));
+    }
     return Scaffold(
       body: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: <Widget>[
-                ServerLogin(
-                    _addressController,
-                    _passwordController,
-                    _portController,
-                    snapshot.data,
-                    translation,
-                    orientation),
-                ScreenList(
-                    launcherBloc,
-                    _addressController,
-                    _passwordController,
-                    _portController,
-                    snapshot.data.screens,
-                    translation)
-              ],
-            ),
-          );
-        } else {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                ServerLogin(
-                    _addressController,
-                    _passwordController,
-                    _portController,
-                    snapshot.data,
-                    translation,
-                    orientation),
-                ScreenList(
-                    launcherBloc,
-                    _addressController,
-                    _passwordController,
-                    _portController,
-                    snapshot.data.screens,
-                    translation)
-              ],
-            ),
-          );
-        }
-      }
-    );
+            child: widgets));
   }
 
   AppBar _launcherAppBar() {
