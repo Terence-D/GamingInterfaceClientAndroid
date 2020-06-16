@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/flavor.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
@@ -11,7 +12,6 @@ import 'package:gic_flutter/views/HighlighterHelp.dart';
 import 'package:gic_flutter/views/main/mainPresentation.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:highlighter_coachmark/highlighter_coachmark.dart';
-import 'package:toast/toast.dart';
 
 class MainView extends StatefulWidget {
   MainView({Key key}) : super(key: key); // {}
@@ -276,7 +276,9 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
   }
 
   void showMessage(String text) {
-    Toast.show(text, context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    Fluttertoast.showToast(
+        msg: text,
+    );
   }
 
   void showUpgradeWarning() {

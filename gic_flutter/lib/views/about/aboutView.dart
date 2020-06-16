@@ -80,4 +80,6 @@ class AboutViewState extends BaseState<AboutView> {
     );
   }
 
+
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

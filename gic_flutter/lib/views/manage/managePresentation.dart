@@ -36,12 +36,15 @@ class ManagePresentation implements BasePresentation {
     _viewModel.helpExport = Intl.of(context).manage(ManageText.helpExport);
     _viewModel.helpDelete = Intl.of(context).manage(ManageText.helpDelete);
     _viewModel.helpUpdate = Intl.of(context).manage(ManageText.helpUpdate);
+    _viewModel.deleteError = Intl.of(context).manage(ManageText.deleteError);
+    _viewModel.deleteConfirm = Intl.of(context).manage(ManageText.deleteConfirm);
+    _viewModel.deleteConfirmTitle = Intl.of(context).manage(ManageText.deleteConfirmTitle);
 
     ScreenRepository screenRepo = new ScreenRepository();
     _viewModel.screens = new List();
     LinkedHashMap _screenListMap = await screenRepo.getScreenList();
     if (_screenListMap != null && _screenListMap.length > 0) {
-      _screenListMap.forEach((k, v) => _viewModel.screens.add(new ScreenListItem(k, v)) );
+      _screenListMap.forEach((k, v) => _viewModel.screens.insert(0, new ScreenListItem(k, v)) );
     } else {
       _saveScreen(screenRepo, "Empty Screen", 0);
     }
@@ -54,7 +57,7 @@ class ManagePresentation implements BasePresentation {
     newScreen.screenId = id;
     newScreen.name = name;
     screenRepo.save(newScreen);
-    _viewModel.screens.add(new ScreenListItem(newScreen.screenId, newScreen.name));
+    _viewModel.screens.insert(0, new ScreenListItem(newScreen.screenId, newScreen.name));
   }
 
   void editScreen(int index) {
@@ -66,11 +69,12 @@ class ManagePresentation implements BasePresentation {
     for(int i=0; i < _viewModel.screens.length; i++) {
       if (id == _viewModel.screens[i].id) {
         id++;
-        i = 0; //restart our search
+        i = -1; //restart our search
       }
     }
     ScreenRepository screenRepo = new ScreenRepository();
-    _saveScreen(screenRepo, "New Screen", id);
+    _saveScreen(screenRepo, "New Screen $id", id);
+    _contract.onLoadComplete(_viewModel);
   }
 
   Future<void> updateScreenName(int index, String text) async {
@@ -86,12 +90,18 @@ class ManagePresentation implements BasePresentation {
     }
   }
 
-  void deleteScreen(int index) {
+  void deleteScreen(int index) async {
     ScreenRepository screenRepo = new ScreenRepository();
 
     for(int i=0; i < _viewModel.screens.length; i++) {
       if (i == index) {
-        screenRepo.delete(_viewModel.screens[i].id);
+        int rv = await screenRepo.delete(_viewModel.screens[i].id);
+        if (rv < 0) {
+          _contract.onError(1);
+        } else {
+          _viewModel.screens.removeAt(i);
+          _contract.onLoadComplete(_viewModel);
+        }
         break;
       }
     }

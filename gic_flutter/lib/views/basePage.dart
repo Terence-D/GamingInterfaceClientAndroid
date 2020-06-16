@@ -27,8 +27,10 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
     super.didChangeDependencies();
   }
 
-  void onLoadComplete(ViewModel viewModel);
-
+//  void onLoadComplete(ViewModel viewModel);
+//
+//  void onError(int errorType);
+//
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -69,4 +71,8 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
       style: textStyle,
     );
   }
+
+  void onLoadComplete(ViewModel viewModel) {}
+
+  void onError(int i) {}
 }

@@ -15,6 +15,7 @@ class ScreenRepository {
   String _prefsBackgroundPathSuffix = "_background_path";
   String _prefsControl = "_control_";
 
+
   int defaultBackground = 0xFF383838;
 
   _load (SharedPreferences prefs) async {
@@ -159,13 +160,26 @@ class ScreenRepository {
    _cache.add(newScreen);
   }
 
-  Future delete(int id) async {
+  Future<int> delete(int id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (_cache == null)
+      await _load(prefs);
+
+    if (_cache.length < 2)
+      return -1;
+
     prefs.remove("$_prefsScreen$id");
+    prefs.remove("$_prefsScreen$id" + "_background");
+    prefs.getKeys().forEach((key) {
+      if (key.contains("$id" + "_control_"))
+        prefs.remove(key);
+    });
 
     for (int i=0; i < _cache.length; i++) {
       if (_cache[i].screenId == id)
         _cache.removeAt(i);
     }
+
+    return _cache.length;
   }
 }
