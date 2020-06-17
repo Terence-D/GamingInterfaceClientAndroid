@@ -254,10 +254,10 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   }
 
   Future<void> _import() async {
-    File file = await FilePicker.getFile();
-//      type: FileType.custom,
-//      allowedExtensions: ['zip'],
-//    );
+    File file = await FilePicker.getFile(
+      type: FileType.custom,
+      allowedExtensions: ['zip'],
+    );
     launcherBloc.import(file);
   }
 }

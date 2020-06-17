@@ -62,7 +62,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
 
         if (getIntent() != null)
-            currentScreenId = getIntent().getIntExtra(INTENT_SCREEN_INDEX, 0);
+            currentScreenId = getIntent().getIntExtra("screenId", 0);
 
         setProgressIndicator(true);
         screenRepository = new ScreenRepository(getApplicationContext());

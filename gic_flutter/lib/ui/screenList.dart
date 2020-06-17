@@ -141,7 +141,7 @@ class ScreenList extends StatelessWidget {
             FlatButton(
               child: Text('Yes'),
               onPressed: () {
-                _launcherBloc.deleteScreen(index);
+                _deleteScreen(index);
                 Navigator.of(context).pop();
               },
             ),
@@ -198,7 +198,7 @@ class ScreenList extends StatelessWidget {
   _editScreen(int selectedScreenIndex) async {
     MethodChannel platform = new MethodChannel(Channel.channelView);
     try {
-      await platform.invokeMethod(Channel.actionViewEdit, {"selectedScreenIndex": selectedScreenIndex});
+      await platform.invokeMethod(Channel.actionViewEdit, {"selectedScreenId": _screens[selectedScreenIndex].id});
     } on PlatformException catch (e) {
       print(e.message);
     }
@@ -221,11 +221,11 @@ class ScreenList extends StatelessWidget {
       _showMessage(_translations.text(LauncherText.errorServerInvalid));
       return;
     }
-    _launcherBloc.saveMainSettings(address, port, password, selectedScreenIndex);
+    _launcherBloc.saveMainSettings(address, port, password);
 
     MethodChannel platform = new MethodChannel(Channel.channelView);
     try {
-      await platform.invokeMethod(Channel.actionViewStart, {"password": password, "address": address, "port":port, "selectedScreenId": selectedScreenIndex});
+      await platform.invokeMethod(Channel.actionViewStart, {"password": password, "address": address, "port":port, "selectedScreenId": _screens[selectedScreenIndex].id});
     } on PlatformException catch (e) {
       print(e.message);
     }
@@ -234,5 +234,9 @@ class ScreenList extends StatelessWidget {
   void _updateScreen(int index) {
     _launcherBloc.updateScreenName (_screens[index].id, _screenNameController[index].text);
     _screens[index].name = _screenNameController[index].text;
+  }
+
+  void _deleteScreen(int index) {
+    _launcherBloc.deleteScreen(_screens[index].id);
   }
 }

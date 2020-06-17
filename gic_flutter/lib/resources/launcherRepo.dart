@@ -125,7 +125,7 @@ class LauncherRepo {
     return double.tryParse(str) != null;
   }
 
-  saveMainSettings(String address, String port, String password, int screenId) async {
+  saveMainSettings(String address, String port, String password) async {
     if (address != null && port.isNotEmpty) {
       _prefs.setString(_prefAddress, address);
     }
@@ -135,7 +135,6 @@ class LauncherRepo {
     if (password != null && password.isNotEmpty) {
       _prefs.setString(_prefPassword, await _encryptPassword(password));
     }
-    _prefs.setInt(_prefSelectedScreenId, screenId);
   }
 
   updateName (int id, String newName) async {
@@ -173,21 +172,12 @@ class LauncherRepo {
     return screenRepo;
   }
 
-  Future<int> deleteScreen(int index) async {
+  Future<int> deleteScreen(int id) async {
     LauncherModel _viewModel = new LauncherModel();
     ScreenRepository screenRepo = await _getScreen(_viewModel);
-    for(int i=0; i <  _viewModel.screens.length; i++) {
-      if (i == index) {
-        int rv = await screenRepo.delete(_viewModel.screens[i].id);
-        if (rv < 0) {
-//          _contract.onError(1);
-        } else {
-          _viewModel.screens.removeAt(i);
-        }
-        return rv;
-      }
-    }
-    return -2;
+    int rv = await screenRepo.delete(id);
+
+    return rv;
   }
 
   Future import(file) async {

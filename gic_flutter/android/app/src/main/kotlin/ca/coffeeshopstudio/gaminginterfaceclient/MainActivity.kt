@@ -55,9 +55,9 @@ class MainActivity: FlutterActivity() {
           result.success(true)
         }
         actionEdit-> {
-          val screen: Int? = call.argument("selectedScreenIndex")
+          val screen: Int? = call.argument("selectedScreenId")
           val intent = Intent(this, EditActivity::class.java)
-          intent.putExtra("screen_index", screen)
+          intent.putExtra("screenId", screen)
           startActivity(intent)
           result.success(true)
         }
@@ -70,7 +70,7 @@ class MainActivity: FlutterActivity() {
           intent.putExtra("password", password)
           intent.putExtra("address", address)
           intent.putExtra("port", port)
-          intent.putExtra("screen_index", screen)
+          intent.putExtra("screenId", screen)
           startActivity(intent)
           result.success(true)
         }

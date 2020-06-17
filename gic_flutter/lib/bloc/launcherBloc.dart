@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:gic_flutter/model/launcherModel.dart';
 import 'package:gic_flutter/resources/launcherRepo.dart';
@@ -16,8 +15,8 @@ class LauncherBloc {
     _modelFetcher.sink.add(itemModel);
   }
 
-  saveMainSettings(String address, String port, String password, int screenId) {
-    _repository.saveMainSettings(address, port, password, screenId);
+  saveMainSettings(String address, String port, String password) {
+    _repository.saveMainSettings(address, port, password);
   }
 
 
@@ -39,8 +38,8 @@ class LauncherBloc {
     _repository.updateName(id, text);
   }
 
-  void deleteScreen(int index) async {
-    int rv = await _repository.deleteScreen(index);
+  void deleteScreen(int id) async {
+    int rv = await _repository.deleteScreen(id);
 
     if (rv < 0) {
 //          _contract.onError(1);
