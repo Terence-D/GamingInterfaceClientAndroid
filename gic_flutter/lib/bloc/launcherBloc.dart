@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:gic_flutter/model/launcherModel.dart';
 import 'package:gic_flutter/resources/launcherRepo.dart';
@@ -46,5 +47,10 @@ class LauncherBloc {
     } else {
       fetchAllPreferences();
     }
+  }
+
+  void import(file) async {
+    await _repository.import(file);
+    fetchAllPreferences();
   }
 }

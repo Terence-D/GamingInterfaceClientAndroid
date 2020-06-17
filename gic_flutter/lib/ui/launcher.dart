@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/bloc/launcherBloc.dart';
@@ -250,5 +253,11 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     _viewModel.password = _passwordController.text;
   }
 
-  void _import() {}
+  Future<void> _import() async {
+    File file = await FilePicker.getFile();
+//      type: FileType.custom,
+//      allowedExtensions: ['zip'],
+//    );
+    launcherBloc.import(file);
+  }
 }

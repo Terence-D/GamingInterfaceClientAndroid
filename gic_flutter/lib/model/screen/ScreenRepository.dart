@@ -1,13 +1,16 @@
 import 'dart:collection';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/screen/GicControl.dart';
 import 'package:gic_flutter/views/intro/screenListWidget.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Screen.dart';
-
+import 'package:path/path.dart' as path;
 class ScreenRepository {
   List<Screen> _cache;
   String _prefsScreen = "screen_";
@@ -181,5 +184,86 @@ class ScreenRepository {
     }
 
     return _cache.length;
+  }
+
+  get _tempPath async {
+    final directory = await getTemporaryDirectory();
+
+    return directory.path;
+  }
+
+  Future<int> import(File file) async {
+    //get file name
+    String name = path.basename(file.path);
+    name = name.replaceAll(".zip", "");
+
+    // Read the Zip file from disk.
+    final bytes = file.readAsBytesSync();
+
+    // Decode the Zip file
+    final archive = ZipDecoder().decodeBytes(bytes);
+
+    final String tempPath = await _tempPath;
+
+    // Extract the contents of the Zip archive to disk.
+    for (final file in archive) {
+      final filename = file.name;
+      if (file.isFile) {
+        final data = file.content as List<int>;
+        File extractedPath = File(path.join(tempPath, "imported", filename))
+        ..createSync(recursive: true)
+        ..writeAsBytesSync(data);
+      } else {
+        Directory('out/' + filename)
+        ..create(recursive: true);
+      }
+    }
+
+    String fullPath = path.join(tempPath, "imported");
+    Screen importedScreen = await _parseJson(fullPath);
+    return _screenImporter(importedScreen);
+  }
+
+  Future<int> _screenImporter(Screen toImport) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _load(prefs);
+
+    _findUniqueName(toImport.name);
+    Screen newScreen = toImport;
+
+    newScreen.screenId = _findUniqueId();
+    _cache = null; //invalidate the cache
+
+    _save(prefs, newScreen);
+    return 0;
+  }
+
+  Future<Screen> _parseJson(String fullPath) async {
+    File jsonFile = File(path.join(fullPath, "data.json"));
+    String jsonString = await jsonFile.readAsString();
+
+    Map controlMap = jsonDecode(jsonString);
+    //build the new screen from the incoming json
+    Screen screen = new Screen.fromJson(controlMap);
+
+    if (screen.backgroundPath.isNotEmpty) {
+      int index = screen.backgroundPath.lastIndexOf("/");
+      screen.backgroundPath =
+          fullPath + screen.backgroundPath.substring(index + 1);
+    }
+    screen.controls.forEach((control) {
+      if (control.primaryImage.isNotEmpty) {
+        int index = control.primaryImage.lastIndexOf("/");
+        control.primaryImage =
+            fullPath + control.primaryImage.substring(index + 1);
+      }
+      if (control.secondaryImage.isNotEmpty) {
+        int index = control.secondaryImage.lastIndexOf("/");
+        control.secondaryImage =
+            fullPath + control.secondaryImage.substring(index + 1);
+      }
+    });
+
+    return screen;
   }
 }

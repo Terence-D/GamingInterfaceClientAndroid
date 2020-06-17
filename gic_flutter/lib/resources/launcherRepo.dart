@@ -189,4 +189,9 @@ class LauncherRepo {
     }
     return -2;
   }
+
+  Future import(file) async {
+    ScreenRepository screenRepo = new ScreenRepository();
+    await screenRepo.import(file);
+  }
 }
