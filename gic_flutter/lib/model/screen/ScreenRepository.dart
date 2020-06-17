@@ -6,11 +6,11 @@ import 'package:archive/archive.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/screen/GicControl.dart';
 import 'package:gic_flutter/views/intro/screenListWidget.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Screen.dart';
-import 'package:path/path.dart' as path;
 class ScreenRepository {
   List<Screen> _cache;
   String _prefsScreen = "screen_";
@@ -235,7 +235,7 @@ class ScreenRepository {
     _cache = null; //invalidate the cache
 
     _save(prefs, newScreen);
-    return 0;
+    return newScreen.screenId;
   }
 
   Future<Screen> _parseJson(String fullPath) async {

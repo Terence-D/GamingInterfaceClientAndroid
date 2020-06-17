@@ -14,6 +14,7 @@ import 'package:gic_flutter/ui/screenList.dart';
 import 'package:gic_flutter/ui/serverLogin.dart';
 import 'package:gic_flutter/views/about/aboutView.dart';
 import 'package:gic_flutter/views/intro/introView.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class Launcher extends StatefulWidget {
   @override
@@ -32,11 +33,16 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   IntlLauncher translation;
   LauncherModel _viewModel;
+
+  int newItemId = 0;
+
   final launcherBloc = LauncherBloc();
 
   final TextEditingController _passwordController = new TextEditingController();
   final TextEditingController _addressController = new TextEditingController();
   final TextEditingController _portController = new TextEditingController();
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
 
   @override
   void initState() {
@@ -73,7 +79,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
         floatingActionButton: FloatingActionButton.extended(
 //            key: _newKey,
             onPressed: () {
-              launcherBloc.newScreen();
+              _newScreen();
             },
             backgroundColor: Theme.of(context).primaryColor,
             label: Text(translation.text(LauncherText.buttonNew))
@@ -96,7 +102,10 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
         _passwordController,
         _portController,
         snapshot.data.screens,
-        translation)
+        translation,
+        _itemScrollController,
+        _itemPositionsListener
+      )
     ];
   }
 
@@ -258,6 +267,26 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
       type: FileType.custom,
       allowedExtensions: ['zip'],
     );
-    launcherBloc.import(file);
+    newItemId = await launcherBloc.import(file);
+    if (newItemId >= 0) {
+      if (_viewModel.screens.length > 0) {
+        for (int i=0; i < _viewModel.screens.length; i++) {
+          if (_viewModel.screens[i].id == newItemId)
+//            _itemScrollController.jumpTo(index: i);
+            _itemScrollController.scrollTo(
+                index: i,
+                duration: Duration(seconds: 2),
+                curve: Curves.easeInOutCubic);
+        }
+      }
+    }
+  }
+
+  _newScreen() async {
+    await launcherBloc.newScreen();
+    _itemScrollController.scrollTo(
+        index: _viewModel.screens.length-1,
+        duration: Duration(seconds: 2),
+        curve: Curves.easeInOutCubic);
   }
 }

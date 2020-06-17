@@ -28,9 +28,9 @@ class LauncherBloc {
     _modelFetcher.close();
   }
 
-  newScreen() {
-    _repository.newScreen();
-    fetchAllPreferences();
+  newScreen() async {
+    await _repository.newScreen();
+    await fetchAllPreferences();
   }
 
 
@@ -38,7 +38,7 @@ class LauncherBloc {
     _repository.updateName(id, text);
   }
 
-  void deleteScreen(int id) async {
+  Future deleteScreen(int id) async {
     int rv = await _repository.deleteScreen(id);
 
     if (rv < 0) {
@@ -48,8 +48,10 @@ class LauncherBloc {
     }
   }
 
-  void import(file) async {
-    await _repository.import(file);
+  Future<int> import(file) async {
+    int newItemId = await _repository.import(file);
     fetchAllPreferences();
+
+    return newItemId;
   }
 }

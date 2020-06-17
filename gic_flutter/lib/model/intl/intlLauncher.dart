@@ -48,7 +48,8 @@ enum LauncherText {
 
   deleteError,
   deleteConfirm,
-  deleteConfirmTitle
+  deleteConfirmTitle,
+  deleteComplete
 }
 
 class IntlLauncher {
@@ -100,6 +101,7 @@ class IntlLauncher {
       LauncherText.deleteError: 'Cannot remove last screen!',
       LauncherText.deleteConfirm: 'Are you sure you wish to PERMANENTLY delete ',
       LauncherText.deleteConfirmTitle: 'Confirm Delete',
+      LauncherText.deleteComplete: 'Screen removed',
 
       LauncherText.menuAbout: 'About',
       LauncherText.menuDonate: 'Donate',

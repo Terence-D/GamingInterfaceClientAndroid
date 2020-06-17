@@ -15,4 +15,5 @@ class LauncherModel implements ViewModel {
   bool donate;
   bool donateStar;
   List<ScreenListItem> screens;
+  int newScreenid = 0;
 }

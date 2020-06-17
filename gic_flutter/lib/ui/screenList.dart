@@ -6,6 +6,7 @@ import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/views/accentButton.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ScreenList extends StatelessWidget {
 
@@ -16,8 +17,17 @@ class ScreenList extends StatelessWidget {
   final TextEditingController _addressController;
   final TextEditingController _portController;
   final LauncherBloc _launcherBloc;
+  final ItemScrollController _itemScrollController;
+  final ItemPositionsListener _itemPositionsListener;
 
-  ScreenList(this._launcherBloc, this._addressController, this._passwordController, this._portController, this._screens, this._translations);
+  ScreenList(this._launcherBloc,
+      this._addressController,
+      this._passwordController,
+      this._portController,
+      this._screens,
+      this._translations,
+      this._itemScrollController,
+      this._itemPositionsListener);
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +40,11 @@ class ScreenList extends StatelessWidget {
     }
 
     return Expanded(
-      child: ListView.builder(
+      child: ScrollablePositionedList.builder(
           padding: const EdgeInsets.fromLTRB(0, 0, 0, 48),
           itemCount: _screenNameController.length,
+          itemScrollController: _itemScrollController,
+          itemPositionsListener: _itemPositionsListener,
           itemBuilder: (context, index) {
             return screenCard(index, context);
           }),
@@ -236,7 +248,10 @@ class ScreenList extends StatelessWidget {
     _screens[index].name = _screenNameController[index].text;
   }
 
-  void _deleteScreen(int index) {
-    _launcherBloc.deleteScreen(_screens[index].id);
+  void _deleteScreen(int index) async {
+    await _launcherBloc.deleteScreen(_screens[index].id);
+    Fluttertoast.showToast(
+      msg: _translations.text(LauncherText.deleteComplete),
+    );
   }
 }

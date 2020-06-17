@@ -180,8 +180,8 @@ class LauncherRepo {
     return rv;
   }
 
-  Future import(file) async {
+  Future<int> import(file) async {
     ScreenRepository screenRepo = new ScreenRepository();
-    await screenRepo.import(file);
+    return screenRepo.import(file);
   }
 }
