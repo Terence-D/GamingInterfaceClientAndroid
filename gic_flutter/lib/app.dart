@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gic_flutter/ui/launcher.dart';
 import 'package:gic_flutter/views/intro/introView.dart';
 import 'package:gic_flutter/views/main/mainView.dart';
 import 'package:gic_flutter/service_locator.dart';
 import 'package:gic_flutter/services/localStorageService.dart';
 
-import 'model/channel.dart';
 import 'model/intl/localizations.dart';
 import 'theme/theme.dart';
 
 class GicApp extends StatelessWidget {
-  GicApp () {
-  }
+  GicApp ();
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +36,6 @@ class GicApp extends StatelessWidget {
     if(localStorageService.firstRun) {
       return IntroView();
     }
-    return MainView();
+    return Launcher();
   }
 }

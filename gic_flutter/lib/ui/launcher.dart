@@ -118,7 +118,6 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     _portController.selection = TextSelection.fromPosition(TextPosition(offset: _portController.text.length));
     _addressController.selection = TextSelection.fromPosition(TextPosition(offset: _addressController.text.length));
 
-
     Orientation orientation = MediaQuery.of(context).orientation;
     var widgets;
     if (orientation == Orientation.portrait) {

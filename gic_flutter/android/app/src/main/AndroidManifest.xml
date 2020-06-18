@@ -51,10 +51,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".views.screenmanager.ScreenManagerActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".views.edit.EditActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_edit"

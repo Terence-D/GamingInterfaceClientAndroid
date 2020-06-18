@@ -17,12 +17,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import java.util.List;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.TextViewCompat;
+
+import java.util.List;
+
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.FontCache;
@@ -31,8 +32,6 @@ import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreen;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.IScreenRepository;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.Screen;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository;
-
-import static ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity.INTENT_SCREEN_INDEX;
 
 /**
  Copyright [2019] [Terence Doerksen]

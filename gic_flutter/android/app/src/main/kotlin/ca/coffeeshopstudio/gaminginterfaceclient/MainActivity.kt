@@ -3,13 +3,11 @@ package ca.coffeeshopstudio.gaminginterfaceclient
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
-import androidx.core.util.forEach
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
 import ca.coffeeshopstudio.gaminginterfaceclient.views.DonateActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity
-import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
@@ -25,11 +23,9 @@ class MainActivity: FlutterActivity() {
     const val actionDonate = "donate"
     const val actionStart = "start"
     const val actionEdit = "edit"
-    const val actionManager = "manager"
 
     const val actionDecrypt = "decrypt"
     const val actionEncrypt = "encrypt"
-    const val actionGetScreens = "screens/get"
     const val actionGetSettings = "settings/get"
     const val actionUpdateDarkMode = "darkmode/set";
     const val actionUtilUpdateScreens = "screens/upgrade";
@@ -74,11 +70,6 @@ class MainActivity: FlutterActivity() {
           startActivity(intent)
           result.success(true)
         }
-        actionManager -> {
-          val intent = Intent(this, ScreenManagerActivity::class.java)
-          startActivity(intent)
-          result.success(true)
-        }
         else -> {
           result.notImplemented()
         }
@@ -104,14 +95,6 @@ class MainActivity: FlutterActivity() {
         actionEncrypt -> {
           val encrypted = CryptoHelper.encrypt(call.argument("password"))
           result.success(encrypted)
-        }
-        actionGetScreens -> {
-          val screenRepository = ScreenRepository(applicationContext)
-          val screenList = screenRepository.screenListGetterSync(applicationContext)
-
-          val returnValue = HashMap<Int, String>()
-          screenList.forEach { key, value -> returnValue.put(key, value) }
-          result.success(returnValue)
         }
         actionGetSettings -> {
           val keys = loadLegacyPreferences();
