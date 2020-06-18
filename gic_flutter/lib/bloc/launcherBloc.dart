@@ -54,4 +54,8 @@ class LauncherBloc {
 
     return newItemId;
   }
+
+  export(String exportPath, int id) async {
+    await _repository.export(exportPath, id);
+  }
 }

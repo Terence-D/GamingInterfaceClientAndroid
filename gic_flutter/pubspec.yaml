@@ -46,6 +46,7 @@ dependencies:
   archive: ^2.0.13
   path_provider: ^1.6.10
   scrollable_positioned_list: ^0.1.6
+  permission_handler: ^5.0.1
 
 dev_dependencies:
   mockito: 4.1.1

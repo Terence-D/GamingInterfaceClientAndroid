@@ -184,4 +184,9 @@ class LauncherRepo {
     ScreenRepository screenRepo = new ScreenRepository();
     return screenRepo.import(file);
   }
+
+  export(String exportPath, int id) {
+    ScreenRepository screenRepo = new ScreenRepository();
+    return screenRepo.export(exportPath, id);
+  }
 }

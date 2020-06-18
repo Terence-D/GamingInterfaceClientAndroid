@@ -49,7 +49,9 @@ enum LauncherText {
   deleteError,
   deleteConfirm,
   deleteConfirmTitle,
-  deleteComplete
+  deleteComplete,
+
+  exportComplete
 }
 
 class IntlLauncher {
@@ -108,6 +110,8 @@ class IntlLauncher {
       LauncherText.menuIntro: 'Show Intro',
       LauncherText.menuTheme: 'Change Theme',
       LauncherText.menuImport: 'Import',
+
+      LauncherText.exportComplete: 'Export completed',
     }
   };
 }

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/screen/GicControl.dart';
 import 'package:gic_flutter/views/intro/screenListWidget.dart';
@@ -17,7 +18,6 @@ class ScreenRepository {
   String _prefsBackgroundSuffix = "_background";
   String _prefsBackgroundPathSuffix = "_background_path";
   String _prefsControl = "_control_";
-
 
   int defaultBackground = 0xFF383838;
 
@@ -51,12 +51,13 @@ class ScreenRepository {
   }
 
   _loadControls(SharedPreferences prefs, Screen screen) {
+    screen.controls = new List<GicControl>();
     prefs.getKeys().forEach((key) {
       if (key.contains("${screen.screenId}$_prefsControl")) {
         try {//legacy used an integer dummy value, so need to handle that
           Map controlMap = jsonDecode(prefs.getString(key));
           screen.controls.add(GicControl.fromJson(controlMap));
-          screen.name = prefs.getString(key);
+          //screen.name = prefs.getString(key);
         } catch (_) { }
       }
     });
@@ -188,7 +189,6 @@ class ScreenRepository {
 
   get _tempPath async {
     final directory = await getTemporaryDirectory();
-
     return directory.path;
   }
 
@@ -265,5 +265,29 @@ class ScreenRepository {
     });
 
     return screen;
+  }
+
+  export(String exportPath, int id) async {
+    HashSet<String> filesToZip = new HashSet<String>();
+    final String cacheDir = await _tempPath;
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (_cache == null || _cache.length < 1)
+      _load(prefs);
+
+    _cache.forEach((screen) async {
+      if (screen.screenId == id) {
+        String rawJson = jsonEncode(screen);
+        //store the json data file in the directory
+        File jsonData =new File(path.join(cacheDir, "data.json"));
+        await jsonData.writeAsString(rawJson);
+
+        var archive = ZipFileEncoder();
+        archive.create(path.join(exportPath, screen.name + ".zip"));
+        archive.addFile(jsonData);
+        archive.close();
+        return;
+      }
+    });
   }
 }

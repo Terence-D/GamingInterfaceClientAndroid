@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -6,6 +9,7 @@ import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/views/accentButton.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class ScreenList extends StatelessWidget {
@@ -117,7 +121,7 @@ class ScreenList extends StatelessWidget {
               tooltip: _translations.text(LauncherText.buttonExport),
 //            key: export,
               onPressed: () {
-//              (presentation as ManagePresentation).exportScreen(index);
+                _export(_screens[index].id);
               },
             ),
             new IconButton(
@@ -253,5 +257,15 @@ class ScreenList extends StatelessWidget {
     Fluttertoast.showToast(
       msg: _translations.text(LauncherText.deleteComplete),
     );
+  }
+
+  Future<void> _export(int id) async {
+    if (await Permission.storage.request().isGranted) {
+      String exportPath = await FilePicker.getDirectoryPath();
+      await _launcherBloc.export(exportPath, id);
+      Fluttertoast.showToast(
+        msg: _translations.text(LauncherText.exportComplete),
+      );
+    }
   }
 }
