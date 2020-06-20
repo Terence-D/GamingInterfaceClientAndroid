@@ -1,5 +1,4 @@
 import 'package:gic_flutter/model/viewModel.dart';
-import 'package:gic_flutter/views/main/mainVM.dart';
 
 class LauncherModel implements ViewModel {
   String _title;
@@ -16,4 +15,11 @@ class LauncherModel implements ViewModel {
   bool donateStar;
   List<ScreenListItem> screens;
   int newScreenid = 0;
+}
+
+class ScreenListItem {
+  ScreenListItem(this.id, this.name);
+
+  String name;
+  final int id;
 }
