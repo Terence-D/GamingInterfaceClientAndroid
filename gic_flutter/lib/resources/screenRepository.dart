@@ -6,12 +6,12 @@ import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/screen/GicControl.dart';
+import 'package:gic_flutter/model/screen/screen.dart';
 import 'package:gic_flutter/views/intro/screenListWidget.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Screen.dart';
 class ScreenRepository {
   List<Screen> _cache;
   String _prefsScreen = "screen_";
@@ -20,6 +20,9 @@ class ScreenRepository {
   String _prefsControl = "_control_";
 
   int defaultBackground = 0xFF383838;
+
+  //when importing, we have to update the filenames
+  String _newPrefix = "screen_";
 
   _load (SharedPreferences prefs) async {
     _cache = new List<Screen>();
@@ -192,8 +195,125 @@ class ScreenRepository {
     return directory.path;
   }
 
+  /// Takes a file (retrieved from the view) and imports it into the application
+  /// File is a ZIP, containing JSON and zero to many image files
   Future<int> import(File file) async {
-    //get file name
+    // Get the temporary path
+    final String tempPath = await _tempPath;
+
+    _extractZipFiles(file, tempPath);
+
+    // get a screen object based on the JSON extracted
+    Screen importedScreen = await _parseJson(path.join(tempPath, "imported"));
+
+    // now we need to get a new ID and Name, as the existing one is probably taken
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _load(prefs);
+    importedScreen.name = _findUniqueName(importedScreen.name);
+    importedScreen.screenId = _findUniqueId();
+    _cache = null; //invalidate the cache
+
+    //get our various folders ready
+    Directory cache = await getTemporaryDirectory();
+    Directory files = await getApplicationSupportDirectory();
+    String filesPath = (await getApplicationSupportDirectory()).path;
+
+    //now take the extracted image files, and based on the new id, add them in
+    int newFilenameId = _saveImageFiles(importedScreen.screenId, cache, files, filesPath);
+
+    //if there's any images, we need to update the path with screen prefix AND
+    //possibly a new ID
+    _updateImagePaths(importedScreen, newFilenameId, filesPath);
+
+    //save the screen
+    _save(prefs, importedScreen);
+
+    //finally, clean up the cache
+    return importedScreen.screenId;
+  }
+
+  _updateImagePaths(Screen screen, newFilenameId, String filesPath) {
+    if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
+      String originalFilename = path.basename(screen.backgroundPath);
+      String newFilename = _resetPrefix(originalFilename, newFilenameId);
+      screen.backgroundPath = path.join(filesPath, newFilename);
+    }
+    screen.controls.forEach((control) {
+      if (control.primaryImage != null && control.primaryImage.isNotEmpty) {
+        String originalFilename = path.basename(control.primaryImage);
+        String newFilename = _resetPrefix(originalFilename, newFilenameId);
+        control.primaryImage = path.join(filesPath, newFilename);
+      }
+      if (control.secondaryImage != null && control.secondaryImage.isNotEmpty) {
+        String originalFilename = path.basename(control.secondaryImage);
+        String newFilename = _resetPrefix(originalFilename, newFilenameId);
+        control.secondaryImage = path.join(filesPath, newFilename);
+      }
+    });
+  }
+
+  /// Here we copy the image files stored in cache and move them inside the files
+  /// directory, then delete the cached file
+  /// Returns: the ID used in the naming, in case we have to update
+  int _saveImageFiles(int screenId, Directory cache, Directory files, String filesPath) {
+    // For each file we copy it from the cache to the files directory
+    // We also append "screen_{id} to the front to prevent issues"
+    // If we find any other files with that name, we'll search for a new id
+    // and whatever we return, the calling function will need to take that
+    // and update it's filename paths
+
+    // Let's first make sure that id is unused
+    //keep looping until we get a success
+    bool uniqueId = true;
+    while (uniqueId) {
+      uniqueId = false; //reset
+      files.listSync().forEach((entity) {
+        if (entity is File) {
+          String fileName = path.basenameWithoutExtension(entity.path).toLowerCase();
+          //possible file formats are X_background or button_X, search for X at
+          //start and finish
+          if (fileName.startsWith(screenId.toString()) ||
+              fileName.endsWith(screenId.toString())) {
+            screenId++;
+            uniqueId = true; //uhoh, lets try again
+          }
+        }
+      });
+    }
+
+    //ok we have a unique ID now we can rename the files with
+    //this is the prefix we're adding to the files: 'screen_X_
+    cache.listSync(recursive: true).forEach((entity) {
+      if (entity is File && path.extension(entity.path) == ".png") {
+        String newFilename = path.basename(entity.path);
+        //it's possible this has been used in import/export before, lets check
+        newFilename = _resetPrefix(newFilename, screenId);
+        //ok now we append a new prefix
+        entity.copy(path.join(filesPath, newFilename));
+        entity.delete();
+      }
+    });
+
+    //return the possibly updated screen id, which is used for the filenames
+    return screenId;
+  }
+
+  /// This is used to take a filename and strip any existing screen_prefix we have
+  String _resetPrefix(String newFilename, int screenId) {
+    if (newFilename.startsWith(_newPrefix)) {
+      //strip the prefix and the next number and '_'
+      newFilename = newFilename.substring(_newPrefix.length);
+      //now strip the number and '_'
+      int endOfPrefix = newFilename.indexOf('_');
+      newFilename = newFilename.substring(endOfPrefix);
+    }
+    newFilename = "$_newPrefix${screenId}_$newFilename";
+    return newFilename;
+  }
+
+  /// Extracts the supplied ZIP file to a temporary location
+  void _extractZipFiles(File file, String tempPath) {
+    //construct a file name based on the name of the zip file
     String name = path.basename(file.path);
     name = name.replaceAll(".zip", "");
 
@@ -203,39 +323,16 @@ class ScreenRepository {
     // Decode the Zip file
     final archive = ZipDecoder().decodeBytes(bytes);
 
-    final String tempPath = await _tempPath;
-
-    // Extract the contents of the Zip archive to disk.
+    // Extract the contents of the Zip archive to the temp path.
     for (final file in archive) {
       final filename = file.name;
       if (file.isFile) {
         final data = file.content as List<int>;
-        File extractedPath = File(path.join(tempPath, "imported", filename))
+        File(path.join(tempPath, "imported", filename))
         ..createSync(recursive: true)
         ..writeAsBytesSync(data);
-      } else {
-        Directory('out/' + filename)
-        ..create(recursive: true);
       }
     }
-
-    String fullPath = path.join(tempPath, "imported");
-    Screen importedScreen = await _parseJson(fullPath);
-    return _screenImporter(importedScreen);
-  }
-
-  Future<int> _screenImporter(Screen toImport) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    _load(prefs);
-
-    _findUniqueName(toImport.name);
-    Screen newScreen = toImport;
-
-    newScreen.screenId = _findUniqueId();
-    _cache = null; //invalidate the cache
-
-    _save(prefs, newScreen);
-    return newScreen.screenId;
   }
 
   Future<Screen> _parseJson(String fullPath) async {
@@ -246,35 +343,17 @@ class ScreenRepository {
     //build the new screen from the incoming json
     Screen screen = new Screen.fromJson(controlMap);
 
-    if (screen.backgroundPath.isNotEmpty) {
-      int index = screen.backgroundPath.lastIndexOf("/");
-      screen.backgroundPath =
-          fullPath + screen.backgroundPath.substring(index + 1);
-    }
-    screen.controls.forEach((control) {
-      if (control.primaryImage.isNotEmpty) {
-        int index = control.primaryImage.lastIndexOf("/");
-        control.primaryImage =
-            fullPath + control.primaryImage.substring(index + 1);
-      }
-      if (control.secondaryImage.isNotEmpty) {
-        int index = control.secondaryImage.lastIndexOf("/");
-        control.secondaryImage =
-            fullPath + control.secondaryImage.substring(index + 1);
-      }
-    });
-
     return screen;
   }
 
   export(String exportPath, int id) async {
-    HashSet<String> filesToZip = new HashSet<String>();
     final String cacheDir = await _tempPath;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_cache == null || _cache.length < 1)
       _load(prefs);
 
+    String filesPath = (await getApplicationSupportDirectory()).path;
     _cache.forEach((screen) async {
       if (screen.screenId == id) {
         String rawJson = jsonEncode(screen);
@@ -285,6 +364,29 @@ class ScreenRepository {
         var archive = ZipFileEncoder();
         archive.create(path.join(exportPath, screen.name + ".zip"));
         archive.addFile(jsonData);
+        if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
+          File background = new File (path.join(
+            filesPath,
+            path.split(screen.backgroundPath).last,
+          )
+          );
+          archive.addFile(background);
+        }
+        screen.controls.forEach((control) {
+          if (control.primaryImage != null && control.primaryImage.isNotEmpty)
+            archive.addFile(new File (path.join(
+              filesPath,
+              path.split(control.primaryImage).last,
+            )
+            ));
+          if (control.secondaryImage != null && control.secondaryImage.isNotEmpty)
+            archive.addFile(new File (path.join(
+              filesPath,
+              path.split(control.secondaryImage).last,
+            )
+            ));
+        });
+
         archive.close();
         return;
       }

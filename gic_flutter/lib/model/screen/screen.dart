@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import 'GicControl.dart';
 
 class Screen {

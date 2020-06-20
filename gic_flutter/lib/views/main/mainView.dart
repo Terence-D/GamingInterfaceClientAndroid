@@ -147,7 +147,7 @@ class MainViewState extends State<MainView> with WidgetsBindingObserver implemen
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text(
                       _viewModel.screenTitle,
-                      style: Theme.of(context).textTheme.headline,
+                      style: Theme.of(context).textTheme.headline5,
                     ),
                     Visibility(
                       visible: _viewModel.donate,

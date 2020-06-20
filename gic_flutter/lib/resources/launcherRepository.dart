@@ -3,12 +3,12 @@ import 'dart:collection';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
-import 'package:gic_flutter/model/screen/Screen.dart';
-import 'package:gic_flutter/model/screen/ScreenRepository.dart';
+import 'package:gic_flutter/model/screen/screen.dart';
+import 'package:gic_flutter/resources/screenRepository.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LauncherRepo {
+class LauncherRepository {
   SharedPreferences _prefs;
 
   static const String _prefNightMode = "nightMode";

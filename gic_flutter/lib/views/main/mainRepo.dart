@@ -2,8 +2,8 @@ import 'dart:collection';
 
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/channel.dart';
-import 'package:gic_flutter/model/screen/Screen.dart';
-import 'package:gic_flutter/model/screen/ScreenRepository.dart';
+import 'package:gic_flutter/model/screen/screen.dart';
+import 'package:gic_flutter/resources/screenRepository.dart';
 import 'package:gic_flutter/views/main/mainVM.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -148,7 +148,7 @@ class MainRepo implements MainVMRepo {
       try {
         final String result = await platform.invokeMethod(Channel.actionUtilEncrypt, {"password": _viewModel.password});
         response = result;
-      } on PlatformException catch (e) {
+      } on PlatformException catch (_) {
         response = "";
       }
     }

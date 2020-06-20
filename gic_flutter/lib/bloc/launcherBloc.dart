@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:gic_flutter/model/launcherModel.dart';
-import 'package:gic_flutter/resources/launcherRepo.dart';
+import 'package:gic_flutter/resources/launcherRepository.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LauncherBloc {
-  final _repository = LauncherRepo();
+  final _repository = LauncherRepository();
   final _modelFetcher = PublishSubject<LauncherModel>();
 
   Stream<LauncherModel> get preferences => _modelFetcher.stream;

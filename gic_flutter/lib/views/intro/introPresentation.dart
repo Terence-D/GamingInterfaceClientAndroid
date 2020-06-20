@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/model/screen/ScreenRepository.dart';
+import 'package:gic_flutter/resources/screenRepository.dart';
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:gic_flutter/views/intro/screenListWidget.dart';
 import 'package:gic_flutter/views/intro/screenSizeWidget.dart';
