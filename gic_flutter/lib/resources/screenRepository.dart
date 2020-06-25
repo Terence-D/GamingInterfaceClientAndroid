@@ -190,21 +190,18 @@ class ScreenRepository {
     return _cache.length;
   }
 
-  get _tempPath async {
-    final directory = await getTemporaryDirectory();
-    return directory.path;
-  }
-
   /// Takes a file (retrieved from the view) and imports it into the application
   /// File is a ZIP, containing JSON and zero to many image files
   Future<int> import(File file) async {
-    // Get the temporary path
-    final String tempPath = await _tempPath;
+    //get our various folders ready
+    Directory cacheTemp = await getTemporaryDirectory();
+    Directory files = await getApplicationSupportDirectory();
+    String importPath = path.join(cacheTemp.path, "imported");
 
-    _extractZipFiles(file, tempPath);
+    _extractZipFiles(file, importPath);
 
     // get a screen object based on the JSON extracted
-    Screen importedScreen = await _parseJson(path.join(tempPath, "imported"));
+    Screen importedScreen = await _parseJson(importPath);
 
     // now we need to get a new ID and Name, as the existing one is probably taken
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -213,103 +210,205 @@ class ScreenRepository {
     importedScreen.screenId = _findUniqueId();
     _cache = null; //invalidate the cache
 
-    //get our various folders ready
-    Directory cache = await getTemporaryDirectory();
-    Directory files = await getApplicationSupportDirectory();
-    String filesPath = (await getApplicationSupportDirectory()).path;
-
-    //now take the extracted image files, and based on the new id, add them in
-    int newFilenameId = _saveImageFiles(importedScreen.screenId, cache, files, filesPath);
-
-    //if there's any images, we need to update the path with screen prefix AND
-    //possibly a new ID
-    _updateImagePaths(importedScreen, newFilenameId, filesPath);
+    //now take the extracted image files, and add them to the app with possibly new names
+    _saveImageFiles(importedScreen, importPath, files);
 
     //save the screen
     _save(prefs, importedScreen);
 
     //finally, clean up the cache
+    Directory(importPath).deleteSync(recursive: true);
+
     return importedScreen.screenId;
   }
 
-  _updateImagePaths(Screen screen, newFilenameId, String filesPath) {
-    if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
-      String originalFilename = path.basename(screen.backgroundPath);
-      String newFilename = _resetPrefix(originalFilename, newFilenameId);
-      screen.backgroundPath = path.join(filesPath, newFilename);
-    }
-    screen.controls.forEach((control) {
-      if (control.primaryImage != null && control.primaryImage.isNotEmpty) {
-        String originalFilename = path.basename(control.primaryImage);
-        String newFilename = _resetPrefix(originalFilename, newFilenameId);
-        control.primaryImage = path.join(filesPath, newFilename);
-      }
-      if (control.secondaryImage != null && control.secondaryImage.isNotEmpty) {
-        String originalFilename = path.basename(control.secondaryImage);
-        String newFilename = _resetPrefix(originalFilename, newFilenameId);
-        control.secondaryImage = path.join(filesPath, newFilename);
-      }
-    });
-  }
+//  _updateImagePaths(Screen screen, newFilenameId, String filesPath) {
+//    if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
+//      String originalFilename = path.basename(screen.backgroundPath);
+//      String newFilename = _resetPrefix(originalFilename, newFilenameId);
+//      screen.backgroundPath = path.join(filesPath, newFilename);
+//    }
+//    screen.controls.forEach((control) {
+//      if (control.primaryImage != null && control.primaryImage.isNotEmpty) {
+//        String originalFilename = path.basename(control.primaryImage);
+//        String newFilename = _resetPrefix(originalFilename, newFilenameId);
+//        control.primaryImage = path.join(filesPath, newFilename);
+//      }
+//      if (control.secondaryImage != null && control.secondaryImage.isNotEmpty) {
+//        String originalFilename = path.basename(control.secondaryImage);
+//        String newFilename = _resetPrefix(originalFilename, newFilenameId);
+//        control.secondaryImage = path.join(filesPath, newFilename);
+//      }
+//    });
+//  }
+
+////get the ID
+//String name = path.basenameWithoutExtension(control.primaryImage);
+//int id = int.tryParse(name.substring(name.length-1));
+//if (id != null) {
+//
+//}
 
   /// Here we copy the image files stored in cache and move them inside the files
   /// directory, then delete the cached file
-  /// Returns: the ID used in the naming, in case we have to update
-  int _saveImageFiles(int screenId, Directory cache, Directory files, String filesPath) {
+  _saveImageFiles(Screen screen, String importLocation, Directory files) {
     // For each file we copy it from the cache to the files directory
-    // We also append "screen_{id} to the front to prevent issues"
     // If we find any other files with that name, we'll search for a new id
-    // and whatever we return, the calling function will need to take that
-    // and update it's filename paths
+    // then update the screen with that new id
 
-    // Let's first make sure that id is unused
-    //keep looping until we get a success
-    bool uniqueId = true;
-    while (uniqueId) {
-      uniqueId = false; //reset
-      files.listSync().forEach((entity) {
-        if (entity is File) {
-          String fileName = path.basenameWithoutExtension(entity.path).toLowerCase();
-          //possible file formats are X_background or button_X, search for X at
-          //start and finish
-          if (fileName.startsWith(screenId.toString()) ||
-              fileName.endsWith(screenId.toString())) {
-            screenId++;
-            uniqueId = true; //uhoh, lets try again
+    Directory cache = new Directory(importLocation);
+
+    //keep track of id's we already modified and their new id
+    final Map<int, int> foundButtonIds = new Map<int, int>();
+    final Map<int, int> foundSwitchIds = new Map<int, int>();
+
+    //we need to check against these filename types:
+    //screenId_background.png
+    //screenId_control_i.png
+    //button_i.png
+    //switch_i.png
+
+    cache.listSync().forEach((element) {
+      //ensure it's a file first
+      if (element is File) {
+        //see if it's a supported image
+        if (path.extension(element.path).toLowerCase() == ".png") {
+          //check if it's a background image or control, if so it's a simple
+          //change, just change the start of the filename to the new screen id
+          if (path.basenameWithoutExtension(element.path).contains("_background") ||
+              path.basenameWithoutExtension(element.path).contains("_control_")
+          ) {
+            _renameBackgroundOrControl(element, screen, files);
           }
-        }
-      });
-    }
+          // check if it's a button or switch, if so:
+          // 1) check foundIds to see if we updated it already
+          // 2) if found, just update the path and carry on
+          // 3) if not, find the next unique id
+          // 4) change it to that ID
+          // 5) add it to the found id's
+          // , if so it's a simple
+          //change, just change the start of the filename to the new screen id
+          if (path.basenameWithoutExtension(element.path).contains("button_")) {
+            _renameControl(element, foundButtonIds, screen, files, "button_");
+          } else if (path.basenameWithoutExtension(element.path).contains("switch_")) {
+            _renameControl(element, foundSwitchIds, screen, files, "switch_");
+          }
 
-    //ok we have a unique ID now we can rename the files with
-    //this is the prefix we're adding to the files: 'screen_X_
-    cache.listSync(recursive: true).forEach((entity) {
-      if (entity is File && path.extension(entity.path) == ".png") {
-        String newFilename = path.basename(entity.path);
-        //it's possible this has been used in import/export before, lets check
-        newFilename = _resetPrefix(newFilename, screenId);
-        //ok now we append a new prefix
-        entity.copy(path.join(filesPath, newFilename));
-        entity.delete();
+        }
       }
     });
-
-    //return the possibly updated screen id, which is used for the filenames
-    return screenId;
   }
 
-  /// This is used to take a filename and strip any existing screen_prefix we have
-  String _resetPrefix(String newFilename, int screenId) {
-    if (newFilename.startsWith(_newPrefix)) {
-      //strip the prefix and the next number and '_'
-      newFilename = newFilename.substring(_newPrefix.length);
-      //now strip the number and '_'
-      int endOfPrefix = newFilename.indexOf('_');
-      newFilename = newFilename.substring(endOfPrefix);
+  void _renameControl(File element, Map<int, int> foundIds, Screen screen, Directory files, String searchParam) {
+    String fileName = path.basenameWithoutExtension(element.path);
+    int separatorPosition = fileName.indexOf("_");
+    int oldId = int.tryParse(fileName.substring(separatorPosition+1));
+    if (oldId != null) {
+      //check if we've seen this before
+      if (foundIds.containsKey(oldId)) {
+        String newFilename = "${fileName.substring(0, separatorPosition)}_${foundIds[oldId]}";
+        //found before, so just update references
+        screen.controls.forEach((control) {
+          if (control.primaryImage.contains("${searchParam}_$oldId")) {
+            control.primaryImage = path.join(files.path, "$newFilename.png");
+          }
+          if (control.secondaryImage.contains("${searchParam}_$oldId")) {
+            control.secondaryImage = path.join(files.path, "$newFilename.png");
+          }
+        });
+      } else {
+        //we haven't seen this id before
+        int originalId = oldId; //back it up for later
+        //we'll look through and search until we find a no match
+        String newFilename = "${fileName.substring(0, separatorPosition+1)}$oldId";
+        while (files.listSync().contains(newFilename)) {
+          oldId++;
+          newFilename = "${fileName.substring(0, separatorPosition+1)}$oldId";
+        }
+        //found a new id, update file and references
+        newFilename =  path.join(files.path, "$newFilename.png");
+        screen.controls.forEach((control) {
+          if (control.primaryImage.contains("$searchParam$oldId")) {
+            control.primaryImage = newFilename;
+          }
+          if (control.secondaryImage.contains("$searchParam$oldId")) {
+            control.secondaryImage = newFilename;
+          }
+        });
+        element.copy(newFilename);
+        foundIds[originalId] = oldId;
+      }
     }
-    newFilename = "$_newPrefix${screenId}_$newFilename";
-    return newFilename;
   }
+
+  void _renameBackgroundOrControl(File element, Screen screen, Directory files) {
+    //find first instance of a _
+    String fileName = path.basenameWithoutExtension(element.path);
+    int separatorPosition = fileName.indexOf("_");
+    //before that, we should have our screen id (int)
+    int oldId = int.tryParse(fileName.substring(0, separatorPosition));
+    if (oldId != null) {
+      String newFilename = "$oldId${fileName.substring(separatorPosition)}";
+      //we'll look through and search until we find a no match
+      while (files.listSync().contains(newFilename)) {
+        oldId++;
+        newFilename = "$oldId${fileName.substring(separatorPosition)}";
+      }
+      screen.backgroundPath = path.join(files.path, "$newFilename.png");
+      element.copy(screen.backgroundPath);
+    }
+  }
+
+//
+//  int getNewBackground() {
+//    // Let's first make sure that id is unused
+//    //keep looping until we get a success
+//    bool uniqueId = true;
+//    while (uniqueId) {
+//      uniqueId = false; //reset
+//      files.listSync().forEach((entity) {
+//        if (entity is File) {
+//          String fileName = path.basenameWithoutExtension(entity.path).toLowerCase();
+//          //possible file formats are X_background or button_X, search for X at
+//          //start and finish
+//          if (fileName.startsWith(screenId.toString()) ||
+//              fileName.endsWith(screenId.toString())) {
+//            screenId++;
+//            uniqueId = true; //uhoh, lets try again
+//          }
+//        }
+//      });
+//    }
+//
+//    //ok we have a unique ID now we can rename the files with
+//    //this is the prefix we're adding to the files: 'screen_X_
+//    cache.listSync(recursive: true).forEach((entity) {
+//      if (entity is File && path.extension(entity.path) == ".png") {
+//        String newFilename = path.basename(entity.path);
+//        //it's possible this has been used in import/export before, lets check
+//        newFilename = _resetPrefix(newFilename, screenId);
+//        //ok now we append a new prefix
+//        entity.copy(path.join(filesPath, newFilename));
+//        entity.delete();
+//      }
+//    });
+//
+//    //return the possibly updated screen id, which is used for the filenames
+//    return screenId;
+//  }
+
+//  /// This is used to take a filename and strip any existing screen_prefix we have
+//  String _resetPrefix(String newFilename, int screenId) {
+//    if (newFilename.startsWith(_newPrefix)) {
+//      //strip the prefix and the next number and '_'
+//      newFilename = newFilename.substring(_newPrefix.length);
+//      //now strip the number and '_'
+//      int endOfPrefix = newFilename.indexOf('_');
+//      newFilename = newFilename.substring(endOfPrefix);
+//    }
+//    newFilename = "$_newPrefix${screenId}_$newFilename";
+//    return newFilename;
+//  }
 
   /// Extracts the supplied ZIP file to a temporary location
   void _extractZipFiles(File file, String tempPath) {
@@ -328,7 +427,7 @@ class ScreenRepository {
       final filename = file.name;
       if (file.isFile) {
         final data = file.content as List<int>;
-        File(path.join(tempPath, "imported", filename))
+        File(path.join(tempPath, filename))
         ..createSync(recursive: true)
         ..writeAsBytesSync(data);
       }
@@ -347,7 +446,7 @@ class ScreenRepository {
   }
 
   export(String exportPath, int id) async {
-    final String cacheDir = await _tempPath;
+    Directory cache = await getTemporaryDirectory();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_cache == null || _cache.length < 1)
@@ -358,7 +457,7 @@ class ScreenRepository {
       if (screen.screenId == id) {
         String rawJson = jsonEncode(screen);
         //store the json data file in the directory
-        File jsonData =new File(path.join(cacheDir, "data.json"));
+        File jsonData =new File(path.join(cache.path, "data.json"));
         await jsonData.writeAsString(rawJson);
 
         var archive = ZipFileEncoder();
