@@ -15,6 +15,11 @@ import 'package:gic_flutter/ui/serverLogin.dart';
 import 'package:gic_flutter/views/about/aboutView.dart';
 import 'package:gic_flutter/views/intro/introView.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+//import 'package:intent/intent.dart' as android_intent;
+//import 'package:intent/action.dart' as android_action;
+//import 'package:intent/extra.dart' as android_extra;
+//import 'package:intent/category.dart' as android_category;
+//import 'package:intent/flag.dart' as android_flag;
 
 class Launcher extends StatefulWidget {
   @override
@@ -262,6 +267,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   }
 
   Future<void> _import() async {
+
     File file = await FilePicker.getFile(
       type: FileType.custom,
       allowedExtensions: ['zip'],
@@ -271,7 +277,6 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
       if (_viewModel.screens.length > 0) {
         for (int i=0; i < _viewModel.screens.length; i++) {
           if (_viewModel.screens[i].id == newItemId)
-//            _itemScrollController.jumpTo(index: i);
             _itemScrollController.scrollTo(
                 index: i,
                 duration: Duration(seconds: 2),
