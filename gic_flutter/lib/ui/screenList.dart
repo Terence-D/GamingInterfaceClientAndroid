@@ -181,13 +181,6 @@ class ScreenList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  new Flexible(
-                    child: new TextFormField(
-                      controller: _screenNameController[index],
-                      decoration: InputDecoration(
-                          hintText: _translations.text(LauncherText.screenName)),
-                    ),
-                  ),
                   new IconButton(
                     icon: Icon(Icons.save),
                     tooltip:_translations.text(LauncherText.buttonUpdate),
@@ -195,6 +188,13 @@ class ScreenList extends StatelessWidget {
                     onPressed: () {
                       _updateScreen(index);
                     },
+                  ),
+                  new Flexible(
+                    child: new TextFormField(
+                      controller: _screenNameController[index],
+                      decoration: InputDecoration(
+                          hintText: _translations.text(LauncherText.screenName)),
+                    ),
                   ),
                 ],
               )

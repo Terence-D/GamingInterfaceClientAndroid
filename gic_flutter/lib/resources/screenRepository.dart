@@ -450,45 +450,49 @@ class ScreenRepository {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_cache == null || _cache.length < 1)
-      _load(prefs);
+      await _load(prefs);
 
     String filesPath = (await getApplicationSupportDirectory()).path;
-    _cache.forEach((screen) async {
-      if (screen.screenId == id) {
-        String rawJson = jsonEncode(screen);
-        //store the json data file in the directory
-        File jsonData =new File(path.join(cache.path, "data.json"));
-        await jsonData.writeAsString(rawJson);
-
-        var archive = ZipFileEncoder();
-        archive.create(path.join(exportPath, screen.name + ".zip"));
-        archive.addFile(jsonData);
-        if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
-          File background = new File (path.join(
-            filesPath,
-            path.split(screen.backgroundPath).last,
-          )
-          );
-          archive.addFile(background);
-        }
-        screen.controls.forEach((control) {
-          if (control.primaryImage != null && control.primaryImage.isNotEmpty)
-            archive.addFile(new File (path.join(
-              filesPath,
-              path.split(control.primaryImage).last,
-            )
-            ));
-          if (control.secondaryImage != null && control.secondaryImage.isNotEmpty)
-            archive.addFile(new File (path.join(
-              filesPath,
-              path.split(control.secondaryImage).last,
-            )
-            ));
-        });
-
-        archive.close();
+    for (int i = 0; i < _cache.length; i++) {
+      if (_cache[i].screenId == id) {
+        await _exportScreen(_cache[i], cache, exportPath, filesPath);
         return;
       }
+    }
+  }
+
+  _exportScreen(screen, cache, exportPath, filesPath) async {
+    String rawJson = jsonEncode(screen);
+    //store the json data file in the directory
+    File jsonData =new File(path.join(cache.path, "data.json"));
+    await jsonData.writeAsString(rawJson);
+
+    var archive = ZipFileEncoder();
+    archive.create(path.join(exportPath, screen.name + ".zip"));
+    archive.addFile(jsonData);
+    if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
+      File background = new File (path.join(
+        filesPath,
+        path.split(screen.backgroundPath).last,
+      )
+      );
+      archive.addFile(background);
+    }
+    screen.controls.forEach((control) {
+      if (control.primaryImage != null && control.primaryImage.isNotEmpty)
+        archive.addFile(new File (path.join(
+          filesPath,
+          path.split(control.primaryImage).last,
+        )
+        ));
+      if (control.secondaryImage != null && control.secondaryImage.isNotEmpty)
+        archive.addFile(new File (path.join(
+          filesPath,
+          path.split(control.secondaryImage).last,
+        )
+        ));
     });
+
+    archive.close();
   }
 }

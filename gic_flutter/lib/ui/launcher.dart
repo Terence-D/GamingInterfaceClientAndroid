@@ -39,7 +39,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   IntlLauncher translation;
   LauncherModel _viewModel;
 
-  int newItemId = 0;
+  int newScreenId = -1;
 
   final launcherBloc = LauncherBloc();
 
@@ -130,6 +130,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     } else {
       widgets = Row(children: _widgets(snapshot, orientation));
     }
+    _scrollTo();
     return Scaffold(
       body: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -272,25 +273,23 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
       type: FileType.custom,
       allowedExtensions: ['zip'],
     );
-    newItemId = await launcherBloc.import(file);
-    if (newItemId >= 0) {
-      if (_viewModel.screens.length > 0) {
-        for (int i=0; i < _viewModel.screens.length; i++) {
-          if (_viewModel.screens[i].id == newItemId)
-            _itemScrollController.scrollTo(
-                index: i,
-                duration: Duration(seconds: 2),
-                curve: Curves.easeInOutCubic);
-        }
-      }
-    }
+    newScreenId = await launcherBloc.import(file);
   }
 
   _newScreen() async {
-    await launcherBloc.newScreen();
-    _itemScrollController.scrollTo(
-        index: _viewModel.screens.length-1,
-        duration: Duration(seconds: 2),
-        curve: Curves.easeInOutCubic);
+    newScreenId = await launcherBloc.newScreen();
+  }
+
+  _scrollTo() {
+    if (newScreenId >= 0 && _viewModel.screens.length > 0) {
+      for (int i=0; i < _viewModel.screens.length; i++) {
+        if (_viewModel.screens[i].id == newScreenId)
+          _itemScrollController.scrollTo(
+              index: i,
+              duration: Duration(seconds: 2),
+              curve: Curves.easeInOutCubic);
+      }
+      newScreenId = -1;
+    }
   }
 }

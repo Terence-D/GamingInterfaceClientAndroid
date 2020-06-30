@@ -28,9 +28,11 @@ class LauncherBloc {
     _modelFetcher.close();
   }
 
-  newScreen() async {
-    await _repository.newScreen();
+  Future<int> newScreen() async {
+    int newId = await _repository.newScreen();
     await fetchAllPreferences();
+
+    return newId;
   }
 
 

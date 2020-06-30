@@ -47,6 +47,7 @@ class LauncherRepository {
     LinkedHashMap _screenListMap = await screenRepo.getScreenList();
     if (_screenListMap != null && _screenListMap.length > 0) {
       _screenListMap.forEach((k, v) => viewModel.screens.add(new ScreenListItem(k, v)) );
+      viewModel.screens.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     } else {
       Screen newScreen = new Screen();
       newScreen.screenId = 0;
@@ -145,7 +146,7 @@ class LauncherRepository {
     _prefs.setBool(_prefNightMode, newValue);
   }
 
-  newScreen() async {
+  Future<int> newScreen() async {
     LauncherModel _viewModel = new LauncherModel();
     ScreenRepository screenRepo = await _getScreen(_viewModel);
 
@@ -159,8 +160,10 @@ class LauncherRepository {
     Screen newScreen = new Screen();
     newScreen.screenId = id;
     newScreen.name = "New Screen $id";
-    screenRepo.save(newScreen);
+    await screenRepo.save(newScreen);
     _viewModel.screens.insert(0, new ScreenListItem(newScreen.screenId, newScreen.name));
+
+    return id;
   }
 
   Future<ScreenRepository> _getScreen(LauncherModel _viewModel) async {
