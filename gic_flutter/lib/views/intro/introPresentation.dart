@@ -1,15 +1,13 @@
-import 'dart:convert';
-
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:gic_flutter/model/screen/ScreenRepository.dart';
+import 'package:gic_flutter/resources/screenRepository.dart';
+import 'package:gic_flutter/theme/theme.dart';
 import 'package:gic_flutter/views/intro/screenListWidget.dart';
 import 'package:gic_flutter/views/intro/screenSizeWidget.dart';
-import 'package:gic_flutter/theme/theme.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:toast/toast.dart';
 
 abstract class IntroViewContract {
   void onIntroLoadCompleted(List<PageViewModel> _pages);
@@ -111,7 +109,8 @@ class IntroPresentation {
     ScreenRepository screens = new ScreenRepository();
     await screens.loadFromJson(screenList, device, context);
 
-    Toast.show(Intl.of(context).onboardImportSuccess, context,
-        duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    Fluttertoast.showToast(
+      msg: Intl.of(context).onboardImportSuccess,
+    );
   }
 }

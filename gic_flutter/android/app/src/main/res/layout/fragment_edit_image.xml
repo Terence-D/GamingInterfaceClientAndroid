@@ -41,10 +41,9 @@
         android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/edit_text_width"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/txtWidth"
         app:layout_constraintStart_toStartOf="@+id/txtWidth"
         app:layout_constraintTop_toBottomOf="@+id/btnImage" />
 
@@ -57,6 +56,7 @@
         android:ems="10"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtLeft"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <TextView
@@ -85,11 +85,10 @@
         android:id="@+id/textView14"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/edit_text_height"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/txtHeight"
         app:layout_constraintStart_toStartOf="@+id/txtHeight"
         app:layout_constraintTop_toBottomOf="@+id/txtWidth" />
 
@@ -102,18 +101,20 @@
         android:ems="10"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtTop"
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
     <Button
         android:id="@+id/btnDelete"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:theme="@style/Danger.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/edit_fragment_image_delete"
+        android:theme="@style/Danger.Button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnSave"
         app:layout_constraintTop_toBottomOf="@+id/txtTop" />
 
     <Button
@@ -121,9 +122,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:text="@string/edit_help"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/txtWidth"
+        app:layout_constraintStart_toStartOf="@+id/txtWidth"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button

@@ -6,6 +6,7 @@ class Channel {
 
   static const String actionViewEditor = "editor";
   static const String actionViewStart = "start";
+  static const String actionViewEdit = "edit";
   static const String actionViewManager = "manager";
   static const String actionViewDonate = "donate";
   

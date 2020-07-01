@@ -11,7 +11,7 @@ description: Gaming Interface Client
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.2.0+26029884
+version: 4.3.0+26029884
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -29,10 +29,9 @@ dependencies:
 
   #in_app_purchase: ^0.2.1+3
   shared_preferences: ^0.5.3+1
-  flutter_bloc: ^0.18.3
   equatable: ^0.2.6
   http: ^0.12.0+2
-  toast: ^0.1.5
+  fluttertoast: ^4.0.0
   highlighter_coachmark: ^0.0.3
   introduction_screen: ^1.0.7
   flutter_email_sender: ^2.0.3
@@ -40,9 +39,15 @@ dependencies:
   get_it: ^1.0.3
   sprintf: ^4.0.2
   package_info: ^0.4.0+13
-  flutter_linkify: ^3.0.0
+  flutter_linkify: 3.1.3
   url_launcher: ^5.4.1
-  flutter_file_picker: ^0.0.3
+  rxdart: ^0.24.1
+  archive: ^2.0.13
+  path_provider: ^1.6.10
+  scrollable_positioned_list: ^0.1.6
+  permission_handler: ^5.0.1
+  file_picker: ^1.11.0+3
+  #intent: ^1.3.4
 
 dev_dependencies:
   mockito: 4.1.1
