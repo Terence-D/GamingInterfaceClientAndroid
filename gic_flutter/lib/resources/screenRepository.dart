@@ -222,33 +222,6 @@ class ScreenRepository {
     return importedScreen.screenId;
   }
 
-//  _updateImagePaths(Screen screen, newFilenameId, String filesPath) {
-//    if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
-//      String originalFilename = path.basename(screen.backgroundPath);
-//      String newFilename = _resetPrefix(originalFilename, newFilenameId);
-//      screen.backgroundPath = path.join(filesPath, newFilename);
-//    }
-//    screen.controls.forEach((control) {
-//      if (control.primaryImage != null && control.primaryImage.isNotEmpty) {
-//        String originalFilename = path.basename(control.primaryImage);
-//        String newFilename = _resetPrefix(originalFilename, newFilenameId);
-//        control.primaryImage = path.join(filesPath, newFilename);
-//      }
-//      if (control.secondaryImage != null && control.secondaryImage.isNotEmpty) {
-//        String originalFilename = path.basename(control.secondaryImage);
-//        String newFilename = _resetPrefix(originalFilename, newFilenameId);
-//        control.secondaryImage = path.join(filesPath, newFilename);
-//      }
-//    });
-//  }
-
-////get the ID
-//String name = path.basenameWithoutExtension(control.primaryImage);
-//int id = int.tryParse(name.substring(name.length-1));
-//if (id != null) {
-//
-//}
-
   /// Here we copy the image files stored in cache and move them inside the files
   /// directory, then delete the cached file
   _saveImageFiles(Screen screen, String importLocation, Directory files) {
@@ -289,9 +262,9 @@ class ScreenRepository {
           // 5) add it to the found id's
           // , if so it's a simple
           //change, just change the start of the filename to the new screen id
-          if (path.basenameWithoutExtension(element.path).contains("button_")) {
+          if (element.path.contains("button_")) {
             _renameControl(element, foundButtonIds, screen, files, "button_");
-          } else if (path.basenameWithoutExtension(element.path).contains("switch_")) {
+          } else if (element.path.contains("switch_")) {
             _renameControl(element, foundSwitchIds, screen, files, "switch_");
           }
 
@@ -322,12 +295,16 @@ class ScreenRepository {
         int originalId = oldId; //back it up for later
         //we'll look through and search until we find a no match
         String newFilename = "${fileName.substring(0, separatorPosition+1)}$oldId";
-
-        files.listSync().forEach((element) {
-          if (element.path == newFilename)
+        String searchFor = path.join(files.path, "$newFilename.png");
+        List<FileSystemEntity> dirList = files.listSync();
+        for (int i=0; i <dirList.length; i++) {
+          newFilename = "${fileName.substring(0, separatorPosition+1)}$oldId";
+          searchFor = path.join(files.path, "$newFilename.png");
+          if (dirList[i].path == searchFor) {
             oldId++;
-        });
-
+            i = -1;
+          }
+        }
 
         newFilename = "${fileName.substring(0, separatorPosition+1)}$oldId";
 
@@ -336,10 +313,10 @@ class ScreenRepository {
 
         screen.controls.forEach((control) {
           if (control.primaryImage.contains("$searchParam$oldId")) {
-            control.primaryImage =  path.join(files.path, "$newFilename.png");
+            control.primaryImage =  newFilename;
           }
           if (control.secondaryImage.contains("$searchParam$oldId")) {
-            control.secondaryImage =  path.join(files.path, "$newFilename.png");
+            control.secondaryImage =  newFilename;
           }
         });
         element.copy(newFilename);
@@ -382,8 +359,10 @@ class ScreenRepository {
       for (int i=0; i <dirList.length; i++) {
         newFilename = "$oldId${fileName.substring(separatorPosition)}";
         searchParam = path.join(files.path, "$newFilename.png");
-        if (dirList[i].path == searchParam)
+        if (dirList[i].path == searchParam) {
           oldId++;
+          i = -1;
+        }
       }
     }
     String rv = "$oldId${fileName.substring(separatorPosition)}";
