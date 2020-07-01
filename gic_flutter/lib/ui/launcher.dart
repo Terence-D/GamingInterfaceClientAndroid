@@ -37,6 +37,10 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   final GlobalKey portKey = GlobalKey();
   final GlobalKey passwordKey = GlobalKey();
   final GlobalKey updateKey = GlobalKey();
+  final GlobalKey startKey = GlobalKey();
+  final GlobalKey editKey = GlobalKey();
+  final GlobalKey shareKey = GlobalKey();
+  final GlobalKey deleteKey = GlobalKey();
 
   IntlLauncher translation;
   LauncherModel _viewModel;
@@ -239,7 +243,17 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   void _showHelp() {
     itemScrollController.jumpTo(index: 0);
-    ShowCaseWidget.of(showcaseContext).startShowCase([_fabKey, addressKey, portKey, passwordKey, updateKey]);
+    ShowCaseWidget.of(showcaseContext).startShowCase([
+      _fabKey,
+      addressKey,
+      portKey,
+      passwordKey,
+      updateKey,
+      startKey,
+      editKey,
+      shareKey,
+      deleteKey
+    ]);
   }
 
   void _passwordListener() {

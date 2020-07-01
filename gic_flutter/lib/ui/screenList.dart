@@ -44,15 +44,9 @@ class ScreenList extends StatelessWidget {
   }
 
   Container screenCard(int index, BuildContext context) {
-//    GlobalKey screenCard;
-//    if (index == 0)
-//      screenCard = _screenListKey;
-//    else
-//      screenCard = new GlobalObjectKey("manageScreenList" + index.toString());
     return Container(
         height: 160,
         width: double.maxFinite,
-//        key: screenCard,
         child: Card(
           elevation: 5,
           child:
@@ -68,63 +62,110 @@ class ScreenList extends StatelessWidget {
   }
 
   Container screenButtons(int index, BuildContext context) {
-//    GlobalKey export;
-//    GlobalKey update;
-//    GlobalKey edit;
-//    GlobalKey delete;
-//    if (index == 0) {
-//      export = _screenListExportKey;
-//      update = _screenListUpdateKey;
-//      edit = _screenListEditKey;
-//      delete = _screenListDeleteKey;
-//    } else {
-//      export = new GlobalObjectKey("export" + index.toString());
-//      update = new GlobalObjectKey("update" + index.toString());
-//      edit = new GlobalObjectKey("edit" + index.toString());
-//      delete = new GlobalObjectKey("delete" + index.toString());
-//    }
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            new AccentButton(
-              child: Text(_translations.text(LauncherText.start)),
-//            key: update,
-              onPressed: () {
-                _startGame(index);
-              },
-            ),
-            new IconButton(
-              icon: Icon(Icons.edit),
-              tooltip:_translations.text(LauncherText.buttonEdit),
-//            key: edit,
-              onPressed: () {
-                _editScreen(index);
-              },
-            ),
-            new IconButton(
-              icon: Icon(Icons.share),
-              tooltip: _translations.text(LauncherText.buttonExport),
-//            key: export,
-              onPressed: () {
-                _export(_screens[index].id);
-              },
-            ),
-            new IconButton(
-              color: Theme.of(context).errorColor,
-              icon: Icon(Icons.delete_forever),
-              tooltip: _translations.text(LauncherText.buttonDelete),
-//            key: delete,
-              onPressed: () {
-                _confirmDialog(index, _screens[index].name, context);
-              },
-            ),
+            _startButton(index),
+            _editButton(index),
+            _shareButton(index),
+            _deleteButton(context, index),
           ],
         ),
       ),
     );
+  }
+
+  Widget _innerDeleteButton(BuildContext context, int index) {
+    return new IconButton(
+      color: Theme.of(context).errorColor,
+      icon: Icon(Icons.delete_forever),
+      tooltip: _translations.text(LauncherText.buttonDelete),
+//            key: delete,
+      onPressed: () {
+        _confirmDialog(index, _screens[index].name, context);
+      },
+    );
+  }
+
+  Widget _deleteButton(BuildContext context, int index) {
+    if (index == 0) {
+      return Showcase(
+          key: _parent.deleteKey,
+          title: _translations.text(LauncherText.buttonDelete),
+          description: _translations.text(LauncherText.helpDelete),
+          child: _innerDeleteButton(context, index));
+    } else {
+      return _innerDeleteButton(context, index);
+    }
+  }
+
+  Widget _innerShareButton(int index) {
+    return new IconButton(
+            icon: Icon(Icons.share),
+            tooltip: _translations.text(LauncherText.buttonExport),
+            onPressed: () {
+              _export(_screens[index].id);
+            },
+          );
+  }
+
+  Widget _shareButton(int index) {
+    if (index == 0) {
+      return Showcase(
+          key: _parent.shareKey,
+          title: _translations.text(LauncherText.buttonExport),
+          description: _translations.text(LauncherText.helpExport),
+          child: _innerShareButton(index));
+    } else {
+      return _innerShareButton(index);
+    }
+  }
+
+  Widget _editButton(int index) {
+    if (index == 0) {
+      return Showcase(
+          key: _parent.editKey,
+          title: _translations.text(LauncherText.buttonEdit),
+          description: _translations.text(LauncherText.helpEdit),
+          child: _innerEditButton(index));
+    } else {
+      return _innerEditButton(index);
+    }
+  }
+
+  IconButton _innerEditButton(int index) {
+    return new IconButton(
+            icon: Icon(Icons.edit),
+            tooltip:_translations.text(LauncherText.buttonEdit),
+            onPressed: () {
+              _editScreen(index);
+            },
+          );
+  }
+
+  Widget _startButton(int index) {
+    if (index == 0) {
+      return Showcase(
+          key: _parent.startKey,
+          title: _translations.text(LauncherText.start),
+          description: _translations.text(LauncherText.helpStart),
+          child: _innerStartButton(index));
+    } else {
+      return _innerStartButton(index);
+    }
+  }
+
+  AccentButton _innerStartButton(int index) {
+    return new AccentButton(
+            child: Text(_translations.text(LauncherText.start)),
+//            key: update,
+            onPressed: () {
+              _startGame(index);
+            },
+          );
   }
 
   Future<void> _confirmDialog(int index, String name, BuildContext context) async {
