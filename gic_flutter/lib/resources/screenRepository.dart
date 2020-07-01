@@ -349,13 +349,13 @@ class ScreenRepository {
   }
 
   void _renameImage(File element, Screen screen, Directory files) {
-    String newFilename = _findElementToRename(element, files);
-    String fileName = path.basenameWithoutExtension(element.path);
-    int separatorPosition = fileName.indexOf("_");
-    int oldId = int.tryParse(fileName.substring(0, separatorPosition));
+    String newFilename = path.join(files.path, "${_findElementToRename(element, files)}.png");
+//    String fileName = path.basenameWithoutExtension(element.path);
+//    int separatorPosition = fileName.indexOf("_");
+//    int oldId = int.tryParse(fileName.substring(0, separatorPosition));
     screen.controls.forEach((control) {
-      if (control.primaryImage.contains("$oldId${fileName.substring(separatorPosition)}")) {
-        control.primaryImage = path.join(files.path, "$newFilename.png");
+      if (control.primaryImage.contains(path.basename(element.path))) {
+        control.primaryImage = newFilename;
       }
     });
     element.copy(newFilename);
