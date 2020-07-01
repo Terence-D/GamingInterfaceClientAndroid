@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/bloc/launcherBloc.dart';
 import 'package:gic_flutter/flavor.dart';
 import 'package:gic_flutter/model/channel.dart';
@@ -273,7 +274,13 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
       type: FileType.custom,
       allowedExtensions: ['zip'],
     );
-    newScreenId = await launcherBloc.import(file);
+    if (file != null) {
+      newScreenId = await launcherBloc.import(file);
+      if (newScreenId > 0)
+        Fluttertoast.showToast(
+          msg: translation.text(LauncherText.importComplete),
+        );
+    }
   }
 
   _newScreen() async {

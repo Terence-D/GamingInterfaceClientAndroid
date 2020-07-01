@@ -248,6 +248,9 @@ class ScreenList extends StatelessWidget {
   void _updateScreen(int index) {
     _launcherBloc.updateScreenName (_screens[index].id, _screenNameController[index].text);
     _screens[index].name = _screenNameController[index].text;
+    Fluttertoast.showToast(
+      msg: _translations.text(LauncherText.nameUpdated),
+    );
   }
 
   void _deleteScreen(int index) async {
@@ -260,10 +263,12 @@ class ScreenList extends StatelessWidget {
   Future<void> _export(int id) async {
     if (await Permission.storage.request().isGranted) {
       String exportPath = await FilePicker.getDirectoryPath();
-      await _launcherBloc.export(exportPath, id);
-      Fluttertoast.showToast(
-        msg: _translations.text(LauncherText.exportComplete),
-      );
+      if (exportPath != null && exportPath.isNotEmpty) {
+        await _launcherBloc.export(exportPath, id);
+        Fluttertoast.showToast(
+          msg: _translations.text(LauncherText.exportComplete),
+        );
+      }
     }
   }
 }

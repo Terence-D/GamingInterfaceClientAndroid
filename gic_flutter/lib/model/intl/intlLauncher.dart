@@ -51,7 +51,9 @@ enum LauncherText {
   deleteConfirmTitle,
   deleteComplete,
 
-  exportComplete
+  exportComplete,
+  importComplete,
+  nameUpdated
 }
 
 class IntlLauncher {
@@ -112,6 +114,8 @@ class IntlLauncher {
       LauncherText.menuImport: 'Import',
 
       LauncherText.exportComplete: 'Export completed',
+      LauncherText.importComplete: 'Import completed',
+      LauncherText.nameUpdated: 'Name Updated',
     }
   };
 }
