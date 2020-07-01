@@ -21,9 +21,6 @@ class ScreenRepository {
 
   int defaultBackground = 0xFF383838;
 
-  //when importing, we have to update the filenames
-  String _newPrefix = "screen_";
-
   _load (SharedPreferences prefs) async {
     _cache = new List<Screen>();
 
@@ -176,15 +173,27 @@ class ScreenRepository {
       return -1;
 
     prefs.remove("$_prefsScreen$id");
-    prefs.remove("$_prefsScreen$id" + "_background");
+    prefs.remove("${id}_background");
+    prefs.remove("${id}_background_path");
     prefs.getKeys().forEach((key) {
       if (key.contains("$id" + "_control_"))
         prefs.remove(key);
     });
 
     for (int i=0; i < _cache.length; i++) {
-      if (_cache[i].screenId == id)
+      if (_cache[i].screenId == id) {
+        if (_cache[i].backgroundPath != null && _cache[i].backgroundPath.isNotEmpty) {
+          final File background = new File (_cache[i].backgroundPath);
+          background.delete();
+        }
+        _cache[i].controls.forEach((element) {
+          if (element.primaryImage.contains("_control_")) {
+            final File control = new File (element.primaryImage);
+            control.delete();
+          }
+        });
         _cache.removeAt(i);
+      }
     }
 
     return _cache.length;
