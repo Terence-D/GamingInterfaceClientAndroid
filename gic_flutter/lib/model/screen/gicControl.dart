@@ -1,4 +1,4 @@
-import 'Command.dart';
+import 'command.dart';
 
 class GicControl {
   static const int TYPE_BUTTON = 0;
