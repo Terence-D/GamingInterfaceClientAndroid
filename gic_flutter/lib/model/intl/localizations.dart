@@ -4,13 +4,14 @@ import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
 
 import 'intlAbout.dart';
+import 'intlLauncher.dart';
 import 'intlManage.dart';
 
 class IntlDelegate extends LocalizationsDelegate<Intl> {
   const IntlDelegate();
 
   @override
-  bool isSupported(Locale locale) => ['en', 'es'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => ['en'].contains(locale.languageCode);
 
   @override
   Future<Intl> load(Locale locale) {
@@ -28,6 +29,14 @@ class Intl {
 
   final Locale locale;
 
+
+
+
+
+
+
+
+
   static Intl of(BuildContext context) {
     return Localizations.of<Intl>(context, Intl);
   }
@@ -42,6 +51,10 @@ class Intl {
 
   String manage(ManageText resource) {
     return IntlManage.localizedStrings[locale.languageCode][resource];
+  }
+
+  String launcher(LauncherText resource) {
+    return null;//IntlLauncher.localizedStrings[locale.languageCode][resource];
   }
 
   static Map<String, Map<String, String>> _localized = {

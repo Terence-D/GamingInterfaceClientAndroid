@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/theme/theme.dart';
+import 'package:gic_flutter/ui/launcher.dart';
 import 'package:gic_flutter/views/intro/introPresentation.dart';
-import 'package:gic_flutter/views/main/mainView.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class IntroView extends StatefulWidget{
@@ -70,7 +70,7 @@ class IntroViewState extends State<IntroView> implements IntroViewContract  {
 
   void _onIntroEnd(context) {
     Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => MainView())
+        MaterialPageRoute(builder: (context) => Launcher())
     );
   }
 }

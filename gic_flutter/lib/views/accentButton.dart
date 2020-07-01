@@ -14,8 +14,10 @@ class AccentButton extends StatelessWidget {
       onPressed: onPressed,
       child: child,
       textColor: theme.accentTextTheme.button.color,
-      highlightColor: Color(0xffF44336),
-      color: Color(0xffF44336),
+//      highlightColor: Color(0xffF44336),
+//      color: Color(0xffF44336),
+      highlightColor: theme.accentColor,
+      color: theme.accentColor,
     );
   }
 }
