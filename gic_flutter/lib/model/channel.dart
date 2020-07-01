@@ -4,7 +4,7 @@ class Channel {
   static const String channelUtil = "$_channelName/utils";
   static const String channelView = "$_channelName/views";
 
-  static const String actionViewAbout = "about";
+  static const String actionViewEditor = "editor";
   static const String actionViewStart = "start";
   static const String actionViewEdit = "edit";
   static const String actionViewManager = "manager";
