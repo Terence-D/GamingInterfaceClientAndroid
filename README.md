@@ -16,14 +16,14 @@ Check the Wiki here https://github.com/Terence-D/GamingInterfaceClientAndroid/wi
 
 ## Roadmap
 Here's a rough roadmap of where I'm planning on taking this app.  Nothing is written in stone, this is subject to change:
-4.3:  Rebuild the Main view and Screen Manager View into one, fully Flutter based.  Remove old screens from Java
-4.3.5:  Work on reimagining the Help System I had to temporarily disable for the new view
-4.4:  New sample screens:
-* Trucking
-* Mech
-* Add support for additional tablet size
-4.5: Add Theme Support (may push back to 5.x) and Convert Donate view to Flutter
-4.6: Convert "In Game" screen view to Flutter
-5.0: Convert Editor to Flutter, remove all legacy code
-5.1: Rewrite screen editing completely if not already done in 5.0
-5.2: Support new server features such as allow screen editing on the server
+* 4.3:  Rebuild the Main view and Screen Manager View into one, fully Flutter based.  Remove old screens from Java
+* 4.3.5:  Work on reimagining the Help System I had to temporarily disable for the new view
+* 4.4:  New sample screens:
+** Trucking
+** Mech
+** Add support for additional tablet size
+* 4.5: Add Theme Support (may push back to 5.x) and Convert Donate view to Flutter
+* 4.6: Convert "In Game" screen view to Flutter
+* 5.0: Convert Editor to Flutter, remove all legacy code
+* 5.1: Rewrite screen editing completely if not already done in 5.0
+* 5.2: Support new server features such as allow screen editing on the server
