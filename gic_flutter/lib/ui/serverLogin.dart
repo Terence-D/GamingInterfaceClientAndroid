@@ -3,20 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
+import 'package:gic_flutter/ui/launcher.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class ServerLogin extends StatelessWidget {
 
   final LauncherModel _viewModel;
   final IntlLauncher _translations;
   final Orientation _orientation;
-  final TextEditingController _passwordController;
-  final TextEditingController _addressController;
-  final TextEditingController _portController;
+  final LauncherState _parent;
 
   ServerLogin(
-      this._addressController,
-      this._passwordController,
-      this._portController,
+      this._parent,
       this._viewModel,
       this._translations,
       this._orientation);
@@ -41,31 +39,56 @@ class ServerLogin extends StatelessWidget {
   List<Widget> _serverInput(BuildContext context) {
     return <Widget>[
       bannerRow(context),
-      TextFormField(
-//              key: _addressKey,
-        inputFormatters: [
-          new BlacklistingTextInputFormatter(new RegExp('[\\ ]')),
-        ],
-        controller: _addressController,
-        decoration: InputDecoration(hintText: _translations.text(LauncherText.address)),
-      ),
-      TextFormField(
-//              key: _portKey,
-        controller: _portController,
-        decoration: InputDecoration(hintText: _translations.text(LauncherText.port)),
-      ),
-      TextFormField(
-//              key: _passwordKey,
-        controller: _passwordController,
-        obscureText: true,
-        decoration: InputDecoration(hintText: _translations.text(LauncherText.password)),
-      ),
+      _addressTextWidget(),
+      _portTextWidget(),
+      _passwordTextWidget(),
       Padding(
         padding: EdgeInsets.all(dim.activityMargin),
         child: Text(
             _translations.text(LauncherText.passwordWarning)),
       ),
     ];
+  }
+
+  Widget _passwordTextWidget() {
+    return Showcase(
+        key: _parent.passwordKey,
+        title: _translations.text(LauncherText.password),
+        description: _translations.text(LauncherText.helpPassword),
+        child: TextFormField(
+              controller: _parent.passwordController,
+              obscureText: true,
+              decoration: InputDecoration(hintText: _translations.text(LauncherText.password)),
+            )
+
+    );
+  }
+
+  Widget _portTextWidget() {
+    return Showcase(
+        key: _parent.portKey,
+        title: _translations.text(LauncherText.port),
+        description: _translations.text(LauncherText.helpPort),
+        child: TextFormField(
+          controller: _parent.portController,
+          decoration: InputDecoration(hintText: _translations.text(LauncherText.port)),
+        )
+    );
+  }
+
+  Widget _addressTextWidget() {
+    return Showcase(
+        key: _parent.addressKey,
+        title: _translations.text(LauncherText.address),
+        description: _translations.text(LauncherText.helpIpAddress),
+        child: TextFormField(
+          inputFormatters: [
+          new BlacklistingTextInputFormatter(new RegExp('[\\ ]')),
+          ],
+          controller: _parent.addressController,
+          decoration: InputDecoration(hintText: _translations.text(LauncherText.address)),
+          )
+        );
   }
 
   Row bannerRow(BuildContext context) {

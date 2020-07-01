@@ -16,6 +16,7 @@ import 'package:gic_flutter/ui/serverLogin.dart';
 import 'package:gic_flutter/views/about/aboutView.dart';
 import 'package:gic_flutter/views/intro/introView.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:showcaseview/showcaseview.dart';
 //import 'package:intent/intent.dart' as android_intent;
 //import 'package:intent/action.dart' as android_action;
 //import 'package:intent/extra.dart' as android_extra;
@@ -31,11 +32,11 @@ class Launcher extends StatefulWidget {
 
 class LauncherState extends State<Launcher> { //}with HelpWidget {
 
-  //  final GlobalKey _fabKey = GlobalObjectKey("fab");
-//  final GlobalKey _addressKey = GlobalObjectKey("address");
-//  final GlobalKey _portKey = GlobalObjectKey("port");
-//  final GlobalKey _passwordKey = GlobalObjectKey("password");
-//  final GlobalKey _listKey = GlobalObjectKey("list");
+  final GlobalKey _fabKey = GlobalKey();
+  final GlobalKey addressKey = GlobalKey();
+  final GlobalKey portKey = GlobalKey();
+  final GlobalKey passwordKey = GlobalKey();
+  final GlobalKey updateKey = GlobalKey();
 
   IntlLauncher translation;
   LauncherModel _viewModel;
@@ -44,85 +45,98 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   final launcherBloc = LauncherBloc();
 
-  final TextEditingController _passwordController = new TextEditingController();
-  final TextEditingController _addressController = new TextEditingController();
-  final TextEditingController _portController = new TextEditingController();
-  final ItemScrollController _itemScrollController = ItemScrollController();
-  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
+  final TextEditingController passwordController = new TextEditingController();
+  final TextEditingController addressController = new TextEditingController();
+  final TextEditingController portController = new TextEditingController();
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+
+  BuildContext showcaseContext;
 
   @override
   void initState() {
     super.initState();
     translation = new IntlLauncher(context);
-    _passwordController.addListener(_passwordListener);
+    passwordController.addListener(_passwordListener);
     launcherBloc.fetchAllPreferences();
   }
 
   @override
   void dispose() {
     launcherBloc.dispose();
-    _passwordController.dispose();
-    _portController.dispose();
-    _addressController.dispose();
+    passwordController.dispose();
+    portController.dispose();
+    addressController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _launcherAppBar(),
-      body: StreamBuilder(
-        stream: launcherBloc.preferences,
-        builder: (context, AsyncSnapshot<LauncherModel> snapshot) {
-          if (snapshot.hasData) {
-            return _buildViews(snapshot);
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
-        floatingActionButton: FloatingActionButton.extended(
-//            key: _newKey,
-            onPressed: () {
-              _newScreen();
-            },
-            backgroundColor: Theme.of(context).primaryColor,
-            label: Text(translation.text(LauncherText.buttonNew))
-        )
+    return
+      ShowCaseWidget(
+          builder: Builder(
+              builder : (context) {
+                showcaseContext = context;
+                return Scaffold(
+                    appBar: _launcherAppBar(),
+                    body: StreamBuilder(
+                      stream: launcherBloc.preferences,
+                      builder: (context,
+                          AsyncSnapshot<LauncherModel> snapshot) {
+                        if (snapshot.hasData) {
+                          return _buildViews(snapshot);
+                        } else if (snapshot.hasError) {
+                          return Text(snapshot.error.toString());
+                        }
+                        return Center(child: CircularProgressIndicator());
+                      },
+                    ),
+                    floatingActionButton: _fab(context)
+                );
+              }
+      )
+    );
+  }
+
+  Widget _fab(BuildContext context) {
+    return Showcase(
+        key: _fabKey,
+        title: translation.text(LauncherText.buttonNew),
+        description: translation.text(LauncherText.helpNew),
+        shapeBorder: CircleBorder(),
+        child: FloatingActionButton.extended(
+                onPressed: () {
+                  _newScreen();
+                },
+                backgroundColor: Theme.of(context).primaryColor,
+                label: Text(translation.text(LauncherText.buttonNew))
+            )
     );
   }
 
   List<Widget>  _widgets(snapshot, orientation) {
     return <Widget>[
       ServerLogin(
-        _addressController,
-        _passwordController,
-        _portController,
+        this,
         snapshot.data,
         translation,
         orientation),
       ScreenList(
-        launcherBloc,
-        _addressController,
-        _passwordController,
-        _portController,
+        this,
         snapshot.data.screens,
         translation,
-        _itemScrollController,
-        _itemPositionsListener
       )
     ];
   }
 
   Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
     _viewModel = snapshot.data;
-    _passwordController.text = _viewModel.password;
-    _portController.text = _viewModel.port;
-    _addressController.text = _viewModel.address;
-    _passwordController.selection = TextSelection.fromPosition(TextPosition(offset: _passwordController.text.length));
-    _portController.selection = TextSelection.fromPosition(TextPosition(offset: _portController.text.length));
-    _addressController.selection = TextSelection.fromPosition(TextPosition(offset: _addressController.text.length));
+    passwordController.text = _viewModel.password;
+    portController.text = _viewModel.port;
+    addressController.text = _viewModel.address;
+    passwordController.selection = TextSelection.fromPosition(TextPosition(offset: passwordController.text.length));
+    portController.selection = TextSelection.fromPosition(TextPosition(offset: portController.text.length));
+    addressController.selection = TextSelection.fromPosition(TextPosition(offset: addressController.text.length));
 
     Orientation orientation = MediaQuery.of(context).orientation;
     var widgets;
@@ -143,12 +157,11 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
       leading: Image.asset("assets/images/icons/app_icon.png", fit: BoxFit.cover),
       title: Text(translation.text(LauncherText.toolbarTitle)),
       actions: <Widget>[
-        // action button
-//        IconButton(
-//            icon: Icon(Icons.help_outline),
-//            onPressed: () {
-//              buildHelp();
-//            }),
+        IconButton(
+            icon: Icon(Icons.help_outline),
+            onPressed: () {
+              _showHelp();
+            }),
         // overflow menu
         menuButtons(),
       ],
@@ -188,9 +201,9 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     if (choice.title == translation.text(LauncherText.menuDonate))
       _getNewActivity(Channel.actionViewDonate);
     else if (choice.title == translation.text(LauncherText.menuAbout))
-      _showUi(context, AboutView());
+      _showUi(AboutView());
     else if (choice.title == translation.text(LauncherText.menuIntro)) {
-      _showUi(context, IntroView());
+      _showUi(IntroView());
     }
     else if (choice.title == translation.text(LauncherText.menuImport)) {
       _import();
@@ -220,56 +233,20 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     }
   }
 
-  _showUi(BuildContext context, StatefulWidget ui) {
+  _showUi(StatefulWidget ui) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => ui)); // ManageView()) // AboutView())
   }
 
-
-//  @override
-//  void buildHelp() {
-//    Queue<HighligherHelp> highlights = new Queue();
-//    highlights = new Queue();
-//    highlights.add(new HighligherHelp(
-//        translation.text(LauncherText.helpIpAddress),
-//        _addressKey,
-//        .25,
-//        MainAxisAlignment.center));
-//    highlights.add(new HighligherHelp(
-//        translation.text(LauncherText.helpPort),
-//        _portKey,
-//        1,
-//        MainAxisAlignment.center));
-//    highlights.add(new HighligherHelp(
-//        translation.text(LauncherText.helpPassword),
-//        _passwordKey,
-//        .25,
-//        MainAxisAlignment.center));
-//    highlights.add(new HighligherHelp(
-//        translation.text(LauncherText.helpScreenList),
-//        _listKey,
-//        1,
-//        MainAxisAlignment.end));
-//    highlights.add(new HighligherHelp(
-//        translation.text(LauncherText.helpStart),
-//        _fabKey,
-//        1,
-//        MainAxisAlignment.center));
-//
-//    showHelp();
-//  }
-//
-//  @override
-//  Queue get helpQueue => helpQueue;
-//
-//  @override
-//  String get helpTextNext => translation.text(LauncherText.next);
+  void _showHelp() {
+    itemScrollController.jumpTo(index: 0);
+    ShowCaseWidget.of(showcaseContext).startShowCase([_fabKey, addressKey, portKey, passwordKey, updateKey]);
+  }
 
   void _passwordListener() {
-    _viewModel.password = _passwordController.text;
+    _viewModel.password = passwordController.text;
   }
 
   Future<void> _import() async {
-
     File file = await FilePicker.getFile(
       type: FileType.custom,
       allowedExtensions: ['zip'],
@@ -291,7 +268,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     if (newScreenId >= 0 && _viewModel.screens.length > 0) {
       for (int i=0; i < _viewModel.screens.length; i++) {
         if (_viewModel.screens[i].id == newScreenId)
-          _itemScrollController.scrollTo(
+          itemScrollController.scrollTo(
               index: i,
               duration: Duration(seconds: 2),
               curve: Curves.easeInOutCubic);
