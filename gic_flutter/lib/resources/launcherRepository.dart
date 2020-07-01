@@ -15,13 +15,13 @@ class LauncherRepository {
   static const String _prefPort = "port";
   static const String _prefAddress = "address";
   static const String _prefConvertB = "legacyConvertScreens"; //show the whole intro thing
-  static const String _prefSelectedScreenId = "chosenId";
+//  static const String _prefSelectedScreenId = "chosenId";
   static const String _prefDonate = "coffee";
   static const String _prefDonateStar = "star";
   static const String _prefsScreen = "screen_";
-  static const String _prefsBackgroundSuffix = "_background";
-  static const String _prefsBackgroundPathSuffix = "_background_path";
-  static const String _prefsControl = "_control_";
+//  static const String _prefsBackgroundSuffix = "_background";
+//  static const String _prefsBackgroundPathSuffix = "_background_path";
+//  static const String _prefsControl = "_control_";
 
   Future<LauncherModel> fetch() async {
     _prefs = await SharedPreferences.getInstance();

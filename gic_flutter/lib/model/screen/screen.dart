@@ -1,4 +1,4 @@
-import 'GicControl.dart';
+import 'gicControl.dart';
 
 class Screen {
   static const MAX_CONTROL_SIZE = 800;

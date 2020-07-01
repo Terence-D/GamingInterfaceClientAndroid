@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
 import 'package:flutter/material.dart';
-import 'package:gic_flutter/model/screen/GicControl.dart';
+import 'package:gic_flutter/model/screen/gicControl.dart';
 import 'package:gic_flutter/model/screen/screen.dart';
 import 'package:gic_flutter/views/intro/screenListWidget.dart';
 import 'package:path/path.dart' as path;
@@ -20,9 +20,6 @@ class ScreenRepository {
   String _prefsControl = "_control_";
 
   int defaultBackground = 0xFF383838;
-
-  //when importing, we have to update the filenames
-  String _newPrefix = "screen_";
 
   _load (SharedPreferences prefs) async {
     _cache = new List<Screen>();
@@ -176,15 +173,27 @@ class ScreenRepository {
       return -1;
 
     prefs.remove("$_prefsScreen$id");
-    prefs.remove("$_prefsScreen$id" + "_background");
+    prefs.remove("${id}_background");
+    prefs.remove("${id}_background_path");
     prefs.getKeys().forEach((key) {
       if (key.contains("$id" + "_control_"))
         prefs.remove(key);
     });
 
     for (int i=0; i < _cache.length; i++) {
-      if (_cache[i].screenId == id)
+      if (_cache[i].screenId == id) {
+        if (_cache[i].backgroundPath != null && _cache[i].backgroundPath.isNotEmpty) {
+          final File background = new File (_cache[i].backgroundPath);
+          background.delete();
+        }
+        _cache[i].controls.forEach((element) {
+          if (element.primaryImage.contains("_control_")) {
+            final File control = new File (element.primaryImage);
+            control.delete();
+          }
+        });
         _cache.removeAt(i);
+      }
     }
 
     return _cache.length;
@@ -222,33 +231,6 @@ class ScreenRepository {
     return importedScreen.screenId;
   }
 
-//  _updateImagePaths(Screen screen, newFilenameId, String filesPath) {
-//    if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
-//      String originalFilename = path.basename(screen.backgroundPath);
-//      String newFilename = _resetPrefix(originalFilename, newFilenameId);
-//      screen.backgroundPath = path.join(filesPath, newFilename);
-//    }
-//    screen.controls.forEach((control) {
-//      if (control.primaryImage != null && control.primaryImage.isNotEmpty) {
-//        String originalFilename = path.basename(control.primaryImage);
-//        String newFilename = _resetPrefix(originalFilename, newFilenameId);
-//        control.primaryImage = path.join(filesPath, newFilename);
-//      }
-//      if (control.secondaryImage != null && control.secondaryImage.isNotEmpty) {
-//        String originalFilename = path.basename(control.secondaryImage);
-//        String newFilename = _resetPrefix(originalFilename, newFilenameId);
-//        control.secondaryImage = path.join(filesPath, newFilename);
-//      }
-//    });
-//  }
-
-////get the ID
-//String name = path.basenameWithoutExtension(control.primaryImage);
-//int id = int.tryParse(name.substring(name.length-1));
-//if (id != null) {
-//
-//}
-
   /// Here we copy the image files stored in cache and move them inside the files
   /// directory, then delete the cached file
   _saveImageFiles(Screen screen, String importLocation, Directory files) {
@@ -275,10 +257,11 @@ class ScreenRepository {
         if (path.extension(element.path).toLowerCase() == ".png") {
           //check if it's a background image or control, if so it's a simple
           //change, just change the start of the filename to the new screen id
-          if (path.basenameWithoutExtension(element.path).contains("_background") ||
-              path.basenameWithoutExtension(element.path).contains("_control_")
-          ) {
-            _renameBackgroundOrControl(element, screen, files);
+          if (path.basenameWithoutExtension(element.path).contains("_background")) {
+            _renameBackground(element, screen, files);
+          }
+          if (path.basenameWithoutExtension(element.path).contains("_control_")) {
+            _renameImage(element, screen, files);
           }
           // check if it's a button or switch, if so:
           // 1) check foundIds to see if we updated it already
@@ -288,9 +271,9 @@ class ScreenRepository {
           // 5) add it to the found id's
           // , if so it's a simple
           //change, just change the start of the filename to the new screen id
-          if (path.basenameWithoutExtension(element.path).contains("button_")) {
+          if (element.path.contains("button_")) {
             _renameControl(element, foundButtonIds, screen, files, "button_");
-          } else if (path.basenameWithoutExtension(element.path).contains("switch_")) {
+          } else if (element.path.contains("switch_")) {
             _renameControl(element, foundSwitchIds, screen, files, "switch_");
           }
 
@@ -321,18 +304,28 @@ class ScreenRepository {
         int originalId = oldId; //back it up for later
         //we'll look through and search until we find a no match
         String newFilename = "${fileName.substring(0, separatorPosition+1)}$oldId";
-        while (files.listSync().contains(newFilename)) {
-          oldId++;
+        String searchFor = path.join(files.path, "$newFilename.png");
+        List<FileSystemEntity> dirList = files.listSync();
+        for (int i=0; i <dirList.length; i++) {
           newFilename = "${fileName.substring(0, separatorPosition+1)}$oldId";
+          searchFor = path.join(files.path, "$newFilename.png");
+          if (dirList[i].path == searchFor) {
+            oldId++;
+            i = -1;
+          }
         }
+
+        newFilename = "${fileName.substring(0, separatorPosition+1)}$oldId";
+
         //found a new id, update file and references
         newFilename =  path.join(files.path, "$newFilename.png");
+
         screen.controls.forEach((control) {
           if (control.primaryImage.contains("$searchParam$oldId")) {
-            control.primaryImage = newFilename;
+            control.primaryImage =  newFilename;
           }
           if (control.secondaryImage.contains("$searchParam$oldId")) {
-            control.secondaryImage = newFilename;
+            control.secondaryImage =  newFilename;
           }
         });
         element.copy(newFilename);
@@ -341,7 +334,27 @@ class ScreenRepository {
     }
   }
 
-  void _renameBackgroundOrControl(File element, Screen screen, Directory files) {
+  void _renameImage(File element, Screen screen, Directory files) {
+    String newFilename = path.join(files.path, "${_findElementToRename(element, files)}.png");
+//    String fileName = path.basenameWithoutExtension(element.path);
+//    int separatorPosition = fileName.indexOf("_");
+//    int oldId = int.tryParse(fileName.substring(0, separatorPosition));
+    screen.controls.forEach((control) {
+      if (control.primaryImage.contains(path.basename(element.path))) {
+        control.primaryImage = newFilename;
+      }
+    });
+    element.copy(newFilename);
+  }
+
+  void _renameBackground(File element, Screen screen, Directory files) {
+    String newFilename = _findElementToRename(element, files);
+    screen.backgroundPath = path.join(files.path, "$newFilename.png");
+    element.copy(screen.backgroundPath);
+  }
+
+  //common code for renaming background / image
+  String _findElementToRename(element, files) {
     //find first instance of a _
     String fileName = path.basenameWithoutExtension(element.path);
     int separatorPosition = fileName.indexOf("_");
@@ -350,65 +363,20 @@ class ScreenRepository {
     if (oldId != null) {
       String newFilename = "$oldId${fileName.substring(separatorPosition)}";
       //we'll look through and search until we find a no match
-      while (files.listSync().contains(newFilename)) {
-        oldId++;
+      String searchParam = path.join(files.path, "$newFilename.png");
+      List<FileSystemEntity> dirList = files.listSync();
+      for (int i=0; i <dirList.length; i++) {
         newFilename = "$oldId${fileName.substring(separatorPosition)}";
+        searchParam = path.join(files.path, "$newFilename.png");
+        if (dirList[i].path == searchParam) {
+          oldId++;
+          i = -1;
+        }
       }
-      screen.backgroundPath = path.join(files.path, "$newFilename.png");
-      element.copy(screen.backgroundPath);
     }
+    String rv = "$oldId${fileName.substring(separatorPosition)}";
+    return rv;
   }
-
-//
-//  int getNewBackground() {
-//    // Let's first make sure that id is unused
-//    //keep looping until we get a success
-//    bool uniqueId = true;
-//    while (uniqueId) {
-//      uniqueId = false; //reset
-//      files.listSync().forEach((entity) {
-//        if (entity is File) {
-//          String fileName = path.basenameWithoutExtension(entity.path).toLowerCase();
-//          //possible file formats are X_background or button_X, search for X at
-//          //start and finish
-//          if (fileName.startsWith(screenId.toString()) ||
-//              fileName.endsWith(screenId.toString())) {
-//            screenId++;
-//            uniqueId = true; //uhoh, lets try again
-//          }
-//        }
-//      });
-//    }
-//
-//    //ok we have a unique ID now we can rename the files with
-//    //this is the prefix we're adding to the files: 'screen_X_
-//    cache.listSync(recursive: true).forEach((entity) {
-//      if (entity is File && path.extension(entity.path) == ".png") {
-//        String newFilename = path.basename(entity.path);
-//        //it's possible this has been used in import/export before, lets check
-//        newFilename = _resetPrefix(newFilename, screenId);
-//        //ok now we append a new prefix
-//        entity.copy(path.join(filesPath, newFilename));
-//        entity.delete();
-//      }
-//    });
-//
-//    //return the possibly updated screen id, which is used for the filenames
-//    return screenId;
-//  }
-
-//  /// This is used to take a filename and strip any existing screen_prefix we have
-//  String _resetPrefix(String newFilename, int screenId) {
-//    if (newFilename.startsWith(_newPrefix)) {
-//      //strip the prefix and the next number and '_'
-//      newFilename = newFilename.substring(_newPrefix.length);
-//      //now strip the number and '_'
-//      int endOfPrefix = newFilename.indexOf('_');
-//      newFilename = newFilename.substring(endOfPrefix);
-//    }
-//    newFilename = "$_newPrefix${screenId}_$newFilename";
-//    return newFilename;
-//  }
 
   /// Extracts the supplied ZIP file to a temporary location
   void _extractZipFiles(File file, String tempPath) {
