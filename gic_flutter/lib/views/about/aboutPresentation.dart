@@ -21,6 +21,7 @@ class AboutPresentation implements BasePresentation {
     _viewModel.emailTo = Intl.of(context).about(AboutText.emailTo);
     _viewModel.libraryTitle = Intl.of(context).about(AboutText.libraryTitle);
     _viewModel.versionText = await _buildVersion(context);
+    _viewModel.appName = await _appName(context);
 
     _viewModel.legal = new ViewSection(
       Intl.of(context).about(AboutText.legalTitle),
@@ -45,6 +46,11 @@ class AboutPresentation implements BasePresentation {
     String buildNumber = packageInfo.buildNumber;
 
     return "${Intl.of(context).about(AboutText.versionText)} $version ($buildNumber)";
+  }
+
+  Future<String> _appName(BuildContext context) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    return packageInfo.appName;
   }
 
   List<ViewSection> _buildThirdPartyLibraries(BuildContext context) {

@@ -4,6 +4,7 @@ import 'package:gic_flutter/model/viewModel.dart';
 import 'package:gic_flutter/model/viewSection.dart';
 
 class AboutVM implements ViewModel {
+  String appName = " ";
   String toolbarTitle = " ";
   String versionText = "";
   String libraryTitle = "";
