@@ -2,6 +2,7 @@ package ca.coffeeshopstudio.gaminginterfaceclient
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.preference.PreferenceManager
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
@@ -27,8 +28,9 @@ class MainActivity: FlutterActivity() {
     const val actionDecrypt = "decrypt"
     const val actionEncrypt = "encrypt"
     const val actionGetSettings = "settings/get"
-    const val actionUpdateDarkMode = "darkmode/set";
-    const val actionUtilUpdateScreens = "screens/upgrade";
+    const val actionGetDownloadFolder = "downloadFolder"
+    const val actionUpdateDarkMode = "darkmode/set"
+    const val actionUtilUpdateScreens = "screens/upgrade"
   }
 
   private lateinit var _result: MethodChannel.Result
@@ -99,6 +101,9 @@ class MainActivity: FlutterActivity() {
         actionGetSettings -> {
           val keys = loadLegacyPreferences();
           result.success(keys)
+        }
+        actionGetDownloadFolder -> {
+          result.success(Environment.getExternalStorageDirectory().absolutePath);
         }
         actionUpdateDarkMode -> {
           val defaultPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)

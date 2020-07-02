@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
+import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,6 +10,7 @@ import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
 import 'package:gic_flutter/ui/launcher.dart';
 import 'package:gic_flutter/views/accentButton.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -70,7 +74,7 @@ class ScreenList extends StatelessWidget {
           children: <Widget>[
             _startButton(index),
             _editButton(index),
-            _shareButton(index),
+            _shareButton(index, context),
             _deleteButton(context, index),
           ],
         ),
@@ -102,25 +106,25 @@ class ScreenList extends StatelessWidget {
     }
   }
 
-  Widget _innerShareButton(int index) {
+  Widget _innerShareButton(int index, BuildContext context) {
     return new IconButton(
             icon: Icon(Icons.share),
             tooltip: _translations.text(LauncherText.buttonExport),
             onPressed: () {
-              _export(_screens[index].id);
+              _export(context, _screens[index].id);
             },
           );
   }
 
-  Widget _shareButton(int index) {
+  Widget _shareButton(int index, BuildContext context) {
     if (index == 0) {
       return Showcase(
           key: _parent.shareKey,
           title: _translations.text(LauncherText.buttonExport),
           description: _translations.text(LauncherText.helpExport),
-          child: _innerShareButton(index));
+          child: _innerShareButton(index, context));
     } else {
-      return _innerShareButton(index);
+      return _innerShareButton(index, context);
     }
   }
 
@@ -309,9 +313,29 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  Future<void> _export(int id) async {
+  Future<void> _export(BuildContext context, int id) async {
+    const platform = const MethodChannel(Channel.channelUtil);
+    String externalPath;
+    try {
+      externalPath = await platform.invokeMethod(Channel.actionGetDownloadFolder);
+    } on PlatformException catch (_) {
+      externalPath = "";
+    }
+
+
     if (await Permission.storage.request().isGranted) {
-      String exportPath = await FilePicker.getDirectoryPath();
+      Directory externalDirectory = Directory(externalPath);
+      String exportPath = await FilesystemPicker.open(
+        title: 'Save to folder',
+        context: context,
+        rootDirectory: externalDirectory,
+        fsType: FilesystemType.folder,
+        pickText: 'Save file to this folder',
+      );
+
+      //List<Directory> externalStorageDirectory = await getExternalStorageDirectories(type: StorageDirectory.downloads);
+      //String exportPath =  (await getExternalStorageDirectory()).path;//externalStorageDirectory[0].path;
+
       if (exportPath != null && exportPath.isNotEmpty) {
         await _parent.launcherBloc.export(exportPath, id);
         Fluttertoast.showToast(
