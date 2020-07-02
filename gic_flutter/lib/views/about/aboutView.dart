@@ -45,14 +45,15 @@ class AboutViewState extends BaseState<AboutView> {
         body: SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.all(dim.activityMargin),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                header(viewModel.appName, Theme.of(context).textTheme.headline4),
                 Text(viewModel.versionText),
                 link(viewModel.url),
-                section(viewModel.server),
+                section(viewModel.server, centered: true),
+                section(viewModel.legal, centered: true),
                 header(viewModel.libraryTitle),
                 _libraries(viewModel.libraries),
-                section(viewModel.legal),
               ],
             ),
           ),
@@ -77,7 +78,7 @@ class AboutViewState extends BaseState<AboutView> {
     if (sections != null) {
       List<Widget> widgets = new List<Widget>();
       TextStyle textStyle = Theme.of(context).textTheme.subtitle1;
-      sections.forEach((s) => widgets.add(section(s, textStyle)));
+      sections.forEach((s) => widgets.add(section(s, optionalHeaderStyle: textStyle)));
 
       return Column(crossAxisAlignment: CrossAxisAlignment.start,
           children: widgets,

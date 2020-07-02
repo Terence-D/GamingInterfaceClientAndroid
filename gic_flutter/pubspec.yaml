@@ -28,16 +28,13 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   #in_app_purchase: ^0.2.1+3
-  shared_preferences: ^0.5.3+1
-  equatable: ^0.2.6
+  shared_preferences: '>=0.5.7+3 <2.0.0'
   http: ^0.12.0+2
   fluttertoast: ^4.0.0
-  highlighter_coachmark: ^0.0.3
   introduction_screen: ^1.0.7
   flutter_email_sender: ^2.0.3
   device_info: ^0.4.0+4
   get_it: ^1.0.3
-  sprintf: ^4.0.2
   package_info: ^0.4.0+13
   flutter_linkify: 3.1.3
   url_launcher: ^5.4.11
