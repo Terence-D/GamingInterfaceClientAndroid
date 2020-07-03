@@ -23,7 +23,7 @@ class ScreenRepository {
 
   _load (SharedPreferences prefs) async {
     _cache = new List<Screen>();
-
+    await prefs.reload();
     Set<String> keys = prefs.getKeys();
 
     keys.forEach((key) {
@@ -119,7 +119,7 @@ class ScreenRepository {
   loadFromJson(List<ScreenItem> screens, String device, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (_cache == null || _cache.length < 1)
-      _load(prefs);
+      await _load(prefs);
 
     //the name will have spaces, but the asset file does not.  so turn Large Tablet into LargeTablet
     device = device.replaceAll(" ", ""); //remove spaces
@@ -214,7 +214,7 @@ class ScreenRepository {
 
     // now we need to get a new ID and Name, as the existing one is probably taken
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _load(prefs);
+    await _load(prefs);
     importedScreen.name = _findUniqueName(importedScreen.name);
     importedScreen.screenId = _findUniqueId();
     _cache = null; //invalidate the cache
