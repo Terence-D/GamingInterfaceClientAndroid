@@ -1,4 +1,6 @@
-- Small bugfix updates
-- Updated About view
-- Tweaked Main view
-- Initial Splash view is dark theme - feedback welcome!
+- Revamped the Main view - integrated the Screen Manager, improved look for tablets
+- Heavily revamped Sharing of Screens
+- Fixed Image widget editing
+- Updated Help system
+- Bug Fixes
+- Improved About view
