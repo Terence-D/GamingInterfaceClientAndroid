@@ -6,14 +6,26 @@ import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/ui/launcher.dart';
 import 'package:showcaseview/showcaseview.dart';
 
-class ServerLogin extends StatelessWidget {
+class ServerLogin extends StatefulWidget {
+  final LauncherModel _viewModel;
+  final IntlLauncher _translations;
+  final Orientation _orientation;
+  final LauncherState _parent;
+
+  const ServerLogin(this._parent, this._viewModel, this._translations, this._orientation);
+
+  @override
+  State<StatefulWidget> createState() => _ServerLoginState(_parent, _viewModel, _translations, _orientation);
+}
+
+class _ServerLoginState extends State<ServerLogin> {
 
   final LauncherModel _viewModel;
   final IntlLauncher _translations;
   final Orientation _orientation;
   final LauncherState _parent;
 
-  ServerLogin(
+  _ServerLoginState(
       this._parent,
       this._viewModel,
       this._translations,

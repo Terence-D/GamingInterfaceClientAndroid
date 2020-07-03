@@ -52,7 +52,10 @@ enum AboutText {
   filePickerUrl,
   showcaseviewTitle,
   showcaseviewText,
-  showcaseviewUrl
+  showcaseviewUrl,
+  fileSystemPickerTitle,
+  fileSystemPickerText,
+  fileSystemPickerUrl,
 }
 
 class IntlAbout {
@@ -64,7 +67,7 @@ class IntlAbout {
       AboutText.url: 'https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki',
 
       AboutText.legalTitle: 'Legal',
-      AboutText.legalText: 'GIC Client (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2019 Terence Doerksen',
+      AboutText.legalText: 'GIC Client (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2020 Terence Doerksen',
       AboutText.legalUrl: 'http://www.apache.org/licenses/LICENSE-2.0',
 
       AboutText.serverTitle: 'Server',
@@ -115,8 +118,10 @@ class IntlAbout {
       AboutText.filePickerUrl: 'https://github.com/miguelpruivo/flutter_file_picker',
       AboutText.showcaseviewTitle: 'showcaseview by developer@simform.com',
       AboutText.showcaseviewText: 'Licensed under the BSD license',
-      AboutText.showcaseviewUrl: 'https://github.com/simformsolutions/flutter_showcaseview/blob/master/LICENSE'
-
+      AboutText.showcaseviewUrl: 'https://github.com/simformsolutions/flutter_showcaseview/blob/master/LICENSE',
+      AboutText.fileSystemPickerTitle: 'filesystem_picker by chentsov@gmail.com',
+      AboutText.fileSystemPickerText: 'Licensed under the BSD license',
+      AboutText.fileSystemPickerUrl: 'https://github.com/andyduke/filesystem_picker/blob/master/LICENSE',
     }
   };
 }

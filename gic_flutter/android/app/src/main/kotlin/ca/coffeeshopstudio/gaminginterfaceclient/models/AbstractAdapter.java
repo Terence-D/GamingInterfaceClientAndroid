@@ -32,6 +32,7 @@ import ca.coffeeshopstudio.gaminginterfaceclient.R;
  */
 public abstract class AbstractAdapter extends BaseAdapter {
     private int customCount;
+    private String[] customFiles;
     private Context context;
     private LayoutInflater inflater;
     private String imagePrefix;
@@ -98,8 +99,9 @@ public abstract class AbstractAdapter extends BaseAdapter {
                 holder.textView.setText(R.string.item_grid_text_image);
             //show "add" item
         } else if (position <= getCustomCount() + 1) {
+            //show a custom image
             holder.textView.setVisibility(View.GONE);
-            String path = context.getFilesDir() + "/" + imagePrefix + "_" + (position - 2) + ".png";
+            String path = context.getFilesDir() + "/" + customFiles[position - 2];
             Picasso.get().setLoggingEnabled(true);
             Picasso.get()
                     .load(new File(path))
@@ -116,7 +118,8 @@ public abstract class AbstractAdapter extends BaseAdapter {
                             holder.imageView.setVisibility(View.INVISIBLE);
                         }
                     });
-        } else { //if (position - getCustomCount() <= getBuiltInResources().length + 1) {
+        } else {
+            //built in
             holder.textView.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
             holder.imageView.setImageResource(getBuiltInResources()[position - getCustomCount() - 2]);
@@ -124,6 +127,10 @@ public abstract class AbstractAdapter extends BaseAdapter {
         }
 
         return view;
+    }
+
+    public void setCustomFiles(String[] customFiles) {
+        this.customFiles = customFiles;
     }
 
     class ViewHolder {

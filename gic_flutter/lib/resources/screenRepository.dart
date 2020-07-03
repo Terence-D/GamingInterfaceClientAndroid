@@ -289,7 +289,7 @@ class ScreenRepository {
     if (oldId != null) {
       //check if we've seen this before
       if (foundIds.containsKey(oldId)) {
-        String newFilename = "${fileName.substring(0, separatorPosition)}_${foundIds[oldId]}";
+        String newFilename = "${fileName.substring(0, separatorPosition+1)}_${foundIds[oldId]}";
         //found before, so just update references
         screen.controls.forEach((control) {
           if (control.primaryImage.contains("${searchParam}_$oldId")) {
@@ -321,10 +321,10 @@ class ScreenRepository {
         newFilename =  path.join(files.path, "$newFilename.png");
 
         screen.controls.forEach((control) {
-          if (control.primaryImage.contains("$searchParam$oldId")) {
+          if (control.primaryImage.contains("${searchParam}_$oldId")) {
             control.primaryImage =  newFilename;
           }
-          if (control.secondaryImage.contains("$searchParam$oldId")) {
+          if (control.secondaryImage.contains("${searchParam}_$oldId")) {
             control.secondaryImage =  newFilename;
           }
         });

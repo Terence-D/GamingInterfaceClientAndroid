@@ -62,6 +62,8 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     super.initState();
     translation = new IntlLauncher(context);
     passwordController.addListener(_passwordListener);
+    addressController.addListener(_addressListener);
+    portController.addListener(_portListener);
     launcherBloc.fetchAllPreferences();
   }
 
@@ -258,6 +260,14 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   void _passwordListener() {
     _viewModel.password = passwordController.text;
+  }
+
+  void _addressListener() {
+    _viewModel.address = addressController.text;
+  }
+
+  void _portListener() {
+    _viewModel.port = portController.text;
   }
 
   Future<void> _import() async {
