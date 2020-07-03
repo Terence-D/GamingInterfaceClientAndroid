@@ -17,7 +17,6 @@ Check the Wiki here https://github.com/Terence-D/GamingInterfaceClientAndroid/wi
 ## Roadmap
 Here's a rough roadmap of where I'm planning on taking this app.  Nothing is written in stone, this is subject to change:
 * 4.3:  Rebuild the Main view and Screen Manager View into one, fully Flutter based.  Remove old screens from Java
-* 4.3.5:  Work on reimagining the Help System I had to temporarily disable for the new view
 * 4.4:  New sample screens:
 ** Trucking
 ** Mech
