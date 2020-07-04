@@ -2,13 +2,13 @@ package ca.coffeeshopstudio.gaminginterfaceclient
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.preference.PreferenceManager
-import androidx.core.util.forEach
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
 import ca.coffeeshopstudio.gaminginterfaceclient.views.DonateActivity
 import ca.coffeeshopstudio.gaminginterfaceclient.views.GameActivity
-import ca.coffeeshopstudio.gaminginterfaceclient.views.screenmanager.ScreenManagerActivity
+import ca.coffeeshopstudio.gaminginterfaceclient.views.edit.EditActivity
 import io.flutter.app.FlutterActivity
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
@@ -21,17 +21,16 @@ class MainActivity: FlutterActivity() {
     const val channelUtil = "$channelName/utils"
     const val channelView = "$channelName/views"
 
-    const val actionAbout = "about"
     const val actionDonate = "donate"
     const val actionStart = "start"
-    const val actionManager = "manager"
+    const val actionEdit = "edit"
 
     const val actionDecrypt = "decrypt"
     const val actionEncrypt = "encrypt"
-    const val actionGetScreens = "screens/get"
     const val actionGetSettings = "settings/get"
-    const val actionUpdateDarkMode = "darkmode/set";
-    const val actionUtilUpdateScreens = "screens/upgrade";
+    const val actionGetDownloadFolder = "downloadFolder"
+    const val actionUpdateDarkMode = "darkmode/set"
+    const val actionUtilUpdateScreens = "screens/upgrade"
   }
 
   private lateinit var _result: MethodChannel.Result
@@ -53,6 +52,13 @@ class MainActivity: FlutterActivity() {
           startActivity(intent)
           result.success(true)
         }
+        actionEdit-> {
+          val screen: Int? = call.argument("selectedScreenId")
+          val intent = Intent(this, EditActivity::class.java)
+          intent.putExtra("screenId", screen)
+          startActivity(intent)
+          result.success(true)
+        }
         actionStart-> {
           val password = CryptoHelper.encrypt (call.argument("password"))
           val address: String? = call.argument("address")
@@ -62,12 +68,7 @@ class MainActivity: FlutterActivity() {
           intent.putExtra("password", password)
           intent.putExtra("address", address)
           intent.putExtra("port", port)
-          intent.putExtra("screen_index", screen)
-          startActivity(intent)
-          result.success(true)
-        }
-        actionManager -> {
-          val intent = Intent(this, ScreenManagerActivity::class.java)
+          intent.putExtra("screenId", screen)
           startActivity(intent)
           result.success(true)
         }
@@ -97,17 +98,12 @@ class MainActivity: FlutterActivity() {
           val encrypted = CryptoHelper.encrypt(call.argument("password"))
           result.success(encrypted)
         }
-        actionGetScreens -> {
-          val screenRepository = ScreenRepository(applicationContext)
-          val screenList = screenRepository.screenListGetterSync(applicationContext)
-
-          val returnValue = HashMap<Int, String>()
-          screenList.forEach { key, value -> returnValue.put(key, value) }
-          result.success(returnValue)
-        }
         actionGetSettings -> {
           val keys = loadLegacyPreferences();
           result.success(keys)
+        }
+        actionGetDownloadFolder -> {
+          result.success(Environment.getExternalStorageDirectory().absolutePath);
         }
         actionUpdateDarkMode -> {
           val defaultPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)

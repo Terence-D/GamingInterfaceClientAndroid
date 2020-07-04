@@ -17,7 +17,7 @@ class AboutView extends BasePage {
 }
 
 class AboutViewState extends BaseState<AboutView> {
-  AboutVM viewModel;
+  AboutVM viewModel = new AboutVM();
 
   @override
   void initState() {
@@ -34,22 +34,26 @@ class AboutViewState extends BaseState<AboutView> {
 
   @override
   Widget build(BuildContext context) {
+    String title = " ";
+    if (viewModel != null)
+      title = viewModel.toolbarTitle;
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
-          title: Text(viewModel.toolbarTitle),
+          title: Text(title),
         ),
         body: SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.all(dim.activityMargin),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
+                header(viewModel.appName, Theme.of(context).textTheme.headline4),
                 Text(viewModel.versionText),
                 link(viewModel.url),
-                section(viewModel.server),
+                section(viewModel.server, centered: true),
+                section(viewModel.legal, centered: true),
                 header(viewModel.libraryTitle),
                 _libraries(viewModel.libraries),
-                section(viewModel.legal),
               ],
             ),
           ),
@@ -71,13 +75,18 @@ class AboutViewState extends BaseState<AboutView> {
   }
 
   Widget _libraries(List<ViewSection> sections) {
-    List<Widget> widgets = new List<Widget>();
-    TextStyle textStyle = Theme.of(context).textTheme.subhead;
-    sections.forEach((s) => widgets.add(section(s, textStyle)));
+    if (sections != null) {
+      List<Widget> widgets = new List<Widget>();
+      TextStyle textStyle = Theme.of(context).textTheme.subtitle1;
+      sections.forEach((s) => widgets.add(section(s, optionalHeaderStyle: textStyle)));
 
-    return Column(crossAxisAlignment: CrossAxisAlignment.start,
-      children: widgets,
-    );
+      return Column(crossAxisAlignment: CrossAxisAlignment.start,
+          children: widgets,
+      );
+    }
+    return Column();
   }
 
+
+  noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

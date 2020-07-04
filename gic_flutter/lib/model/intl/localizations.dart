@@ -4,12 +4,14 @@ import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
 
 import 'intlAbout.dart';
+import 'intlLauncher.dart';
+import 'intlManage.dart';
 
 class IntlDelegate extends LocalizationsDelegate<Intl> {
   const IntlDelegate();
 
   @override
-  bool isSupported(Locale locale) => ['en', 'es'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => ['en'].contains(locale.languageCode);
 
   @override
   Future<Intl> load(Locale locale) {
@@ -31,12 +33,16 @@ class Intl {
     return Localizations.of<Intl>(context, Intl);
   }
 
-  String getText(String resource) {
-    return _localized[locale.languageCode][resource];
-  }
-
   String about(AboutText resource) {
     return IntlAbout.localizedStrings[locale.languageCode][resource];
+  }
+
+  String manage(ManageText resource) {
+    return IntlManage.localizedStrings[locale.languageCode][resource];
+  }
+
+  String launcher(LauncherText resource) {
+    return null;//IntlLauncher.localizedStrings[locale.languageCode][resource];
   }
 
   static Map<String, Map<String, String>> _localized = {
@@ -58,16 +64,9 @@ class Intl {
       'mainOutOfDate': 'The GIC Server appears to be out of date - please upgrade to the latest version by clicking on the "Website" link on the server.  If you did not yet install the server, click the Help button',
       'mainClose': 'Close',
       'mainNext': 'Next',
-      'mainHelpIpAddress': 'IP Address: The network address of the computer running the server.  This can be found in Windows 10 by going into Settings, then Network and Internet, and usually starts with "192"',
-      'mainHelpPassword': 'Password: this has to match on the server as well, and is used to provide some security',
       'mainHelpScreenList': 'Screen List: This will let you select different screens you have created to use',
       'mainHelpScreenManager': 'Manager: Tapping on this will open up the Screen Manager where you can create, edit, delete, and import/export other screens',
       'mainHelpStart': 'Start: Tapping this will connect to the server and let you start with the screen you\'ve selected',
-
-      'menuTheme': 'Toggle Theme',
-      'menuIntro': 'Show Intro',
-      'menuAbout': 'About',
-      'menuDonate': 'Donate',
 
       'onboardIntroTitle': 'Welcome!',
       'onboardIntroDesc': 'Thank you for installing GIC - this app allows you to create unique screens to send commands to an app on your computer.  No need to memorize keyboard shortcuts!  Click on the ? icons in the app for help!',
@@ -86,41 +85,14 @@ class Intl {
       'onboardOldAndroidDesc': 'You are running an older version of Android.  Certain functions are disabled (such as import/export) for now.  This may change if I can find the time to work around the limitations.',
       'onboardSupportTitle': 'Support',
       'onboardSupportDesc': 'Although this app is completely free and open source (and will remain as such!), if you like the app and wish to support development, I appreciate any support you can provide.  There is a Donate menu option for more information.  Thank you :)',
-      'onboardImportSuccess': 'Import Complete!'
+      'onboardImportSuccess': 'Import Complete!',
     }
   };
-
-  static String get menuTheme { return 'menuTheme'; }
-  static String get menuIntro { return 'menuIntro'; }
-  static String get menuAbout { return 'menuAbout'; }
-  static String get menuDonate { return 'menuDonate'; }
-
-  static String get mainPasswordError { return 'mainPasswordError'; }
-  static String get mainInvalidPort { return 'mainInvalidPort'; }
-  static String get mainFirewallError { return 'mainFirewallError'; }
-  static String get mainInvalidServerError
-  { return 'mainInvalidServerError'; }
 
   //useful where context is available.. as above i should do this for all
   //String get menuTheme { return _localized[locale.languageCode]['menuTheme'];}
 
   String get title { return _localized[locale.languageCode]['title']; }
-  String get mainAddress { return _localized[locale.languageCode]['mainAddress']; }
-  String get mainPassword { return _localized[locale.languageCode]['mainPassword']; }
-  String get mainPort { return _localized[locale.languageCode]['mainPort']; }
-  String get mainPasswordWarning { return _localized[locale.languageCode]['mainPasswordWarning']; }
-  String get mainScreenManager { return _localized[locale.languageCode]['mainScreenManager']; }
-  String get mainErrorNoScreen { return _localized[locale.languageCode]['mainErrorNoScreen']; }
-  String get mainStart { return _localized[locale.languageCode]['mainStart']; }
-  String get mainWrongVersion { return _localized[locale.languageCode]['mainWrongVersion']; }
-  String get mainOutOfDate { return _localized[locale.languageCode]['mainOutOfDate']; }
-  String get mainClose { return _localized[locale.languageCode]['mainClose']; }
-  String get mainHelpIpAddress { return _localized[locale.languageCode]['mainHelpIpAddress']; }
-  String get mainHelpPassword { return _localized[locale.languageCode]['mainHelpPassword']; }
-  String get mainHelpScreenList { return _localized[locale.languageCode]['mainHelpScreenList']; }
-  String get mainHelpScreenManager { return _localized[locale.languageCode]['mainHelpScreenManager']; }
-  String get mainHelpStart { return _localized[locale.languageCode]['mainHelpStart']; }
-  String get mainNext { return _localized[locale.languageCode]['mainNext']; }
 
   String get onboardSkip { return _localized[locale.languageCode]['onboardSkip']; }
   String get onboardDone { return _localized[locale.languageCode]['onboardDone']; }

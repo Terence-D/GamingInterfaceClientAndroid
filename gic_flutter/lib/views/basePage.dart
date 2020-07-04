@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:gic_flutter/model/viewModel.dart';
@@ -27,23 +28,26 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
     super.didChangeDependencies();
   }
 
-  void onLoadComplete(ViewModel viewModel);
-
+//  void onLoadComplete(ViewModel viewModel);
+//
+//  void onError(int errorType);
+//
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
-  Widget section(ViewSection model, [TextStyle optionalHeaderStyle]) {
+  Widget section(ViewSection model, {TextStyle optionalHeaderStyle, bool centered = false}) {
+    var align = CrossAxisAlignment.start;
+    if (centered)
+      align = CrossAxisAlignment.center;
     return
       Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>
-          [header(model.title, optionalHeaderStyle),
-            Text(
-              model.text,
-            ),
+          crossAxisAlignment: align,
+          children: <Widget>[
+            header(model.title, optionalHeaderStyle),
+            Text(model.text),
             link(model.url)]
       );
   }
@@ -63,10 +67,14 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
 
   Widget header(String text, [TextStyle textStyle]) {
     if (textStyle == null)
-      textStyle = Theme.of(context).textTheme.headline;
+      textStyle = Theme.of(context).textTheme.headline5;
     return Text(
       text,
       style: textStyle,
     );
   }
+
+  void onLoadComplete(ViewModel viewModel) {}
+
+  void onError(int i) {}
 }

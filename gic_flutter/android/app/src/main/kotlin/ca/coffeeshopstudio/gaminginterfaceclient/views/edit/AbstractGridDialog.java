@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import java.io.File;
 import java.util.Objects;
 
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
@@ -35,22 +34,22 @@ abstract class AbstractGridDialog extends AlertDialog {
     private int customCount = 0;
     private String imagePrefix;
     private int actionRequestCode;
+    protected String[] customFiles;
 
     abstract void init();
 
     AbstractGridDialog(final Fragment fragment, final AbstractAdapter adapter) {
         super(Objects.requireNonNull(fragment.getActivity()));
         init();
-        File file;
-        for (int i = 0; i < Integer.MAX_VALUE; i++) {
-            file = new File(getContext().getFilesDir(), imagePrefix + "_" + i + ".png");
-            if (!file.exists()) {
-                customCount = i;
-                break;
-            }
+        String[] files = getContext().getFilesDir().list((dir, name) -> name.contains(imagePrefix));
+        customCount = 0;
+        if (files != null && files.length > 0) {
+            customCount = files.length;
+            customFiles = files;
         }
 
         adapter.setCustomCount(customCount);
+        adapter.setCustomFiles(customFiles);
         setTitle(R.string.image_grid_title);
 
         GridView gridView = new GridView(fragment.getActivity());
@@ -61,6 +60,7 @@ abstract class AbstractGridDialog extends AlertDialog {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //they clicked on an import button
                 if (position < 2) { //import
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                         Toast.makeText(getContext(), R.string.android_too_old, Toast.LENGTH_SHORT).show();
@@ -71,12 +71,13 @@ abstract class AbstractGridDialog extends AlertDialog {
                         fragment.startActivityForResult(intent, actionRequestCode);
                         dismiss();
                     }
-
                 } else if (position <= customCount + 1) {
-                    String path = fragment.getActivity().getFilesDir() + "/" + imagePrefix + "_" + (position - 2) + ".png";
+                    //they chose a custom icon
+                    String path = fragment.getActivity().getFilesDir() + "/" + customFiles[position - 2];
                     ((GridDialogListener) fragment).onImageSelected(path, actionRequestCode);
                     dismiss();
-                } else { // if (position - customCount <= adapter.getBuiltInResources().length + 1) {
+                } else {
+                    //built in
                     ((GridDialogListener) fragment).onImageSelected(adapter.getBuiltInResources()[position - customCount - 2], actionRequestCode);
                     dismiss();
                 }
