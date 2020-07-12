@@ -217,12 +217,12 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     else if (choice.title == translation.text(LauncherText.menuTheme)) {
       if (_viewModel.darkMode) {
         CustomTheme.instanceOf(context).changeTheme(ThemeKeys.LIGHT);
-        launcherBloc.setDarkTheme(false);
+        launcherBloc.setTheme(false);
         _viewModel.darkMode = false;
       }
       else {
         CustomTheme.instanceOf(context).changeTheme(ThemeKeys.DARK);
-        launcherBloc.setDarkTheme(true);
+        launcherBloc.setTheme(true);
         _viewModel.darkMode = true;
       }
     } else {
