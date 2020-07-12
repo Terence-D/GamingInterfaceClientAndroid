@@ -80,6 +80,10 @@ class LauncherBloc {
     return rv;
   }
 
+  /// Imports a new screen into GIC
+  ///
+  /// @param file the file we are importing
+  /// @return the new Id of the imported screen, or a negative value on failure
   Future<int> import(file) async {
     int newItemId = await _repository.import(file);
     fetchAllPreferences();
@@ -87,7 +91,11 @@ class LauncherBloc {
     return newItemId;
   }
 
-  export(String exportPath, int id) async {
+  /// Exports a new screen into GIC
+  ///
+  /// @param exportPath directory we are exporting to
+  /// @param id Id of the screen we want to export
+  Future<void> export(String exportPath, int id) async {
     await _repository.export(exportPath, id);
   }
 }
