@@ -105,4 +105,28 @@ void main() {
     //Assert
     expect (rv, -1);
   });
+
+  test('importing a screen will return an integer', () async {
+    //Assign
+    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
+    when(mockedRepo.import(999)).thenAnswer((_) async => 1);
+
+    //Act
+    int rv = await toTest.import(999);
+
+    //Assert
+    expect (rv, 1);
+  });
+
+  test('exporting a screen will return an integer', () async {
+    //Assign
+    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
+    when(mockedRepo.export("path", 1)).thenAnswer((_) async => 1);
+
+    //Act
+    int rv = await toTest.export("path", 1);
+
+    //Assert
+    expect (rv, 1);
+  });
 }
