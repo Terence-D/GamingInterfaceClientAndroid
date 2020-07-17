@@ -187,7 +187,7 @@ class LauncherRepository {
     return screenRepo.import(file);
   }
 
-  export(String exportPath, int id) {
+  Future<int> export(String exportPath, int id) {
     ScreenRepository screenRepo = new ScreenRepository();
     return screenRepo.export(exportPath, id);
   }

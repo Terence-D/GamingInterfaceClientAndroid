@@ -413,7 +413,7 @@ class ScreenRepository {
     return screen;
   }
 
-  export(String exportPath, int id) async {
+  Future<int> export(String exportPath, int id) async {
     Directory cache = await getTemporaryDirectory();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -423,13 +423,13 @@ class ScreenRepository {
     String filesPath = (await getApplicationSupportDirectory()).path;
     for (int i = 0; i < _cache.length; i++) {
       if (_cache[i].screenId == id) {
-        await _exportScreen(_cache[i], cache, exportPath, filesPath);
-        return;
+        return await _exportScreen(_cache[i], cache, exportPath, filesPath);
       }
     }
+    return -1;
   }
 
-  _exportScreen(screen, cache, exportPath, filesPath) async {
+  Future<int> _exportScreen(screen, cache, exportPath, filesPath) async {
     String rawJson = jsonEncode(screen);
     //store the json data file in the directory
     File jsonData =new File(path.join(cache.path, "data.json"));
@@ -462,5 +462,6 @@ class ScreenRepository {
     });
 
     archive.close();
+    return 0;
   }
 }
