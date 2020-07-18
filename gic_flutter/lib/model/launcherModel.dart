@@ -1,11 +1,7 @@
 import 'package:gic_flutter/model/viewModel.dart';
 
-class LauncherModel implements ViewModel {
-  String _title;
-
-  @override
-  String get toolbarTitle => _title;
-
+class LauncherModel {
+  String toolbarTitle;
   bool firstRun;
   bool darkMode;
   String address;

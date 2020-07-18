@@ -24,7 +24,7 @@ class GicControl {
   int primaryColor = -1;
   int secondaryColor = -1;
   int fontSize = 36;
-  int viewType = 0;
+  int viewType = 0; //is it a button, switch, image, etc
   int primaryImageResource = 0;//R.drawable.button_blue;
   int secondaryImageResource = 0;//R.drawable.button_blue_dark;
   String primaryImage = "";

@@ -11,12 +11,13 @@ import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:gic_flutter/ui/menuOption.dart';
-import 'package:gic_flutter/ui/screenList.dart';
-import 'package:gic_flutter/ui/serverLogin.dart';
 import 'package:gic_flutter/views/about/aboutView.dart';
 import 'package:gic_flutter/views/intro/introView.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
+
+import 'screenList.dart';
+import 'serverLogin.dart';
 //import 'package:intent/intent.dart' as android_intent;
 //import 'package:intent/action.dart' as android_action;
 //import 'package:intent/extra.dart' as android_extra;
