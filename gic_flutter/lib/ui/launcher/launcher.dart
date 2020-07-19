@@ -11,6 +11,7 @@ import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:gic_flutter/ui/menuOption.dart';
+import 'package:gic_flutter/ui/newScreenWizard/newScreenWizard.dart';
 import 'package:gic_flutter/views/about/aboutView.dart';
 import 'package:gic_flutter/views/intro/introView.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -231,6 +232,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     }
   }
 
+  /// legacy native code calling
   _getNewActivity(String activity) async {
     MethodChannel platform = new MethodChannel(Channel.channelView);
     try {
@@ -240,6 +242,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     }
   }
 
+  // call another flutter ui/view
   _showUi(StatefulWidget ui) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => ui)); // ManageView()) // AboutView())
   }
@@ -286,7 +289,8 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   }
 
   _newScreen() async {
-    newScreenId = await launcherBloc.newScreen();
+    _showUi(new NewScreenWizard());
+    //newScreenId = await launcherBloc.newScreen();
   }
 
   _scrollTo() {

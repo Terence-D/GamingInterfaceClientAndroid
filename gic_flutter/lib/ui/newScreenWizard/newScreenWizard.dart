@@ -15,28 +15,28 @@ class NewScreenWizard extends StatefulWidget {
 
 class NewScreenWizardState extends State<NewScreenWizard> {
 
-  IntlNewScreenWizard _translation;
-  NewScreenWizardModel _viewModel;
+  IntlNewScreenWizard translation;
+  NewScreenWizardModel viewModel = new NewScreenWizardModel();
 
   //tracks if we are on the general settings view (0)
   //or the create controls view (1)
-  int _currentView = 0;
+  int currentView = 0;
 
   final _bloc = NewScreenWizardBloc();
 
-  final TextEditingController _screenNameTextController = new TextEditingController();
+  final TextEditingController screenNameTextController = new TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _translation = new IntlNewScreenWizard(context);
-    _screenNameTextController.addListener(() {    _viewModel.screenName = _screenNameTextController.text;});
+    translation = new IntlNewScreenWizard(context);
+    screenNameTextController.addListener(() {    viewModel.screenName = screenNameTextController.text;});
   }
 
   @override
   void dispose() {
     _bloc.dispose();
-    _screenNameTextController.dispose();
+    screenNameTextController.dispose();
     super.dispose();
   }
 
@@ -52,23 +52,26 @@ class NewScreenWizardState extends State<NewScreenWizard> {
   AppBar _launcherAppBar() {
     return AppBar(
       leading: Image.asset("assets/images/icons/app_icon.png", fit: BoxFit.cover),
-      title: Text(_translation.text(NewScreenWizardText.toolbarTitle)),
+      title: Text(translation.text(NewScreenWizardText.toolbarTitle)),
     );
   }
 
   /// This determines the main view to return, general settings or controls
   _mainContent() {
-    if (_currentView == 0)
+    if (currentView == 0)
       return new NewScreenWizardGeneral(this);
     else
       return new NewScreenWizardControls(this);
   }
 
   Widget _fab(BuildContext context) {
+    String text = translation.text(NewScreenWizardText.next);
+    if (currentView == 1)
+      text = translation.text(NewScreenWizardText.save);
     return FloatingActionButton.extended(
-      onPressed: () { _bloc.saveScreen(_viewModel); },
+      onPressed: () { _bloc.saveScreen(viewModel); },
       backgroundColor: Theme.of(context).primaryColor,
-      label: Text(_translation.text(NewScreenWizardText.save))
+      label: Text(text)
     );
   }
 }
