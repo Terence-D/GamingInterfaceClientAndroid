@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/intlNewScreenWizard.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
+
+import 'OrientationWidget.dart';
 import 'newScreenWizard.dart';
 
-class NewScreenWizardGeneral extends StatelessWidget {
-  final NewScreenWizardState _state;
+class NewScreenWizardGeneral extends StatefulWidget {
+  final NewScreenWizardState state;
 
-  NewScreenWizardGeneral(this._state) {
-    _state.screenNameTextController.addListener(() {    _state.viewModel.screenName = _state.screenNameTextController.text;});
+  const NewScreenWizardGeneral (this.state, { Key key }): super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    state.screenNameTextController.addListener(() {    state.viewModel.screenName = state.screenNameTextController.text;});
+    return NewScreenWizardGeneralState();
   }
+}
 
-
+class NewScreenWizardGeneralState extends State<NewScreenWizardGeneral> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -19,12 +26,12 @@ class NewScreenWizardGeneral extends StatelessWidget {
         child: Column(
           children: <Widget>[
             TextField(
-              controller: _state.screenNameTextController,
+              controller: widget.state.screenNameTextController,
               decoration: InputDecoration(
-                  hintText: _state.translation.text(NewScreenWizardText.screenName)),
+                  hintText: widget.state.translation.text(NewScreenWizardText.screenName)),
 
             ),
-            _OrientationWidget(_state),
+            OrientationWidget(widget.state),
             _LayoutWidget(),
             _DesignWidget()
           ],
@@ -32,38 +39,6 @@ class NewScreenWizardGeneral extends StatelessWidget {
       ),
     );
 
-  }
-}
-
-// the w
-class _OrientationWidget extends StatelessWidget {
-  final NewScreenWizardState _state;
-
-  _OrientationWidget(this._state);
-
-  @override
-  Widget build(BuildContext context) {
-    Icon icon = new Icon(Icons.screen_lock_portrait);
-    if (_state.viewModel.isLandscape)
-      icon = new Icon (Icons.screen_lock_landscape);
-
-
-    return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            _state.translation.text(NewScreenWizardText.orientation),
-            style: Theme.of(context).textTheme.headline4,
-          ),
-          RaisedButton(onPressed: () {
-            _state.viewModel.isLandscape = !_state.viewModel.isLandscape;
-          },
-            child: icon
-          ),
-        ],
-      ),
-    );
   }
 }
 
