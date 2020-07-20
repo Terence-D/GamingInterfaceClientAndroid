@@ -20,30 +20,42 @@ class OrientationState extends State<OrientationWidget> {
 
   @override
   void initState() {
-    icon = new Icon(Icons.screen_lock_portrait);
-    if (widget.state.viewModel.isLandscape)
-      icon = new Icon(Icons.screen_lock_landscape);
+    _setButton();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(
             widget.state.translation.text(NewScreenWizardText.orientation),
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headline5,
           ),
-          RaisedButton(onPressed: () {
-            widget.state.viewModel.isLandscape = !widget.state.viewModel.isLandscape;
-          },
+          RaisedButton(
+              onPressed: () {
+               _updateOrientation();
+              },
               child: icon
           ),
         ],
       ),
     );
+  }
+
+  void _updateOrientation() {
+    setState(() {
+      widget.state.viewModel.isLandscape = !widget.state.viewModel.isLandscape;
+      _setButton();
+    });
+  }
+
+  void _setButton() {
+    icon = new Icon(Icons.screen_lock_portrait);
+    if (widget.state.viewModel.isLandscape)
+      icon = new Icon(Icons.screen_lock_landscape);
   }
 }
 
