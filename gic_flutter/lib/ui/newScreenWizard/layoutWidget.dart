@@ -12,18 +12,9 @@ class LayoutWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => new LayoutState();
-
 }
 
 class LayoutState extends State<LayoutWidget> {
-  Icon icon;
-
-  @override
-  void initState() {
-    _setButton();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,12 +49,6 @@ class LayoutState extends State<LayoutWidget> {
       ]
       )
     );
-  }
-
-  void _setButton() {
-    icon = new Icon(Icons.screen_lock_portrait);
-    if (widget.state.viewModel.isLandscape)
-      icon = new Icon(Icons.screen_lock_landscape);
   }
 
   void _updateCount({int horizontal=0, int vertical=0}) {
