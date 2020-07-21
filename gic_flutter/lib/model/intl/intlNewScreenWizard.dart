@@ -6,10 +6,8 @@ enum NewScreenWizardText {
   save,
   next,
   screenName,
-  increaseHorizontal,
-  increaseVertical,
-  decreaseHorizontal,
-  decreaseVertical,
+  increase,
+  decrease,
   buttonDesign,
   buttonNormal,
   buttonPressed,
@@ -17,7 +15,10 @@ enum NewScreenWizardText {
   switchNormal,
   switchPressed,
   orientation,
-  layout
+  layout,
+  controlsWide,
+  controlsDepth,
+  totalControls
 }
 
 class IntlNewScreenWizard {
@@ -35,10 +36,8 @@ class IntlNewScreenWizard {
       NewScreenWizardText.save: "Save",
       NewScreenWizardText.next: "Next",
       NewScreenWizardText.screenName: 'Screen Name',
-      NewScreenWizardText.increaseHorizontal: "More Horizontal Controls",
-      NewScreenWizardText.increaseVertical: "More Vertical Controls",
-      NewScreenWizardText.decreaseHorizontal: "Less Horizontal Controls",
-      NewScreenWizardText.decreaseVertical: 'Less Vertical Controls',
+      NewScreenWizardText.increase: "Add",
+      NewScreenWizardText.decrease: 'Remove',
       NewScreenWizardText.buttonDesign: "Button Design",
       NewScreenWizardText.buttonNormal: "Normal",
       NewScreenWizardText.buttonPressed: "Pressed",
@@ -47,6 +46,9 @@ class IntlNewScreenWizard {
       NewScreenWizardText.switchPressed: "Pressed",
       NewScreenWizardText.orientation: "Orientation",
       NewScreenWizardText.layout: "Layout",
+      NewScreenWizardText.controlsWide: "Controls Wide",
+      NewScreenWizardText.controlsDepth: "Controls Deep",
+      NewScreenWizardText.totalControls: "Total Controls"
     }
   };
 }

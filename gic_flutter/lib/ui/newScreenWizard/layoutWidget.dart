@@ -29,23 +29,23 @@ class LayoutState extends State<LayoutWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               RaisedButton(onPressed: () { _updateCount(horizontal: -1); },
-                child: Text("Remove"),),
-              Text("${widget.state.viewModel.horizontalControlCount} Controls Wide"),
+                child: Text("${widget.state.translation.text(NewScreenWizardText.decrease)}"),),
+              Text("${widget.state.viewModel.horizontalControlCount} ${widget.state.translation.text(NewScreenWizardText.controlsWide)}"),
               RaisedButton(onPressed: () { _updateCount(horizontal: 1); },
-                child: Text("Add"),),
+                child: Text("${widget.state.translation.text(NewScreenWizardText.increase)}"),),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               RaisedButton(onPressed: () { _updateCount(vertical: -1); },
-                child: Text("Remove"),),
-              Text("${widget.state.viewModel.verticalControlCount} Controls Deep"),
+                child: Text("${widget.state.translation.text(NewScreenWizardText.decrease)}"),),
+              Text("${widget.state.viewModel.verticalControlCount} ${widget.state.translation.text(NewScreenWizardText.controlsDepth)}"),
               RaisedButton(onPressed: () { _updateCount(vertical: 1); },
-                child: Text("Add"),),
+                child: Text("${widget.state.translation.text(NewScreenWizardText.increase)}"),),
             ],
           ),
-          Text("${widget.state.viewModel.horizontalControlCount * widget.state.viewModel.verticalControlCount } Total controls",),
+          Text("${widget.state.viewModel.horizontalControlCount * widget.state.viewModel.verticalControlCount } ${widget.state.translation.text(NewScreenWizardText.totalControls)}",),
       ]
       )
     );
