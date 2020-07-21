@@ -69,7 +69,12 @@ class NewScreenWizardState extends State<NewScreenWizard> {
     if (currentView == 1)
       text = translation.text(NewScreenWizardText.save);
     return FloatingActionButton.extended(
-      onPressed: () { _bloc.saveScreen(viewModel); },
+
+      onPressed: () {
+        setState(() {
+          currentView++;
+        });
+      },
       backgroundColor: Theme.of(context).primaryColor,
       label: Text(text)
     );
