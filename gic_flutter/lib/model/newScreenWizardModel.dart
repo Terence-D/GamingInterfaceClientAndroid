@@ -9,8 +9,8 @@ class NewScreenWizardModel {
   String screenName;
   bool isLandscape = true; // used for constructing the above screen values.  User set
   //Grid view related
-  int horizontalControlCount;
-  int verticalControlCount;
+  int horizontalControlCount = 1;
+  int verticalControlCount = 1;
   //default look for both
   String buttonNormalImage;
   String buttonPressedImage;
