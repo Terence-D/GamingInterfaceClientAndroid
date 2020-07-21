@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/intlNewScreenWizard.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 
+import 'controlDesignWidget.dart';
 import 'layoutWidget.dart';
 import 'orientationWidget.dart';
 import 'newScreenWizard.dart';
@@ -34,33 +35,11 @@ class NewScreenWizardGeneralState extends State<NewScreenWizardGeneral> {
             ),
             OrientationWidget(widget.state),
             LayoutWidget(widget.state),
-            _DesignWidget()
+            //ControlDesignWidget(widget.state),
           ],
         ),
       ),
     );
 
-  }
-}
-
-class _DesignWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Text("Button Design"),
-          RaisedButton(onPressed: () {  },
-            child: Text("Normal Image"),),
-          RaisedButton(onPressed: () {  },
-            child: Text("Pressed Image"),),
-          Text("Switch Design"),
-          RaisedButton(onPressed: () {  },
-            child: Text("Normal Image"),),
-          RaisedButton(onPressed: () {  },
-            child: Text("Pressed Image"),),
-        ],
-      ),
-    );
   }
 }
