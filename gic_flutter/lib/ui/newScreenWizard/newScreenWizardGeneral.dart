@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/intlNewScreenWizard.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 
-import 'OrientationWidget.dart';
+import 'layoutWidget.dart';
+import 'orientationWidget.dart';
 import 'newScreenWizard.dart';
 
 class NewScreenWizardGeneral extends StatefulWidget {
@@ -32,34 +33,13 @@ class NewScreenWizardGeneralState extends State<NewScreenWizardGeneral> {
 
             ),
             OrientationWidget(widget.state),
-            _LayoutWidget(),
+            LayoutWidget(widget.state),
             _DesignWidget()
           ],
         ),
       ),
     );
 
-  }
-}
-
-class _LayoutWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Text("Layout"),
-          RaisedButton(onPressed: () {  },
-            child: Text("Increase Horizontal"),),
-          RaisedButton(onPressed: () {  },
-            child: Text("Reduce Horizontal"),),
-          RaisedButton(onPressed: () {  },
-            child: Text("Increase Vertical"),),
-          RaisedButton(onPressed: () {  },
-            child: Text("Reduce Vertical"),),
-        ],
-      ),
-    );
   }
 }
 
