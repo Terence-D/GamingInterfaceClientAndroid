@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/bloc/newScreenWizardBloc.dart';
 import 'package:gic_flutter/model/intl/intlNewScreenWizard.dart';
 import 'package:gic_flutter/model/newScreenWizardModel.dart';
@@ -25,6 +27,7 @@ class NewScreenWizardState extends State<NewScreenWizard> {
   final _bloc = NewScreenWizardBloc();
 
   final TextEditingController screenNameTextController = new TextEditingController();
+  List<TextEditingController> keyNameController = new List<TextEditingController>();
 
   @override
   void initState() {
@@ -35,8 +38,10 @@ class NewScreenWizardState extends State<NewScreenWizard> {
 
   @override
   void dispose() {
-    _bloc.dispose();
     screenNameTextController.dispose();
+    for (var value in keyNameController) {
+      value.dispose();
+    }
     super.dispose();
   }
 
@@ -68,15 +73,43 @@ class NewScreenWizardState extends State<NewScreenWizard> {
     String text = translation.text(NewScreenWizardText.next);
     if (currentView == 1)
       text = translation.text(NewScreenWizardText.save);
-    return FloatingActionButton.extended(
 
+    return FloatingActionButton.extended(
       onPressed: () {
-        setState(() {
-          currentView++;
-        });
+        if (currentView >= 1) { //save
+          _save();
+        } else {
+          if (screenNameTextController.text.isEmpty) {
+            Fluttertoast.showToast(msg: translation.text(NewScreenWizardText.errorEnterScreenName));
+          } else {
+            setState(() {
+              currentView++;
+            });
+          }
+        }
       },
       backgroundColor: Theme.of(context).primaryColor,
       label: Text(text)
     );
+  }
+
+  Future<void> _save() async {
+    //add in the text
+    for (int i=0; i < keyNameController.length; i++) {
+      viewModel.controls[i].text = keyNameController[i].text;
+    }
+
+    //get screen dimensions
+    viewModel.screenHeight = MediaQuery.of(context).size.height;
+    viewModel.screenWidth = MediaQuery.of(context).size.width;
+
+    await _bloc.saveScreen(viewModel);
+
+    //now lets get out of here
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    } else {
+      SystemNavigator.pop();
+    }
   }
 }

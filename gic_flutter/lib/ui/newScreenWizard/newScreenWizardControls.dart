@@ -1,3 +1,8 @@
+import 'dart:core';
+
+import 'package:gic_flutter/model/autoItKeyMap.dart';
+import 'package:gic_flutter/model/intl/intlNewScreenWizard.dart';
+import 'package:gic_flutter/model/newScreenWizardModel.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/ui/newScreenWizard/newScreenWizard.dart';
@@ -14,25 +19,162 @@ class NewScreenWizardControls extends StatefulWidget {
 }
 
 class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
+  int _itemCount = 0;
+  List<_Key> _keyMap = [];
+  AutoItKeyMap autoItKeyMap = new AutoItKeyMap();
+  List<_Key> selectedKey = new List();
+  List<String> controlTypeText;
+
+  @override
+  void initState() {
+    controlTypeText = new List();
+
+    _itemCount = widget.state.viewModel.horizontalControlCount * widget.state.viewModel.verticalControlCount;
+    selectedKey = new List(_itemCount);
+
+    widget.state.keyNameController = new List(_itemCount);
+    widget.state.viewModel.controls = new List(_itemCount);
+
+    //initialize values to be sane
+    for (var i = 0; i < _itemCount; i++) {
+      TextEditingController tec = new TextEditingController();
+      widget.state.keyNameController[i] = tec;
+      widget.state.viewModel.controls[i] = new Control();
+      controlTypeText.add(widget.state.translation.text(NewScreenWizardText.buttonType));
+    }
+
+    autoItKeyMap.map.forEach((key, value) {
+      _keyMap.add(new _Key(key, value));
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(dim.activityMargin),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: widget.state.screenNameTextController,
-              decoration: InputDecoration(
-                  hintText: "asdf"),
-            ),
-//            OrientationWidget(widget.state),
-//            LayoutWidget(widget.state),
-            //ControlDesignWidget(widget.state),
-          ],
-        ),
+    return Container(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              // scrollDirection: Axis.horizontal,
+                itemCount: _itemCount,
+                padding: EdgeInsets.fromLTRB(dim.activityMargin, dim.activityMargin,  dim.activityMargin, dim.activityMargin),
+                itemBuilder: (context, index) {
+                  return _controlCard(index, context);
+                }),
+          ),
+        ],
       ),
     );
-
   }
+
+  Container _controlCard(int index, BuildContext context) {
+    return Container(
+        height: 160,
+        width: double.maxFinite,
+        child: Card(
+          elevation: 5,
+          child:
+          new Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextFormField(
+                      controller: widget.state.keyNameController[index],
+                      //decoration: InputDecoration(
+                      //    hintText: _translations.text(LauncherText.screenName)),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  DropdownButton<_Key>(
+                    onChanged: (_Key newValue) { _updateState(index, control: newValue); },
+                    value: selectedKey[index],
+                    items: _dropdownItems()
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Switch(
+                    value: widget.state.viewModel.controls[index].isSwitch,
+                    onChanged: (bool value) {
+                    _updateState(index, isSwitch: value);  }
+                    ),
+                  Text(controlTypeText[index]),
+
+                  Switch(
+                      value: widget.state.viewModel.controls[index].ctrl,
+                      onChanged: (bool value) {
+                        _updateState(index, ctrl: value);  }
+                  ),
+                  Text(widget.state.translation.text(NewScreenWizardText.ctrl)),
+
+                  Switch(
+                      value: widget.state.viewModel.controls[index].alt,
+                      onChanged: (bool value) {
+                        _updateState(index, alt: value);  }
+                  ),
+                  Text(widget.state.translation.text(NewScreenWizardText.alt)),
+
+                  Switch(
+                      value: widget.state.viewModel.controls[index].shift,
+                      onChanged: (bool value) {
+                        _updateState(index, shift: value);  }
+                  ),
+                  Text(widget.state.translation.text(NewScreenWizardText.shift)),
+                ],
+              ),
+            ],
+          ),
+        )
+    );
+  }
+
+  void _updateState(int index, {_Key control, bool isSwitch, bool ctrl, bool alt, bool shift}) {
+    setState(() {
+      if (control != null) {
+        selectedKey[index] = control;
+        widget.state.viewModel.controls[index].key = control.key;
+      }
+
+      //handled on save widget.state.viewModel.controls[index].text = widget.state.keyNameController[index].text;
+
+      if (isSwitch != null) {
+        widget.state.viewModel.controls[index].isSwitch = isSwitch;
+        if (isSwitch)
+          controlTypeText[index] = widget.state.translation.text(NewScreenWizardText.switchType);
+        else
+          controlTypeText[index] = widget.state.translation.text(NewScreenWizardText.buttonType);
+      }
+
+      if (ctrl != null)
+        widget.state.viewModel.controls[index].ctrl = ctrl;
+      if (alt != null)
+        widget.state.viewModel.controls[index].alt = alt;
+      if (shift != null)
+        widget.state.viewModel.controls[index].shift = shift;
+    });
+  }
+
+  List<DropdownMenuItem<_Key>> _dropdownItems() {
+    return _keyMap.map((_Key key) {
+      return new DropdownMenuItem<_Key>(
+          value: key,
+          child: Text(key.text));
+    }).toList();
+  }
+}
+
+class _Key {
+  final String key;
+  final String text;
+  _Key (this.key, this.text);
 }

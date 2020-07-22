@@ -1,5 +1,3 @@
-import 'package:gic_flutter/model/viewModel.dart';
-
 class LauncherModel {
   String toolbarTitle;
   bool firstRun;

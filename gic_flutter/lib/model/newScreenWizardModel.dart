@@ -1,10 +1,8 @@
-import 'package:gic_flutter/model/screen/gicControl.dart';
-
 class NewScreenWizardModel {
   String toolbarTitle;
   //These are built in the view and passed back as requires Context
-  int screenWidth;
-  int screenHeight;
+  double screenWidth = 0;
+  double screenHeight = 0;
 
   String screenName;
   bool isLandscape = true; // used for constructing the above screen values.  User set
@@ -20,9 +18,12 @@ class NewScreenWizardModel {
   List<Control> controls; // our list of controls to create
 }
 
+/// This is used purely for the new screen view model
 class Control {
   String text;
   String key;
-  int type = GicControl.TYPE_BUTTON;
-  List<String> modifiers = new List<String>();
+  bool isSwitch = false;
+  bool alt = false;
+  bool ctrl = false;
+  bool shift= false;
 }

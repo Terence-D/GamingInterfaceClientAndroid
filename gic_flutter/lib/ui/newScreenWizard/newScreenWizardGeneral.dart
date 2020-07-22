@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/intl/intlNewScreenWizard.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 
-import 'controlDesignWidget.dart';
 import 'layoutWidget.dart';
 import 'orientationWidget.dart';
 import 'newScreenWizard.dart';

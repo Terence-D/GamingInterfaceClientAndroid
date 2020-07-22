@@ -18,7 +18,12 @@ enum NewScreenWizardText {
   layout,
   controlsWide,
   controlsDepth,
-  totalControls
+  totalControls,
+  buttonType,
+  switchType,
+  quickTap,
+  ctrl, alt, shift,
+  errorEnterScreenName
 }
 
 class IntlNewScreenWizard {
@@ -48,7 +53,14 @@ class IntlNewScreenWizard {
       NewScreenWizardText.layout: "Layout",
       NewScreenWizardText.controlsWide: "Controls Wide",
       NewScreenWizardText.controlsDepth: "Controls Deep",
-      NewScreenWizardText.totalControls: "Total Controls"
+      NewScreenWizardText.totalControls: "Total Controls",
+      NewScreenWizardText.buttonType: "Button",
+      NewScreenWizardText.switchType: "Switch",
+      NewScreenWizardText.quickTap: "Quick Mode",
+      NewScreenWizardText.ctrl: "Ctrl",
+      NewScreenWizardText.alt: "Alt",
+      NewScreenWizardText.shift: "Shift",
+      NewScreenWizardText.errorEnterScreenName: "Please enter a screen name!"
     }
   };
 }
