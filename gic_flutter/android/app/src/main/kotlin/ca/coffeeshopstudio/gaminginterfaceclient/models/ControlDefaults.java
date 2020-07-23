@@ -28,6 +28,8 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class ControlDefaults {
     private final String PREFS_NAME = "gicsScreen";
+    private final String PREFS_NAME_FLUTTER = "FlutterSharedPreferences";
+
     private GICControl defaultImageControl;
     private GICControl defaultButtonControl;
     private GICControl defaultTextControl;

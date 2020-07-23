@@ -1,8 +1,10 @@
+import 'package:gic_flutter/model/controlDefaults.dart';
 import 'package:gic_flutter/model/newScreenWizardModel.dart';
 import 'package:gic_flutter/model/screen/command.dart';
 import 'package:gic_flutter/model/screen/gicControl.dart';
 import 'package:gic_flutter/model/screen/screen.dart';
 import 'package:gic_flutter/resources/screenRepository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// This is the presentation layer of the new screen wizard ui
 /// It's pretty simplistic, and doesn't need a lot of bloc fanciness
@@ -19,7 +21,7 @@ class NewScreenWizardBloc {
       _repository = new ScreenRepository();
     await _repository.getScreenList();
     int newId = _repository.findUniqueId();
-    Screen newScreen = _buildScreen(model, newId);
+    Screen newScreen = await _buildScreen(model, newId);
 
     if (newScreen != null)
       _repository.save(newScreen);
@@ -27,7 +29,7 @@ class NewScreenWizardBloc {
 
   /// constructs a proper screen object based on our model
   /// returns a screen, or null on error
-  Screen _buildScreen(NewScreenWizardModel model, int newId) {
+  Future<Screen> _buildScreen(NewScreenWizardModel model, int newId) async {
     Screen newScreen = new Screen();
     newScreen.screenId = newId;
     newScreen.name = model.screenName;
@@ -45,13 +47,21 @@ class NewScreenWizardBloc {
         (_margins * model.verticalControlCount) + _margins;
     int controlHeight = (workableHeight / model.verticalControlCount).round();
 
+    newScreen.backgroundColor = 100; //??
+
+    //load in defaults
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    ControlDefaults defaults = new ControlDefaults(prefs, newId);
+
+    int i=0;
     model.controls.forEach((element) {
       //only proceed if the control has valid name and key
       if (element.text == null || element.key == null)
         return;
 
-      GicControl control = new GicControl();
-      control.command = new Command();
+      GicControl control = new GicControl.empty();
+      control.command = new Command.empty();
+      control.commandSecondary = new Command.empty();
 
       control.text = element.text;
 
@@ -59,6 +69,7 @@ class NewScreenWizardBloc {
       control.width = controlWidth;
 
       control.command.key = element.key;
+      control.command.activatorType = 0;
 
       if (element.ctrl)
         control.command.modifiers.add("CTRL");
@@ -67,10 +78,20 @@ class NewScreenWizardBloc {
       if (element.shift)
         control.command.modifiers.add("SHIFT");
 
-      if (element.isSwitch)
+      GicControl defaultControl = defaults.defaultButton;
+      if (element.isSwitch) {
         control.viewType = GicControl.TYPE_SWITCH;
-      else
+        defaultControl = defaults.defaultSwitch;
+      }
+      else {
         control.viewType = GicControl.TYPE_BUTTON;
+      }
+      control.primaryColor = defaultControl.primaryColor;
+      control.primaryImage = defaultControl.primaryImage;
+      control.primaryImageResource = defaultControl.primaryImageResource;
+      control.secondaryImage = defaultControl.secondaryImage;
+      control.secondaryColor = defaultControl.secondaryColor;
+      control.secondaryImageResource = defaultControl.secondaryImageResource;
 
       //load in the backgrounds
       if (element.isSwitch) {
@@ -82,6 +103,7 @@ class NewScreenWizardBloc {
         control.secondaryImage = model.buttonPressedImage;
       }
       newScreen.controls.add(control);
+      i++;
     });
     return newScreen;
   }

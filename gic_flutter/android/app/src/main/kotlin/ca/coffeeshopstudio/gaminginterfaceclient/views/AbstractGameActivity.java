@@ -269,7 +269,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     }
 
     protected void setFontTypeface(TextView textView, GICControl control) {
-        if (control.getFontName().isEmpty()) {
+        if (control.getFontName() == null || control.getFontName().isEmpty()) {
             textView.setTypeface(Typeface.DEFAULT);
         } else {
             if (control.getFontType() == 0) {

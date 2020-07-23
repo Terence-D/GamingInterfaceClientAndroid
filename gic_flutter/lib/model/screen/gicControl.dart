@@ -14,24 +14,26 @@ class GicControl {
   //3 - switched on, ready for mouse up
   //after 3, we reset back to 0
   int stage = 0;
-  Command command;// = new Command();
+  Command command = new Command.empty();
   String text = "NONE";
   double left = 140;
   int width = 320;
   double top = 200;
   int height = 120;
-  int fontColor = 0;//Colors.white;// Colors.WHITE;
-  int primaryColor = -1;
-  int secondaryColor = -1;
+  int fontColor = -1;
+  int primaryColor = -9109592;
+  int secondaryColor = -41554;
   int fontSize = 36;
   int viewType = 0; //is it a button, switch, image, etc
-  int primaryImageResource = 0;//R.drawable.button_blue;
-  int secondaryImageResource = 0;//R.drawable.button_blue_dark;
-  String primaryImage = "";
-  String secondaryImage = "";
-  String fontName = "";
+  int primaryImageResource = -1;//R.drawable.button_blue;
+  int secondaryImageResource = -1;//R.drawable.button_blue_dark;
+  String primaryImage = " ";
+  String secondaryImage = " ";
+  String fontName = " ";
   int fontType = 0;
-  Command commandSecondary;// = new Command();
+  Command commandSecondary = new Command.empty();
+
+  GicControl.empty();
 
   GicControl ({
     this.stage, 
@@ -58,24 +60,24 @@ class GicControl {
   factory GicControl.fromJson(Map<String, dynamic> json) {
     return GicControl(
       stage: json['stage'],
-        command: Command.fromJson(json['command']),
-        text: json['text'],
-        left: json['left'],
-        width: json['width'],
-        top: json['top'],
-        height: json['height'],
-        fontColor: json['fontColor'],
-        primaryColor: json['primaryColor'],
-        secondaryColor: json['secondaryColor'],
-        fontSize: json['fontSize'],
-        viewType: json['viewType'],
-        primaryImageResource: json['primaryImageResource'],
-        secondaryImageResource: json['secondaryImageResource'],
-        primaryImage: json['primaryImage'],
-        secondaryImage: json['secondaryImage'],
-        fontName: json['fontName'],
-        fontType: json['fontType'],
-        commandSecondary: Command.fromJson(json['commandSecondary']),
+      command: Command.fromJson(json['command']),
+      text: json['text'],
+      left: json['left'],
+      width: json['width'],
+      top: json['top'],
+      height: json['height'],
+      fontColor: json['fontColor'],
+      primaryColor: json['primaryColor'],
+      secondaryColor: json['secondaryColor'],
+      fontSize: json['fontSize'],
+      viewType: json['viewType'],
+      primaryImageResource: json['primaryImageResource'],
+      secondaryImageResource: json['secondaryImageResource'],
+      primaryImage: json['primaryImage'],
+      secondaryImage: json['secondaryImage'],
+      fontName: json['fontName'],
+      fontType: json['fontType'],
+      commandSecondary: Command.fromJson(json['commandSecondary']),
     );
   }
 

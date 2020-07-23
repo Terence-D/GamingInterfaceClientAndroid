@@ -58,7 +58,9 @@ class ScreenRepository {
           Map controlMap = jsonDecode(prefs.getString(key));
           screen.controls.add(GicControl.fromJson(controlMap));
           //screen.name = prefs.getString(key);
-        } catch (_) { }
+        } catch (e) {
+          debugPrint(e.toString());
+        }
       }
     });
   }
