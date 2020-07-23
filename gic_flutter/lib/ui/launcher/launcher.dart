@@ -233,7 +233,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   }
 
   /// legacy native code calling
-  _getNewActivity(String activity) async {
+  Future<void> _getNewActivity(String activity) async {
     MethodChannel platform = new MethodChannel(Channel.channelView);
     try {
       await platform.invokeMethod(activity);

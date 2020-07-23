@@ -2,12 +2,16 @@ package ca.coffeeshopstudio.gaminginterfaceclient.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.Map;
+
+import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -27,7 +31,6 @@ import static android.content.Context.MODE_PRIVATE;
  * limitations under the License.
  */
 public class ControlDefaults {
-    private final String PREFS_NAME = "gicsScreen";
     private final String PREFS_NAME_FLUTTER = "FlutterSharedPreferences";
 
     private GICControl defaultImageControl;
@@ -35,8 +38,49 @@ public class ControlDefaults {
     private GICControl defaultTextControl;
     private GICControl defaultSwitchControl;
 
+    //constructor purely for making compatible with flutter
+    public ControlDefaults(Context context) {
+        final String PREFS_NAME_LEGACY = "gicsScreen";
+        final String PREFS_FLUTTER_PREFIX = "flutter.";
+        SharedPreferences prefsLegacy = context.getApplicationContext().getSharedPreferences(PREFS_NAME_LEGACY, MODE_PRIVATE);
+        SharedPreferences prefsFlutter = context.getApplicationContext().getSharedPreferences(PREFS_NAME_FLUTTER, MODE_PRIVATE);
+        SharedPreferences.Editor flutterEditor = prefsFlutter.edit();
+        SharedPreferences.Editor legacyEditor = prefsLegacy.edit();
+
+        Map<String, ?> keys = prefsLegacy.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            Log.d("GICS", "cleanupLegacyDefaults: " + entry.getKey());
+            if (containsKey(entry.getKey()) ) {
+                Log.d("GICS", "cleanupLegacy: " + "converting");
+                //we need to convert
+                if (entry.getValue() instanceof String)
+                    flutterEditor.putString(entry.getKey(), (String) entry.getValue());
+                else //gotta be an int
+                    flutterEditor.putInt(entry.getKey(), (Integer) entry.getValue());
+                //and remove
+                legacyEditor.remove(entry.getKey());
+            }
+        }
+
+        //set resource defaults
+        flutterEditor.putInt("default_button_primary", R.drawable.button_blue);
+        flutterEditor.putInt("default_button_secondary", R.drawable.button_blue_dark);
+        flutterEditor.putInt("default_switch_primary", R.drawable.switch_off);
+        flutterEditor.putInt("default_switch_secondary", R.drawable.switch_on);
+
+        legacyEditor.apply();
+        flutterEditor.apply();
+    }
+    private boolean containsKey (String key) {
+        return  key.contains("_image_defaults") ||
+                key.contains("_button_defaults") ||
+                key.contains("_text_defaults") ||
+                key.contains("_switch_defaults");
+    }
+
+
     public ControlDefaults(Context context, int screenId) {
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME_FLUTTER, MODE_PRIVATE);
 
         String prefString = screenId + "_image_defaults";
         defaultImageControl = loadControl(context, prefs, prefString);
@@ -94,7 +138,12 @@ public class ControlDefaults {
     }
 
     public void saveDefaults(Context context, int screenId) {
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME_FLUTTER, MODE_PRIVATE);
+        save(context, screenId, prefs);
+    }
+
+    //reusable for both saveDefaults and the new upgrade method
+    private void save(Context context, int screenId, SharedPreferences prefs) {
         SharedPreferences.Editor prefsEditor = prefs.edit();
         ObjectMapper mapper = new ObjectMapper();
         String json;

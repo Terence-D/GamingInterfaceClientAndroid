@@ -97,9 +97,13 @@ class NewScreenWizardBloc {
         if (element.isSwitch) {
           control.viewType = GicControl.TYPE_SWITCH;
           defaultControl = defaults.defaultSwitch;
+          defaultControl.primaryImageResource = prefs.getInt("default_switch_primary");
+          defaultControl.secondaryImageResource = prefs.getInt("default_switch_secondary");
         }
         else {
           control.viewType = GicControl.TYPE_BUTTON;
+          defaultControl.primaryImageResource = prefs.getInt("default_button_primary");
+          defaultControl.secondaryImageResource = prefs.getInt("default_button_secondary");
         }
         control.primaryColor = defaultControl.primaryColor;
         control.primaryImage = defaultControl.primaryImage;

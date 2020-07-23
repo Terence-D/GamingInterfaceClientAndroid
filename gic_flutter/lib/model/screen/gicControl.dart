@@ -21,15 +21,16 @@ class GicControl {
   double top = 200;
   int height = 120;
   int fontColor = -1;
-  int primaryColor = -9109592;
-  int secondaryColor = -41554;
+  int primaryColor = -1;
+  int secondaryColor = -1;
   int fontSize = 36;
   int viewType = 0; //is it a button, switch, image, etc
   int primaryImageResource = -1;//R.drawable.button_blue;
   int secondaryImageResource = -1;//R.drawable.button_blue_dark;
-  String primaryImage = " ";
-  String secondaryImage = " ";
-  String fontName = " ";
+  String primaryImage = "";
+  String secondaryImage = "";
+  String fontName = ""
+      "";
   int fontType = 0;
   Command commandSecondary = new Command.empty();
 

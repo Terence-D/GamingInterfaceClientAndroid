@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.preference.PreferenceManager
+import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlDefaults
 import ca.coffeeshopstudio.gaminginterfaceclient.models.screen.ScreenRepository
 import ca.coffeeshopstudio.gaminginterfaceclient.utils.CryptoHelper
 import ca.coffeeshopstudio.gaminginterfaceclient.views.DonateActivity
@@ -31,6 +32,7 @@ class MainActivity: FlutterActivity() {
     const val actionGetDownloadFolder = "downloadFolder"
     const val actionUpdateDarkMode = "darkmode/set"
     const val actionUtilUpdateScreens = "screens/upgrade"
+    const val actionCheckDefaults = "defaults"
   }
 
   private lateinit var _result: MethodChannel.Result
@@ -104,6 +106,9 @@ class MainActivity: FlutterActivity() {
         }
         actionGetDownloadFolder -> {
           result.success(Environment.getExternalStorageDirectory().absolutePath);
+        }
+        actionCheckDefaults -> {
+          ControlDefaults(applicationContext);
         }
         actionUpdateDarkMode -> {
           val defaultPrefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
