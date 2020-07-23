@@ -243,8 +243,9 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   }
 
   // call another flutter ui/view
-  _showUi(StatefulWidget ui) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ui)); // ManageView()) // AboutView())
+  _showUi(StatefulWidget ui) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => ui)); // ManageView()) // AboutView())
+    launcherBloc.fetchAllPreferences();
   }
 
   void _showHelp() {

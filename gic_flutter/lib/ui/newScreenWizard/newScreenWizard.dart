@@ -100,8 +100,15 @@ class NewScreenWizardState extends State<NewScreenWizard> {
     }
 
     //get screen dimensions
-    viewModel.screenHeight = MediaQuery.of(context).size.height;
-    viewModel.screenWidth = MediaQuery.of(context).size.width;
+    viewModel.screenHeight = MediaQuery.of(context).size.height * MediaQuery.of(context).devicePixelRatio;
+    viewModel.screenWidth = MediaQuery.of(context).size.width * MediaQuery.of(context).devicePixelRatio;
+
+    if (MediaQuery.of(context).orientation == Orientation.portrait && viewModel.isLandscape) {
+      //we need to swap
+      double temp = viewModel.screenHeight;
+      viewModel.screenHeight = viewModel.screenWidth;
+      viewModel.screenWidth = temp;
+    }
 
     await _bloc.saveScreen(viewModel);
 

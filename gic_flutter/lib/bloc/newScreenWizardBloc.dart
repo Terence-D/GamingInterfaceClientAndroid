@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class NewScreenWizardBloc {
   ScreenRepository _repository;
 
-  int _margins = 16; //may want to make this user selectable in a future release
+  int _margins = 32; //may want to make this user selectable in a future release
 
   /// Saves the values into a new screen
   Future<void> saveScreen(NewScreenWizardModel model) async {
@@ -35,6 +35,17 @@ class NewScreenWizardBloc {
     newScreen.name = model.screenName;
     newScreen.controls = new List();
 
+    newScreen.backgroundColor = 100; //??
+
+    await _buildControls(model, newScreen);
+    return newScreen;
+  }
+
+  Future<void> _buildControls(NewScreenWizardModel model, Screen newScreen) async {
+    //load in defaults
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    ControlDefaults defaults = new ControlDefaults(prefs, newScreen.screenId);
+
     //to get workable screen width, we need to take the total width passed in
     //then remove a margin for every control we have horizontally, +1
     int workableWidth = model.screenWidth.floor() -
@@ -47,64 +58,68 @@ class NewScreenWizardBloc {
         (_margins * model.verticalControlCount) + _margins;
     int controlHeight = (workableHeight / model.verticalControlCount).round();
 
-    newScreen.backgroundColor = 100; //??
+    //build the control in a grid fashion, horizontally x vertically
+    int i=0; //tracks which control we're on
+    for (int y=0; y < model.verticalControlCount; y++) {
+      for (int x=0; x < model.horizontalControlCount; x++) {
+        Control element = model.controls[i];
 
-    //load in defaults
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    ControlDefaults defaults = new ControlDefaults(prefs, newId);
+        //only proceed if the control has valid name and key
+        if (element.text == null || element.key == null)
+          return;
 
-    int i=0;
-    model.controls.forEach((element) {
-      //only proceed if the control has valid name and key
-      if (element.text == null || element.key == null)
-        return;
+        GicControl control = new GicControl.empty();
+        control.command = new Command.empty();
+        control.commandSecondary = new Command.empty();
 
-      GicControl control = new GicControl.empty();
-      control.command = new Command.empty();
-      control.commandSecondary = new Command.empty();
+        control.text = element.text;
 
-      control.text = element.text;
+        control.height = controlHeight;
+        control.width = controlWidth;
 
-      control.height = controlHeight;
-      control.width = controlWidth;
+        int left = (_margins + ((_margins + controlWidth) * x));
+        int top = (_margins + ((_margins + controlHeight) * y));
+        control.left = left.toDouble();
+        control.top = top.toDouble();
 
-      control.command.key = element.key;
-      control.command.activatorType = 0;
 
-      if (element.ctrl)
-        control.command.modifiers.add("CTRL");
-      if (element.alt)
-        control.command.modifiers.add("ALT");
-      if (element.shift)
-        control.command.modifiers.add("SHIFT");
+        control.command.key = element.key;
+        control.command.activatorType = 0;
 
-      GicControl defaultControl = defaults.defaultButton;
-      if (element.isSwitch) {
-        control.viewType = GicControl.TYPE_SWITCH;
-        defaultControl = defaults.defaultSwitch;
+        if (element.ctrl)
+          control.command.modifiers.add("CTRL");
+        if (element.alt)
+          control.command.modifiers.add("ALT");
+        if (element.shift)
+          control.command.modifiers.add("SHIFT");
+
+        GicControl defaultControl = defaults.defaultButton;
+        if (element.isSwitch) {
+          control.viewType = GicControl.TYPE_SWITCH;
+          defaultControl = defaults.defaultSwitch;
+        }
+        else {
+          control.viewType = GicControl.TYPE_BUTTON;
+        }
+        control.primaryColor = defaultControl.primaryColor;
+        control.primaryImage = defaultControl.primaryImage;
+        control.primaryImageResource = defaultControl.primaryImageResource;
+        control.secondaryImage = defaultControl.secondaryImage;
+        control.secondaryColor = defaultControl.secondaryColor;
+        control.secondaryImageResource = defaultControl.secondaryImageResource;
+
+        //load in the backgrounds
+        if (element.isSwitch) {
+          control.primaryImage = model.switchNormalImage;
+          control.secondaryImage = model.switchPressedImage;
+        } else {
+          //its a button
+          control.primaryImage = model.buttonNormalImage;
+          control.secondaryImage = model.buttonPressedImage;
+        }
+        newScreen.controls.add(control);
+        i++;
       }
-      else {
-        control.viewType = GicControl.TYPE_BUTTON;
-      }
-      control.primaryColor = defaultControl.primaryColor;
-      control.primaryImage = defaultControl.primaryImage;
-      control.primaryImageResource = defaultControl.primaryImageResource;
-      control.secondaryImage = defaultControl.secondaryImage;
-      control.secondaryColor = defaultControl.secondaryColor;
-      control.secondaryImageResource = defaultControl.secondaryImageResource;
-
-      //load in the backgrounds
-      if (element.isSwitch) {
-        control.primaryImage = model.switchNormalImage;
-        control.secondaryImage = model.switchPressedImage;
-      } else {
-        //its a button
-        control.primaryImage = model.buttonNormalImage;
-        control.secondaryImage = model.buttonPressedImage;
-      }
-      newScreen.controls.add(control);
-      i++;
-    });
-    return newScreen;
+    }
   }
 }
