@@ -64,15 +64,13 @@ class NewScreenWizardBloc {
       for (int x=0; x < model.horizontalControlCount; x++) {
         Control element = model.controls[i];
 
-        //only proceed if the control has valid name and key
-        if (element.text == null || element.key == null)
+        //only proceed if the control has valid OR key
+        if (element.text == null && element.key == null)
           return;
 
         GicControl control = new GicControl.empty();
         control.command = new Command.empty();
         control.commandSecondary = new Command.empty();
-
-        control.text = element.text;
 
         control.height = controlHeight;
         control.width = controlWidth;
@@ -99,12 +97,28 @@ class NewScreenWizardBloc {
           defaultControl = defaults.defaultSwitch;
           defaultControl.primaryImageResource = prefs.getInt("default_switch_primary");
           defaultControl.secondaryImageResource = prefs.getInt("default_switch_secondary");
+          //shrink the switch to make room for text
+          control.height = (controlHeight / 2).floor();
+          control.top = control.top + control.height;
+          control.text = "";
+
+          GicControl textControl = new GicControl();
+          textControl = defaults.defaultText;
+          textControl.viewType = GicControl.TYPE_TEXT;
+          textControl.text = element.text;
+          textControl.left = control.left;
+          textControl.height = control.height;
+          textControl.width = control.width;
+          textControl.top = control.top - control.height + _margins;
+          newScreen.controls.add(textControl);
         }
         else {
           control.viewType = GicControl.TYPE_BUTTON;
+          control.text = element.text;
           defaultControl.primaryImageResource = prefs.getInt("default_button_primary");
           defaultControl.secondaryImageResource = prefs.getInt("default_button_secondary");
         }
+
         control.primaryColor = defaultControl.primaryColor;
         control.primaryImage = defaultControl.primaryImage;
         control.primaryImageResource = defaultControl.primaryImageResource;
