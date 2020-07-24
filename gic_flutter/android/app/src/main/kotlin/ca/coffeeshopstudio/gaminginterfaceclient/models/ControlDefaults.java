@@ -37,11 +37,11 @@ public class ControlDefaults {
     private GICControl defaultButtonControl;
     private GICControl defaultTextControl;
     private GICControl defaultSwitchControl;
+    private final String PREFS_FLUTTER_PREFIX = "flutter.";
 
     //constructor purely for making compatible with flutter
     public ControlDefaults(Context context) {
         final String PREFS_NAME_LEGACY = "gicsScreen";
-        final String PREFS_FLUTTER_PREFIX = "flutter.";
         SharedPreferences prefsLegacy = context.getApplicationContext().getSharedPreferences(PREFS_NAME_LEGACY, MODE_PRIVATE);
         SharedPreferences prefsFlutter = context.getApplicationContext().getSharedPreferences(PREFS_NAME_FLUTTER, MODE_PRIVATE);
         SharedPreferences.Editor flutterEditor = prefsFlutter.edit();
@@ -54,19 +54,19 @@ public class ControlDefaults {
                 Log.d("GICS", "cleanupLegacy: " + "converting");
                 //we need to convert
                 if (entry.getValue() instanceof String)
-                    flutterEditor.putString(entry.getKey(), (String) entry.getValue());
+                    flutterEditor.putString(PREFS_FLUTTER_PREFIX + entry.getKey(), (String) entry.getValue());
                 else //gotta be an int
-                    flutterEditor.putInt(entry.getKey(), (Integer) entry.getValue());
+                    flutterEditor.putInt(PREFS_FLUTTER_PREFIX + entry.getKey(), (Integer) entry.getValue());
                 //and remove
                 legacyEditor.remove(entry.getKey());
             }
         }
 
         //set resource defaults
-        flutterEditor.putInt("default_button_primary", R.drawable.button_blue);
-        flutterEditor.putInt("default_button_secondary", R.drawable.button_blue_dark);
-        flutterEditor.putInt("default_switch_primary", R.drawable.switch_off);
-        flutterEditor.putInt("default_switch_secondary", R.drawable.switch_on);
+        flutterEditor.putInt(PREFS_FLUTTER_PREFIX + "default_button_primary", R.drawable.button_blue);
+        flutterEditor.putInt(PREFS_FLUTTER_PREFIX + "default_button_secondary", R.drawable.button_blue_dark);
+        flutterEditor.putInt(PREFS_FLUTTER_PREFIX + "default_switch_primary", R.drawable.switch_off);
+        flutterEditor.putInt(PREFS_FLUTTER_PREFIX + "default_switch_secondary", R.drawable.switch_on);
 
         legacyEditor.apply();
         flutterEditor.apply();
@@ -149,19 +149,19 @@ public class ControlDefaults {
         String json;
 
         try {
-            String prefString = screenId + "_image_defaults";
+            String prefString = PREFS_FLUTTER_PREFIX + screenId + "_image_defaults";
             json = mapper.writeValueAsString(defaultImageControl);
             prefsEditor.putString(prefString, json);
 
-            prefString = screenId + "_text_defaults";
+            prefString = PREFS_FLUTTER_PREFIX + screenId + "_text_defaults";
             json = mapper.writeValueAsString(defaultTextControl);
             prefsEditor.putString(prefString, json);
 
-            prefString = screenId + "_button_defaults";
+            prefString = PREFS_FLUTTER_PREFIX + screenId + "_button_defaults";
             json = mapper.writeValueAsString(defaultButtonControl);
             prefsEditor.putString(prefString, json);
 
-            prefString = screenId + "_switch_defaults";
+            prefString = PREFS_FLUTTER_PREFIX + screenId + "_switch_defaults";
             json = mapper.writeValueAsString(defaultSwitchControl);
             prefsEditor.putString(prefString, json);
         } catch (JsonProcessingException e) {

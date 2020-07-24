@@ -49,13 +49,13 @@ class NewScreenWizardBloc {
     //to get workable screen width, we need to take the total width passed in
     //then remove a margin for every control we have horizontally, +1
     int workableWidth = model.screenWidth.floor() -
-        (_margins * model.horizontalControlCount) + _margins;
+        (_margins * model.horizontalControlCount) - (_margins * 2);
     //now we divide that by the number of controls, and we have our control width
     int controlWidth = (workableWidth / model.horizontalControlCount).round();
 
     //now do the same for height
-    int workableHeight = model.screenHeight.floor() -
-        (_margins * model.verticalControlCount) + _margins;
+        int workableHeight = model.screenHeight.floor() -
+        (_margins * model.verticalControlCount) - (_margins * 2);
     int controlHeight = (workableHeight / model.verticalControlCount).round();
 
     //build the control in a grid fashion, horizontally x vertically
@@ -112,15 +112,6 @@ class NewScreenWizardBloc {
         control.secondaryColor = defaultControl.secondaryColor;
         control.secondaryImageResource = defaultControl.secondaryImageResource;
 
-        //load in the backgrounds
-        if (element.isSwitch) {
-          control.primaryImage = model.switchNormalImage;
-          control.secondaryImage = model.switchPressedImage;
-        } else {
-          //its a button
-          control.primaryImage = model.buttonNormalImage;
-          control.secondaryImage = model.buttonPressedImage;
-        }
         newScreen.controls.add(control);
         i++;
       }
