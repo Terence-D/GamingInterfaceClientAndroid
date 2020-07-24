@@ -27,6 +27,8 @@ class NewScreenWizardState extends State<NewScreenWizard> {
   final _bloc = NewScreenWizardBloc();
 
   final TextEditingController screenNameTextController = new TextEditingController();
+  final TextEditingController screenWidthTextController = new TextEditingController();
+  final TextEditingController screenHeightTextController = new TextEditingController();
   List<TextEditingController> keyNameController = new List<TextEditingController>();
 
   @override
@@ -34,6 +36,9 @@ class NewScreenWizardState extends State<NewScreenWizard> {
     super.initState();
     translation = new IntlNewScreenWizard(context);
     screenNameTextController.addListener(() {    viewModel.screenName = screenNameTextController.text;});
+    //get screen dimensions
+    screenHeightTextController.addListener(() {    viewModel.screenHeight = double.parse(screenHeightTextController.text);});
+    screenWidthTextController.addListener(() {    viewModel.screenWidth = double.parse(screenWidthTextController.text);});
   }
 
   @override
@@ -99,16 +104,10 @@ class NewScreenWizardState extends State<NewScreenWizard> {
       viewModel.controls[i].text = keyNameController[i].text;
     }
 
-    //get screen dimensions
-    viewModel.screenHeight = MediaQuery.of(context).size.height * MediaQuery.of(context).devicePixelRatio;
-    viewModel.screenWidth = MediaQuery.of(context).size.width * MediaQuery.of(context).devicePixelRatio;
-
-    if (MediaQuery.of(context).orientation == Orientation.portrait && viewModel.isLandscape) {
-      //we need to swap
-      double temp = viewModel.screenHeight;
-      viewModel.screenHeight = viewModel.screenWidth;
-      viewModel.screenWidth = temp;
-    }
+    if (double.parse(screenHeightTextController.text) > 0)
+      viewModel.screenHeight = double.parse(screenHeightTextController.text);
+    if (double.parse(screenWidthTextController.text) > 0)
+      viewModel.screenWidth = double.parse(screenWidthTextController.text);
 
     await _bloc.saveScreen(viewModel);
 

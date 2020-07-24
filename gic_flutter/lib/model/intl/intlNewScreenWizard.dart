@@ -23,7 +23,9 @@ enum NewScreenWizardText {
   switchType,
   quickTap,
   ctrl, alt, shift,
-  errorEnterScreenName
+  errorEnterScreenName,
+  controlText,
+  controlCommand
 }
 
 class IntlNewScreenWizard {
@@ -60,7 +62,9 @@ class IntlNewScreenWizard {
       NewScreenWizardText.ctrl: "Ctrl",
       NewScreenWizardText.alt: "Alt",
       NewScreenWizardText.shift: "Shift",
-      NewScreenWizardText.errorEnterScreenName: "Please enter a screen name!"
+      NewScreenWizardText.errorEnterScreenName: "Please enter a screen name!",
+      NewScreenWizardText.controlCommand: "Command on press",
+      NewScreenWizardText.controlText: "Text to Display"
     }
   };
 }

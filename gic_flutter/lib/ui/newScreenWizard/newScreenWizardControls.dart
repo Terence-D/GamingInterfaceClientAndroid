@@ -84,20 +84,27 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: TextFormField(
-                      controller: widget.state.keyNameController[index],
-                      //decoration: InputDecoration(
-                      //    hintText: _translations.text(LauncherText.screenName)),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: dim.activityMargin, right: dim.activityMargin),
+                      child: TextFormField(
+                        controller: widget.state.keyNameController[index],
+                        decoration: InputDecoration(
+                            hintText: widget.state.translation.text(NewScreenWizardText.controlText)),
+                      ),
                     ),
                   ),
                 ],
               ),
               Row(
                 children: <Widget>[
-                  DropdownButton<_Key>(
-                    onChanged: (_Key newValue) { _updateState(index, control: newValue); },
-                    value: selectedKey[index],
-                    items: _dropdownItems()
+                  Padding(
+                    padding: EdgeInsets.only(left: dim.activityMargin, right: dim.activityMargin),
+                    child: DropdownButton<_Key>(
+                      hint: Text(widget.state.translation.text(NewScreenWizardText.controlCommand)),
+                      onChanged: (_Key newValue) { _updateState(index, control: newValue); },
+                      value: selectedKey[index],
+                      items: _dropdownItems()
+                    ),
                   ),
                 ],
               ),
@@ -144,8 +151,6 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
         selectedKey[index] = control;
         widget.state.viewModel.controls[index].key = control.key;
       }
-
-      //handled on save widget.state.viewModel.controls[index].text = widget.state.keyNameController[index].text;
 
       if (isSwitch != null) {
         widget.state.viewModel.controls[index].isSwitch = isSwitch;
