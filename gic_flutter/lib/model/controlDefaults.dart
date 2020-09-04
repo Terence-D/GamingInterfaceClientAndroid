@@ -27,7 +27,6 @@ class ControlDefaults {
 
   GicControl loadControl(String preference) {
     if (!_prefs.containsKey(preference)) {
-      //todo - convert this over to flutter visible prefs
         return new GicControl.empty();
     } else {
       Map controlMap = jsonDecode(_prefs.getString(preference));
