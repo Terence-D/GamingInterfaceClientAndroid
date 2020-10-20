@@ -2,12 +2,16 @@ package ca.coffeeshopstudio.gaminginterfaceclient.models;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.Map;
+
+import ca.coffeeshopstudio.gaminginterfaceclient.R;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -27,14 +31,56 @@ import static android.content.Context.MODE_PRIVATE;
  * limitations under the License.
  */
 public class ControlDefaults {
-    private final String PREFS_NAME = "gicsScreen";
+    private final String PREFS_NAME_FLUTTER = "FlutterSharedPreferences";
+
     private GICControl defaultImageControl;
     private GICControl defaultButtonControl;
     private GICControl defaultTextControl;
     private GICControl defaultSwitchControl;
+    private final String PREFS_FLUTTER_PREFIX = "flutter.";
+
+    //constructor purely for making compatible with flutter
+    public ControlDefaults(Context context) {
+        final String PREFS_NAME_LEGACY = "gicsScreen";
+        SharedPreferences prefsLegacy = context.getApplicationContext().getSharedPreferences(PREFS_NAME_LEGACY, MODE_PRIVATE);
+        SharedPreferences prefsFlutter = context.getApplicationContext().getSharedPreferences(PREFS_NAME_FLUTTER, MODE_PRIVATE);
+        SharedPreferences.Editor flutterEditor = prefsFlutter.edit();
+        SharedPreferences.Editor legacyEditor = prefsLegacy.edit();
+
+        Map<String, ?> keys = prefsLegacy.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            Log.d("GICS", "cleanupLegacyDefaults: " + entry.getKey());
+            if (containsKey(entry.getKey()) ) {
+                Log.d("GICS", "cleanupLegacy: " + "converting");
+                //we need to convert
+                if (entry.getValue() instanceof String)
+                    flutterEditor.putString(PREFS_FLUTTER_PREFIX + entry.getKey(), (String) entry.getValue());
+                else //gotta be an int
+                    flutterEditor.putInt(PREFS_FLUTTER_PREFIX + entry.getKey(), (Integer) entry.getValue());
+                //and remove
+                legacyEditor.remove(entry.getKey());
+            }
+        }
+
+        //set resource defaults
+        flutterEditor.putInt(PREFS_FLUTTER_PREFIX + "default_button_primary", R.drawable.button_blue);
+        flutterEditor.putInt(PREFS_FLUTTER_PREFIX + "default_button_secondary", R.drawable.button_blue_dark);
+        flutterEditor.putInt(PREFS_FLUTTER_PREFIX + "default_switch_primary", R.drawable.switch_off);
+        flutterEditor.putInt(PREFS_FLUTTER_PREFIX + "default_switch_secondary", R.drawable.switch_on);
+
+        legacyEditor.apply();
+        flutterEditor.apply();
+    }
+    private boolean containsKey (String key) {
+        return  key.contains("_image_defaults") ||
+                key.contains("_button_defaults") ||
+                key.contains("_text_defaults") ||
+                key.contains("_switch_defaults");
+    }
+
 
     public ControlDefaults(Context context, int screenId) {
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME_FLUTTER, MODE_PRIVATE);
 
         String prefString = screenId + "_image_defaults";
         defaultImageControl = loadControl(context, prefs, prefString);
@@ -92,25 +138,30 @@ public class ControlDefaults {
     }
 
     public void saveDefaults(Context context, int screenId) {
-        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences prefs = context.getApplicationContext().getSharedPreferences(PREFS_NAME_FLUTTER, MODE_PRIVATE);
+        save(context, screenId, prefs);
+    }
+
+    //reusable for both saveDefaults and the new upgrade method
+    private void save(Context context, int screenId, SharedPreferences prefs) {
         SharedPreferences.Editor prefsEditor = prefs.edit();
         ObjectMapper mapper = new ObjectMapper();
         String json;
 
         try {
-            String prefString = screenId + "_image_defaults";
+            String prefString = PREFS_FLUTTER_PREFIX + screenId + "_image_defaults";
             json = mapper.writeValueAsString(defaultImageControl);
             prefsEditor.putString(prefString, json);
 
-            prefString = screenId + "_text_defaults";
+            prefString = PREFS_FLUTTER_PREFIX + screenId + "_text_defaults";
             json = mapper.writeValueAsString(defaultTextControl);
             prefsEditor.putString(prefString, json);
 
-            prefString = screenId + "_button_defaults";
+            prefString = PREFS_FLUTTER_PREFIX + screenId + "_button_defaults";
             json = mapper.writeValueAsString(defaultButtonControl);
             prefsEditor.putString(prefString, json);
 
-            prefString = screenId + "_switch_defaults";
+            prefString = PREFS_FLUTTER_PREFIX + screenId + "_switch_defaults";
             json = mapper.writeValueAsString(defaultSwitchControl);
             prefsEditor.putString(prefString, json);
         } catch (JsonProcessingException e) {

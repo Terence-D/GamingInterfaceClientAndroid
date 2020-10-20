@@ -105,6 +105,11 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
         Drawable primary;
         Drawable secondary;
 
+        if (control.getPrimaryImage() == null)
+            control.setPrimaryImage("");
+        if (control.getSecondaryImage() == null)
+            control.setSecondaryImage("");
+
         if (control.getPrimaryColor() != -1) {
             //color gradients
             //we don't support mixing color and otherwise
@@ -269,7 +274,7 @@ public abstract class AbstractGameActivity extends AppCompatActivity implements 
     }
 
     protected void setFontTypeface(TextView textView, GICControl control) {
-        if (control.getFontName().isEmpty()) {
+        if (control.getFontName() == null || control.getFontName().isEmpty()) {
             textView.setTypeface(Typeface.DEFAULT);
         } else {
             if (control.getFontType() == 0) {

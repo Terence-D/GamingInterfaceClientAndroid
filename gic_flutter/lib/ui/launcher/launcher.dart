@@ -11,12 +11,14 @@ import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:gic_flutter/ui/menuOption.dart';
-import 'package:gic_flutter/ui/screenList.dart';
-import 'package:gic_flutter/ui/serverLogin.dart';
+import 'package:gic_flutter/ui/newScreenWizard/newScreenWizard.dart';
 import 'package:gic_flutter/views/about/aboutView.dart';
 import 'package:gic_flutter/views/intro/introView.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
+
+import 'screenList.dart';
+import 'serverLogin.dart';
 //import 'package:intent/intent.dart' as android_intent;
 //import 'package:intent/action.dart' as android_action;
 //import 'package:intent/extra.dart' as android_extra;
@@ -230,7 +232,8 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     }
   }
 
-  _getNewActivity(String activity) async {
+  /// legacy native code calling
+  Future<void> _getNewActivity(String activity) async {
     MethodChannel platform = new MethodChannel(Channel.channelView);
     try {
       await platform.invokeMethod(activity);
@@ -239,8 +242,10 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     }
   }
 
-  _showUi(StatefulWidget ui) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => ui)); // ManageView()) // AboutView())
+  // call another flutter ui/view
+  _showUi(StatefulWidget ui) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => ui)); // ManageView()) // AboutView())
+    launcherBloc.fetchAllPreferences();
   }
 
   void _showHelp() {
@@ -285,7 +290,8 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   }
 
   _newScreen() async {
-    newScreenId = await launcherBloc.newScreen();
+    _showUi(new NewScreenWizard());
+    //newScreenId = await launcherBloc.newScreen();
   }
 
   _scrollTo() {

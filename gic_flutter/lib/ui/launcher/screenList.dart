@@ -7,11 +7,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
-import 'package:gic_flutter/ui/launcher.dart';
 import 'package:gic_flutter/views/accentButton.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
+
+import 'launcher.dart';
 
 class ScreenList extends StatelessWidget {
 
