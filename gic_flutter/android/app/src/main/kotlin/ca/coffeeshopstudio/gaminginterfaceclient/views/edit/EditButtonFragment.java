@@ -7,12 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
@@ -32,6 +30,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -47,9 +49,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.AutoItKeyMap;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.ControlTypes;
@@ -140,6 +139,10 @@ public class EditButtonFragment extends DialogFragment implements
 
     private void loadControl(GICControl control) {
         controlToLoad = control;
+        if (controlToLoad.getPrimaryImage() == null)
+            controlToLoad.setPrimaryImage("");
+        if (controlToLoad.getSecondaryImage() == null)
+            controlToLoad.setSecondaryImage("");
     }
 
     private void loadView(View view) {
@@ -619,14 +622,14 @@ public class EditButtonFragment extends DialogFragment implements
         if (controlToLoad.getPrimaryImageResource() != -1) {
             normal = getResources().getDrawable(ControlTypes.GetButtonDrawableId(controlToLoad.getPrimaryImageResource(), true));
         }
-        if (!controlToLoad.getPrimaryImage().isEmpty()) {
+        if (controlToLoad.getPrimaryImage() != null && !controlToLoad.getPrimaryImage().isEmpty()) {
             normal = Drawable.createFromPath(controlToLoad.getPrimaryImage());
         }
 
         if (controlToLoad.getSecondaryImageResource() != -1) {
             secondary = getResources().getDrawable(ControlTypes.GetButtonDrawableId(controlToLoad.getSecondaryImageResource(), false));
         }
-        if (!controlToLoad.getSecondaryImage().isEmpty()) {
+        if (controlToLoad.getSecondaryImage() != null && !controlToLoad.getSecondaryImage().isEmpty()) {
             secondary = Drawable.createFromPath(controlToLoad.getSecondaryImage());
         }
 

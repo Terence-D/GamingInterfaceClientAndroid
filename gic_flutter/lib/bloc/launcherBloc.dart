@@ -22,7 +22,7 @@ class LauncherBloc {
   Stream<LauncherModel> get preferences => _modelFetcher.stream;
 
    /// Loads the preferences from the repository, and adds to the sink
-  void fetchAllPreferences() async {
+  Future<void> fetchAllPreferences() async {
     LauncherModel itemModel = await _repository.fetch();
     _modelFetcher.sink.add(itemModel);
   }

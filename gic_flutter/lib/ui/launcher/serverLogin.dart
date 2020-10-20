@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
-import 'package:gic_flutter/ui/launcher.dart';
 import 'package:showcaseview/showcaseview.dart';
+
+import 'launcher.dart';
 
 class ServerLogin extends StatefulWidget {
   final LauncherModel _viewModel;

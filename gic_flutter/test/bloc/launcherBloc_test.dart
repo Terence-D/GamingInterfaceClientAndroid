@@ -6,10 +6,11 @@ import 'package:mockito/mockito.dart';
 class MockLauncherRepository extends Mock implements LauncherRepository {}
 
 void main() {
-  final mockedRepo = new MockLauncherRepository();
+  MockLauncherRepository mockedRepo = new MockLauncherRepository();
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
+    mockedRepo = new MockLauncherRepository();
   });
 
   test('saving main calls the matching repo method', () async {

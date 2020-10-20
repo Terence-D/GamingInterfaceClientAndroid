@@ -27,6 +27,7 @@ class LauncherRepository {
     _prefs = await SharedPreferences.getInstance();
 
     bool convertScreens = _prefs.getBool(_prefConvertB) ?? true;
+    await _upgradeDefaults();
     if (convertScreens) {
       _prefs.setBool(_prefConvertB, false);
       return await _convertLegacyScreens();
@@ -85,6 +86,15 @@ class LauncherRepository {
       print(e.message);
     }
     return _loadVM();
+  }
+  //update the default control values to be flutter compatible
+  Future<void> _upgradeDefaults() async {
+    MethodChannel platform = new MethodChannel(Channel.channelUtil);
+    try {
+      platform.invokeMethod(Channel.actionCheckDefaults);
+    } on PlatformException catch (e) {
+      print(e.message);
+    }
   }
 
   //calls legacy code
