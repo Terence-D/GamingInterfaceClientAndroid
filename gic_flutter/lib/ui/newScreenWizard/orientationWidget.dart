@@ -101,7 +101,6 @@ class OrientationState extends State<OrientationWidget> {
       widget.state.screenHeightTextController.text = (MediaQuery.of(context).size.height * MediaQuery.of(context).devicePixelRatio).floor().toString();
       widget.state.screenWidthTextController.text = (MediaQuery.of(context).size.width * MediaQuery.of(context).devicePixelRatio).floor().toString();
     }
-
   }
 }
 
