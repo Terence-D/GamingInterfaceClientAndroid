@@ -89,11 +89,17 @@ class OrientationState extends State<OrientationWidget> {
 
   void _buildDimensions() {
     if (MediaQuery.of(context).orientation == Orientation.portrait && widget.state.viewModel.isLandscape) {
-      widget.state.screenHeightTextController.text = (MediaQuery.of(context).size.height * MediaQuery.of(context).devicePixelRatio).floor().toString();
-      widget.state.screenWidthTextController.text = (MediaQuery.of(context).size.width * MediaQuery.of(context).devicePixelRatio).floor().toString();
-    } else {
       widget.state.screenWidthTextController.text = (MediaQuery.of(context).size.height * MediaQuery.of(context).devicePixelRatio).floor().toString();
       widget.state.screenHeightTextController.text = (MediaQuery.of(context).size.width * MediaQuery.of(context).devicePixelRatio).floor().toString();
+    } else if (MediaQuery.of(context).orientation == Orientation.portrait) {
+      widget.state.screenHeightTextController.text = (MediaQuery.of(context).size.height * MediaQuery.of(context).devicePixelRatio).floor().toString();
+      widget.state.screenWidthTextController.text = (MediaQuery.of(context).size.width * MediaQuery.of(context).devicePixelRatio).floor().toString();
+    } else if (MediaQuery.of(context).orientation == Orientation.landscape && !widget.state.viewModel.isLandscape) {
+      widget.state.screenWidthTextController.text = (MediaQuery.of(context).size.height * MediaQuery.of(context).devicePixelRatio).floor().toString();
+      widget.state.screenHeightTextController.text = (MediaQuery.of(context).size.width * MediaQuery.of(context).devicePixelRatio).floor().toString();
+    } else {
+      widget.state.screenHeightTextController.text = (MediaQuery.of(context).size.height * MediaQuery.of(context).devicePixelRatio).floor().toString();
+      widget.state.screenWidthTextController.text = (MediaQuery.of(context).size.width * MediaQuery.of(context).devicePixelRatio).floor().toString();
     }
   }
 }
