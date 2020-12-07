@@ -1,9 +1,7 @@
 package ca.coffeeshopstudio.gaminginterfaceclient.network;
 
-import java.util.List;
-
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.Result;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -30,8 +28,8 @@ public interface CommandService {
     Call<String> getVersion();
 
     @POST("/api/toggle")
-    Call<List<Result>> postToggleCommand(@Header("Authorization") String auth, @Body Command command);
+    Call<ResponseBody> postToggleCommand(@Header("Authorization") String auth, @Body Command command);
 
     @POST("/api/key")
-    Call<List<Result>> postComplexCommand(@Header("Authorization") String auth, @Body Command command);
+    Call<ResponseBody> postComplexCommand(@Header("Authorization") String auth, @Body Command command);
 }
