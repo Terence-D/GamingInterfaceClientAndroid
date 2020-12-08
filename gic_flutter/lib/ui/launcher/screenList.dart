@@ -1,3 +1,7 @@
+import 'package:gic_flutter/theme/dimensions.dart' as dim;
+import 'package:gic_flutter/theme/theme.dart';
+import 'package:gic_flutter/model/intl/localizations.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'dart:io';
 
 import 'package:filesystem_picker/filesystem_picker.dart';
@@ -13,6 +17,17 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'launcher.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+class VersionResponse {
+  final String version;
+
+  VersionResponse({this.version});
+
+  factory VersionResponse.fromJson(Map<String, dynamic> json) {
+    return VersionResponse(version: json['version']);
+  }
+}
 
 class ScreenList extends StatelessWidget {
 
@@ -20,6 +35,8 @@ class ScreenList extends StatelessWidget {
   final IntlLauncher _translations;
   final List<TextEditingController> _screenNameController = new List<TextEditingController>();
   final LauncherState _parent;
+
+  final String serverApiVersion = "2.0.0.0";
 
   ScreenList(this._parent,
       this._screens,
@@ -71,7 +88,7 @@ class ScreenList extends StatelessWidget {
         child: new Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            _startButton(index),
+            _startButton(index, context),
             _editButton(index),
             _shareButton(index, context),
             _deleteButton(context, index),
@@ -149,24 +166,24 @@ class ScreenList extends StatelessWidget {
           );
   }
 
-  Widget _startButton(int index) {
+  Widget _startButton(int index, BuildContext context) {
     if (index == 0) {
       return Showcase(
           key: _parent.startKey,
           title: _translations.text(LauncherText.start),
           description: _translations.text(LauncherText.helpStart),
-          child: _innerStartButton(index));
+          child: _innerStartButton(index, context));
     } else {
-      return _innerStartButton(index);
+      return _innerStartButton(index, context);
     }
   }
 
-  AccentButton _innerStartButton(int index) {
+  AccentButton _innerStartButton(int index, BuildContext context) {
     return new AccentButton(
             child: Text(_translations.text(LauncherText.start)),
 //            key: update,
             onPressed: () {
-              _startGame(index);
+              _validate(index, context);
             },
           );
   }
@@ -270,7 +287,62 @@ class ScreenList extends StatelessWidget {
     }
   }
 
-  _startGame(int selectedScreenIndex) async {
+  _showLoaderDialog(BuildContext context){
+    AlertDialog alert=AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(margin: EdgeInsets.only(left: 7),child:Text(_translations.text(LauncherText.loading))),
+        ],),
+    );
+    showDialog(barrierDismissible: false,
+      context:context,
+      builder:(BuildContext context){
+        return alert;
+      },
+    );
+  }
+
+
+  _showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Ok"),
+      onPressed:  () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = RaisedButton(
+        onPressed: () async {
+          Email email = Email(
+            body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
+            subject: Intl.of(context).onboardEmailSubject,
+          );
+          await FlutterEmailSender.send(email);
+        },
+        child: Text(Intl.of(context).onboardSendLink, style: TextStyle(color: Colors.white)),
+        color: CustomTheme.of(context).primaryColor);
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Upgrade Server"),
+      content: Text(_translations.text(LauncherText.errorOutOfDate)),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  _validate(int selectedScreenIndex, BuildContext context) async {
     String password = _parent.passwordController.text;
     String address = _parent.addressController.text;
     String port = _parent.portController.text;
@@ -287,6 +359,35 @@ class ScreenList extends StatelessWidget {
       _showMessage(_translations.text(LauncherText.errorServerInvalid));
       return;
     }
+
+    var response;
+    try {
+      _showLoaderDialog(context);
+      response = await http.post(new Uri.http(address + ":" + port, "api/version")).timeout(const Duration(seconds:30));
+    } catch (TimeoutException) {
+      _showMessage(_translations.text(LauncherText.errorFirewall));
+    } finally {
+      Navigator.pop(context);
+    }
+    if (response!= null && response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      VersionResponse versionResponse = VersionResponse.fromJson(jsonDecode(response.body));
+
+      if (versionResponse.version == serverApiVersion) {
+        _startGame(selectedScreenIndex, address, port, password);
+      } else {
+        _showAlertDialog(context);
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      _showMessage(_translations.text(LauncherText.errorServerInvalid));
+    }
+    return;
+  }
+
+  _startGame(int selectedScreenIndex, String address, String port, String password) async {
     _parent.launcherBloc.saveConnectionSettings(address, port, password);
 
     MethodChannel platform = new MethodChannel(Channel.channelView);

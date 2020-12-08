@@ -8,15 +8,13 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.util.List;
-
 import ca.coffeeshopstudio.gaminginterfaceclient.R;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.Command;
 import ca.coffeeshopstudio.gaminginterfaceclient.models.GICControl;
-import ca.coffeeshopstudio.gaminginterfaceclient.models.Result;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.CommandService;
 import ca.coffeeshopstudio.gaminginterfaceclient.network.RestClientInstance;
 import okhttp3.Credentials;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,21 +69,21 @@ public class GameActivity extends AbstractGameActivity implements View.OnTouchLi
 
         String auth = Credentials.basic("gic", password);
 
-        Call<List<Result>> call;
+        Call<ResponseBody> call;
         if (viewType == GICControl.TYPE_BUTTON)
             call = routeMap.postComplexCommand(auth, command);
         else
             call = routeMap.postToggleCommand(auth, command);
 
-        call.enqueue(new Callback<List<Result>>() {
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<List<Result>> call, Response<List<Result>> response) {
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (!response.isSuccessful())
                     Toast.makeText(GameActivity.this, "Something went wrong...Please try later! " + response.message(), Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onFailure(Call<List<Result>> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Toast.makeText(GameActivity.this, "Something went wrong...Please try later! " + t.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             }
         });

@@ -1,6 +1,4 @@
-- Revamped the Main view - integrated the Screen Manager, improved look for tablets
-- Heavily revamped Sharing of Screens
-- Fixed Image widget editing
-- Updated Help system
-- Bug Fixes
-- Improved About view
+4.5 alpha
+- Updated Network code for the new 2.0 Server
+- Shows a loading window while connecting to a server initially
+- Added Version check before launching a Screen

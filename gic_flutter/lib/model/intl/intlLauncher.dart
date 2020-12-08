@@ -53,7 +53,9 @@ enum LauncherText {
 
   exportComplete,
   importComplete,
-  nameUpdated
+  nameUpdated,
+
+  loading
 }
 
 class IntlLauncher {
@@ -74,7 +76,7 @@ class IntlLauncher {
       LauncherText.errorPort: 'Invalid Port Number',
       LauncherText.errorServerInvalid: 'Invalid Server Address',
       LauncherText.errorFirewall: 'Error connecting, check that the server is running and firewall ports opened',
-      LauncherText.errorOutOfDate: 'There is a new version of GIC Server.  Please update it before continuing',
+      LauncherText.errorOutOfDate: 'There is a new version of GIC Server.  Please update it before continuing.  Visit https://github.com/Terence-D/GamingInterfaceCommandServer/releases on your computer or click the button below to send an email to yourself.',
       LauncherText.errorVersion: 'Wrong Version',
 
       LauncherText.address: 'Address',
@@ -118,6 +120,8 @@ class IntlLauncher {
       LauncherText.exportComplete: 'Export completed',
       LauncherText.importComplete: 'Import completed',
       LauncherText.nameUpdated: 'Name Updated',
+
+      LauncherText.loading: 'Locating Server, Please Wait'
     }
   };
 }

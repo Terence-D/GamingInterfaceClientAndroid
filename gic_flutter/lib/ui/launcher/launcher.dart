@@ -276,18 +276,19 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   }
 
   Future<void> _import() async {
-    File file = await FilePicker.getFile(
-      type: FileType.custom,
-      allowedExtensions: ['zip'],
-    );
-    if (file != null) {
-      newScreenId = await launcherBloc.import(file);
-      if (newScreenId > 0)
-        Fluttertoast.showToast(
-          msg: translation.text(LauncherText.importComplete),
-        );
+    FilePickerResult result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      File file = File(result.files.single.path);
+      if (file != null) {
+        newScreenId = await launcherBloc.import(file);
+        if (newScreenId > 0)
+          Fluttertoast.showToast(
+            msg: translation.text(LauncherText.importComplete),
+          );
+      }
     }
-  }
+    }
 
   _newScreen() async {
     _showUi(new NewScreenWizard());
