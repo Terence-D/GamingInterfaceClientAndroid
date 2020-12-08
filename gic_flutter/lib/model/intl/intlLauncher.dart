@@ -53,7 +53,9 @@ enum LauncherText {
 
   exportComplete,
   importComplete,
-  nameUpdated
+  nameUpdated,
+
+  loading
 }
 
 class IntlLauncher {
@@ -118,6 +120,8 @@ class IntlLauncher {
       LauncherText.exportComplete: 'Export completed',
       LauncherText.importComplete: 'Import completed',
       LauncherText.nameUpdated: 'Name Updated',
+
+      LauncherText.loading: 'Locating Server, Please Wait'
     }
   };
 }
