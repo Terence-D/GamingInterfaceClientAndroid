@@ -1,3 +1,7 @@
+import 'package:gic_flutter/theme/dimensions.dart' as dim;
+import 'package:gic_flutter/theme/theme.dart';
+import 'package:gic_flutter/model/intl/localizations.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'dart:io';
 
 import 'package:filesystem_picker/filesystem_picker.dart';
@@ -179,7 +183,6 @@ class ScreenList extends StatelessWidget {
             child: Text(_translations.text(LauncherText.start)),
 //            key: update,
             onPressed: () {
-              _showLoaderDialog(context);
               _validate(index, context);
             },
           );
@@ -300,6 +303,45 @@ class ScreenList extends StatelessWidget {
     );
   }
 
+
+  _showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Ok"),
+      onPressed:  () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = RaisedButton(
+        onPressed: () async {
+          Email email = Email(
+            body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
+            subject: Intl.of(context).onboardEmailSubject,
+          );
+          await FlutterEmailSender.send(email);
+        },
+        child: Text(Intl.of(context).onboardSendLink, style: TextStyle(color: Colors.white)),
+        color: CustomTheme.of(context).primaryColor);
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Upgrade Server"),
+      content: Text(_translations.text(LauncherText.errorOutOfDate)),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   _validate(int selectedScreenIndex, BuildContext context) async {
     String password = _parent.passwordController.text;
     String address = _parent.addressController.text;
@@ -318,28 +360,31 @@ class ScreenList extends StatelessWidget {
       return;
     }
 
+    var response;
     try {
-      final response = await http.post(new Uri.http(address + ":" + port, "api/version")).timeout(const Duration(seconds:30));
-      if (response.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
-        VersionResponse versionResponse = VersionResponse.fromJson(jsonDecode(response.body));
-
-        if (versionResponse.version == serverApiVersion)
-          _startGame(selectedScreenIndex, address, port, password);
-        else
-          _showMessage(_translations.text(LauncherText.errorOutOfDate));
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        _showMessage(_translations.text(LauncherText.errorServerInvalid));
-        return;
-      }
+      _showLoaderDialog(context);
+      response = await http.post(new Uri.http(address + ":" + port, "api/version")).timeout(const Duration(seconds:30));
     } catch (TimeoutException) {
       _showMessage(_translations.text(LauncherText.errorFirewall));
     } finally {
       Navigator.pop(context);
     }
+    if (response!= null && response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      VersionResponse versionResponse = VersionResponse.fromJson(jsonDecode(response.body));
+
+      if (versionResponse.version == serverApiVersion) {
+        _startGame(selectedScreenIndex, address, port, password);
+      } else {
+        _showAlertDialog(context);
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      _showMessage(_translations.text(LauncherText.errorServerInvalid));
+    }
+    return;
   }
 
   _startGame(int selectedScreenIndex, String address, String port, String password) async {

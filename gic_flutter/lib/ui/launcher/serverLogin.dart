@@ -96,12 +96,12 @@ class _ServerLoginState extends State<ServerLogin> {
         description: _translations.text(LauncherText.helpIpAddress),
         child: TextFormField(
           inputFormatters: [
-          new BlacklistingTextInputFormatter(new RegExp('[\\ ]')),
+            new BlacklistingTextInputFormatter(new RegExp('[\\ ]')),
           ],
           controller: _parent.addressController,
           decoration: InputDecoration(hintText: _translations.text(LauncherText.address)),
-          )
-        );
+        )
+    );
   }
 
   Row bannerRow(BuildContext context) {

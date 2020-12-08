@@ -72,7 +72,7 @@ class IntlAbout {
 
       AboutText.serverTitle: 'Server',
       AboutText.serverText: 'To use this you need to run GIC Server (also Open Source) on your Windows computer where the game resides.  Please visit the link below for further information',
-      AboutText.serverUrl: 'https://github.com/Terence-D/GameInputCommandServer',
+      AboutText.serverUrl: 'https://github.com/Terence-D/GamingInterfaceCommandServer',
 
       AboutText.libraryTitle: '3rd Party Libraries',
 
