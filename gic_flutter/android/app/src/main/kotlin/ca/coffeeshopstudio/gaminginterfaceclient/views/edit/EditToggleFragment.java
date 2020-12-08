@@ -5,12 +5,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputFilter;
@@ -147,6 +145,10 @@ public class EditToggleFragment extends DialogFragment implements
 
     private void loadControl(GICControl control) {
         controlToLoad = control;
+        if (controlToLoad.getPrimaryImage() == null)
+            controlToLoad.setPrimaryImage("");
+        if (controlToLoad.getSecondaryImage() == null)
+            controlToLoad.setSecondaryImage("");
     }
 
     @Override
@@ -565,14 +567,14 @@ public class EditToggleFragment extends DialogFragment implements
         if (controlToLoad.getPrimaryImageResource() != -1) {
             normal = getResources().getDrawable(ControlTypes.GetSwitchDrawableId(controlToLoad.getPrimaryImageResource(), true));
         }
-        if (!controlToLoad.getPrimaryImage().isEmpty()) {
+        if (controlToLoad.getPrimaryImage() != null && !controlToLoad.getPrimaryImage().isEmpty()) {
             normal = Drawable.createFromPath(controlToLoad.getPrimaryImage());
         }
 
         if (controlToLoad.getSecondaryImageResource() != -1) {
             secondary = getResources().getDrawable(ControlTypes.GetSwitchDrawableId(controlToLoad.getSecondaryImageResource(), false));
         }
-        if (!controlToLoad.getSecondaryImage().isEmpty()) {
+        if (controlToLoad.getSecondaryImage() != null && !controlToLoad.getSecondaryImage().isEmpty()) {
             secondary = Drawable.createFromPath(controlToLoad.getSecondaryImage());
         }
 

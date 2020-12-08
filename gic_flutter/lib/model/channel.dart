@@ -16,4 +16,5 @@ class Channel {
   static const String actionUtilGetSettings = "settings/get";
   static const String actionUtilUpdateDarkMode = "darkmode/set";
   static const String actionUtilUpdateScreens = "screens/upgrade";
+  static const String actionCheckDefaults = "defaults";
 }

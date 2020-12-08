@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,12 +7,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/intlLauncher.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
-import 'package:gic_flutter/ui/launcher.dart';
 import 'package:gic_flutter/views/accentButton.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
+
+import 'launcher.dart';
 
 class ScreenList extends StatelessWidget {
 
@@ -288,7 +287,7 @@ class ScreenList extends StatelessWidget {
       _showMessage(_translations.text(LauncherText.errorServerInvalid));
       return;
     }
-    _parent.launcherBloc.saveMainSettings(address, port, password);
+    _parent.launcherBloc.saveConnectionSettings(address, port, password);
 
     MethodChannel platform = new MethodChannel(Channel.channelView);
     try {

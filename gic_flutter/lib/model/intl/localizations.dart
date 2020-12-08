@@ -4,8 +4,6 @@ import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
 
 import 'intlAbout.dart';
-import 'intlLauncher.dart';
-import 'intlManage.dart';
 
 class IntlDelegate extends LocalizationsDelegate<Intl> {
   const IntlDelegate();
@@ -35,14 +33,6 @@ class Intl {
 
   String about(AboutText resource) {
     return IntlAbout.localizedStrings[locale.languageCode][resource];
-  }
-
-  String manage(ManageText resource) {
-    return IntlManage.localizedStrings[locale.languageCode][resource];
-  }
-
-  String launcher(LauncherText resource) {
-    return null;//IntlLauncher.localizedStrings[locale.languageCode][resource];
   }
 
   static Map<String, Map<String, String>> _localized = {

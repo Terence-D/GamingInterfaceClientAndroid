@@ -58,7 +58,9 @@ class ScreenRepository {
           Map controlMap = jsonDecode(prefs.getString(key));
           screen.controls.add(GicControl.fromJson(controlMap));
           //screen.name = prefs.getString(key);
-        } catch (_) { }
+        } catch (e) {
+          debugPrint(e.toString());
+        }
       }
     });
   }
@@ -74,14 +76,20 @@ class ScreenRepository {
     return baseName;
   }
 
-  int _findUniqueId({int startingId = -1}) {
+  /// This will find a unique ID to provide for a new screen
+  /// It will start off by setting it's ID to the length of the list, a safe bet
+  /// From there it searches through all the screens to see if it can find the
+  /// ID, if so, it will increment the ID by 1, and call itself recursively
+  /// Once it has exhausted the whole list and has not found a match, it wil
+  /// return this unused number
+  int findUniqueId({int startingId = -1}) {
     if (startingId < 0)
       startingId = _cache.length;
 
     _cache.forEach((screen) {
       if (screen.screenId == startingId) {
         startingId++;
-        return _findUniqueId(startingId: startingId);
+        return findUniqueId(startingId: startingId);
       }
       return startingId;
     });
@@ -134,7 +142,7 @@ class ScreenRepository {
 
       //get a unique name and ID
       newScreen.name = _findUniqueName(newScreen.name);
-      newScreen.screenId = _findUniqueId();
+      newScreen.screenId = findUniqueId();
 
       //save the new screen
       await _save(prefs, newScreen);
@@ -216,7 +224,7 @@ class ScreenRepository {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await _load(prefs);
     importedScreen.name = _findUniqueName(importedScreen.name);
-    importedScreen.screenId = _findUniqueId();
+    importedScreen.screenId = findUniqueId();
     _cache = null; //invalidate the cache
 
     //now take the extracted image files, and add them to the app with possibly new names
@@ -413,7 +421,7 @@ class ScreenRepository {
     return screen;
   }
 
-  export(String exportPath, int id) async {
+  Future<int> export(String exportPath, int id) async {
     Directory cache = await getTemporaryDirectory();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -423,13 +431,13 @@ class ScreenRepository {
     String filesPath = (await getApplicationSupportDirectory()).path;
     for (int i = 0; i < _cache.length; i++) {
       if (_cache[i].screenId == id) {
-        await _exportScreen(_cache[i], cache, exportPath, filesPath);
-        return;
+        return await _exportScreen(_cache[i], cache, exportPath, filesPath);
       }
     }
+    return -1;
   }
 
-  _exportScreen(screen, cache, exportPath, filesPath) async {
+  Future<int> _exportScreen(screen, cache, exportPath, filesPath) async {
     String rawJson = jsonEncode(screen);
     //store the json data file in the directory
     File jsonData =new File(path.join(cache.path, "data.json"));
@@ -462,5 +470,6 @@ class ScreenRepository {
     });
 
     archive.close();
+    return 0;
   }
 }
