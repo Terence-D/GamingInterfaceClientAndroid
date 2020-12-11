@@ -1,3 +1,4 @@
+import 'package:gic_flutter/resources/screenRepository.dart';
 import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
@@ -105,7 +106,7 @@ class ScreenList extends StatelessWidget {
       tooltip: _translations.text(LauncherText.buttonDelete),
 //            key: delete,
       onPressed: () {
-        _confirmDialog(index, _screens[index].name, context);
+        _confirmDeleteDialog(index, _screens[index].name, context);
       },
     );
   }
@@ -183,12 +184,12 @@ class ScreenList extends StatelessWidget {
             child: Text(_translations.text(LauncherText.start)),
 //            key: update,
             onPressed: () {
-              _validate(index, context);
+              _validateScreen(index, context);
             },
           );
   }
 
-  Future<void> _confirmDialog(int index, String name, BuildContext context) async {
+  Future<void> _confirmDeleteDialog(int index, String name, BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -303,8 +304,42 @@ class ScreenList extends StatelessWidget {
     );
   }
 
+  _showResizeDialog(BuildContext context, String optionalText, String password, String port, String address, int screenId) {
+    // set up the buttons
+    Widget resizeButton = FlatButton(
+      child: Text("Resize"),
+      onPressed:  () {
+        Navigator.pop(context);
+        _parent.launcherBloc.resize(screenId, context);
+        _validateSettings(password, port, address, context, screenId);
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("Continue"),
+      onPressed:  () {
+        Navigator.pop(context);
+        _validateSettings(password, port, address, context, screenId);
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Resize Screen"),
+      content: Text("This appears to be made for a larger device - would you like to adjust the screen to fit your devices dimensions?  Note this will create a new screen with the new dimensions and launch that."),
+      actions: [
+        continueButton,
+        resizeButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
-  _showAlertDialog(BuildContext context) {
+  _showUpgradeDialog(BuildContext context) {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Ok"),
@@ -342,11 +377,40 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  _validate(int selectedScreenIndex, BuildContext context) async {
+  Future<bool> _checkScreenDimensions(int screenId, String address, String port, String password, BuildContext context) async {
+
+    List deviceInfo = _parent.launcherBloc.getDimensions(context);
+    List screenInfo = await _parent.launcherBloc.checkScreenSize(screenId);
+
+    bool rotate = false;
+    if (deviceInfo[0] != screenInfo[0])
+      rotate = true;
+
+    if ((deviceInfo[1] < screenInfo[1] || deviceInfo[2] < screenInfo[2])) {
+      await _showResizeDialog(context, "Note it is recommended to rotate your device for using this screen", password, port, address, screenId);
+      return true;
+    } else if (rotate) {
+      _showMessage("Note it is recommended to rotate your device for using this screen");
+    }
+    return false;
+  }
+
+  _validateScreen(int screenIndex, BuildContext context) async {
+
+    int screenId = _screens[screenIndex].id;
+
     String password = _parent.passwordController.text;
     String address = _parent.addressController.text;
     String port = _parent.portController.text;
 
+    if (await _checkScreenDimensions(screenId, address, port, password, context)) {
+      return;
+    }
+
+    await _validateSettings(password, port, address, context, screenId);
+  }
+
+  Future _validateSettings(String password, String port, String address, BuildContext context, int screenId) async {
     if (password == null || password.length < 6) {
       _showMessage(_translations.text(LauncherText.errorPassword));
       return;
@@ -375,9 +439,9 @@ class ScreenList extends StatelessWidget {
       VersionResponse versionResponse = VersionResponse.fromJson(jsonDecode(response.body));
 
       if (versionResponse.version == serverApiVersion) {
-        _startGame(selectedScreenIndex, address, port, password);
+        _startGame(screenId, address, port, password);
       } else {
-        _showAlertDialog(context);
+        _showUpgradeDialog(context);
       }
     } else {
       // If the server did not return a 200 OK response,
@@ -387,12 +451,12 @@ class ScreenList extends StatelessWidget {
     return;
   }
 
-  _startGame(int selectedScreenIndex, String address, String port, String password) async {
+  _startGame(int screenId, String address, String port, String password) async {
     _parent.launcherBloc.saveConnectionSettings(address, port, password);
 
     MethodChannel platform = new MethodChannel(Channel.channelView);
     try {
-      await platform.invokeMethod(Channel.actionViewStart, {"password": password, "address": address, "port":port, "selectedScreenId": _screens[selectedScreenIndex].id});
+      await platform.invokeMethod(Channel.actionViewStart, {"password": password, "address": address, "port":port, "screenId": screenId});
     } on PlatformException catch (e) {
       print(e.message);
     }

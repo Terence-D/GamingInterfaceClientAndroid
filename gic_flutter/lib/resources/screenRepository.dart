@@ -150,12 +150,19 @@ class ScreenRepository {
     }
   }
 
-  Future<LinkedHashMap> getScreenList() async {
-    LinkedHashMap rv = new LinkedHashMap<int, String>();
-
+  Future<List<Screen>> loadScreens() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.reload();
     await _load(prefs);
+
+    return _cache;
+  }
+
+  //Loads in the screen name list
+  Future<LinkedHashMap> getScreenList() async {
+    LinkedHashMap rv = new LinkedHashMap<int, String>();
+
+    await loadScreens();
 
     _cache.forEach((screen) {
       rv[screen.screenId] = screen.name;
@@ -472,4 +479,6 @@ class ScreenRepository {
     archive.close();
     return 0;
   }
+
+
 }

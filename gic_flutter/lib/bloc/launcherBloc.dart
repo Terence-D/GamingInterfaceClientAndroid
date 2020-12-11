@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
 import 'package:gic_flutter/resources/launcherRepository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -98,5 +99,20 @@ class LauncherBloc {
   /// @return 0 on success, non 0 on error
   Future<int> export(String exportPath, int id) async {
     return await _repository.export(exportPath, id);
+  }
+
+  Future<List> checkScreenSize(int screenId) async {
+    return await _repository.checkScreenSize(screenId);
+  }
+
+  List getDimensions(BuildContext context) {
+    return _repository.buildDimensions(context);
+  }
+
+  /// and resizes the screen to fit the devices dimensions
+  /// saved as a new screen
+  void resize(int screenId, BuildContext context) async {
+    await _repository.resizeScreen(screenId, context);
+    fetchAllPreferences();
   }
 }
