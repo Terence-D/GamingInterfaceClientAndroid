@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -376,7 +375,8 @@ class ScreenList extends StatelessWidget {
     List screenInfo = await _parent.launcherBloc.checkScreenSize(screenId);
 
     bool rotate = false;
-    if (deviceInfo[0] != screenInfo[0]) rotate = true;
+    if (deviceInfo[0] != screenInfo[0])
+      rotate = true;
 
     //add some buffer for the check
     if ((deviceInfo[1] + 10 < screenInfo[1] || deviceInfo[2] + 10 < screenInfo[2])) {
