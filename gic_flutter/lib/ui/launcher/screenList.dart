@@ -1,24 +1,23 @@
-import 'package:gic_flutter/theme/dimensions.dart' as dim;
-import 'package:gic_flutter/theme/theme.dart';
-import 'package:gic_flutter/model/intl/localizations.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/model/channel.dart';
 import 'package:gic_flutter/model/intl/intlLauncher.dart';
+import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:gic_flutter/model/launcherModel.dart';
+import 'package:gic_flutter/theme/theme.dart';
 import 'package:gic_flutter/views/accentButton.dart';
+import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'launcher.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class VersionResponse {
   final String version;
@@ -438,9 +437,10 @@ class ScreenList extends StatelessWidget {
         _showUpgradeDialog(context);
       }
     } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      _showMessage(_translations.text(LauncherText.errorServerInvalid));
+      if (response.statusCode == 405)
+        _showUpgradeDialog(context);
+
+      _showMessage("${_translations.text(LauncherText.errorServerError)}: ${response.statusCode.toString()}");
     }
     return;
   }
