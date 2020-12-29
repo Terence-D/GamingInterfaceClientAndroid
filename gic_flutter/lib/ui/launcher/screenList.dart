@@ -1,4 +1,3 @@
-import 'package:gic_flutter/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/theme/theme.dart';
 import 'package:gic_flutter/model/intl/localizations.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
