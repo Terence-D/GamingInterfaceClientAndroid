@@ -53,7 +53,7 @@ class IntroPresentation {
         footer: RaisedButton(
           onPressed: () async {
             Email email = Email(
-              body: "https://github.com/Terence-D/GameInputCommandServer/wiki",
+              body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
               subject: Intl.of(context).onboardEmailSubject,
             );
             await FlutterEmailSender.send(email);

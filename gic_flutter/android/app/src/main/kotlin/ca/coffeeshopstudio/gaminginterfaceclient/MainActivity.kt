@@ -65,7 +65,7 @@ class MainActivity: FlutterActivity() {
           val password = CryptoHelper.encrypt (call.argument("password"))
           val address: String? = call.argument("address")
           val port: String? = call.argument("port")
-          val screen: Int? = call.argument("selectedScreenId")
+          val screen: Int? = call.argument("screenId")
           val intent = Intent(this, GameActivity::class.java)
           intent.putExtra("password", password)
           intent.putExtra("address", address)
