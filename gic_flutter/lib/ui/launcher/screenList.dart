@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'package:gic_flutter/theme/theme.dart';
+import 'package:gic_flutter/model/intl/localizations.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'dart:io';
 
 import 'package:filesystem_picker/filesystem_picker.dart';
