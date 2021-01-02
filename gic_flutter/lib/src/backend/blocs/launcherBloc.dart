@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
-import 'package:gic_flutter/src/backend/repositories//launcherRepository.dart';
+import 'package:gic_flutter/src/backend/repositories/launcherRepository.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// LauncherBloc acts as the Presentation layer for the Launcher UI
