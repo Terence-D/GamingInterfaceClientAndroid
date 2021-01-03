@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -12,6 +13,7 @@ import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
+import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -432,7 +434,7 @@ class ScreenList extends StatelessWidget {
       VersionResponse versionResponse = VersionResponse.fromJson(jsonDecode(response.body));
 
       if (versionResponse.version == serverApiVersion) {
-        _startGame(screenId, address, port, password);
+        _startGame(context, screenId, address, port, password);
       } else {
         _showUpgradeDialog(context);
       }
@@ -447,16 +449,19 @@ class ScreenList extends StatelessWidget {
     return;
   }
 
-  _startGame(int screenId, String address, String port, String password) async {
+  _startGame(BuildContext context, int screenId, String address, String port, String password) async {
     _parent.launcherBloc.saveConnectionSettings(address, port, password);
 
-    MethodChannel platform = new MethodChannel(Channel.channelView);
-    try {
-      await platform.invokeMethod(
-          Channel.actionViewStart, {"password": password, "address": address, "port": port, "screenId": screenId});
-    } on PlatformException catch (e) {
-      print(e.message);
-    }
+    Screen screen = await _parent.launcherBloc.loadScreen(screenId);
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenView(screen: screen)));
+
+    // MethodChannel platform = new MethodChannel(Channel.channelView);
+    // try {
+    //   await platform.invokeMethod(
+    //       Channel.actionViewStart, {"password": password, "address": address, "port": port, "screenId": screenId});
+    // } on PlatformException catch (e) {
+    //   print(e.message);
+    // }
   }
 
   void _updateScreen(int index) {

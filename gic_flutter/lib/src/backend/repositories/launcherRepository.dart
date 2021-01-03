@@ -293,4 +293,16 @@ class LauncherRepository {
     await screenRepo.save(newScreen);
     return newScreen.screenId;
   }
+
+  Future<Screen> loadScreen(int screenId) async {
+    LauncherModel _viewModel = new LauncherModel();
+    ScreenRepository screenRepo = await _getScreenRepository(_viewModel);
+    Screen toReturn = new Screen();
+    List<Screen> screens = await screenRepo.loadScreens();
+    screens.forEach((element) {
+      if (element.screenId == screenId)
+        toReturn = element;
+    });
+    return toReturn;
+  }
 }

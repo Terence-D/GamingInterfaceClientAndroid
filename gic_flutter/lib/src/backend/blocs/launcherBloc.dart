@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
+import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/repositories/launcherRepository.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -114,5 +115,9 @@ class LauncherBloc {
   void resize(int screenId, BuildContext context) async {
     await _repository.resizeScreen(screenId, context);
     fetchAllPreferences();
+  }
+
+  Future<Screen> loadScreen(int screenId) async {
+    return await _repository.loadScreen(screenId);
   }
 }

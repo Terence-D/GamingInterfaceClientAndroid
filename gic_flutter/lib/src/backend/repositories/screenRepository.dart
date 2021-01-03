@@ -159,9 +159,13 @@ class ScreenRepository {
   }
 
   Future<List<Screen>> loadScreens() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-    await _load(prefs);
+    if (_cache != null)
+      return _cache;
+    else {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
+      await _load(prefs);
+    }
 
     return _cache;
   }
