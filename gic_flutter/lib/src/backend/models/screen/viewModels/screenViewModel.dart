@@ -34,10 +34,6 @@ class ScreenViewModel {
 
     /// Convert legacy java color to Flutter Color
     static Color _convertJavaColor (int legacyColor) {
-        int r = (legacyColor >> 16) & 0xFF;
-        int g = (legacyColor >> 8) & 0xFF;
-        int b = legacyColor & 0xFF;
-
-        return Color.fromARGB(1, r, g, b);
+        return Color(legacyColor);
     }
 }

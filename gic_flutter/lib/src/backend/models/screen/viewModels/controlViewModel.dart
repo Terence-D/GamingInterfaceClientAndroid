@@ -5,12 +5,13 @@ import 'package:gic_flutter/src/backend/models/screen/gicControl.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 
 import '../command.dart';
+import '../controlTypes.dart';
 
 enum ControlViewModelType {
     Button,
     Text,
     Image,
-    Switch,
+    Toggle,
     QuickButton
 }
 
@@ -47,7 +48,7 @@ class ControlViewModel {
         rv.height = model.height.toDouble() / pixelRatio;
         rv.type = _getType(model.viewType);
         rv.commands = _getCommands(model);
-        rv.font = _getFont(model);
+        rv.font = _getFont(model, pixelRatio);
         rv.colors = _getColors(model);
         rv.images = _getImages(model);
 
@@ -64,7 +65,7 @@ class ControlViewModel {
             case 2:
                 return ControlViewModelType.Image;
             case 3:
-                return ControlViewModelType.Switch;
+                return ControlViewModelType.Toggle;
             default:
                 return ControlViewModelType.QuickButton;
         }
@@ -80,13 +81,13 @@ class ControlViewModel {
         return rv;
     }
 
-    static Font _getFont(GicControl model) {
+    static Font _getFont(GicControl model, double pixelRatio) {
         Font rv = new Font();
         if (model.fontColor == -1)
             rv.color = Colors.white;
         else
             rv.color = _convertJavaColor(model.fontColor);
-        rv.size = model.fontSize.toDouble();
+        rv.size = model.fontSize.toDouble() / pixelRatio;
         if (model.fontName != null && model.fontName.isEmpty) {
             rv.family = model.fontName;
         }
@@ -110,20 +111,43 @@ class ControlViewModel {
 
     /// Convert legacy java color to Flutter Color
     static Color _convertJavaColor (int legacyColor) {
-        int r = (legacyColor >> 16) & 0xFF;
-        int g = (legacyColor >> 8) & 0xFF;
-        int b = legacyColor & 0xFF;
-
-        return Color.fromARGB(1, r, g, b);
+        return Color(legacyColor);
     }
 
     static List<String> _getImages(GicControl model) {
         List<String> images = new List<String>();
-        if (model.primaryImage.isNotEmpty)
+        if (model.primaryImage != null && model.primaryImage.isNotEmpty)
             images.add(model.primaryImage);
-        if (model.secondaryImage.isNotEmpty)
+        else if (model.primaryImageResource != -1)
+            images.add(_convertDrawableResource(model.primaryImageResource, model.viewType, true));
+        else
+            images.add("");
+        if (model.secondaryImage != null && model.secondaryImage.isNotEmpty)
             images.add(model.secondaryImage);
+        else if (model.secondaryImageResource != -1)
+            images.add(_convertDrawableResource(model.secondaryImageResource, model.viewType, false));
+        else
+            images.add("");
 
         return images;
+    }
+
+    static String _convertDrawableResource(int imageResource, int viewType, bool isPrimary) {
+        if (viewType == 0 || viewType == 4) { //its a button
+            if (imageResource < ControlTypes.buttonDrawables.length)
+                return ControlTypes.buttonDrawables[imageResource];
+            if (isPrimary)
+                return ControlTypes.buttonDrawables[2]; //blue
+            else
+                return ControlTypes.buttonDrawables[3]; //dark blue
+        } else {
+            if (imageResource < ControlTypes.buttonDrawables.length)
+                return ControlTypes.toggleDrawables[imageResource];
+            if (isPrimary)
+                return ControlTypes.toggleDrawables[2];
+            else
+                return ControlTypes.toggleDrawables[3];
+        }
+
     }
 }
