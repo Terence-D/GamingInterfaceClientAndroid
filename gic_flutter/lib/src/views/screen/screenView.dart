@@ -5,7 +5,8 @@ import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel
 class ScreenView extends StatelessWidget {
     final ScreenViewModel screen;
     final List<Widget> widgets = new List<Widget>();
-    
+    final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
+
     ScreenView({Key key, @required this.screen}) : super (key:  key) {
         if (screen != null)
             screen.controls.forEach((element) {
@@ -14,61 +15,92 @@ class ScreenView extends StatelessWidget {
 
     }
 
+    @override
+    Widget build(BuildContext context) {
+        return Material(
+            child: Stack(
+                children: widgets
+            ),
+        );
+    }
+
+    onTapDown(ControlViewModel element) {
+
+    }
+
+    onTapUp(ControlViewModel element) {
+
+    }
+
     Widget _buildGicControl(ControlViewModel element) {
         return Positioned(
             left: element.left,
             top: element.top,
-            child: dynamicControl(element),
+            child: _dynamicControl(element),
             );
     }
 
-    Widget dynamicControl(ControlViewModel element) {
+    Widget _dynamicControl(ControlViewModel element) {
         switch (element.type) {
             case ControlViewModelType.Text:
-                return gicText(element);
+                return _gicText(element);
             case ControlViewModelType.Image:
-                return gicImage(element);
+                return _gicImage(element);
             default:
-                return gicButton(element);
+                return _gicButton(element);
         }
     }
 
-    gicButton(ControlViewModel element) {
-        return new MaterialButton(
-            onPressed: () {  },
-            child: Container(
-                width: element.width,
-                height: element.height,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/images/controls/${element.images[0]}.png"),
-                        fit: BoxFit.cover)),
-                child: gicText(element)
-            ) );
+    Widget _gicButton(ControlViewModel element) {
+        return GestureDetector(
+           onTapDown: onTapDown(element),
+           onTapUp: onTapUp(element),
+           child: Container(
+               width: element.width,
+               height: element.height,
+               decoration: _getDesign(element),
+               child: Center(child: Text(
+                   element.text,
+                   textAlign: TextAlign.center,
+                   style: TextStyle(
+                       color: element.font.color,
+                       fontFamily: element.font.family,
+                       fontSize: element.font.size)
+               )),
+           )
+        );
     }
 
-    gicImage(ControlViewModel element) {
+    Widget _gicImage(ControlViewModel element) {
         return Image.asset("assets/images/controls/${element.images[0]}.png");
     }
 
-    gicText(ControlViewModel element) {
+    Widget _gicText(ControlViewModel element) {
         return new Container(
             width: element.width,
             child: Text(
-                element.text, style: TextStyle(
-                color: element.font.color,
-                fontFamily: element.font.family,
-                fontSize: element.font.size
-            )
+                element.text,
+                style: TextStyle(
+                    color: element.font.color,
+                    fontFamily: element.font.family,
+                    fontSize: element.font.size)
         ));
     }
-
-    @override
-    Widget build(BuildContext context) {
-        return Material(
-          child: Stack(
-              children: widgets
-          ),
-        );
+    BoxDecoration _getDesign(ControlViewModel element) {
+      if (element.design == ControlDesignType.UpDownGradient) {
+          return BoxDecoration(
+              borderRadius: buttonBorder,
+              gradient: LinearGradient(colors: element.colors,
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+              )
+          );
+      } else {
+          return BoxDecoration(
+              borderRadius: buttonBorder,
+              image: DecorationImage(
+                  image: AssetImage("assets/images/controls/${element.images[0]}.png"),
+                  fit: BoxFit.cover));
+      }
     }
 }
