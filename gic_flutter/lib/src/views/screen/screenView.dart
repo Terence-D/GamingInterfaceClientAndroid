@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 
 class ScreenView extends StatelessWidget {
@@ -62,17 +63,14 @@ class ScreenView extends StatelessWidget {
                child: Center(child: Text(
                    element.text,
                    textAlign: TextAlign.center,
-                   style: TextStyle(
-                       color: element.font.color,
-                       fontFamily: element.font.family,
-                       fontSize: element.font.size)
+                   style: _getTextStyle(element.font)
                )),
            )
         );
     }
 
     Widget _gicImage(ControlViewModel element) {
-        return Image.asset("assets/images/controls/${element.images[0]}.png");
+        return Image.asset("assets/images/controls/${element.images[0]}");
     }
 
     Widget _gicText(ControlViewModel element) {
@@ -80,12 +78,17 @@ class ScreenView extends StatelessWidget {
             width: element.width,
             child: Text(
                 element.text,
-                style: TextStyle(
-                    color: element.font.color,
-                    fontFamily: element.font.family,
-                    fontSize: element.font.size)
-        ));
+                style: _getTextStyle(element.font)
+            ));
     }
+
+    TextStyle _getTextStyle(Font font) {
+        return TextStyle(
+            color: font.color,
+            fontFamily: font.family,
+            fontSize: font.size);
+    }
+
     BoxDecoration _getDesign(ControlViewModel element) {
       if (element.design == ControlDesignType.UpDownGradient) {
           return BoxDecoration(

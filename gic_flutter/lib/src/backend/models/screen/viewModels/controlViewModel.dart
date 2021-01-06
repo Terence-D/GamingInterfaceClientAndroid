@@ -97,7 +97,7 @@ class ControlViewModel {
         else
             rv.color = _convertJavaColor(model.fontColor);
         rv.size = model.fontSize.toDouble() / pixelRatio;
-        if (model.fontName != null && model.fontName.isEmpty) {
+        if (model.fontName != null && model.fontName.isNotEmpty) {
             rv.family = model.fontName;
         }
 
