@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:gic_flutter/src/backend/models/screen/screen.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -453,7 +454,7 @@ class ScreenList extends StatelessWidget {
     _parent.launcherBloc.saveConnectionSettings(address, port, password);
 
     Screen screen = await _parent.launcherBloc.loadScreen(screenId);
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenView(screen: screen)));
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenView(screen: new ScreenViewModel.fromModel(screen))));
 
     // MethodChannel platform = new MethodChannel(Channel.channelView);
     // try {
