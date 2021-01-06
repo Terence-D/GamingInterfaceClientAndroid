@@ -15,12 +15,12 @@ class ScreenViewModel {
 
     ScreenViewModel();
 
-    factory ScreenViewModel.fromModel(Screen model) {
+    factory ScreenViewModel.fromModel(Screen model, double pixelRatio) {
         ScreenViewModel rv = new ScreenViewModel();
         rv.screenId = model.screenId;
         rv.name = model.name;
         model.controls.forEach((element) {
-            rv.controls.add(new ControlViewModel.fromModel(element));
+            rv.controls.add(new ControlViewModel.fromModel(element, pixelRatio));
         });
         rv.newControlId = model.newControlId;
 

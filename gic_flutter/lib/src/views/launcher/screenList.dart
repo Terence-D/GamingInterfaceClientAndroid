@@ -454,7 +454,10 @@ class ScreenList extends StatelessWidget {
     _parent.launcherBloc.saveConnectionSettings(address, port, password);
 
     Screen screen = await _parent.launcherBloc.loadScreen(screenId);
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenView(screen: new ScreenViewModel.fromModel(screen))));
+
+    double pixelRatio = MediaQuery.of(context).devicePixelRatio;
+
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenView(screen: new ScreenViewModel.fromModel(screen, pixelRatio))));
 
     // MethodChannel platform = new MethodChannel(Channel.channelView);
     // try {

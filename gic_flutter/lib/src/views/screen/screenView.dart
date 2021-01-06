@@ -20,13 +20,9 @@ class ScreenView extends StatelessWidget {
          child: new Container(
              width: element.width,
              height: element.height,
-             decoration: new BoxDecoration(color: element.colors[0]),
-             child: new Text(
-                 element.text, style: TextStyle(
-                  color: element.font.color,
-                  fontFamily: element.font.family,
-                  fontSize: element.font.size,
-             )),
+             child: new RaisedButton(
+                 child: new                  Text(
+                     element.text)             ),
      ));
     }
 

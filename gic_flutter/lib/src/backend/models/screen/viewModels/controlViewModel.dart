@@ -37,13 +37,14 @@ class ControlViewModel {
 
     ControlViewModel();
 
-    factory ControlViewModel.fromModel(GicControl model) {
+    factory ControlViewModel.fromModel(GicControl model, double pixelRatio) {
+
         ControlViewModel rv = new ControlViewModel();
         rv.text = model.text;
-        rv.left = model.left;
-        rv.top = model.top;
-        rv.width = model.width.toDouble();
-        rv.height = model.height.toDouble();
+        rv.left = model.left / pixelRatio;
+        rv.top = model.top / pixelRatio;
+        rv.width = model.width.toDouble() / pixelRatio;
+        rv.height = model.height.toDouble() / pixelRatio;
         rv.type = _getType(model.viewType);
         rv.commands = _getCommands(model);
         rv.font = _getFont(model);
