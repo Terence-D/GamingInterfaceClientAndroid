@@ -15,6 +15,11 @@ enum ControlViewModelType {
     QuickButton
 }
 
+enum ControlDesignType {
+    Image,
+    UpDownGradient
+}
+
 enum SwitchPosition {
     OffReadyForMouseDown,
     OffReadyForMouseUp,
@@ -23,6 +28,8 @@ enum SwitchPosition {
 }
 class ControlViewModel {
     ControlViewModelType type = ControlViewModelType.Button;
+    ControlDesignType design = ControlDesignType.Image;
+
     List<Command> commands = new List<Command>();
 
     String text = "-";
@@ -51,6 +58,8 @@ class ControlViewModel {
         rv.font = _getFont(model, pixelRatio);
         rv.colors = _getColors(model);
         rv.images = _getImages(model);
+        if (rv.images.isEmpty)
+            rv.design = ControlDesignType.UpDownGradient;
 
         return rv;
     }
@@ -121,13 +130,11 @@ class ControlViewModel {
         else if (model.primaryImageResource != -1)
             images.add(_convertDrawableResource(model.primaryImageResource, model.viewType, true));
         else
-            images.add("");
+            return images; //mo primary, no secondary
         if (model.secondaryImage != null && model.secondaryImage.isNotEmpty)
             images.add(model.secondaryImage);
         else if (model.secondaryImageResource != -1)
             images.add(_convertDrawableResource(model.secondaryImageResource, model.viewType, false));
-        else
-            images.add("");
 
         return images;
     }
