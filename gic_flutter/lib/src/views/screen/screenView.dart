@@ -3,10 +3,11 @@ import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewMode
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 
+import 'gicButton.dart';
+
 class ScreenView extends StatelessWidget {
   final ScreenViewModel screen;
   final List<Widget> widgets = new List<Widget>();
-  final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
 
   ScreenView({Key key, @required this.screen}) : super(key: key) {
     if (screen != null)
@@ -21,10 +22,6 @@ class ScreenView extends StatelessWidget {
       child: Stack(children: widgets),
     );
   }
-
-  onTapDown(ControlViewModel element) {}
-
-  onTapUp(ControlViewModel element) {}
 
   Widget _buildGicControl(ControlViewModel element) {
     return Positioned(
@@ -41,20 +38,8 @@ class ScreenView extends StatelessWidget {
       case ControlViewModelType.Image:
         return _gicImage(element);
       default:
-        return _gicButton(element);
+        return GicButton(control: element, textStyle: _getTextStyle(element.font));
     }
-  }
-
-  Widget _gicButton(ControlViewModel element) {
-    return GestureDetector(
-        onTapDown: onTapDown(element),
-        onTapUp: onTapUp(element),
-        child: Container(
-          width: element.width,
-          height: element.height,
-          decoration: _getDesign(element),
-          child: Center(child: Text(element.text, textAlign: TextAlign.center, style: _getTextStyle(element.font))),
-        ));
   }
 
   Widget _gicImage(ControlViewModel element) {
@@ -67,22 +52,5 @@ class ScreenView extends StatelessWidget {
 
   TextStyle _getTextStyle(Font font) {
     return TextStyle(color: font.color, fontFamily: font.family, fontSize: font.size);
-  }
-
-  BoxDecoration _getDesign(ControlViewModel element) {
-    if (element.design == ControlDesignType.UpDownGradient) {
-      return BoxDecoration(
-          borderRadius: buttonBorder,
-          gradient: LinearGradient(
-            colors: element.colors,
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-          ));
-    } else {
-      return BoxDecoration(
-          borderRadius: buttonBorder,
-          image:
-              DecorationImage(image: AssetImage("assets/images/controls/${element.images[0]}.png"), fit: BoxFit.cover));
-    }
   }
 }
