@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-
 enum Controls {
     button,
     text,
@@ -10,34 +6,6 @@ enum Controls {
 }
 
 class ControlTypes {
-
-    // static List<String> _buttons;
-    // List<String> _toggles;
-    //
-    // static List<String> get buttons => _buttons;
-    //
-    // List<String> get toggles => _toggles;
-    //
-    // //private constructor
-    // ControlTypes._create();
-    //
-    // //public factory
-    // static Future<ControlTypes> create(BuildContext context) async {
-    //     ControlTypes controlTypes = ControlTypes._create(); //call private constructor
-    //
-    //     final manifestJson = await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
-    //     _buttons = json
-    //         .decode(manifestJson)
-    //         .keys
-    //         .where((String key) => key.startsWith('assets/images/controls/button'));
-    //     controlTypes._toggles = json
-    //         .decode(manifestJson)
-    //         .keys
-    //         .where((String key) => key.startsWith('assets/images/controls/toggle'));
-    //
-    //     return controlTypes;
-    // }
-
     static final List<String> buttonDrawables = [
         "button_neon",
         "button_neon_dark",

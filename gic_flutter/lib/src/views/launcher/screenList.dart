@@ -48,7 +48,6 @@ class ScreenList extends StatelessWidget {
     for (var i = 0; i < _screens.length; i++) {
       TextEditingController tec = new TextEditingController();
       tec.text = _screens[i].name;
-      debugPrint("#$i id=${_screens[i].id} name=${_screens[i].name}");
       _screenNameController.add(tec);
     }
 
@@ -296,8 +295,7 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  _showResizeDialog(
-      BuildContext context, String optionalText, String password, String port, String address, int screenId) {
+  _showResizeDialog(BuildContext context, String optionalText, String password, String port, String address, int screenId) {
     // set up the buttons
     Widget resizeButton = FlatButton(
       child: Text("Resize"),
@@ -457,7 +455,7 @@ class ScreenList extends StatelessWidget {
 
     double pixelRatio = MediaQuery.of(context).devicePixelRatio;
 
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenView(screen: new ScreenViewModel.fromModel(screen, pixelRatio))));
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenView(screen: new ScreenViewModel.fromModel(screen, pixelRatio), password: password, port: port, address: address,)));
 
     // MethodChannel platform = new MethodChannel(Channel.channelView);
     // try {

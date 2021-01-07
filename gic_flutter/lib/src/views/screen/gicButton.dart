@@ -1,15 +1,22 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+import 'package:http/http.dart' as http;
 
 class GicButton extends StatefulWidget {
   final ControlViewModel control;
   final TextStyle textStyle;
+  final String password;
+  final String port;
+  final String address;
 
-  GicButton({Key key, this.control, this.textStyle}) : super(key: key);
+  GicButton({Key key, @required this.control, @required this.textStyle, @required this.password, @required this.port, @required this.address}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return GicButtonState(control: control, textStyle: textStyle);
+    return GicButtonState(control: control, textStyle: textStyle, password: password, port: port, address: address);
   }
 }
 
@@ -17,12 +24,15 @@ class GicButtonState extends State<GicButton> {
   final ControlViewModel control;
   final TextStyle textStyle;
   final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
+  final String password;
+  final String port;
+  final String address;
 
   BoxDecoration unpressed;
   BoxDecoration pressed;
   BoxDecoration active;
 
-  GicButtonState({this.control, this.textStyle}) {
+  GicButtonState({@required this.control, @required this.textStyle, @required this.password, @required this.port, @required this.address}) {
     unpressed = _buildDesign(false);
     pressed = _buildDesign(true);
     active = unpressed;
@@ -30,13 +40,19 @@ class GicButtonState extends State<GicButton> {
 
   onTap() {
     setState(() {
-      if (control.type == ControlViewModelType.Toggle)
-        if (active == pressed)
-          active = unpressed;
-        else
+      switch (control.type) {
+        case ControlViewModelType.Toggle:
+          sendCommand("toggle");
+          if (active == pressed)
+            active = unpressed;
+          else
+            active = pressed;
+          break;
+        case ControlViewModelType.QuickButton:
+        case ControlViewModelType.Button:
+          sendCommand("key");
           active = pressed;
-      else
-      active = pressed;
+      }
     });
   }
 
@@ -90,5 +106,24 @@ class GicButtonState extends State<GicButton> {
               image: AssetImage("assets/images/controls/${control.images[imageIndex]}.png"),
               fit: BoxFit.cover));
     }
+  }
+
+  Future<void> sendCommand(String command) async {
+    String basicAuth = base64Encode(Latin1Codec().encode('gic:$password'));
+    Map<String, String> headers = new Map();
+    headers["Authorization"] = 'Basic $basicAuth';
+    String body = json.encode(control.commands[0].toJson());
+    await http.post(new Uri.http("$address:$port", "/api/$command"),
+        body: body,
+        headers:headers).timeout(const Duration(seconds: 30)).then((response) {
+      log(response.statusCode.toString());
+      if(response.statusCode == 200) {
+      }
+      else {
+      }
+    }).catchError((err) {
+      log(err.toString());
+    });
+
   }
 }

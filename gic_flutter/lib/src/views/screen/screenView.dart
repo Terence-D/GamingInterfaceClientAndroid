@@ -8,8 +8,11 @@ import 'gicButton.dart';
 class ScreenView extends StatelessWidget {
   final ScreenViewModel screen;
   final List<Widget> widgets = new List<Widget>();
+  final String password;
+  final String port;
+  final String address;
 
-  ScreenView({Key key, @required this.screen}) : super(key: key) {
+  ScreenView({Key key, @required this.screen, @required this.password, @required this.port, @required this.address}) : super(key: key) {
     if (screen != null)
       screen.controls.forEach((element) {
         widgets.add(_buildGicControl(element));
@@ -19,6 +22,7 @@ class ScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: screen.backgroundColor,
       child: Stack(children: widgets),
     );
   }
@@ -38,7 +42,7 @@ class ScreenView extends StatelessWidget {
       case ControlViewModelType.Image:
         return _gicImage(element);
       default:
-        return GicButton(control: element, textStyle: _getTextStyle(element.font));
+        return GicButton(control: element, textStyle: _getTextStyle(element.font), password: password, port: port, address: address);
     }
   }
 
