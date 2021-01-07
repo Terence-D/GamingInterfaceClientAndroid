@@ -15,9 +15,9 @@ class Command {
 
   Map<String, dynamic> toJson() =>
   {
-    'activatorType': activatorType,
-    'key': key,
-    'modifiers': modifiers
+    'ActivatorType': activatorType,
+    'Key': key,
+    'Modifier': modifiers
   };
 
   factory Command.fromJson(Map<String, dynamic> json) {

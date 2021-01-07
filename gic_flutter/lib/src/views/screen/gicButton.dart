@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
-import 'package:http/http.dart' as http;
+import 'package:gic_flutter/src/backend/services/networkService.dart';
 
 class GicButton extends StatefulWidget {
   final ControlViewModel control;
@@ -109,21 +109,9 @@ class GicButtonState extends State<GicButton> {
   }
 
   Future<void> sendCommand(String command) async {
-    String basicAuth = base64Encode(Latin1Codec().encode('gic:$password'));
-    Map<String, String> headers = new Map();
-    headers["Authorization"] = 'Basic $basicAuth';
-    String body = json.encode(control.commands[0].toJson());
-    await http.post(new Uri.http("$address:$port", "/api/$command"),
-        body: body,
-        headers:headers).timeout(const Duration(seconds: 30)).then((response) {
-      log(response.statusCode.toString());
-      if(response.statusCode == 200) {
-      }
-      else {
-      }
-    }).catchError((err) {
-      log(err.toString());
-    });
-
+    NetworkService.address = address;
+    NetworkService.password = password;
+    NetworkService.port = port;
+    NetworkService.SendCommand(command, control.commands[0]);
   }
 }

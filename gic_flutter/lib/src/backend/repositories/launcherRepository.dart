@@ -6,6 +6,7 @@ import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/repositories//screenRepository.dart';
+import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LauncherRepository {
@@ -88,6 +89,7 @@ class LauncherRepository {
     }
     return _loadVM();
   }
+  
   //update the default control values to be flutter compatible
   Future<void> _upgradeDefaults() async {
     MethodChannel platform = new MethodChannel(Channel.channelUtil);
@@ -98,35 +100,17 @@ class LauncherRepository {
     }
   }
 
-  //calls legacy code
   Future<String> _getPassword() async {
-    String response = "";
     String encrypted = _prefs.getString(_prefPassword) ?? "";
-
-    const platform = const MethodChannel(Channel.channelUtil);
-    if (encrypted.isNotEmpty) {
-      try {
-        response = await platform.invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
-      } on PlatformException catch (_) {
-        response = "";
-      }
+    try {
+      return CryptoService.decrypt(encrypted);
+    } catch (Exception) { //will probably fail on legacy
+      return "";
     }
-    return response;
   }
 
   Future<String> _encryptPassword(String password) async {
-    String response = "";
-
-    const platform = const MethodChannel(Channel.channelUtil);
-    if (password.isNotEmpty) {
-      try {
-        final String result = await platform.invokeMethod(Channel.actionUtilEncrypt, {"password": password});
-        response = result;
-      } on PlatformException catch (_) {
-        response = "";
-      }
-    }
-    return response;
+    return CryptoService.encrypt(password);
   }
 
   bool _isNumeric(String str) {

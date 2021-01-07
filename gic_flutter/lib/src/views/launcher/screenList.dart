@@ -38,7 +38,7 @@ class ScreenList extends StatelessWidget {
   final List<TextEditingController> _screenNameController = new List<TextEditingController>();
   final LauncherState _parent;
 
-  final String serverApiVersion = "2.0.0.0";
+  final String serverApiVersion = "2.1.0.0";
 
   ScreenList(this._parent, this._screens, this._translations);
 
