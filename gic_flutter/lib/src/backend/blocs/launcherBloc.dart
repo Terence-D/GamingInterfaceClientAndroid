@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
+import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/repositories/launcherRepository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -34,8 +35,8 @@ class LauncherBloc {
   /// @param address Address for the GIC server
   /// @param port Port number of the GIC server
   /// @param password Secret for securing the connection to the GIC server
-  void saveConnectionSettings(String address, String port, String password) {
-    _repository.saveMainSettings(address, port, password);
+  void saveConnectionSettings(NetworkModel networkModel) {
+    _repository.saveMainSettings(networkModel.address, networkModel.port, networkModel.password);
   }
 
   /// Sets the theme to be light or dark

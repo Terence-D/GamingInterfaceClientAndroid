@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
@@ -8,11 +9,9 @@ import 'gicButton.dart';
 class ScreenView extends StatelessWidget {
   final ScreenViewModel screen;
   final List<Widget> widgets = new List<Widget>();
-  final String password;
-  final String port;
-  final String address;
+  final NetworkModel networkModel;
 
-  ScreenView({Key key, @required this.screen, @required this.password, @required this.port, @required this.address}) : super(key: key) {
+  ScreenView({Key key, @required this.screen, @required this.networkModel}) : super(key: key) {
     if (screen != null)
       screen.controls.forEach((element) {
         widgets.add(_buildGicControl(element));
@@ -42,7 +41,7 @@ class ScreenView extends StatelessWidget {
       case ControlViewModelType.Image:
         return _gicImage(element);
       default:
-        return GicButton(control: element, textStyle: _getTextStyle(element.font), password: password, port: port, address: address);
+        return GicButton(control: element, textStyle: _getTextStyle(element.font), networkModel: networkModel);
     }
   }
 

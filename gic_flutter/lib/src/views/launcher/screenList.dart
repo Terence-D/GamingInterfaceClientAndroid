@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -37,8 +39,6 @@ class ScreenList extends StatelessWidget {
   final IntlLauncher _translations;
   final List<TextEditingController> _screenNameController = new List<TextEditingController>();
   final LauncherState _parent;
-
-  final String serverApiVersion = "2.1.0.0";
 
   ScreenList(this._parent, this._screens, this._translations);
 
@@ -295,21 +295,21 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  _showResizeDialog(BuildContext context, String optionalText, String password, String port, String address, int screenId) {
+  _showResizeDialog(BuildContext context, String optionalText, NetworkModel networkModel, int screenId) {
     // set up the buttons
     Widget resizeButton = FlatButton(
       child: Text("Resize"),
       onPressed: () {
         Navigator.pop(context);
         _parent.launcherBloc.resize(screenId, context);
-        _validateSettings(password, port, address, context, screenId);
+        _validateSettings(networkModel, context, screenId);
       },
     );
     Widget continueButton = FlatButton(
       child: Text("Continue"),
       onPressed: () {
         Navigator.pop(context);
-        _validateSettings(password, port, address, context, screenId);
+        _validateSettings(networkModel, context, screenId);
       },
     );
     // set up the AlertDialog
@@ -369,8 +369,7 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  Future<bool> _checkScreenDimensions(
-      int screenId, String address, String port, String password, BuildContext context) async {
+  Future<bool> _checkScreenDimensions(int screenId, NetworkModel networkModel, BuildContext context) async {
     List deviceInfo = _parent.launcherBloc.getDimensions(context);
     List screenInfo = await _parent.launcherBloc.checkScreenSize(screenId);
 
@@ -380,8 +379,7 @@ class ScreenList extends StatelessWidget {
 
     //add some buffer for the check
     if ((deviceInfo[1] + 10 < screenInfo[1] || deviceInfo[2] + 10 < screenInfo[2])) {
-      await _showResizeDialog(context, "Note it is recommended to rotate your device for using this screen", password,
-          port, address, screenId);
+      await _showResizeDialog(context, "Note it is recommended to rotate your device for using this screen", networkModel, screenId);
       return true;
     } else if (rotate) {
       _showMessage("Note it is recommended to rotate your device for using this screen");
@@ -392,70 +390,57 @@ class ScreenList extends StatelessWidget {
   _validateScreen(int screenIndex, BuildContext context) async {
     int screenId = _screens[screenIndex].id;
 
-    String password = _parent.passwordController.text;
-    String address = _parent.addressController.text;
-    String port = _parent.portController.text;
+    NetworkModel networkModel = new NetworkModel();
+    networkModel.init(_parent.passwordController.text, _parent.addressController.text,  _parent.portController.text);
 
-    if (await _checkScreenDimensions(screenId, address, port, password, context)) {
+    if (await _checkScreenDimensions(screenId, networkModel, context)) {
       return;
     }
 
-    await _validateSettings(password, port, address, context, screenId);
+    await _validateSettings(networkModel, context, screenId);
   }
 
-  Future _validateSettings(String password, String port, String address, BuildContext context, int screenId) async {
-    if (password == null || password.length < 6) {
+  Future _validateSettings(NetworkModel networkModel, BuildContext context, int screenId) async {
+    if (networkModel.password == null || networkModel.password.length < 6) {
       _showMessage(_translations.text(LauncherText.errorPassword));
       return;
     }
-    if (port == null || int.tryParse(port) == null) {
+    if (networkModel.port == null || int.tryParse(networkModel.port) == null) {
       _showMessage(_translations.text(LauncherText.errorPort));
       return;
     }
-    if (address == null || address.length == 0) {
+    if (networkModel.address == null || networkModel.address.length == 0) {
       _showMessage(_translations.text(LauncherText.errorServerInvalid));
       return;
     }
 
-    var response;
-    try {
-      _showLoaderDialog(context);
-      response =
-          await http.post(new Uri.http(address + ":" + port, "api/version")).timeout(const Duration(seconds: 30));
-    } catch (TimeoutException) {
-      _showMessage(_translations.text(LauncherText.errorFirewall));
-    } finally {
-      Navigator.pop(context);
-    }
-    if (response != null && response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      VersionResponse versionResponse = VersionResponse.fromJson(jsonDecode(response.body));
+    //check network version now
+    Future<VersionNetworkResponse> response = NetworkService.checkVersion(networkModel);
 
-      if (versionResponse.version == serverApiVersion) {
-        _startGame(context, screenId, address, port, password);
-      } else {
-        _showUpgradeDialog(context);
-      }
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      if (response.statusCode == 405)
-        _showUpgradeDialog(context);
+    VersionNetworkResponse test = await response;
 
-      _showMessage("${_translations.text(LauncherText.errorServerError)}: ${response.statusCode.toString()}");
+    switch (test) {
+      case VersionNetworkResponse.Ok:
+        _startGame(context, screenId, networkModel);
+        break;
+      case VersionNetworkResponse.OutOfDate:
+        _showUpgradeDialog(context);
+        break;
+      case VersionNetworkResponse.Error:
+        _showMessage("${_translations.text(LauncherText.errorServerError)}");
+        break;
     }
-    return;
   }
 
-  _startGame(BuildContext context, int screenId, String address, String port, String password) async {
-    _parent.launcherBloc.saveConnectionSettings(address, port, password);
+  _startGame(BuildContext context, int screenId, NetworkModel networkModel) async {
+    _parent.launcherBloc.saveConnectionSettings(networkModel);
 
     Screen screen = await _parent.launcherBloc.loadScreen(screenId);
 
     double pixelRatio = MediaQuery.of(context).devicePixelRatio;
 
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => ScreenView(screen: new ScreenViewModel.fromModel(screen, pixelRatio), password: password, port: port, address: address,)));
+    await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+        ScreenView(screen: new ScreenViewModel.fromModel(screen, pixelRatio), networkModel: networkModel)));
 
     // MethodChannel platform = new MethodChannel(Channel.channelView);
     // try {

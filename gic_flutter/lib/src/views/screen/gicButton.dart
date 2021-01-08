@@ -1,22 +1,18 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/services/networkService.dart';
 
 class GicButton extends StatefulWidget {
   final ControlViewModel control;
   final TextStyle textStyle;
-  final String password;
-  final String port;
-  final String address;
+  final NetworkModel networkModel;
 
-  GicButton({Key key, @required this.control, @required this.textStyle, @required this.password, @required this.port, @required this.address}) : super(key: key);
+  GicButton({Key key, @required this.control, @required this.textStyle, @required this.networkModel}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return GicButtonState(control: control, textStyle: textStyle, password: password, port: port, address: address);
+    return GicButtonState(control: control, textStyle: textStyle, networkModel: networkModel);
   }
 }
 
@@ -24,15 +20,13 @@ class GicButtonState extends State<GicButton> {
   final ControlViewModel control;
   final TextStyle textStyle;
   final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
-  final String password;
-  final String port;
-  final String address;
+  final NetworkModel networkModel;
 
   BoxDecoration unpressed;
   BoxDecoration pressed;
   BoxDecoration active;
 
-  GicButtonState({@required this.control, @required this.textStyle, @required this.password, @required this.port, @required this.address}) {
+  GicButtonState({@required this.control, @required this.textStyle, @required this.networkModel}) {
     unpressed = _buildDesign(false);
     pressed = _buildDesign(true);
     active = unpressed;
@@ -109,9 +103,6 @@ class GicButtonState extends State<GicButton> {
   }
 
   Future<void> sendCommand(String command) async {
-    NetworkService.address = address;
-    NetworkService.password = password;
-    NetworkService.port = port;
-    NetworkService.SendCommand(command, control.commands[0]);
+    NetworkService.sendCommand(networkModel, command, control.commands[0]);
   }
 }

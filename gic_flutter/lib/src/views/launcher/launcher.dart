@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/blocs/launcherBloc.dart';
+import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:gic_flutter/src/flavor.dart';
 import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
@@ -139,7 +140,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
     _viewModel = snapshot.data;
-    passwordController.text = _viewModel.password;
+    CryptoService.decrypt(_viewModel.password).then((value) => passwordController.text = value);
     portController.text = _viewModel.port;
     addressController.text = _viewModel.address;
     passwordController.selection = TextSelection.fromPosition(TextPosition(offset: passwordController.text.length));
