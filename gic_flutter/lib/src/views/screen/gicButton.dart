@@ -54,8 +54,10 @@ class GicButtonState extends State<GicButton> {
           _toggleTap(Command.KEY_DOWN);
           break;
         case ControlViewModelType.QuickButton:
+          _buttonTap("toggle", Command.KEY_DOWN, pressed);
+          break;
         case ControlViewModelType.Button:
-          _buttonTap(Command.KEY_DOWN, pressed);
+          _buttonTap("key", Command.KEY_DOWN, pressed);
           break;
         case ControlViewModelType.Text:
         case ControlViewModelType.Image:
@@ -71,8 +73,10 @@ class GicButtonState extends State<GicButton> {
           _toggleTap(Command.KEY_UP);
           break;
         case ControlViewModelType.QuickButton:
+          _buttonTap("toggle", Command.KEY_UP, unpressed);
+          break;
         case ControlViewModelType.Button:
-          _buttonTap(Command.KEY_UP, unpressed);
+          _buttonTap("key", Command.KEY_UP, unpressed);
           break;
         case ControlViewModelType.Text:
         case ControlViewModelType.Image:
@@ -103,10 +107,10 @@ class GicButtonState extends State<GicButton> {
     sendCommand(commandType, 0);
   }
 
-  void _buttonTap(int activatorType, BoxDecoration status) {
+  void _buttonTap(String commandUrl, int activatorType, BoxDecoration status) {
     control.commands[0].activatorType = activatorType;
     active = status;
-    sendCommand("key", 0);
+    sendCommand(commandUrl, 0);
   }
 
   BoxDecoration _buildDesign(bool isPressed) {
