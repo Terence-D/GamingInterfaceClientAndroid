@@ -5,7 +5,7 @@ import 'package:gic_flutter/src/views/launcher/screenList.dart';
 import 'package:http/http.dart' as http;
 import 'package:gic_flutter/src/backend/models/screen/command.dart';
 
-enum VersionNetworkResponse {
+enum NetworkResponse {
     Ok,
     OutOfDate,
     Error
@@ -15,7 +15,7 @@ class NetworkService {
 
     static final String serverApiVersion = "2.1.0.0";
 
-    static Future<void> sendCommand(NetworkModel networkModel, String command, Command keystroke) async {
+    static Future<NetworkResponse> sendCommand(NetworkModel networkModel, String command, Command keystroke) async {
         String basicAuth = base64Encode(Latin1Codec().encode('gic:${networkModel.password}'));
         Map<String, String> headers = new Map();
         headers['Content-Type'] = 'application/json; charset=UTF-8';
@@ -23,28 +23,29 @@ class NetworkService {
 
         String body = json.encode(keystroke);//.toJson();
         await http.post(new Uri.http("${networkModel.address}:${networkModel.port}", "/api/$command"), body: body, headers:headers)
-            .timeout(const Duration(seconds: 30)).then((response) {
-                if(response.statusCode == 200) {
-                }else {
-                }
+            .timeout(const Duration(seconds: 5))
+            .then((response) {
+                return NetworkResponse.Ok;
             }).catchError((err) {
                 log(err.toString());
-        });
+                return NetworkResponse.Error;
+            }
+        );
     }
 
-    static Future<VersionNetworkResponse> checkVersion(NetworkModel networkModel) async {
+    static Future<NetworkResponse> checkVersion(NetworkModel networkModel) async {
         return await http.post(new Uri.http("${networkModel.address}:${networkModel.port}", "api/version"))
             .timeout(const Duration(seconds: 30)).then((response) {
             if (response != null && response.statusCode == 200) {
                 // If the server did return a 200 OK response then parse the JSON.
                 VersionResponse versionResponse = VersionResponse.fromJson(jsonDecode(response.body));
                 if (versionResponse.version == serverApiVersion)
-                    return VersionNetworkResponse.Ok;
+                    return NetworkResponse.Ok;
             }
-            return VersionNetworkResponse.OutOfDate;
+            return NetworkResponse.OutOfDate;
        }).catchError((err) {
             log(err.toString());
-            return VersionNetworkResponse.Error;
+            return NetworkResponse.Error;
         });
     }
 }

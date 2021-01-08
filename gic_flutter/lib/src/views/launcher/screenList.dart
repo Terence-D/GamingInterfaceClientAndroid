@@ -415,18 +415,18 @@ class ScreenList extends StatelessWidget {
     }
 
     //check network version now
-    Future<VersionNetworkResponse> response = NetworkService.checkVersion(networkModel);
+    Future<NetworkResponse> response = NetworkService.checkVersion(networkModel);
 
-    VersionNetworkResponse test = await response;
+    NetworkResponse test = await response;
 
     switch (test) {
-      case VersionNetworkResponse.Ok:
+      case NetworkResponse.Ok:
         _startGame(context, screenId, networkModel);
         break;
-      case VersionNetworkResponse.OutOfDate:
+      case NetworkResponse.OutOfDate:
         _showUpgradeDialog(context);
         break;
-      case VersionNetworkResponse.Error:
+      case NetworkResponse.Error:
         _showMessage("${_translations.text(LauncherText.errorServerError)}");
         break;
     }

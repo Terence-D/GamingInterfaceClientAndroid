@@ -20,12 +20,6 @@ enum ControlDesignType {
     UpDownGradient
 }
 
-enum SwitchPosition {
-    OffReadyForMouseDown,
-    OffReadyForMouseUp,
-    OnReadyForMouseDown,
-    OnReadyForMouseUp,
-}
 class ControlViewModel {
     ControlViewModelType type = ControlViewModelType.Button;
     ControlDesignType design = ControlDesignType.Image;
