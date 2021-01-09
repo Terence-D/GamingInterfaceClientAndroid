@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
@@ -20,10 +22,28 @@ class ScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: screen.backgroundColor,
-      child: Stack(children: widgets),
-    );
+    return _setBackground();
+  }
+
+  Widget _setBackground() {
+    if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
+      return Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: FileImage(File(screen.backgroundPath)),
+              fit: BoxFit.fill,
+            ),
+          ),
+          child: Stack(children: widgets),
+        ),
+      );
+    } else {
+      return Material(
+        color: screen.backgroundColor,
+        child: Stack(children: widgets),
+      );
+    }
   }
 
   Widget _buildGicControl(ControlViewModel element) {
@@ -46,7 +66,10 @@ class ScreenView extends StatelessWidget {
   }
 
   Widget _gicImage(ControlViewModel element) {
-    return Image.asset("assets/images/controls/${element.images[0]}");
+    return Image.file(File(element.images[0]),
+      width: element.width,
+      height: element.height,
+    );
   }
 
   Widget _gicText(ControlViewModel element) {
