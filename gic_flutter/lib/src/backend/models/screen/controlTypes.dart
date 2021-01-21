@@ -40,8 +40,8 @@ class ControlTypes {
     static final List<String> toggleDrawables = [
         "switch_off",
         "switch_on",
-        "toggle_off.9",
-        "toggle_on.9"
+        "toggle_off",
+        "toggle_on"
     ];
 
 }
