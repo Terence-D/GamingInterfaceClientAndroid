@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:gic_flutter/services/localStorageService.dart';
 
-GetIt locator = GetIt();
+GetIt locator = GetIt.instance;
 
 Future setupLocator() async {
   var instance = await LocalStorageService.getInstance();
