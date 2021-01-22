@@ -32,7 +32,7 @@ dependencies:
   http: ^0.12.0+2
   fluttertoast: ^4.0.0
   introduction_screen: ^1.0.7
-  flutter_email_sender: ^2.0.3
+  flutter_email_sender: ^4.0.0
   device_info: ^0.4.0+4
   get_it: ^1.0.3
   package_info: ^0.4.0+13
