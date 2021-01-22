@@ -36,7 +36,7 @@ class LauncherBloc {
   /// @param port Port number of the GIC server
   /// @param password Secret for securing the connection to the GIC server
   void saveConnectionSettings(NetworkModel networkModel) {
-    _repository.saveMainSettings(networkModel.address, networkModel.port, networkModel.password);
+    _repository.saveMainSettings(networkModel);
   }
 
   /// Sets the theme to be light or dark

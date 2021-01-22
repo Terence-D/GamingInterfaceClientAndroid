@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
+import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/repositories//screenRepository.dart';
 import 'package:gic_flutter/src/backend/services/cryptoService.dart';
@@ -120,15 +121,15 @@ class LauncherRepository {
     return double.tryParse(str) != null;
   }
 
-  saveMainSettings(String address, String port, String password) async {
-    if (address != null && port.isNotEmpty) {
-      _prefs.setString(_prefAddress, address);
+  saveMainSettings(NetworkModel networkModel) async {
+    if (networkModel.address != null && networkModel.port.isNotEmpty) {
+      _prefs.setString(_prefAddress, networkModel.address);
     }
-    if (port != null && port.isNotEmpty && _isNumeric(port)) {
-      _prefs.setString(_prefPort, port);
+    if (networkModel.port != null && networkModel.port.isNotEmpty && _isNumeric(networkModel.port)) {
+      _prefs.setString(_prefPort, networkModel.port);
     }
-    if (password != null && password.isNotEmpty) {
-      _prefs.setString(_prefPassword, await _encryptPassword(password));
+    if (networkModel.password != null && networkModel.password.isNotEmpty) {
+      _prefs.setString(_prefPassword, await _encryptPassword(networkModel.password));
     }
   }
 
