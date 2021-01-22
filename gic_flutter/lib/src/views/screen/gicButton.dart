@@ -133,20 +133,10 @@ class GicButtonState extends State<GicButton> {
             end: end,
           ));
     } else {
-      if (control.images[imageIndex].contains("9.png")) {
-        return BoxDecoration(
-            borderRadius: buttonBorder,
-            image: new DecorationImage(
-                image: new AssetImage("assets/images/controls/${control.images[imageIndex]}.png"),
-                centerSlice: new Rect.fromLTRB(5, 3, 147, 49),
-                fit: BoxFit.cover)
-        );
-      }
       return BoxDecoration(
           borderRadius: buttonBorder,
           image: new DecorationImage(
             image: new AssetImage("assets/images/controls/${control.images[imageIndex]}.png"),
-            centerSlice: new Rect.fromLTRB(5, 3, 147, 49),
             fit: BoxFit.cover)
       );
     }
