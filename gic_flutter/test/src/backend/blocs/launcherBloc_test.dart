@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gic_flutter/src/backend/blocs/launcherBloc.dart';
+import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/repositories/launcherRepository.dart';
 import 'package:mockito/mockito.dart';
 
@@ -16,12 +17,14 @@ void main() {
   test('saving main calls the matching repo method', () async {
     //Assign
     LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
+    NetworkModel networkModel = new NetworkModel();
+    networkModel.toTest("password", "address", "port");
 
     //Act
-    toTest.saveConnectionSettings("password", "port", "address");
+    toTest.saveConnectionSettings(networkModel);
 
     //Assert
-    verify(mockedRepo.saveMainSettings("password", "port", "address")).called(1);
+    verify(mockedRepo.saveMainSettings(networkModel)).called(1);
 
   });
 

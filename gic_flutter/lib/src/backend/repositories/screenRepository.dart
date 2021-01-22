@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
@@ -159,9 +160,13 @@ class ScreenRepository {
   }
 
   Future<List<Screen>> loadScreens() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.reload();
-    await _load(prefs);
+    if (_cache != null)
+      return _cache;
+    else {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.reload();
+      await _load(prefs);
+    }
 
     return _cache;
   }

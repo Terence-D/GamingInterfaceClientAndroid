@@ -1,4 +1,4 @@
-import 'package:gic_flutter/src/backend/models/controlDefaults.dart';
+import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/newScreenWizardModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/command.dart';
 import 'package:gic_flutter/src/backend/models/screen/gicControl.dart';

@@ -113,7 +113,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.collection:collection-ktx:1.1.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'com.github.QuadFlask:colorpicker:0.0.13'
+    implementation 'com.github.QuadFlask:colorpicker:0.0.15'
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.14.0'
     implementation 'androidx.multidex:multidex:2.0.1'
 }

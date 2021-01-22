@@ -4,8 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
+import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/repositories//screenRepository.dart';
+import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LauncherRepository {
@@ -88,6 +90,7 @@ class LauncherRepository {
     }
     return _loadVM();
   }
+  
   //update the default control values to be flutter compatible
   Future<void> _upgradeDefaults() async {
     MethodChannel platform = new MethodChannel(Channel.channelUtil);
@@ -98,35 +101,17 @@ class LauncherRepository {
     }
   }
 
-  //calls legacy code
   Future<String> _getPassword() async {
-    String response = "";
     String encrypted = _prefs.getString(_prefPassword) ?? "";
-
-    const platform = const MethodChannel(Channel.channelUtil);
-    if (encrypted.isNotEmpty) {
-      try {
-        response = await platform.invokeMethod(Channel.actionUtilDecrypt, {"code": encrypted});
-      } on PlatformException catch (_) {
-        response = "";
-      }
+    try {
+      return CryptoService.decrypt(encrypted);
+    } catch (Exception) { //will probably fail on legacy
+      return "";
     }
-    return response;
   }
 
   Future<String> _encryptPassword(String password) async {
-    String response = "";
-
-    const platform = const MethodChannel(Channel.channelUtil);
-    if (password.isNotEmpty) {
-      try {
-        final String result = await platform.invokeMethod(Channel.actionUtilEncrypt, {"password": password});
-        response = result;
-      } on PlatformException catch (_) {
-        response = "";
-      }
-    }
-    return response;
+    return CryptoService.encrypt(password);
   }
 
   bool _isNumeric(String str) {
@@ -136,15 +121,15 @@ class LauncherRepository {
     return double.tryParse(str) != null;
   }
 
-  saveMainSettings(String address, String port, String password) async {
-    if (address != null && port.isNotEmpty) {
-      _prefs.setString(_prefAddress, address);
+  saveMainSettings(NetworkModel networkModel) async {
+    if (networkModel.address != null && networkModel.port.isNotEmpty) {
+      _prefs.setString(_prefAddress, networkModel.address);
     }
-    if (port != null && port.isNotEmpty && _isNumeric(port)) {
-      _prefs.setString(_prefPort, port);
+    if (networkModel.port != null && networkModel.port.isNotEmpty && _isNumeric(networkModel.port)) {
+      _prefs.setString(_prefPort, networkModel.port);
     }
-    if (password != null && password.isNotEmpty) {
-      _prefs.setString(_prefPassword, await _encryptPassword(password));
+    if (networkModel.password != null && networkModel.password.isNotEmpty) {
+      _prefs.setString(_prefPassword, await _encryptPassword(networkModel.password));
     }
   }
 
@@ -292,5 +277,17 @@ class LauncherRepository {
 
     await screenRepo.save(newScreen);
     return newScreen.screenId;
+  }
+
+  Future<Screen> loadScreen(int screenId) async {
+    LauncherModel _viewModel = new LauncherModel();
+    ScreenRepository screenRepo = await _getScreenRepository(_viewModel);
+    Screen toReturn = new Screen();
+    List<Screen> screens = await screenRepo.loadScreens();
+    screens.forEach((element) {
+      if (element.screenId == screenId)
+        toReturn = element;
+    });
+    return toReturn;
   }
 }
