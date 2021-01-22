@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -27,17 +29,21 @@ class IntroPresentation {
   loadPages(BuildContext context) async {
     Color primaryColor = CustomTheme.of(context).primaryColor;
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
     PageViewModel oldApi;
 
-    int version = androidInfo.version.sdkInt;
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      int version = androidInfo.version.sdkInt;
 
-    if (version < 19) { //KITKAT
-      oldApi = PageViewModel(
-        title: Intl.of(context).onboardOldAndroidTitle,
-        body: Intl.of(context).onboardOldAndroidDesc,
-        image: Icon(Icons.warning, size: 175.0, color: primaryColor),
-      );
+      if (version < 19) { //KITKAT
+        oldApi = PageViewModel(
+          title: Intl.of(context).onboardOldAndroidTitle,
+          body: Intl.of(context).onboardOldAndroidDesc,
+          image: Icon(Icons.warning, size: 175.0, color: primaryColor),
+        );
+      }
+    // } else if (Platform.isIOS) {
+    //   IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
     }
 
     _pages = [

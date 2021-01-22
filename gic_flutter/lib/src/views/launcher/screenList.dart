@@ -401,35 +401,35 @@ class ScreenList extends StatelessWidget {
   }
 
   Future _validateSettings(NetworkModel networkModel, BuildContext context, int screenId) async {
-    if (networkModel.password == null || networkModel.password.length < 6) {
-      _showMessage(_translations.text(LauncherText.errorPassword));
-      return;
-    }
-    if (networkModel.port == null || int.tryParse(networkModel.port) == null) {
-      _showMessage(_translations.text(LauncherText.errorPort));
-      return;
-    }
-    if (networkModel.address == null || networkModel.address.length == 0) {
-      _showMessage(_translations.text(LauncherText.errorServerInvalid));
-      return;
-    }
-
-    //check network version now
-    Future<NetworkResponse> response = NetworkService.checkVersion(networkModel);
-
-    NetworkResponse test = await response;
-
-    switch (test) {
-      case NetworkResponse.Ok:
+    // if (networkModel.password == null || networkModel.password.length < 6) {
+    //   _showMessage(_translations.text(LauncherText.errorPassword));
+    //   return;
+    // }
+    // if (networkModel.port == null || int.tryParse(networkModel.port) == null) {
+    //   _showMessage(_translations.text(LauncherText.errorPort));
+    //   return;
+    // }
+    // if (networkModel.address == null || networkModel.address.length == 0) {
+    //   _showMessage(_translations.text(LauncherText.errorServerInvalid));
+    //   return;
+    // }
+    //
+    // //check network version now
+    // Future<NetworkResponse> response = NetworkService.checkVersion(networkModel);
+    //
+    // NetworkResponse test = await response;
+    //
+    // switch (test) {
+    //   case NetworkResponse.Ok:
         _startGame(context, screenId, networkModel);
-        break;
-      case NetworkResponse.OutOfDate:
-        _showUpgradeDialog(context);
-        break;
-      case NetworkResponse.Error:
-        _showMessage("${_translations.text(LauncherText.errorServerError)}");
-        break;
-    }
+    //     break;
+    //   case NetworkResponse.OutOfDate:
+    //     _showUpgradeDialog(context);
+    //     break;
+    //   case NetworkResponse.Error:
+    //     _showMessage("${_translations.text(LauncherText.errorServerError)}");
+    //     break;
+    // }
   }
 
   _startGame(BuildContext context, int screenId, NetworkModel networkModel) async {
