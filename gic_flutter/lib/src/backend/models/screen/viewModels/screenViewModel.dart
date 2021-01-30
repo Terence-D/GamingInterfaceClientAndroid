@@ -24,7 +24,7 @@ class ScreenViewModel {
         });
         rv.newControlId = model.newControlId;
 
-        if (model.backgroundColor == -1)
+        if (model.backgroundColor == -1 || model.backgroundColor == null)
             rv.backgroundColor = Colors.black;
         else
             rv.backgroundColor = _convertJavaColor(model.backgroundColor);

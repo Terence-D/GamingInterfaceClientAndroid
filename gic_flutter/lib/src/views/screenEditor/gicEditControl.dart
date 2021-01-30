@@ -1,34 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/command.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
-import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/baseGicButton.dart';
+import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
 
-class GicButton extends BaseGicButton {
+class GicEditControl extends BaseGicButton {
   final ControlViewModel control;
   final TextStyle textStyle;
-  final NetworkModel networkModel;
+  final ScreenEditorState editor;
 
-  GicButton({Key key, @required this.control, @required this.textStyle, @required this.networkModel}) : super(key: key, control: control, textStyle: textStyle);
+  GicEditControl({Key key, @required this.control, @required this.textStyle, @required this.editor}) : super(key: key, control: control, textStyle: textStyle);
+
   @override
   State<StatefulWidget> createState() {
-    return GicButtonState(control: control, textStyle: textStyle, networkModel: networkModel);
+    return GicEditControlState(control: control, textStyle: textStyle, editor: editor);
   }
 }
 
-class GicButtonState extends State<GicButton> {
+class GicEditControlState extends State<GicEditControl> {
   final ControlViewModel control;
   final TextStyle textStyle;
   final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
-  final NetworkModel networkModel;
+  final ScreenEditorState editor;
 
   BoxDecoration unpressed;
   BoxDecoration pressed;
   BoxDecoration active;
 
-  GicButtonState({@required this.control, @required this.textStyle, @required this.networkModel}) {
+  GicEditControlState({@required this.control, @required this.textStyle, @required this.editor}) {
     unpressed = _buildDesign(false);
     pressed = _buildDesign(true);
     active = unpressed;
@@ -37,8 +36,16 @@ class GicButtonState extends State<GicButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTapDown: (TapDownDetails details) => onTap(),
-        onTapUp: (TapUpDetails details) => onTapUp(),
+        // onLongPressMoveUpdate: (updateDetails) {
+        //   print ("originally " + control.left.toString());
+        //   control.left = control.left + updateDetails.offsetFromOrigin.dx;
+        //   print ("now  " + control.left.toString());
+        //   active = _buildDesign(false);
+        //   editor.moveControl();
+        // },
+        // onTapDown: (TapDownDetails details) => onTap(),
+        // onTapUp: (TapUpDetails details) => onTapUp(),
+
         child: Container(
           width: control.width,
           height: control.height,
@@ -47,46 +54,45 @@ class GicButtonState extends State<GicButton> {
         ));
   }
 
-  onTap() {
-    setState(() {
-      switch (control.type) {
-        case ControlViewModelType.Toggle:
-          _toggleTap(Command.KEY_DOWN);
-          break;
-        case ControlViewModelType.QuickButton:
-          _buttonTap("toggle", Command.KEY_DOWN, pressed);
-          break;
-        case ControlViewModelType.Button:
-          _buttonTap("key", Command.KEY_DOWN, pressed);
-          break;
-        case ControlViewModelType.Text:
-        case ControlViewModelType.Image:
-          break;
-      }
-    });
-  }
-
-  onTapUp() {
-    setState(() {
-      switch (control.type) {
-        case ControlViewModelType.Toggle:
-          _toggleTap(Command.KEY_UP);
-          break;
-        case ControlViewModelType.QuickButton:
-          _buttonTap("toggle", Command.KEY_UP, unpressed);
-          break;
-        case ControlViewModelType.Button:
-          _buttonTap("key", Command.KEY_UP, unpressed);
-          break;
-        case ControlViewModelType.Text:
-        case ControlViewModelType.Image:
-          break;
-      }
-    });
-  }
+  // onTap() {
+  //   setState(() {
+  //     switch (control.type) {
+  //       case ControlViewModelType.Toggle:
+  //         _toggleTap(Command.KEY_DOWN);
+  //         break;
+  //       case ControlViewModelType.QuickButton:
+  //         _buttonTap("toggle", Command.KEY_DOWN, pressed);
+  //         break;
+  //       case ControlViewModelType.Button:
+  //         _buttonTap("key", Command.KEY_DOWN, pressed);
+  //         break;
+  //       case ControlViewModelType.Text:
+  //       case ControlViewModelType.Image:
+  //         break;
+  //     }
+  //   });
+  // }
+  //
+  // onTapUp() {
+  //   setState(() {
+  //     switch (control.type) {
+  //       case ControlViewModelType.Toggle:
+  //         _toggleTap(Command.KEY_UP);
+  //         break;
+  //       case ControlViewModelType.QuickButton:
+  //         _buttonTap("toggle", Command.KEY_UP, unpressed);
+  //         break;
+  //       case ControlViewModelType.Button:
+  //         _buttonTap("key", Command.KEY_UP, unpressed);
+  //         break;
+  //       case ControlViewModelType.Text:
+  //       case ControlViewModelType.Image:
+  //         break;
+  //     }
+  //   });
+  // }
 
   void _toggleTap(int activatorType) {
-    String commandType = "toggle";
     int commandIndex = 0;
     if (activatorType == Command.KEY_DOWN) {
       if (active == unpressed) {
@@ -104,13 +110,11 @@ class GicButtonState extends State<GicButton> {
       }
     }
     control.commands[commandIndex].activatorType = activatorType;
-    sendCommand(commandType, 0);
   }
 
   void _buttonTap(String commandUrl, int activatorType, BoxDecoration status) {
     control.commands[0].activatorType = activatorType;
     active = status;
-    sendCommand(commandUrl, 0);
   }
 
   BoxDecoration _buildDesign(bool isPressed) {
@@ -140,14 +144,5 @@ class GicButtonState extends State<GicButton> {
             fit: BoxFit.cover)
       );
     }
-  }
-
-  Future<void> sendCommand(String commandUrl, int commandIndex) async {
-    NetworkResponse response = await NetworkService.sendCommand(networkModel, commandUrl, control.commands[commandIndex]);
-    if (response == NetworkResponse.Error)
-      Fluttertoast.showToast(
-        msg: "error",
-        toastLength: Toast.LENGTH_SHORT,
-      );
   }
 }

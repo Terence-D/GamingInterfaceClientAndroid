@@ -17,6 +17,7 @@ import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
+import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
 import 'package:http/http.dart' as http;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -84,7 +85,7 @@ class ScreenList extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _startButton(index, context),
-            _editButton(index),
+            _editButton(index, context),
             _shareButton(index, context),
             _deleteButton(context, index),
           ],
@@ -139,24 +140,24 @@ class ScreenList extends StatelessWidget {
     }
   }
 
-  Widget _editButton(int index) {
+  Widget _editButton(int index, BuildContext context) {
     if (index == 0) {
       return Showcase(
           key: _parent.editKey,
           title: _translations.text(LauncherText.buttonEdit),
           description: _translations.text(LauncherText.helpEdit),
-          child: _innerEditButton(index));
+          child: _innerEditButton(index, context));
     } else {
-      return _innerEditButton(index);
+      return _innerEditButton(index, context);
     }
   }
 
-  IconButton _innerEditButton(int index) {
+  IconButton _innerEditButton(int index, BuildContext context) {
     return new IconButton(
       icon: Icon(Icons.edit),
       tooltip: _translations.text(LauncherText.buttonEdit),
       onPressed: () {
-        _editScreen(index);
+        _editScreen(index, context);
       },
     );
   }
@@ -268,13 +269,18 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  _editScreen(int selectedScreenIndex) async {
-    MethodChannel platform = new MethodChannel(Channel.channelView);
-    try {
-      await platform.invokeMethod(Channel.actionViewEdit, {"selectedScreenId": _screens[selectedScreenIndex].id});
-    } on PlatformException catch (e) {
-      print(e.message);
-    }
+  _editScreen(int selectedScreenIndex, BuildContext context) async {
+    Screen screen = await _parent.launcherBloc.loadScreen(_screens[selectedScreenIndex].id);
+    double pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+        ScreenEditor(screen: new ScreenViewModel.fromModel(screen, pixelRatio))));
+
+    // MethodChannel platform = new MethodChannel(Channel.channelView);
+    // try {
+    //   await platform.invokeMethod(Channel.actionViewEdit, {"selectedScreenId": _screens[selectedScreenIndex].id});
+    // } on PlatformException catch (e) {
+    //   print(e.message);
+    // }
   }
 
   _showLoaderDialog(BuildContext context) {
@@ -441,14 +447,6 @@ class ScreenList extends StatelessWidget {
 
     await Navigator.push(context, MaterialPageRoute(builder: (context) =>
         ScreenView(screen: new ScreenViewModel.fromModel(screen, pixelRatio), networkModel: networkModel)));
-
-    // MethodChannel platform = new MethodChannel(Channel.channelView);
-    // try {
-    //   await platform.invokeMethod(
-    //       Channel.actionViewStart, {"password": password, "address": address, "port": port, "screenId": screenId});
-    // } on PlatformException catch (e) {
-    //   print(e.message);
-    // }
   }
 
   void _updateScreen(int index) {
