@@ -34,21 +34,24 @@ class ScreenEditorState extends State<ScreenEditor> {
     super.initState();
     _service = new ScreenService(_screen, context);
     _service.init();
+    if (_service.screen != null)
+      _service.screen.controls.forEach((element) {
+        widgets.add(GicEditControl(control: element, textStyle: _getTextStyle(element.font),));
+      }
+      );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_service.screen != null)
-      _service.screen.controls.forEach((element) {
-        widgets.add(_buildGicControl(element));
-      }
+    return Scaffold(
+        body: Stack(children: widgets),
     );
 
-    return GestureDetector(
-      onDoubleTapDown: _handleDoubleTapDown,
-      // onDoubleTap: _handleDoubleTap,
-      child: _setBackground(),
-    );
+    // return GestureDetector(
+    //   onDoubleTapDown: _handleDoubleTapDown,
+    //   // onDoubleTap: _handleDoubleTap,
+    //   child: _setBackground(),
+    // );
   }
 
   Widget _setBackground() {
@@ -117,7 +120,8 @@ class ScreenEditorState extends State<ScreenEditor> {
       case ControlViewModelType.Image:
         return _gicImage(element);
       default:
-        return GicEditControl(control: element, textStyle: _getTextStyle(element.font), editor: this);
+        return GicEditControl();
+        // return GicEditControl(control: element, textStyle: _getTextStyle(element.font), editor: this);
     }
   }
 
