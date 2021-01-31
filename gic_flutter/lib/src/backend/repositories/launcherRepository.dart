@@ -56,7 +56,7 @@ class LauncherRepository {
       Screen newScreen = new Screen();
       newScreen.screenId = 0;
       newScreen.name = "Empty Screen";
-      screenRepo.save(newScreen);
+      screenRepo.save(screen: newScreen);
       viewModel.screens.add(new ScreenListItem(newScreen.screenId, newScreen.name));
     }
 
@@ -147,7 +147,7 @@ class LauncherRepository {
     ScreenRepository screenRepo = await _getScreenRepository(_viewModel);
 
     try {
-      await screenRepo.save(toSave);
+      await screenRepo.save(screen: toSave);
       _viewModel.screens.insert(0, new ScreenListItem(toSave.screenId, toSave.name));
     } catch (Exception) {
       return false;
@@ -275,7 +275,7 @@ class LauncherRepository {
       element.height = (element.height * adjustY).round();
     });
 
-    await screenRepo.save(newScreen);
+    await screenRepo.save(screen: newScreen);
     return newScreen.screenId;
   }
 

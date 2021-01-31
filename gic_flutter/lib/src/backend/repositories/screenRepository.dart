@@ -182,13 +182,10 @@ class ScreenRepository {
     return rv;
   }
 
-  Future save(Screen newScreen) async {
+  Future save({screen: Screen}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _save(prefs, newScreen);
-    if (_cache == null) {
-      _cache = new List<Screen>();
-    }
-    _cache.add(newScreen);
+    _save(prefs, screen);
+    _load(prefs);
   }
 
   Future<int> delete(int id) async {

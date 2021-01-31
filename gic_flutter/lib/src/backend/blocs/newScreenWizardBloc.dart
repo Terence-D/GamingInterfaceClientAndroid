@@ -24,7 +24,7 @@ class NewScreenWizardBloc {
     Screen newScreen = await _buildScreen(model, newId);
 
     if (newScreen != null)
-      _repository.save(newScreen);
+      _repository.save( screen: newScreen);
   }
 
   /// constructs a proper screen object based on our model
