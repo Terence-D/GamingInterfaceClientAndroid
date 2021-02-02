@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
+
+import 'settingsDialog.dart';
 
 class ScreenEditor extends StatefulWidget {
   final ScreenViewModel screen;
@@ -28,69 +30,79 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   ScreenEditorState(this._screen);
 
-
   @override
   void initState() {
     super.initState();
-    _service = new ScreenService(_screen, context);
+
+    _service = new ScreenService(_screen);
     _service.init();
     if (_service.screen != null) {
       _service.screen.controls.forEach((element) {
         widgets.add(GicEditControl(
-          control: element, textStyle: _getTextStyle(element.font),));
-      }
-      );
+          control: element,
+          textStyle: _getTextStyle(element.font),
+        ));
+      });
     }
-    widgets.add(new IconButton(onPressed: null, icon: Icon(Icons.menu) ));
-
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     return _buildScreen();
   }
 
-
   TextStyle _getTextStyle(Font font) {
-    return TextStyle(color: font.color, fontFamily: font.family, fontSize: font.size);
+    return TextStyle(
+        color: font.color, fontFamily: font.family, fontSize: font.size);
   }
 
   Widget _buildScreen() {
-    if (_service.screen.backgroundPath != null && _service.screen.backgroundPath.isNotEmpty) {
-      return Scaffold(
-        body: Container(
+    Container screen = Container(
+      child: Stack(children: widgets),
+    );
+    if (_service.screen.backgroundPath != null &&
+        _service.screen.backgroundPath.isNotEmpty) {
+      screen = Container(
           decoration: BoxDecoration(
             image: DecorationImage(
               image: FileImage(File(_service.screen.backgroundPath)),
               fit: BoxFit.fill,
             ),
           ),
-          child: Stack(children: widgets),
-        ),
-      );
+          child: Stack(children: widgets));
     } else {
-      return Material(
-        color: _service.screen.backgroundColor,
-        child: Stack(children: widgets),
-      );
+      screen = Container(
+          color: _service.screen.backgroundColor,
+          child: Stack(children: widgets));
     }
+
+    return GestureDetector(
+      onDoubleTapDown: _handleDoubleTapDown,
+      onDoubleTap: _handleDoubleTap,
+      child: Scaffold(body: screen),
+    );
   }
-
-
   void _handleDoubleTapDown(TapDownDetails details) {
     _doubleTapDetails = details;
   }
 
-  // void _handleDoubleTap() {
-  //   print('Double tap on position ${_doubleTapDetails.localPosition}');
-  //   _service.addControl(_doubleTapDetails.localPosition, context);
-  //   setState(() {
-  //
-  //   });
-  // }
-  //
-  // void moveControl() {
-  //   setState(() {
-  //   });
-  // }
+  void _handleDoubleTap() {
+    print('Double tap on position ${_doubleTapDetails.localPosition}');
+    _showSettingsDialog();
+  }
+
+  void _showSettingsDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SettingsDialog(
+            title: "Custom Dialog Demo",
+            descriptions:
+            "Hii all this is a custom dialog in flutter and  you will be use in your flutter applications",
+            text: "Yes",
+          );
+        });
+  }
+
 }

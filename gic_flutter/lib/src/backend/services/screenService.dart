@@ -16,7 +16,7 @@ class ScreenService {
 
     int gridSize = 0;
 
-    ScreenService(this.screen, BuildContext context) ;
+    ScreenService(this.screen);
 
     Future init() async {
         SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,7 +28,8 @@ class ScreenService {
 
     void addControl(Offset localPosition, BuildContext context) {
         pixelRatio = MediaQuery.of(context).devicePixelRatio;
-        final double x = gridSize * (localPosition.dx / gridSize);
+        final double statusBarHeight = MediaQuery.of(context).padding.top;
+        final double x = gridSize * (localPosition.dx / gridSize) + statusBarHeight;
         final double y = gridSize * (localPosition.dy / gridSize);
 
         ControlViewModel toAdd = ControlViewModel.fromModel(defaultControls.defaultButton, pixelRatio);
