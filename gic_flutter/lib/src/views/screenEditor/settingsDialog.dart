@@ -1,79 +1,78 @@
 import 'package:flutter/material.dart';
 
-class Constants{
-  Constants._();
-  static const double padding =20;
-  static const double avatarRadius =45;
-}
+class SimpleDialogItem extends StatelessWidget {
+  const SimpleDialogItem(
+      {Key key, this.icon, this.color, this.text, this.onPressed})
+      : super(key: key);
 
-class SettingsDialog extends StatefulWidget {
-  final String title, descriptions, text;
+  final IconData icon;
+  final Color color;
+  final String text;
+  final VoidCallback onPressed;
 
-  const SettingsDialog({Key key, this.title, this.descriptions, this.text}) : super(key: key);
-
-  @override
-  _SettingsDialogState createState() => _SettingsDialogState();
-}
-
-class _SettingsDialogState extends State<SettingsDialog> {
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(Constants.padding),
+    return SimpleDialogOption(
+      onPressed: onPressed,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icon, size: 36.0, color: color),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(start: 16.0),
+            child: Text(text),
+          ),
+        ],
       ),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: contentBox(context),
     );
   }
-  contentBox(context){
-    return Stack(
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(left: Constants.padding,top: Constants.avatarRadius
-              + Constants.padding, right: Constants.padding,bottom: Constants.padding
-          ),
-          margin: EdgeInsets.only(top: Constants.avatarRadius),
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(Constants.padding),
-              boxShadow: [
-                BoxShadow(color: Colors.black,offset: Offset(0,10),
-                    blurRadius: 10
-                ),
-              ]
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(widget.title,style: TextStyle(fontSize: 22,fontWeight: FontWeight.w600),),
-              SizedBox(height: 15,),
-              Text(widget.descriptions,style: TextStyle(fontSize: 14),textAlign: TextAlign.center,),
-              SizedBox(height: 22,),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: FlatButton(
-                    onPressed: (){
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(widget.text,style: TextStyle(fontSize: 18),)),
-              ),
-            ],
-          ),
+}
+
+class SettingsDialog {
+  static Widget display(BuildContext context) {
+    return SimpleDialog(
+      title: Text('Set backup account'),
+      children: [
+        SimpleDialogItem(
+          icon: Icons.smart_button,
+          color: Colors.orange,
+          text: 'Add Button',
+          onPressed: () {
+            Navigator.pop(context, 'user01@gmail.com');
+          },
         ),
-        Positioned(
-          left: Constants.padding,
-          right: Constants.padding,
-          child: CircleAvatar(
-            backgroundColor: Colors.transparent,
-            radius: Constants.avatarRadius,
-            child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(Constants.avatarRadius)),
-                child: Image.asset("assets/icons/app_icon.png")
-            ),
-          ),
+        SimpleDialogItem(
+          icon: Icons.toggle_off_outlined,
+          color: Colors.green,
+          text: 'Add Toggle',
+          onPressed: () {
+            Navigator.pop(context, 'user02@gmail.com');
+          },
+        ),
+        SimpleDialogItem(
+          icon: Icons.text_fields,
+          color: Colors.blue,
+          text: 'Add Text',
+          onPressed: () {
+            Navigator.pop(context, 'user02@gmail.com');
+          },
+        ),
+        SimpleDialogItem(
+          icon: Icons.image,
+          color: Colors.red,
+          text: 'Add Image',
+          onPressed: () {
+            Navigator.pop(context, 'user02@gmail.com');
+          },
+        ),
+        SimpleDialogItem(
+          icon: Icons.settings,
+          color: Colors.grey,
+          text: 'Settings',
+          onPressed: () {
+            Navigator.pop(context, 'user02@gmail.com');
+          },
         ),
       ],
     );

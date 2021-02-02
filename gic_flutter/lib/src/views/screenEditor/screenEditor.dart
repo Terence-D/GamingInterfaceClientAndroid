@@ -96,12 +96,7 @@ class ScreenEditorState extends State<ScreenEditor> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return SettingsDialog(
-            title: "Custom Dialog Demo",
-            descriptions:
-            "Hii all this is a custom dialog in flutter and  you will be use in your flutter applications",
-            text: "Yes",
-          );
+          return SettingsDialog.display(context);
         });
   }
 
