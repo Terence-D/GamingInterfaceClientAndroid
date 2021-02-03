@@ -32,14 +32,14 @@ class SimpleDialogItem extends StatelessWidget {
 class SettingsDialog {
   static Widget display(BuildContext context) {
     return SimpleDialog(
-      title: Text('Set backup account'),
+      title: Text('Menu'),
       children: [
         SimpleDialogItem(
           icon: Icons.smart_button,
           color: Colors.orange,
           text: 'Add Button',
           onPressed: () {
-            Navigator.pop(context, 'user01@gmail.com');
+
           },
         ),
         SimpleDialogItem(
@@ -47,7 +47,7 @@ class SettingsDialog {
           color: Colors.green,
           text: 'Add Toggle',
           onPressed: () {
-            Navigator.pop(context, 'user02@gmail.com');
+
           },
         ),
         SimpleDialogItem(
@@ -55,7 +55,7 @@ class SettingsDialog {
           color: Colors.blue,
           text: 'Add Text',
           onPressed: () {
-            Navigator.pop(context, 'user02@gmail.com');
+
           },
         ),
         SimpleDialogItem(
@@ -63,7 +63,7 @@ class SettingsDialog {
           color: Colors.red,
           text: 'Add Image',
           onPressed: () {
-            Navigator.pop(context, 'user02@gmail.com');
+
           },
         ),
         SimpleDialogItem(
@@ -71,7 +71,7 @@ class SettingsDialog {
           color: Colors.grey,
           text: 'Settings',
           onPressed: () {
-            Navigator.pop(context, 'user02@gmail.com');
+
           },
         ),
       ],
