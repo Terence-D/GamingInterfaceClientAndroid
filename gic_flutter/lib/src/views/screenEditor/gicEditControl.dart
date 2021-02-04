@@ -4,34 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 
-typedef void SelectedWidgetCallback(int id);
+typedef void SelectedWidgetCallback(int selectedControlIndex);
+typedef void DragControl(double newLeft, double newTop, int selectedControlIndex);
 
 class GicEditControl extends StatefulWidget {
 
   final SelectedWidgetCallback onSelected;
+  final DragControl onDrag;
 
   final ControlViewModel control;
   final TextStyle textStyle;
-  final int id;
+  final int controlIndex;
 
-  GicEditControl({Key key, @required this.control, @required this.id, @required this.textStyle, @required this.onSelected})
+  GicEditControl({Key key, @required this.control, @required this.controlIndex, @required this.textStyle, @required this.onSelected, @required this.onDrag})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return GicEditControlState(control: control, id: id, textStyle: textStyle, onSelected: onSelected);
+    return GicEditControlState(control: control, controlIndex: controlIndex, textStyle: textStyle, onSelected: onSelected, onDrag: onDrag);
   }
 }
 
 class GicEditControlState extends State<GicEditControl> {
   final SelectedWidgetCallback onSelected;
+  final DragControl onDrag;
 
   final ControlViewModel control;
   final TextStyle textStyle;
   final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
-  final int id;
+  final int controlIndex;
 
-  GicEditControlState({@required this.control, @required this.id, @required this.textStyle, @required this.onSelected});
+  GicEditControlState({@required this.control, @required this.controlIndex, @required this.textStyle, @required this.onSelected, @required this.onDrag});
 
   Color color;
 
@@ -51,6 +54,7 @@ class GicEditControlState extends State<GicEditControl> {
             setState(() {
               control.left += tapInfo.delta.dx;
               control.top += tapInfo.delta.dy;
+              onDrag(control.left, control.top, controlIndex);
             });
           },
           child: Stack(children: <Widget>[
@@ -128,7 +132,7 @@ class GicEditControlState extends State<GicEditControl> {
 
   _onTap() {
     setState(() {
-      onSelected(id);
+      onSelected(controlIndex);
     });
   }
 }

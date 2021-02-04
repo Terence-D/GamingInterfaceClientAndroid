@@ -21,12 +21,12 @@ class ScreenEditor extends StatefulWidget {
 }
 
 class ScreenEditorState extends State<ScreenEditor> {
-  final List<Widget> widgets = [];
   int id = -1;
   int gridSize;
   ScreenService _service;
   final ScreenViewModel _screen;
   final double highlightBorder = 2.0;
+  final double minSize = 16.0;
 
   double selectedLeft = 0;
   double selectedTop = 0;
@@ -36,6 +36,7 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   TapDownDetails _doubleTapDetails;
 
+
   ScreenEditorState(this._screen);
 
   @override
@@ -44,19 +45,6 @@ class ScreenEditorState extends State<ScreenEditor> {
 
     _service = new ScreenService(_screen);
     _service.init();
-    int n = 0;
-    if (_service.screen != null) {
-      _service.screen.controls.forEach((element) {
-        widgets.add(GicEditControl(
-          control: element,
-          textStyle: _getTextStyle(element.font), id: n, onSelected: (int id) {
-          onSelected(id);
-        },
-        ));
-        n++;
-      }
-      );
-    }
   }
 
   @override
@@ -71,11 +59,23 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   Widget _buildScreen() {
-    List<Widget> toDraw = new List();
-    toDraw.add(_highlightSelection());
-    widgets.forEach((element) {
-      toDraw.add(element);
-    });
+    int n = 0;
+    List<Widget> widgets = [];
+    widgets.add(_highlightSelection());
+    if (_service.screen != null) {
+      _service.screen.controls.forEach((element) {
+        widgets.add(GicEditControl(
+          control: element,
+          textStyle: _getTextStyle(element.font),
+          controlIndex: n,
+          onSelected: (int id) {
+            _onSelected(id);
+          },
+          onDrag: (double newLeft, double newTop, int selectedControlIndex) {_onDrag(newLeft, newTop, selectedControlIndex);},
+        ));
+        n++;
+      });
+    }
 
     Container screen;
     if (_service.screen.backgroundPath != null &&
@@ -87,17 +87,19 @@ class ScreenEditorState extends State<ScreenEditor> {
               fit: BoxFit.fill,
             ),
           ),
-          child: Container(
-              child: Stack(children: toDraw)));
+          child: Container(child: Stack(children: widgets)));
     } else {
       screen = Container(
           color: _service.screen.backgroundColor,
-          child: Stack(children: toDraw));
+          child: Stack(children: widgets));
     }
 
     return GestureDetector(
       onDoubleTapDown: _handleDoubleTapDown,
       onDoubleTap: _handleDoubleTap,
+      onPanUpdate: (details) {
+        _handleSwipe(details);
+      },
       child: Scaffold(body: screen),
     );
   }
@@ -134,15 +136,38 @@ class ScreenEditorState extends State<ScreenEditor> {
         });
   }
 
-  void onSelected(int id) {
+  void _onSelected(int selectedControlIndex) {
     setState(() {
-      selectedLeft = _service.screen.controls[id].left - highlightBorder;
-      selectedTop = _service.screen.controls[id].top - highlightBorder;
-      selectedWidth =
-          _service.screen.controls[id].width + (highlightBorder * 2);
-      selectedHeight =
-          _service.screen.controls[id].height + (highlightBorder * 2);
+      id = selectedControlIndex;
+      selectedLeft =
+          _service.screen.controls[selectedControlIndex].left - highlightBorder;
+      selectedTop =
+          _service.screen.controls[selectedControlIndex].top - highlightBorder;
+      selectedWidth = _service.screen.controls[selectedControlIndex].width +
+          (highlightBorder * 2);
+      selectedHeight = _service.screen.controls[selectedControlIndex].height +
+          (highlightBorder * 2);
       selectedVisible = true;
     });
+  }
+
+  void _onDrag(double newLeft, double newTop, int selectedControlIndex) {
+    setState(() {
+      _service.screen.controls[selectedControlIndex].left = newLeft;
+      _service.screen.controls[selectedControlIndex].top = newTop;
+    });
+  }
+
+  _handleSwipe(details) {
+    if (id > -1) {
+      setState(() {
+        _service.screen.controls[id].width += details.delta.dx;
+        _service.screen.controls[id].height += details.delta.dy;
+        if (_service.screen.controls[id].width < minSize)
+          _service.screen.controls[id].width = minSize;
+        if (_service.screen.controls[id].height < minSize)
+          _service.screen.controls[id].height = minSize;
+      });
+    }
   }
 }
