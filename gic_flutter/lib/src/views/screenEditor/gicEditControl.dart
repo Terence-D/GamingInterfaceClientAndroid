@@ -4,25 +4,34 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 
+typedef void SelectedWidgetCallback(int id);
+
 class GicEditControl extends StatefulWidget {
+
+  final SelectedWidgetCallback onSelected;
+
   final ControlViewModel control;
   final TextStyle textStyle;
+  final int id;
 
-  GicEditControl({Key key, @required this.control, @required this.textStyle})
+  GicEditControl({Key key, @required this.control, @required this.id, @required this.textStyle, @required this.onSelected})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return GicEditControlState(control: control, textStyle: textStyle);
+    return GicEditControlState(control: control, id: id, textStyle: textStyle, onSelected: onSelected);
   }
 }
 
 class GicEditControlState extends State<GicEditControl> {
+  final SelectedWidgetCallback onSelected;
+
   final ControlViewModel control;
   final TextStyle textStyle;
   final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
+  final int id;
 
-  GicEditControlState({@required this.control, @required this.textStyle});
+  GicEditControlState({@required this.control, @required this.id, @required this.textStyle, @required this.onSelected});
 
   Color color;
 
@@ -118,6 +127,8 @@ class GicEditControlState extends State<GicEditControl> {
   }
 
   _onTap() {
-    print("asdf");
+    setState(() {
+      onSelected(id);
+    });
   }
 }
