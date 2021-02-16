@@ -3,8 +3,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
+import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/backend/repositories/screenRepository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenService {
@@ -32,9 +34,18 @@ class ScreenService {
         final double x = gridSize * (localPosition.dx / gridSize) + statusBarHeight;
         final double y = gridSize * (localPosition.dy / gridSize);
 
-        ControlViewModel toAdd = ControlViewModel.fromModel(defaultControls.defaultButton, pixelRatio);
+        ControlViewModel toAdd = ControlViewModel.fromModel(defaultControls.defaultButton);
         toAdd.left = x;
         toAdd.top = y;
         screen.controls.add(toAdd);
     }
+
+    Future save() async {
+        ScreenRepository repository = new ScreenRepository();
+        Screen screenToSave = new Screen();
+        //screenToSave.backgroundColor = screen.backgroundColor;
+
+        repository.save(screen: screenToSave);
+    }
+
 }

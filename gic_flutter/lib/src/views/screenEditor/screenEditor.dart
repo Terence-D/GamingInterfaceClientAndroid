@@ -36,7 +36,6 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   TapDownDetails _doubleTapDetails;
 
-
   ScreenEditorState(this._screen);
 
   @override
@@ -169,5 +168,9 @@ class ScreenEditorState extends State<ScreenEditor> {
           _service.screen.controls[id].height = minSize;
       });
     }
+  }
+
+  void tapSave() {
+    //_service.
   }
 }

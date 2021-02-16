@@ -1,3 +1,5 @@
+import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+
 import 'command.dart';
 
 class GicControl {
@@ -83,6 +85,43 @@ class GicControl {
       commandSecondary: Command.fromJson(json['commandSecondary']),
     );
   }
+
+  // factory GicControl.fromModel(ControlViewModel model, double pixelRatio) {
+  //
+  //   GicControl rv = new GicControl();
+  //   rv.text = model.text;
+  //   rv.left = model.left * pixelRatio;
+  //   rv.top = model.top * pixelRatio;
+  //   rv.width = model.width.toInt() * pixelRatio.toInt();
+  //   rv.height = model.height.toInt() * pixelRatio.toInt();
+  //
+  //   switch (model.type) {
+  //     case ControlViewModelType.Button:
+  //       rv.viewType = TYPE_BUTTON;
+  //       break;
+  //     case ControlViewModelType.Text:
+  //       rv.viewType = TYPE_TEXT;
+  //       break;
+  //     case ControlViewModelType.Image:
+  //       rv.viewType = TYPE_IMAGE;
+  //       break;
+  //     case ControlViewModelType.Toggle:
+  //       rv.viewType = TYPE_SWITCH;
+  //       break;
+  //     default:
+  //       rv.viewType = TYPE_BUTTON_QUICK;
+  //   }
+  //
+  //
+  //   rv.commands = _getCommands(model);
+  //   rv.font = _getFont(model, pixelRatio);
+  //   rv.colors = _getColors(model);
+  //   rv.images = _getImages(model);
+  //   if (rv.images.isEmpty)
+  //     rv.design = ControlDesignType.UpDownGradient;
+  //
+  //   return rv;
+  // }
 
   Map<String, dynamic> toJson() =>
   {

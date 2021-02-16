@@ -39,17 +39,17 @@ class ControlViewModel {
 
     ControlViewModel();
 
-    factory ControlViewModel.fromModel(GicControl model, double pixelRatio) {
+    factory ControlViewModel.fromModel(GicControl model) {
 
         ControlViewModel rv = new ControlViewModel();
         rv.text = model.text;
-        rv.left = model.left / pixelRatio;
-        rv.top = model.top / pixelRatio;
-        rv.width = model.width.toDouble() / pixelRatio;
-        rv.height = model.height.toDouble() / pixelRatio;
+        rv.left = model.left;
+        rv.top = model.top;
+        rv.width = model.width.toDouble();
+        rv.height = model.height.toDouble();
         rv.type = _getType(model.viewType);
         rv.commands = _getCommands(model);
-        rv.font = _getFont(model, pixelRatio);
+        rv.font = _getFont(model);
         rv.colors = _getColors(model);
         rv.images = _getImages(model);
         if (rv.images.isEmpty)
@@ -57,7 +57,6 @@ class ControlViewModel {
 
         return rv;
     }
-
 
     static ControlViewModelType _getType(int viewType) {
         switch (viewType) {
@@ -84,13 +83,13 @@ class ControlViewModel {
         return rv;
     }
 
-    static Font _getFont(GicControl model, double pixelRatio) {
+    static Font _getFont(GicControl model) {
         Font rv = new Font();
         if (model.fontColor == -1)
             rv.color = Colors.white;
         else
             rv.color = _convertJavaColor(model.fontColor);
-        rv.size = model.fontSize.toDouble() / pixelRatio;
+        rv.size = model.fontSize.toDouble();
         if (model.fontName != null && model.fontName.isNotEmpty) {
             rv.family = model.fontName;
         }

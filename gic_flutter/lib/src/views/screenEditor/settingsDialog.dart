@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 
 class SimpleDialogItem extends StatelessWidget {
   const SimpleDialogItem(
@@ -31,13 +32,15 @@ class SimpleDialogItem extends StatelessWidget {
 
 class SettingsDialog {
   static Widget display(BuildContext context) {
+    IntlScreenEditor translation = new IntlScreenEditor(context);
+
     return SimpleDialog(
       title: Text('Menu'),
       children: [
         SimpleDialogItem(
           icon: Icons.smart_button,
           color: Colors.orange,
-          text: 'Add Button',
+          text: translation.text(ScreenEditorText.addButton),
           onPressed: () {
 
           },
@@ -45,7 +48,7 @@ class SettingsDialog {
         SimpleDialogItem(
           icon: Icons.toggle_off_outlined,
           color: Colors.green,
-          text: 'Add Toggle',
+          text: translation.text(ScreenEditorText.addToggle),
           onPressed: () {
 
           },
@@ -53,7 +56,7 @@ class SettingsDialog {
         SimpleDialogItem(
           icon: Icons.text_fields,
           color: Colors.blue,
-          text: 'Add Text',
+          text: translation.text(ScreenEditorText.addText),
           onPressed: () {
 
           },
@@ -61,15 +64,31 @@ class SettingsDialog {
         SimpleDialogItem(
           icon: Icons.image,
           color: Colors.red,
-          text: 'Add Image',
+          text: translation.text(ScreenEditorText.addImage),
           onPressed: () {
 
           },
         ),
         SimpleDialogItem(
-          icon: Icons.settings,
+          icon: Icons.color_lens,
+          color: Colors.yellow,
+          text: translation.text(ScreenEditorText.setBackground),
+          onPressed: () {
+
+          },
+        ),
+        SimpleDialogItem(
+          icon: Icons.grid_on,
           color: Colors.grey,
-          text: 'Settings',
+          text: translation.text(ScreenEditorText.setGrid),
+          onPressed: () {
+
+          },
+        ),
+        SimpleDialogItem(
+          icon: Icons.save,
+          color: Colors.deepPurple,
+          text: translation.text(ScreenEditorText.save),
           onPressed: () {
 
           },

@@ -20,7 +20,7 @@ class ScreenViewModel {
         rv.screenId = model.screenId;
         rv.name = model.name;
         model.controls.forEach((element) {
-            rv.controls.add(new ControlViewModel.fromModel(element, pixelRatio));
+            rv.controls.add(new ControlViewModel.fromModel(element));
         });
         rv.newControlId = model.newControlId;
 
