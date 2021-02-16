@@ -61,8 +61,8 @@ class ScreenEditorState extends State<ScreenEditor> {
     int n = 0;
     List<Widget> widgets = [];
     widgets.add(_highlightSelection());
-    if (_service.screen != null) {
-      _service.screen.controls.forEach((element) {
+    if (_service.activeScreenViewModel != null) {
+      _service.activeScreenViewModel.controls.forEach((element) {
         widgets.add(GicEditControl(
           control: element,
           textStyle: _getTextStyle(element.font),
@@ -77,19 +77,19 @@ class ScreenEditorState extends State<ScreenEditor> {
     }
 
     Container screen;
-    if (_service.screen.backgroundPath != null &&
-        _service.screen.backgroundPath.isNotEmpty) {
+    if (_service.activeScreenViewModel.backgroundPath != null &&
+        _service.activeScreenViewModel.backgroundPath.isNotEmpty) {
       screen = Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: FileImage(File(_service.screen.backgroundPath)),
+              image: FileImage(File(_service.activeScreenViewModel.backgroundPath)),
               fit: BoxFit.fill,
             ),
           ),
           child: Container(child: Stack(children: widgets)));
     } else {
       screen = Container(
-          color: _service.screen.backgroundColor,
+          color: _service.activeScreenViewModel.backgroundColor,
           child: Stack(children: widgets));
     }
 
@@ -139,12 +139,12 @@ class ScreenEditorState extends State<ScreenEditor> {
     setState(() {
       id = selectedControlIndex;
       selectedLeft =
-          _service.screen.controls[selectedControlIndex].left - highlightBorder;
+          _service.activeScreenViewModel.controls[selectedControlIndex].left - highlightBorder;
       selectedTop =
-          _service.screen.controls[selectedControlIndex].top - highlightBorder;
-      selectedWidth = _service.screen.controls[selectedControlIndex].width +
+          _service.activeScreenViewModel.controls[selectedControlIndex].top - highlightBorder;
+      selectedWidth = _service.activeScreenViewModel.controls[selectedControlIndex].width +
           (highlightBorder * 2);
-      selectedHeight = _service.screen.controls[selectedControlIndex].height +
+      selectedHeight = _service.activeScreenViewModel.controls[selectedControlIndex].height +
           (highlightBorder * 2);
       selectedVisible = true;
     });
@@ -152,20 +152,20 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   void _onDrag(double newLeft, double newTop, int selectedControlIndex) {
     setState(() {
-      _service.screen.controls[selectedControlIndex].left = newLeft;
-      _service.screen.controls[selectedControlIndex].top = newTop;
+      _service.activeScreenViewModel.controls[selectedControlIndex].left = newLeft;
+      _service.activeScreenViewModel.controls[selectedControlIndex].top = newTop;
     });
   }
 
   _handleSwipe(details) {
     if (id > -1) {
       setState(() {
-        _service.screen.controls[id].width += details.delta.dx;
-        _service.screen.controls[id].height += details.delta.dy;
-        if (_service.screen.controls[id].width < minSize)
-          _service.screen.controls[id].width = minSize;
-        if (_service.screen.controls[id].height < minSize)
-          _service.screen.controls[id].height = minSize;
+        _service.activeScreenViewModel.controls[id].width += details.delta.dx;
+        _service.activeScreenViewModel.controls[id].height += details.delta.dy;
+        if (_service.activeScreenViewModel.controls[id].width < minSize)
+          _service.activeScreenViewModel.controls[id].width = minSize;
+        if (_service.activeScreenViewModel.controls[id].height < minSize)
+          _service.activeScreenViewModel.controls[id].height = minSize;
       });
     }
   }

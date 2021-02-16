@@ -273,7 +273,7 @@ class ScreenList extends StatelessWidget {
     Screen screen = await _parent.launcherBloc.loadScreen(_screens[selectedScreenIndex].id);
     double pixelRatio = MediaQuery.of(context).devicePixelRatio;
     await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-        ScreenEditor(screen: new ScreenViewModel.fromModel(screen, pixelRatio))));
+        ScreenEditor(screen: new ScreenViewModel.fromLegacyModel(screen, pixelRatio))));
 
     // MethodChannel platform = new MethodChannel(Channel.channelView);
     // try {
@@ -446,7 +446,7 @@ class ScreenList extends StatelessWidget {
     double pixelRatio = MediaQuery.of(context).devicePixelRatio;
 
     await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-        ScreenView(screen: new ScreenViewModel.fromModel(screen, pixelRatio), networkModel: networkModel)));
+        ScreenView(screen: new ScreenViewModel.fromLegacyModel(screen, pixelRatio), networkModel: networkModel)));
   }
 
   void _updateScreen(int index) {
