@@ -3,7 +3,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gic_flutter/src/views/intro/introView.dart';
 import 'package:gic_flutter/src/views/launcher/launcher.dart';
 import 'backend/models/intl/localizations.dart';
-import 'backend/services/localStorageService.dart';
+import 'backend/services/firstRunService.dart';
 import 'service_locator.dart';
 import 'theme/theme.dart';
 
@@ -30,7 +30,7 @@ class GicApp extends StatelessWidget {
   }
 
   Widget _getStartupScreen() {
-    var localStorageService = locator<LocalStorageService>();
+    var localStorageService = locator<FirstRunService>();
     if(localStorageService.firstRun) {
       return IntroView();
     }

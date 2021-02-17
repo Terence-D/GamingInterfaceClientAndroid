@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gic_flutter/src/backend/services/localStorageService.dart';
+import 'package:gic_flutter/src/backend/services/firstRunService.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +11,7 @@ void main() {
   test('first run is true on first run', () async {
     //Assign
     SharedPreferences.setMockInitialValues(<String, dynamic>{});
-    LocalStorageService localStorageService = await LocalStorageService.getInstance();
+    FirstRunService localStorageService = await FirstRunService.getInstance();
 
     //Act
 
@@ -24,7 +24,7 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, dynamic>{
       "firstRun" : false,
     });
-    LocalStorageService localStorageService = await LocalStorageService.getInstance();
+    FirstRunService localStorageService = await FirstRunService.getInstance();
 
     //Act
 

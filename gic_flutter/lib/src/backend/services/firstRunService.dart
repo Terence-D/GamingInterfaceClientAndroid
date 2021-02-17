@@ -1,13 +1,13 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocalStorageService {
-  static LocalStorageService _instance;
+class FirstRunService {
+  static FirstRunService _instance;
   static SharedPreferences _preferences;
   static const String _prefFirstRun = "firstRun"; //show the whole intro thing
 
-  static Future<LocalStorageService> getInstance() async {
+  static Future<FirstRunService> getInstance() async {
     if (_instance == null) {
-      _instance = LocalStorageService();
+      _instance = FirstRunService();
     }
 
     if (_preferences == null) {
