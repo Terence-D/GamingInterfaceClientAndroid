@@ -15,11 +15,11 @@ class NewScreenWizardModel {
   String switchNormalImage;
   String switchPressedImage;
 
-  List<Control> controls; // our list of controls to create
+  List<NewScreenWizardControl> controls; // our list of controls to create
 }
 
-/// This is used purely for the new screen view model
-class Control {
+/// This is used purely for the "new screen" view model
+class NewScreenWizardControl {
   String text;
   String key;
   bool isSwitch = false;

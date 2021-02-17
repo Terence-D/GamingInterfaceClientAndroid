@@ -31,13 +31,15 @@ class ScreenService {
   int gridSize = 0;
 
   //constructor
-  ScreenService(this.activeScreenViewModel);
+  ScreenService();
 
   /// Initialize our service with values from preferences
-  Future init() async {
+  Future initDefaults() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    defaultControls =
-        new ControlDefaults(prefs, activeScreenViewModel.screenId);
+    if (activeScreenViewModel == null) //didn't load anything in, lets do it here
+      loadScreens();
+
+    defaultControls = new ControlDefaults(prefs, activeScreenViewModel.screenId);
     gridSize = prefs.getInt(_prefGridSize);
     if (gridSize == null) gridSize = 0;
   }
@@ -80,6 +82,7 @@ class ScreenService {
             ScreenViewModel.fromJson(json.decode(file.readAsStringSync())));
       });
 
+      activeScreenViewModel = screenViewModels.first;
       return true;
     } catch (e) {
       // If encountering an error, return 0.
@@ -87,13 +90,14 @@ class ScreenService {
     }
   }
 
-  /// Create an empty screen and place it in the model list
+  /// Create an empty screen, makes it active, and place it in the model list
   /// This does NOT save it to the file system
   void createScreen() {
     ScreenViewModel newScreenVM = new ScreenViewModel();
     newScreenVM.screenId = _findUniqueId();
     newScreenVM.name = _findUniqueName();
     screenViewModels.add(newScreenVM);
+    activeScreenViewModel = screenViewModels.last;
   }
 
   /// Delete the screen with the associated id
@@ -123,16 +127,34 @@ class ScreenService {
     return originalLength - screenViewModels.length;
   }
 
-  /// Takes a compressed file and import it and the resources into GIC
+  /// Takes a compressed or json file and import it and any resources into GIC
   Future<int> import(String file) async {
     //get our various folders ready
-    Directory tempFolder = await getTemporaryDirectory();
-    String importPath = path.join(tempFolder.path, "screenImports");
+    int rv = -1; //fail by default
+    if (file.endsWith("zip")) {
+      Directory tempFolder = await getTemporaryDirectory();
+      String importPath = path.join(tempFolder.path, "screenImports");
 
-    CompressedFileService.extract(file, importPath);
+      //extract compressed file
+      CompressedFileService.extract(file, importPath);
 
+      //get a screen object based on the JSON extracted
+      String importFile = path.join(importPath, "data.json");
+      rv = _importScreen(fileToImport: importFile);
+
+      //finally, clean up the cache
+      Directory(importPath).deleteSync(recursive: true);
+    } else if (file.endsWith("json")) {
+      //simple import, this should be an absolute path to asset folder
+      rv = _importScreen(fileToImport: file);
+    }
+    return rv;
+  }
+
+  /// This will save a screen object
+  int _importScreen({String fileToImport, String backgroundPath = ""}) {
     //get a screen object based on the JSON extracted
-    File jsonFile = File(path.join(importPath, "data.json"));
+    File jsonFile = File(fileToImport);
     ScreenViewModel screenToImport =
         ScreenViewModel.fromJson(json.decode(jsonFile.readAsStringSync()));
 
@@ -142,13 +164,8 @@ class ScreenService {
     screenToImport.name = _findUniqueName(baseName: screenToImport.name);
 
     //save the json file and add it to our list
-    screenToImport.save(importPath: importPath);
+    screenToImport.save(backgroundImageLocation: backgroundPath);
     screenViewModels.add(screenToImport);
-
-    //finally, clean up the cache
-    Directory(importPath).deleteSync(recursive: true);
-
-    //return the new id
     return screenToImport.screenId;
   }
 

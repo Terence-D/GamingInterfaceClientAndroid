@@ -42,8 +42,10 @@ class ScreenEditorState extends State<ScreenEditor> {
   void initState() {
     super.initState();
 
-    _service = new ScreenService(_screen);
-    _service.init();
+    _service = new ScreenService();
+    _service.loadScreens();
+    _service.activeScreenViewModel = _screen;
+    _service.initDefaults();
   }
 
   @override

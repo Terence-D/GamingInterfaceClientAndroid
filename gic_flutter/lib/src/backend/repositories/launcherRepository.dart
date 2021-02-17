@@ -1,8 +1,6 @@
 import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
-import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/screen.dart';
@@ -17,26 +15,20 @@ class LauncherRepository {
   static const String _prefPassword = "password";
   static const String _prefPort = "port";
   static const String _prefAddress = "address";
-  static const String _prefConvertB = "legacyConvertScreens"; //show the whole intro thing
-//  static const String _prefSelectedScreenId = "chosenId";
+  static const String _prefConvertB = "legacyConvertScreensB"; //show the whole intro thing
   static const String _prefDonate = "coffee";
   static const String _prefDonateStar = "star";
   static const String _prefsScreen = "screen_";
-//  static const String _prefsBackgroundSuffix = "_background";
-//  static const String _prefsBackgroundPathSuffix = "_background_path";
-//  static const String _prefsControl = "_control_";
 
   Future<LauncherModel> fetch() async {
     _prefs = await SharedPreferences.getInstance();
 
-    bool convertScreens = _prefs.getBool(_prefConvertB) ?? true;
-    await _upgradeDefaults();
-    if (convertScreens) {
+    /// convert legacy screen
+    if (_prefs.getBool(_prefConvertB) ?? true) {
       _prefs.setBool(_prefConvertB, false);
-      return await _convertLegacyScreens();
-    } else {
-      return await _loadVM();
+      await _convertLegacyScreens();
     }
+    return await _loadVM();
   }
 
   _loadVM() async {
@@ -46,6 +38,7 @@ class LauncherRepository {
     viewModel.password = await _getPassword();
 
     //load screens
+    //TODO replace this
     ScreenRepository screenRepo = new ScreenRepository();
     viewModel.screens = new List();
     LinkedHashMap _screenListMap = await screenRepo.getScreenList();
@@ -82,25 +75,9 @@ class LauncherRepository {
   }
 
   _convertLegacyScreens() async {
-    MethodChannel platform = new MethodChannel(Channel.channelUtil);
-    try {
-      platform.invokeMethod(Channel.actionUtilUpdateScreens);
-    } on PlatformException catch (e) {
-      print(e.message);
-    }
-    return _loadVM();
+    //TODO ALL OF IT
   }
   
-  //update the default control values to be flutter compatible
-  Future<void> _upgradeDefaults() async {
-    MethodChannel platform = new MethodChannel(Channel.channelUtil);
-    try {
-      platform.invokeMethod(Channel.actionCheckDefaults);
-    } on PlatformException catch (e) {
-      print(e.message);
-    }
-  }
-
   Future<String> _getPassword() async {
     String encrypted = _prefs.getString(_prefPassword) ?? "";
     try {

@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:path/path.dart' as path;
 
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
-import 'package:gic_flutter/src/backend/repositories//screenRepository.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/views/intro/screenListWidget.dart';
 import 'package:gic_flutter/src/views/intro/screenSizeWidget.dart';
@@ -111,9 +114,21 @@ class IntroPresentation {
     _contract.onIntroLoadCompleted(_pages);
   }
 
-  _importScreen(String device, List<ScreenItem> screenList, BuildContext context) async {
-    ScreenRepository screens = new ScreenRepository();
-    await screens.loadFromJson(screenList, device, context);
+  /// If the user has selected screen(s) to import, this does it
+  /// device - name of the device we are importing
+  /// screenList - which screens to import
+  /// context - context
+  void _importScreen(String device, List<ScreenItem> screenList, BuildContext context) async {
+    //the name will have spaces, but the asset file does not.
+    // so turn Large Tablet into LargeTablet
+    device = device.replaceAll(" ", ""); //remove spaces
+
+    //import each selected screen
+    ScreenService screenService = new ScreenService();
+    screenList.forEach((screen) async {
+      String assetFile = path.join("assets", "screens", "${screen.title}-$device.json");
+      await screenService.import(assetFile);
+    });
 
     Fluttertoast.showToast(
       msg: Intl.of(context).onboardImportSuccess,

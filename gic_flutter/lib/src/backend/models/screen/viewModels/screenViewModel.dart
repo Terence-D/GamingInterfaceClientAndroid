@@ -46,7 +46,7 @@ class ScreenViewModel {
   /// If importPath isn't null, it will use it as the source location for the resource files.  If it is null
   /// It'll use the builtin ScreenService.backgroundImagePath
   /// Returns either the file we wrote, or null on error
-  Future<File> save({String importPath: ""}) async {
+  Future<File> save({String backgroundImageLocation: ""}) async {
     if (screenId < 0) return null;
 
     try {
@@ -60,7 +60,7 @@ class ScreenViewModel {
 
       //copy in resources
       String pathToUse = appFolder.path;
-      if (importPath.isNotEmpty) pathToUse = importPath;
+      if (backgroundImageLocation.isNotEmpty) pathToUse = backgroundImageLocation;
       if (backgroundPath != null && backgroundPath.isNotEmpty) {
         String originalBackgroundImagePath = path.join(
             pathToUse, ScreenService.backgroundImageFolder, backgroundPath);
