@@ -31,6 +31,7 @@ class ScreenViewModel {
     return rv;
   }
 
+  /// Converts this screen view model into a json map
   Map<String, dynamic> toJson() => {
         'version': "2",
         'screenId': screenId,
@@ -40,6 +41,16 @@ class ScreenViewModel {
         'backgroundColor': backgroundColor,
         'backgroundPath': backgroundPath
       };
+
+  /// Create a clone of this object
+  ScreenViewModel buildClone() {
+    ScreenViewModel newModel = new ScreenViewModel();
+    newModel.screenId = screenId;
+    newModel.name = name;
+    newControlId = newControlId;
+
+    return newModel;
+  }
 
   /// Save the control to the applications documents directory
   /// NSData / AppData / etc depending on OS
@@ -74,11 +85,12 @@ class ScreenViewModel {
         }
         controls.forEach((control) {
           control.images.forEach((image) {
-            String originalImagePath =
-                image; //paths are absolute for images as it may be in assets OR imported custom
-            File imageFile = new File(originalImagePath);
-            String newImageFile = path.join(screenPath, originalImagePath);
-            imageFile.copy(newImageFile);
+            File imageFile = new File(image);
+            //if the path is an absolute path, copy them in to the local path
+            if (imageFile.isAbsolute) {
+              imageFile.copy(screenPath);
+            }
+            image = path.basename(imageFile.path);
           });
         });
       }
@@ -91,6 +103,7 @@ class ScreenViewModel {
     }
   }
 
+  /// Export the screen to the chosen path
   Future<int> export(String exportPath) async {
     final Directory appFolder = await getApplicationDocumentsDirectory();
     final String screenPath = path.join(
@@ -100,7 +113,7 @@ class ScreenViewModel {
   }
 
   /// LEGACY CODE BELOW
-  factory ScreenViewModel.fromLegacyModel(Screen model, double pixelRatio) {
+  factory ScreenViewModel.fromLegacyModel(Screen model) {
     ScreenViewModel rv = new ScreenViewModel();
     rv.screenId = model.screenId;
     rv.name = model.name;

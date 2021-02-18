@@ -2,6 +2,7 @@
 //for now going with a simple service layer
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
@@ -73,9 +74,12 @@ class ScreenService {
   /// Returns true on success, false on any failure
   Future<bool> loadScreens() async {
     try {
-      final Directory directory = await getApplicationDocumentsDirectory();
+      screenViewModels.clear();
+      final Directory appSupportPath = await getApplicationDocumentsDirectory();
+      String screenPath = path.join(appSupportPath.path, screenFolder);
+      Directory screenDirectory = new Directory(screenPath);
 
-      Stream stream = directory.list();
+      Stream stream = screenDirectory.list();
       await stream.forEach((element) {
         File file = File(element.path);
         screenViewModels.add(
@@ -149,6 +153,42 @@ class ScreenService {
       rv = _importScreen(fileToImport: file);
     }
     return rv;
+  }
+
+  /// This will duplicate the screen with matching ID
+  Future<bool> duplicateScreen(int originalScreenId) async {
+    //build the path to the original screen
+    try {
+      Directory appSupportPath = await getApplicationSupportDirectory();
+      String originalPath = path.join(appSupportPath.path, screenFolder, originalScreenId.toString());
+      Directory originalDirectory = new Directory(originalPath);
+
+      //get a new folder path
+      int newId = _findUniqueId();
+      String newPath = path.join(appSupportPath.path, screenFolder, newId.toString());
+      Directory newDirectory = new Directory(newPath);
+      newDirectory.createSync();
+
+      //copy the files over
+      originalDirectory.list().forEach((element) {
+        File originalFile = new File(element.path);
+        originalFile.copySync(newPath);
+      });
+
+      //now we need to update the json with its new id
+      File newScreenJson = new File (path.join(newPath, "data.json"));
+      ScreenViewModel newScreen = ScreenViewModel.fromJson(json.decode(newScreenJson.readAsStringSync()));
+      newScreen.screenId = newId;
+      newScreen.save(jsonOnly: true);
+      //reload now and set our active screen to the new one
+      loadScreens();
+      setActiveScreen(newId);
+    } on Exception catch (e) {
+      log(e.toString());
+      return false;
+    }
+
+    return true;
   }
 
   /// This will save a screen object

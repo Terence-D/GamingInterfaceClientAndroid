@@ -1,25 +1,24 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/blocs/launcherBloc.dart';
-import 'package:gic_flutter/src/backend/services/cryptoService.dart';
-import 'package:gic_flutter/src/flavor.dart';
 import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
+import 'package:gic_flutter/src/backend/services/cryptoService.dart';
+import 'package:gic_flutter/src/flavor.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
-import 'package:gic_flutter/src/views/menuOption.dart';
-import 'package:gic_flutter/src/views/newScreenWizard/newScreenWizard.dart';
 import 'package:gic_flutter/src/views/about/aboutView.dart';
 import 'package:gic_flutter/src/views/intro/introView.dart';
+import 'package:gic_flutter/src/views/menuOption.dart';
+import 'package:gic_flutter/src/views/newScreenWizard/newScreenWizard.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'screenList.dart';
 import 'serverLogin.dart';
+
 //import 'package:intent/intent.dart' as android_intent;
 //import 'package:intent/action.dart' as android_action;
 //import 'package:intent/extra.dart' as android_extra;
@@ -33,7 +32,8 @@ class Launcher extends StatefulWidget {
   }
 }
 
-class LauncherState extends State<Launcher> { //}with HelpWidget {
+class LauncherState extends State<Launcher> {
+  //}with HelpWidget {
 
   final GlobalKey _fabKey = GlobalKey();
   final GlobalKey addressKey = GlobalKey();
@@ -56,7 +56,8 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
   final TextEditingController addressController = new TextEditingController();
   final TextEditingController portController = new TextEditingController();
   final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
 
   BuildContext showcaseContext;
 
@@ -81,30 +82,23 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-      ShowCaseWidget(
-          builder: Builder(
-              builder : (context) {
-                showcaseContext = context;
-                return Scaffold(
-                    appBar: _launcherAppBar(),
-                    body: StreamBuilder(
-                      stream: launcherBloc.preferences,
-                      builder: (context,
-                          AsyncSnapshot<dynamic> snapshot) {
-                        if (snapshot.hasData) {
-                          return _buildViews(snapshot);
-                        } else if (snapshot.hasError) {
-                          return Text(snapshot.error.toString());
-                        }
-                        return Center(child: CircularProgressIndicator());
-                      },
-                    ),
-                    floatingActionButton: _fab(context)
-                );
+    return ShowCaseWidget(builder: Builder(builder: (context) {
+      showcaseContext = context;
+      return Scaffold(
+          appBar: _launcherAppBar(),
+          body: StreamBuilder(
+            stream: launcherBloc.preferences,
+            builder: (context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.hasData) {
+                return _buildViews(snapshot);
+              } else if (snapshot.hasError) {
+                return Text(snapshot.error.toString());
               }
-      )
-    );
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
+          floatingActionButton: _fab(context));
+    }));
   }
 
   Widget _fab(BuildContext context) {
@@ -114,22 +108,16 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
         description: translation.text(LauncherText.helpNew),
         shapeBorder: CircleBorder(),
         child: FloatingActionButton.extended(
-                onPressed: () {
-                  _newScreen();
-                },
-                backgroundColor: Theme.of(context).primaryColor,
-                label: Text(translation.text(LauncherText.buttonNew))
-            )
-    );
+            onPressed: () {
+              _newScreen();
+            },
+            backgroundColor: Theme.of(context).primaryColor,
+            label: Text(translation.text(LauncherText.buttonNew))));
   }
 
-  List<Widget>  _widgets(snapshot, orientation) {
+  List<Widget> _widgets(snapshot, orientation) {
     return <Widget>[
-      ServerLogin(
-        this,
-        snapshot.data,
-        translation,
-        orientation),
+      ServerLogin(this, snapshot.data, translation, orientation),
       ScreenList(
         this,
         snapshot.data.screens,
@@ -140,12 +128,16 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
     _viewModel = snapshot.data;
-    CryptoService.decrypt(_viewModel.password).then((value) => passwordController.text = value);
+    CryptoService.decrypt(_viewModel.password)
+        .then((value) => passwordController.text = value);
     portController.text = _viewModel.port;
     addressController.text = _viewModel.address;
-    passwordController.selection = TextSelection.fromPosition(TextPosition(offset: passwordController.text.length));
-    portController.selection = TextSelection.fromPosition(TextPosition(offset: portController.text.length));
-    addressController.selection = TextSelection.fromPosition(TextPosition(offset: addressController.text.length));
+    passwordController.selection = TextSelection.fromPosition(
+        TextPosition(offset: passwordController.text.length));
+    portController.selection = TextSelection.fromPosition(
+        TextPosition(offset: portController.text.length));
+    addressController.selection = TextSelection.fromPosition(
+        TextPosition(offset: addressController.text.length));
 
     Orientation orientation = MediaQuery.of(context).orientation;
     var widgets;
@@ -156,14 +148,13 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     }
     _scrollTo();
     return Scaffold(
-      body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: widgets));
+        body: Padding(padding: const EdgeInsets.all(8.0), child: widgets));
   }
 
   AppBar _launcherAppBar() {
     return AppBar(
-      leading: Image.asset("assets/images/icons/app_icon.png", fit: BoxFit.cover),
+      leading:
+          Image.asset("assets/images/icons/app_icon.png", fit: BoxFit.cover),
       title: Text(translation.text(LauncherText.toolbarTitle)),
       actions: <Widget>[
         IconButton(
@@ -177,28 +168,38 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     );
   }
 
-  PopupMenuButton<MenuOption> menuButtons () {
+  PopupMenuButton<MenuOption> menuButtons() {
     List<MenuOption> rv = <MenuOption>[
-      MenuOption(title: translation.text(LauncherText.menuImport), icon: Icons.import_export),
-      MenuOption(title: translation.text(LauncherText.menuTheme), icon: Icons.color_lens),
-      MenuOption(title: translation.text(LauncherText.menuIntro), icon: Icons.thumb_up),
-      MenuOption(title: translation.text(LauncherText.menuAbout), icon: Icons.info_outline),
+      MenuOption(
+          title: translation.text(LauncherText.menuImport),
+          icon: Icons.import_export),
+      MenuOption(
+          title: translation.text(LauncherText.menuTheme),
+          icon: Icons.color_lens),
+      MenuOption(
+          title: translation.text(LauncherText.menuIntro),
+          icon: Icons.thumb_up),
+      MenuOption(
+          title: translation.text(LauncherText.menuAbout),
+          icon: Icons.info_outline),
     ];
 
     BuildEnvironment.init(flavor: BuildFlavor.gplay);
     assert(env != null);
 
     if (env.flavor == BuildFlavor.gplay) {
-      rv.add(MenuOption(title: translation.text(LauncherText.menuDonate), icon: Icons.present_to_all));
+      rv.add(MenuOption(
+          title: translation.text(LauncherText.menuDonate),
+          icon: Icons.present_to_all));
     }
 
-    return PopupMenuButton<MenuOption> (
+    return PopupMenuButton<MenuOption>(
       onSelected: _menuSelectAction,
       itemBuilder: (BuildContext context) {
         return rv.map((MenuOption choice) {
           return PopupMenuItem<MenuOption>(
             value: choice,
-            child: Text( choice.title),
+            child: Text(choice.title),
           );
         }).toList();
       },
@@ -213,23 +214,20 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
       _showUi(AboutView());
     else if (choice.title == translation.text(LauncherText.menuIntro)) {
       _showUi(IntroView());
-    }
-    else if (choice.title == translation.text(LauncherText.menuImport)) {
+    } else if (choice.title == translation.text(LauncherText.menuImport)) {
       _import();
-    }
-    else if (choice.title == translation.text(LauncherText.menuTheme)) {
+    } else if (choice.title == translation.text(LauncherText.menuTheme)) {
       if (_viewModel.darkMode) {
         CustomTheme.instanceOf(context).changeTheme(ThemeKeys.LIGHT);
         launcherBloc.setTheme(false);
         _viewModel.darkMode = false;
-      }
-      else {
+      } else {
         CustomTheme.instanceOf(context).changeTheme(ThemeKeys.DARK);
         launcherBloc.setTheme(true);
         _viewModel.darkMode = true;
       }
     } else {
-      debugPrint ("not found");
+      debugPrint("not found");
     }
   }
 
@@ -245,7 +243,10 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   // call another flutter ui/view
   _showUi(StatefulWidget ui) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => ui)); // ManageView()) // AboutView())
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ui)); // ManageView()) // AboutView())
     launcherBloc.fetchAllPreferences();
   }
 
@@ -280,16 +281,13 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
     FilePickerResult result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      File file = File(result.files.single.path);
-      if (file != null) {
-        newScreenId = await launcherBloc.import(file);
-        if (newScreenId > 0)
-          Fluttertoast.showToast(
-            msg: translation.text(LauncherText.importComplete),
-          );
-      }
+      newScreenId = await launcherBloc.import(result.files.single.path);
+      if (newScreenId > 0)
+        Fluttertoast.showToast(
+          msg: translation.text(LauncherText.importComplete),
+        );
     }
-    }
+  }
 
   _newScreen() async {
     _showUi(new NewScreenWizard());
@@ -298,7 +296,7 @@ class LauncherState extends State<Launcher> { //}with HelpWidget {
 
   _scrollTo() {
     if (newScreenId >= 0 && _viewModel.screens.length > 0) {
-      for (int i=0; i < _viewModel.screens.length; i++) {
+      for (int i = 0; i < _viewModel.screens.length; i++) {
         if (_viewModel.screens[i].id == newScreenId)
           itemScrollController.scrollTo(
               index: i,

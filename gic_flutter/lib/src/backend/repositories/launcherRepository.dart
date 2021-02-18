@@ -1,9 +1,9 @@
-import 'dart:collection';
-
 import 'package:flutter/cupertino.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/screen.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/backend/repositories/screenRepository.dart';
 import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,14 +16,13 @@ class LauncherRepository {
   static const String _prefPassword = "password";
   static const String _prefPort = "port";
   static const String _prefAddress = "address";
-  static const String _prefConvertB =
-      "legacyConvertScreensB"; //show the whole intro thing
+  static const String _prefConvertB = "legacyConvertScreensB";
   static const String _prefDonate = "coffee";
   static const String _prefDonateStar = "star";
   static const String _prefsScreen = "screen_";
 
   /// Startup method, retrieves pay and version settings
-  /// Once done will load in the viewmodel
+  /// Once done will load in the view model
   Future<LauncherModel> fetch() async {
     _prefs = await SharedPreferences.getInstance();
 
@@ -67,65 +66,33 @@ class LauncherRepository {
     _prefs.setBool(_prefNightMode, newValue);
   }
 
-  /// Save the screen
-  Future<bool> saveScreen(Screen toSave) async {
-    LauncherModel _viewModel = new LauncherModel();
-    ScreenRepository screenRepo = await _getScreenRepository(_viewModel);
-
-    try {
-      await screenRepo.save(screen: toSave);
-      _viewModel.screens
-          .insert(0, new ScreenListItem(toSave.screenId, toSave.name));
-    } catch (Exception) {
-      return false;
-    }
-
-    return true;
-  }
-
-  Future<int> newScreen() async {
-    LauncherModel _viewModel = new LauncherModel();
-    await _getScreenRepository(_viewModel);
-    int id = _getUniqueId(_viewModel);
-    Screen newScreen = new Screen();
-    newScreen.screenId = id;
-    newScreen.name = "New Screen $id";
-
-    if (await saveScreen(newScreen))
-      return id;
-    else
-      return -1;
-  }
-
+  /// Remove the matching screen
   Future<int> deleteScreen(int id) async {
-    LauncherModel _viewModel = new LauncherModel();
-    ScreenRepository screenRepo = await _getScreenRepository(_viewModel);
-    int rv = await screenRepo.delete(id);
-
-    return rv;
+    return await _screenService.deleteScreen(id);
   }
 
-  Future<int> import(file) async {
-    ScreenRepository screenRepo = new ScreenRepository();
-    return screenRepo.import(file);
+  /// Imports a screen based on supplied file value
+  Future<int> import(String file) async {
+    return _screenService.import(file);
   }
 
-  Future<int> export(String exportPath, int id) {
-    ScreenRepository screenRepo = new ScreenRepository();
-    return screenRepo.export(exportPath, id);
+  /// Exports the screen with matching id to the export path
+  Future<int> export(String exportPath, int id) async {
+    _screenService.setActiveScreen(id);
+    return _screenService.activeScreenViewModel.export(exportPath);
   }
 
+  /// Checks the screen with matching ids dimensions and returns an array with
+  /// orientation, width, and height values.  Used to calculate if we have to
+  /// resize.
   Future<List> checkScreenSize(int screenId) async {
-    ScreenRepository screenRepo = new ScreenRepository();
-    List<Screen> screens = await screenRepo.loadScreens();
-    Screen screen =
-        screens.singleWhere((element) => element.screenId == screenId);
+    _screenService.setActiveScreen(screenId);
 
     int orientation = 0;
     double furthestRight = 0;
     double furthestBottom = 0;
 
-    screen.controls.forEach((element) {
+    _screenService.activeScreenViewModel.controls.forEach((element) {
       double rightPos = element.left + element.width;
       double bottomPos = element.top + element.height;
       if (rightPos > furthestRight) furthestRight = rightPos;
@@ -136,6 +103,8 @@ class LauncherRepository {
     return [orientation, furthestRight, furthestBottom];
   }
 
+  /// Gets our devices dimensions and returns an array with orientation, width,
+  /// and height
   List buildDimensions(BuildContext context) {
     int orientation = 0;
     int width = 0;
@@ -160,6 +129,7 @@ class LauncherRepository {
     return [orientation, width, height];
   }
 
+  /// Resizes the chosen screens dimensions
   Future<int> resizeScreen(oldId, BuildContext context) async {
     List screenInfo = await checkScreenSize(oldId);
     List deviceInfo = buildDimensions(context);
@@ -174,37 +144,25 @@ class LauncherRepository {
     double adjustX = deviceInfo[1] / screenInfo[1];
     double adjustY = deviceInfo[2] / screenInfo[2];
 
-    LauncherModel _viewModel = new LauncherModel();
-    ScreenRepository screenRepo = await _getScreenRepository(_viewModel);
-    List<Screen> screens = await screenRepo.loadScreens();
-    Screen oldScreen =
-        screens.singleWhere((element) => element.screenId == oldId);
-    Screen newScreen = oldScreen;
-    newScreen.screenId = _getUniqueId(_viewModel);
-    newScreen.name += " resized";
+    _screenService.duplicateScreen(oldId);
 
-    newScreen.controls.forEach((element) {
-      element.left = element.left * adjustX;
-      element.width = (element.width * adjustX).round();
-      element.top = element.top * adjustY;
-      element.height = (element.height * adjustY).round();
+    _screenService.activeScreenViewModel.controls.forEach((control) {
+      control.left = control.left * adjustX;
+      control.width = (control.width * adjustX);
+      control.top = control.top * adjustY;
+      control.height = (control.height * adjustY);
     });
-
-    await screenRepo.save(screen: newScreen);
-    return newScreen.screenId;
+    _screenService.activeScreenViewModel.save(jsonOnly: true);
+    return _screenService.activeScreenViewModel.screenId;
   }
 
-  Future<Screen> loadScreen(int screenId) async {
-    LauncherModel _viewModel = new LauncherModel();
-    ScreenRepository screenRepo = await _getScreenRepository(_viewModel);
-    Screen toReturn = new Screen();
-    List<Screen> screens = await screenRepo.loadScreens();
-    screens.forEach((element) {
-      if (element.screenId == screenId) toReturn = element;
-    });
-    return toReturn;
+  /// sets us to use the currently active screen
+  ScreenViewModel setActiveScreen(int screenId) {
+    _screenService.setActiveScreen(screenId);
+    return _screenService.activeScreenViewModel;
   }
 
+  /// Build our view model
   _loadVM() async {
     LauncherModel viewModel = new LauncherModel();
 
@@ -248,9 +206,15 @@ class LauncherRepository {
   }
 
   _convertLegacyScreens() async {
-    //TODO ALL OF IT
+    ScreenRepository legacy = new ScreenRepository();
+    List<Screen> legacyScreens = await legacy.loadScreens();
+    legacyScreens.forEach((element) async {
+      ScreenViewModel screenViewModel = ScreenViewModel.fromLegacyModel(element);
+      await screenViewModel.save();
+    });
   }
 
+  /// Returns a decrypted password
   Future<String> _getPassword() async {
     String encrypted = _prefs.getString(_prefPassword) ?? "";
     try {
@@ -261,6 +225,7 @@ class LauncherRepository {
     }
   }
 
+  /// returns an encrypted string based on the passed in string
   Future<String> _encryptPassword(String password) async {
     return CryptoService.encrypt(password);
   }
@@ -270,26 +235,5 @@ class LauncherRepository {
       return false;
     }
     return double.tryParse(str) != null;
-  }
-
-  int _getUniqueId(LauncherModel _viewModel) {
-    int id = 0;
-    for (int i = 0; i < _viewModel.screens.length; i++) {
-      if (id == _viewModel.screens[i].id) {
-        id++;
-        i = -1; //restart our search
-      }
-    }
-    return id;
-  }
-
-  Future<ScreenRepository> _getScreenRepository(
-      LauncherModel _viewModel) async {
-    ScreenRepository screenRepo = new ScreenRepository();
-    _viewModel.screens = new List();
-    LinkedHashMap _screenListMap = await screenRepo.getScreenList();
-    _screenListMap
-        .forEach((k, v) => _viewModel.screens.add(new ScreenListItem(k, v)));
-    return screenRepo;
   }
 }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
-import 'package:gic_flutter/src/backend/models/screen/screen.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/repositories/launcherRepository.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -51,16 +51,6 @@ class LauncherBloc {
     _modelFetcher.close();
   }
 
-  /// Adds a new GIC screen
-  ///
-  /// @return the ID of the new screen
-  Future<int> newScreen() async {
-    int newId = await _repository.newScreen();
-    await fetchAllPreferences();
-
-    return newId;
-  }
-
   /// Changes the screen name
   ///
   /// @param id Id of the screen we want to update the name of
@@ -87,7 +77,7 @@ class LauncherBloc {
   ///
   /// @param file the file we are importing
   /// @return the new Id of the imported screen, or a negative value on failure
-  Future<int> import(file) async {
+  Future<int> import(String file) async {
     int newItemId = await _repository.import(file);
     fetchAllPreferences();
 
@@ -118,7 +108,7 @@ class LauncherBloc {
     fetchAllPreferences();
   }
 
-  Future<Screen> loadScreen(int screenId) async {
-    return await _repository.loadScreen(screenId);
+  ScreenViewModel loadScreen(int screenId) {
+    return _repository.setActiveScreen(screenId);
   }
 }

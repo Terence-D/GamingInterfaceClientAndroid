@@ -39,30 +39,6 @@ void main() {
     verify(mockedRepo.setDarkMode(true)).called(1);
   });
 
-  test('calling newscreen returns the screen id', () async {
-    //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
-    when(mockedRepo.newScreen()).thenAnswer((_) async => 1);
-
-    //Act
-    int rv = await toTest.newScreen();
-
-    //Assert
-    expect(rv, 1);
-  });
-
-  test('calling newscreen calls fetch preferences', () async {
-    //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
-    when(mockedRepo.newScreen()).thenAnswer((_) async => 1);
-
-    //Act
-    int rv = await toTest.newScreen();
-
-    //Assert
-    verify(mockedRepo.newScreen()).called(1);
-  });
-
   test('updating the name calls the matching repo method', () async {
     //Assign
     LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
@@ -108,18 +84,6 @@ void main() {
 
     //Assert
     expect (rv, -1);
-  });
-
-  test('importing a screen will return an integer', () async {
-    //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
-    when(mockedRepo.import(999)).thenAnswer((_) async => 1);
-
-    //Act
-    int rv = await toTest.import(999);
-
-    //Assert
-    expect (rv, 1);
   });
 
   test('exporting a screen will return an integer', () async {
