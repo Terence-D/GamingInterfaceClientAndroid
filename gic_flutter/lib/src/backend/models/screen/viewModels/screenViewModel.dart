@@ -44,9 +44,11 @@ class ScreenViewModel {
   /// Save the control to the applications documents directory
   /// NSData / AppData / etc depending on OS
   /// If importPath isn't null, it will use it as the source location for the resource files.  If it is null
+  /// If jsonOnly is set, it will speedup the process by only saving the json changes
   /// It'll use the builtin ScreenService.backgroundImagePath
   /// Returns either the file we wrote, or null on error
-  Future<File> save({String backgroundImageLocation: ""}) async {
+  Future<File> save(
+      {bool jsonOnly = false, String backgroundImageLocation: ""}) async {
     if (screenId < 0) return null;
 
     try {
@@ -54,28 +56,32 @@ class ScreenViewModel {
       final String screenPath = path.join(
           appFolder.path, ScreenService.screenFolder, screenId.toString());
       final Directory screenFolder = new Directory(screenPath);
+      if (!jsonOnly) {
+        //create folder if doesn't exist
+        if (!screenFolder.existsSync())
+          screenFolder.createSync(recursive: true);
 
-      //create folder if doesn't exist
-      if (!screenFolder.existsSync()) screenFolder.createSync(recursive: true);
-
-      //copy in resources
-      String pathToUse = appFolder.path;
-      if (backgroundImageLocation.isNotEmpty) pathToUse = backgroundImageLocation;
-      if (backgroundPath != null && backgroundPath.isNotEmpty) {
-        String originalBackgroundImagePath = path.join(
-            pathToUse, ScreenService.backgroundImageFolder, backgroundPath);
-        File backgroundFile = new File(originalBackgroundImagePath);
-        String newBackgroundImageFile = path.join(screenPath, backgroundPath);
-        backgroundFile.copy(newBackgroundImageFile);
-      }
-      controls.forEach((control) {
-        control.images.forEach((image) {
-          String originalImagePath = image; //paths are absolute for images as it may be in assets OR imported custom
-          File imageFile = new File(originalImagePath);
-          String newImageFile = path.join(screenPath, originalImagePath);
-          imageFile.copy(newImageFile);
+        //copy in resources
+        String pathToUse = appFolder.path;
+        if (backgroundImageLocation.isNotEmpty)
+          pathToUse = backgroundImageLocation;
+        if (backgroundPath != null && backgroundPath.isNotEmpty) {
+          String originalBackgroundImagePath = path.join(
+              pathToUse, ScreenService.backgroundImageFolder, backgroundPath);
+          File backgroundFile = new File(originalBackgroundImagePath);
+          String newBackgroundImageFile = path.join(screenPath, backgroundPath);
+          backgroundFile.copy(newBackgroundImageFile);
+        }
+        controls.forEach((control) {
+          control.images.forEach((image) {
+            String originalImagePath =
+                image; //paths are absolute for images as it may be in assets OR imported custom
+            File imageFile = new File(originalImagePath);
+            String newImageFile = path.join(screenPath, originalImagePath);
+            imageFile.copy(newImageFile);
+          });
         });
-      });
+      }
 
       //save the json file
       final File file = File('$screenPath/data.json');
