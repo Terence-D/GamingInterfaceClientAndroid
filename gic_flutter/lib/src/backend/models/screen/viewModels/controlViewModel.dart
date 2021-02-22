@@ -9,9 +9,29 @@ import '../controlTypes.dart';
 
 enum ControlViewModelType { Button, Text, Image, Toggle, QuickButton }
 
+ControlViewModelType getTypeFromString(String typeAsString) {
+  for (ControlViewModelType element in ControlViewModelType.values) {
+    if (element.toString() == typeAsString) {
+      return element;
+    }
+  }
+  return null;
+}
+
 enum ControlDesignType { Image, UpDownGradient }
 
+ControlDesignType getTypeDesignString(String designAsString) {
+  for (ControlDesignType element in ControlDesignType.values) {
+    if (element.toString() == designAsString) {
+      return element;
+    }
+  }
+  return null;
+}
+
 class ControlViewModel {
+  int version;
+
   ControlViewModelType type = ControlViewModelType.Button;
   ControlDesignType design = ControlDesignType.Image;
 
@@ -47,27 +67,31 @@ class ControlViewModel {
     return rv;
   }
 
-  factory ControlViewModel.fromJson(Map<String, dynamic> json) {
-    ControlViewModel rv = new ControlViewModel();
-    rv.design = json['design'];
-    rv.text = json['text'];
-    rv.left = json['left'];
-    rv.top = json['top'];
-    rv.width = json['width'];
-    rv.height = json['height'];
-    rv.type = json['type'];
-    rv.commands = json['commands'];
-    rv.font = json['font'];
-    rv.colors = json['colors'];
-    rv.images = json['images'];
+  ControlViewModel.fromJson(Map<String, dynamic> json)
+      : version = json['version'],
+        design = getTypeDesignString(json['design']),
+        text = json['text'],
+        left = json['left'],
+        top = json['top'],
+        width = json['width'],
+        height = json['height'],
+        type = getTypeFromString(json['type']),
+        commands = commandFromJson(json),
+        font = Font.fromJson(json['font']),
+        colors = _getColorsFromJson(json['colors']),
+        images = json['images'];
 
-    return rv;
+  static commandFromJson(Map<String, dynamic> json) {
+    var list = json['commands'] as List;
+    List<Command> commands = new List<Command>();
+    list.forEach((value) { commands.add(Command.fromJson(value));});
+    return commands;
   }
 
   Map<String, dynamic> toJson() => {
-        'version': "2",
-        'type': type,
-        'design': design,
+        'version': 2,
+        'type': type.toString(),
+        'design': design.toString(),
         'commands': commands,
         'text': text,
         'left': left,
@@ -75,9 +99,25 @@ class ControlViewModel {
         'top': top,
         'height': height,
         'font': font,
-        'colors': colors,
+        'colors': _colorsToJson(colors),
         'images': images,
       };
+
+  static List<Color> _getColorsFromJson(List<int> json) {
+    List<Color> rv = new List<Color>();
+    json.forEach((int element) {
+      rv.add(new Color(element));
+    });
+    return rv;
+  }
+
+  static List<int> _colorsToJson(List<Color> colors) {
+    List<int> rv = new List<int>();
+    colors.forEach((Color element) {
+      rv.add(element.value);
+    });
+    return rv;
+  }
 
   static ControlViewModelType _getType(int viewType) {
     switch (viewType) {
@@ -157,7 +197,7 @@ class ControlViewModel {
   static String _convertDrawableResource(
       int imageResource, int viewType, bool isPrimary) {
     if (viewType == 0 || viewType == 4) {
-      //its a button
+//its a button
       if (imageResource < ControlTypes.buttonDrawables.length)
         return ControlTypes.buttonDrawables[imageResource];
       if (isPrimary)

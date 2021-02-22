@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/compressedFileService.dart';
+import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -74,14 +75,17 @@ class ScreenService {
   /// Returns true on success, false on any failure
   Future<bool> loadScreens() async {
     try {
-      screenViewModels.clear();
+      if (screenViewModels == null)
+        screenViewModels = new List<ScreenViewModel>();
+      else
+        screenViewModels.clear();
       final Directory appSupportPath = await getApplicationDocumentsDirectory();
       String screenPath = path.join(appSupportPath.path, screenFolder);
       Directory screenDirectory = new Directory(screenPath);
 
       Stream stream = screenDirectory.list();
       await stream.forEach((element) {
-        File file = File(element.path);
+        File file = File(path.join(element.path, "data.json"));
         screenViewModels.add(
             ScreenViewModel.fromJson(json.decode(file.readAsStringSync())));
       });

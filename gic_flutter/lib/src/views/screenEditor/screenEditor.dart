@@ -54,6 +54,10 @@ class ScreenEditorState extends State<ScreenEditor> {
     return _buildScreen();
   }
 
+  void tapSave() {
+    _service.activeScreenViewModel.save();
+  }
+
   TextStyle _getTextStyle(Font font) {
     return TextStyle(
         color: font.color, fontFamily: font.family, fontSize: font.size);
@@ -133,7 +137,7 @@ class ScreenEditorState extends State<ScreenEditor> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return SettingsDialog.display(context);
+          return SettingsDialog.display(context, this);
         });
   }
 
@@ -170,9 +174,5 @@ class ScreenEditorState extends State<ScreenEditor> {
           _service.activeScreenViewModel.controls[id].height = minSize;
       });
     }
-  }
-
-  void tapSave() {
-    //_service.
   }
 }

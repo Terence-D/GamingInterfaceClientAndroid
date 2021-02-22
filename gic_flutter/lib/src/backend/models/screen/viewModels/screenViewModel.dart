@@ -11,6 +11,7 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class ScreenViewModel {
+  int version;
   int screenId = -1;
   String name;
   List<ControlViewModel> controls = new List<ControlViewModel>();
@@ -18,27 +19,41 @@ class ScreenViewModel {
   Color backgroundColor;
   String backgroundPath;
 
-  ScreenViewModel();
+  ScreenViewModel(
+      {this.version,
+      this.screenId,
+      this.name,
+      this.controls,
+      this.newControlId,
+      this.backgroundColor,
+      this.backgroundPath});
 
-  factory ScreenViewModel.fromJson(Map<String, dynamic> json) {
-    ScreenViewModel rv = new ScreenViewModel();
-    rv.screenId = json['screenId'];
-    rv.name = json['name'];
-    rv.controls = json['controls'];
-    rv.newControlId = json['newControlId'];
-    rv.backgroundColor = json['backgroundColor'];
-    rv.backgroundPath = json['backgroundPath'];
-    return rv;
+  ScreenViewModel.fromJson(Map<String, dynamic> json)
+      : version = json['version'],
+        screenId = json['screenId'],
+        name = json['name'],
+        controls = convertJsonToControl(json),
+        newControlId = json['newControlId'],
+        backgroundColor = new Color(int.parse(json['backgroundColor'])),
+        backgroundPath = json['backgroundPath'];
+
+  static convertJsonToControl(Map<String, dynamic> json) {
+    var list = json['controls'] as List;
+    List<ControlViewModel> controls = new List<ControlViewModel>();
+    list.forEach((value) {
+      controls.add(ControlViewModel.fromJson(value));
+    });
+    return controls;
   }
 
   /// Converts this screen view model into a json map
   Map<String, dynamic> toJson() => {
-        'version': "2",
+        'version': 2,
         'screenId': screenId,
         'name': name,
         'controls': controls,
         'newControlId': newControlId,
-        'backgroundColor': backgroundColor,
+        'backgroundColor': backgroundColor.value,
         'backgroundPath': backgroundPath
       };
 
@@ -96,7 +111,8 @@ class ScreenViewModel {
       }
 
       //save the json file
-      final File file = File('$screenPath/data.json');
+      String screenJsonFile = path.join(screenPath, "data.json");
+      final File file = File(screenJsonFile);
       return file.writeAsString(json.encode(toJson()));
     } catch (_) {
       return null;
@@ -115,6 +131,7 @@ class ScreenViewModel {
   /// LEGACY CODE BELOW
   factory ScreenViewModel.fromLegacyModel(Screen model) {
     ScreenViewModel rv = new ScreenViewModel();
+    rv.controls = new List<ControlViewModel>();
     rv.screenId = model.screenId;
     rv.name = model.name;
     model.controls.forEach((element) {

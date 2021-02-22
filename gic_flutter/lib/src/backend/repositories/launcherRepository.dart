@@ -16,10 +16,9 @@ class LauncherRepository {
   static const String _prefPassword = "password";
   static const String _prefPort = "port";
   static const String _prefAddress = "address";
-  static const String _prefConvertB = "legacyConvertScreensB";
+  static const String _prefConvertB = "legacyConvertScreensG";
   static const String _prefDonate = "coffee";
   static const String _prefDonateStar = "star";
-  static const String _prefsScreen = "screen_";
 
   /// Startup method, retrieves pay and version settings
   /// Once done will load in the view model
@@ -28,8 +27,8 @@ class LauncherRepository {
 
     /// convert legacy screen
     if (_prefs.getBool(_prefConvertB) ?? true) {
-      _prefs.setBool(_prefConvertB, false);
       await _convertLegacyScreens();
+      // _prefs.setBool(_prefConvertB, false);
     }
     return await _loadVM();
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
 
 class SimpleDialogItem extends StatelessWidget {
   const SimpleDialogItem(
@@ -31,7 +32,7 @@ class SimpleDialogItem extends StatelessWidget {
 }
 
 class SettingsDialog {
-  static Widget display(BuildContext context) {
+  static Widget display(BuildContext context, ScreenEditorState screenEditorState) {
     IntlScreenEditor translation = new IntlScreenEditor(context);
 
     return SimpleDialog(
@@ -90,7 +91,7 @@ class SettingsDialog {
           color: Colors.deepPurple,
           text: translation.text(ScreenEditorText.save),
           onPressed: () {
-
+            screenEditorState.tapSave();
           },
         ),
       ],
