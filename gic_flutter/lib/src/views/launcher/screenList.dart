@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
-import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
-import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -17,7 +14,7 @@ import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
-import 'package:http/http.dart' as http;
+import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -84,7 +81,7 @@ class ScreenList extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _startButton(index, context),
-            _editButton(index),
+            _editButton(index, context),
             _shareButton(index, context),
             _deleteButton(context, index),
           ],
@@ -139,24 +136,24 @@ class ScreenList extends StatelessWidget {
     }
   }
 
-  Widget _editButton(int index) {
+  Widget _editButton(int index, BuildContext context) {
     if (index == 0) {
       return Showcase(
           key: _parent.editKey,
           title: _translations.text(LauncherText.buttonEdit),
           description: _translations.text(LauncherText.helpEdit),
-          child: _innerEditButton(index));
+          child: _innerEditButton(index, context));
     } else {
-      return _innerEditButton(index);
+      return _innerEditButton(index, context);
     }
   }
 
-  IconButton _innerEditButton(int index) {
+  IconButton _innerEditButton(int index, BuildContext context) {
     return new IconButton(
       icon: Icon(Icons.edit),
       tooltip: _translations.text(LauncherText.buttonEdit),
       onPressed: () {
-        _editScreen(index);
+        _editScreen(index, context);
       },
     );
   }
@@ -268,13 +265,17 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  _editScreen(int selectedScreenIndex) async {
-    MethodChannel platform = new MethodChannel(Channel.channelView);
-    try {
-      await platform.invokeMethod(Channel.actionViewEdit, {"selectedScreenId": _screens[selectedScreenIndex].id});
-    } on PlatformException catch (e) {
-      print(e.message);
-    }
+  _editScreen(int selectedScreenIndex, BuildContext context) async {
+    ScreenViewModel screen = _parent.launcherBloc.loadScreen(_screens[selectedScreenIndex].id);
+    await Navigator.push(context, MaterialPageRoute(builder: (context) =>
+        ScreenEditor(screen: screen)));
+
+    // MethodChannel platform = new MethodChannel(Channel.channelView);
+    // try {
+    //   await platform.invokeMethod(Channel.actionViewEdit, {"selectedScreenId": _screens[selectedScreenIndex].id});
+    // } on PlatformException catch (e) {
+    //   print(e.message);
+    // }
   }
 
   _showLoaderDialog(BuildContext context) {
@@ -435,20 +436,10 @@ class ScreenList extends StatelessWidget {
   _startGame(BuildContext context, int screenId, NetworkModel networkModel) async {
     _parent.launcherBloc.saveConnectionSettings(networkModel);
 
-    Screen screen = await _parent.launcherBloc.loadScreen(screenId);
-
-    double pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    ScreenViewModel screen = _parent.launcherBloc.loadScreen(screenId);
 
     await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-        ScreenView(screen: new ScreenViewModel.fromModel(screen, pixelRatio), networkModel: networkModel)));
-
-    // MethodChannel platform = new MethodChannel(Channel.channelView);
-    // try {
-    //   await platform.invokeMethod(
-    //       Channel.actionViewStart, {"password": password, "address": address, "port": port, "screenId": screenId});
-    // } on PlatformException catch (e) {
-    //   print(e.message);
-    // }
+        ScreenView(screen: screen, networkModel: networkModel)));
   }
 
   void _updateScreen(int index) {
@@ -484,9 +475,6 @@ class ScreenList extends StatelessWidget {
         fsType: FilesystemType.folder,
         pickText: 'Save file to this folder',
       );
-
-      //List<Directory> externalStorageDirectory = await getExternalStorageDirectories(type: StorageDirectory.downloads);
-      //String exportPath =    (await getExternalStorageDirectory()).path;//externalStorageDirectory[0].path;
 
       if (exportPath != null && exportPath.isNotEmpty) {
         await _parent.launcherBloc.export(exportPath, id);

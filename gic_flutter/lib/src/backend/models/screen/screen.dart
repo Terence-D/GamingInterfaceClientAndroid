@@ -1,3 +1,7 @@
+import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/views/screen/screenView.dart';
+
 import 'gicControl.dart';
 
 class Screen {
@@ -27,6 +31,23 @@ class Screen {
       newControlId: json['newControlId'],
       name: json['name']);
   }
+
+  // factory Screen.fromModel(ScreenViewModel model, double pixelRatio) {
+  //   Screen rv = new Screen();
+  //   rv.screenId = model.screenId;
+  //   rv.name = model.name;
+  //   model.controls.forEach((element) {
+  //     rv.controls.add(new ControlViewModel.fromModel(element));
+  //   });
+  //   rv.newControlId = model.newControlId;
+  //
+  //   if (model.backgroundColor == -1 || model.backgroundColor == null)
+  //     rv.backgroundColor = Colors.black;
+  //   else
+  //     rv.backgroundColor = _convertJavaColor(model.backgroundColor);
+  //   rv.backgroundPath = model.backgroundPath;
+  //   return rv;
+  // }
 
   Map<String, dynamic> toJson() =>
       {

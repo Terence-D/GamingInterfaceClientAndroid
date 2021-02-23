@@ -1,7 +1,6 @@
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:archive/archive_io.dart';
@@ -183,13 +182,10 @@ class ScreenRepository {
     return rv;
   }
 
-  Future save(Screen newScreen) async {
+  Future save({screen: Screen}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    _save(prefs, newScreen);
-    if (_cache == null) {
-      _cache = new List<Screen>();
-    }
-    _cache.add(newScreen);
+    _save(prefs, screen);
+    _load(prefs);
   }
 
   Future<int> delete(int id) async {

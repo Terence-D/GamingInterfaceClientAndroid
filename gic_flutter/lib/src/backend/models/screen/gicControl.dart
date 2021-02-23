@@ -1,3 +1,5 @@
+import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+
 import 'command.dart';
 
 class GicControl {
@@ -29,12 +31,14 @@ class GicControl {
   int secondaryImageResource = -1;//R.drawable.button_blue_dark;
   String primaryImage = "";
   String secondaryImage = "";
-  String fontName = ""
-      "";
+  String fontName = "";
   int fontType = 0;
   Command commandSecondary = new Command.empty();
 
-  GicControl.empty();
+  GicControl.empty() {
+    primaryImage = "button_black";
+    secondaryImage = "button_black2";
+  }
 
   GicControl ({
     this.stage, 

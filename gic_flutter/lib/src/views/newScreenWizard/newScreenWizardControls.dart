@@ -40,7 +40,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
     for (var i = 0; i < _itemCount; i++) {
       TextEditingController tec = new TextEditingController();
       widget.state.keyNameController[i] = tec;
-      widget.state.viewModel.controls[i] = new Control();
+      widget.state.viewModel.controls[i] = new NewScreenWizardControl();
       controlTypeText.add(widget.state.translation.text(NewScreenWizardText.buttonType));
     }
 

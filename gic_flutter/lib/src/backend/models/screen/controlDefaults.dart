@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:gic_flutter/src/backend/models/screen/gicControl.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// This is used to store / save default control values
@@ -11,18 +12,18 @@ class ControlDefaults {
   final String _textDefaults = "_text_defaults";
   final String _switchDefaults = "_switch_defaults";
 
-  GicControl defaultImage;
-  GicControl defaultButton;
-  GicControl defaultText;
-  GicControl defaultSwitch;
+  ControlViewModel defaultImage;
+  ControlViewModel defaultButton;
+  ControlViewModel defaultText;
+  ControlViewModel defaultToggle;
 
   SharedPreferences _prefs;
 
   ControlDefaults(this._prefs, int screenId) {
-    defaultImage = loadControl("$screenId$_imageDefaults");
-    defaultButton = loadControl("$screenId$_buttonDefaults");
-    defaultText = loadControl("$screenId$_textDefaults");
-    defaultSwitch = loadControl("$screenId$_switchDefaults");
+    defaultImage = ControlViewModel.fromLegacyModel(loadControl("$screenId$_imageDefaults"));
+    defaultButton = ControlViewModel.fromLegacyModel(loadControl("$screenId$_buttonDefaults"));
+    defaultText = ControlViewModel.fromLegacyModel(loadControl("$screenId$_textDefaults"));
+    defaultToggle = ControlViewModel.fromLegacyModel(loadControl("$screenId$_switchDefaults"));
   }
 
   GicControl loadControl(String preference) {
