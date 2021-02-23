@@ -30,7 +30,7 @@ ControlDesignType getTypeDesignString(String designAsString) {
 }
 
 class ControlViewModel {
-  int version;
+  int version = 2;
 
   ControlViewModelType type = ControlViewModelType.Button;
   ControlDesignType design = ControlDesignType.Image;

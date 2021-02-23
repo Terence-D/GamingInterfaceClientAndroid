@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
 
 class SimpleDialogItem extends StatelessWidget {
@@ -43,7 +45,8 @@ class SettingsDialog {
           color: Colors.orange,
           text: translation.text(ScreenEditorText.addButton),
           onPressed: () {
-
+            screenEditorState.addControl(ControlViewModelType.Button);
+            Navigator.pop(context, true);
           },
         ),
         SimpleDialogItem(
@@ -51,7 +54,8 @@ class SettingsDialog {
           color: Colors.green,
           text: translation.text(ScreenEditorText.addToggle),
           onPressed: () {
-
+            screenEditorState.addControl(ControlViewModelType.Toggle);
+            Navigator.pop(context, true);
           },
         ),
         SimpleDialogItem(
@@ -59,7 +63,8 @@ class SettingsDialog {
           color: Colors.blue,
           text: translation.text(ScreenEditorText.addText),
           onPressed: () {
-
+            screenEditorState.addControl(ControlViewModelType.Text);
+            Navigator.pop(context, true);
           },
         ),
         SimpleDialogItem(
@@ -67,7 +72,8 @@ class SettingsDialog {
           color: Colors.red,
           text: translation.text(ScreenEditorText.addImage),
           onPressed: () {
-
+            screenEditorState.addControl(ControlViewModelType.Image);
+            Navigator.pop(context, true);
           },
         ),
         SimpleDialogItem(
@@ -92,6 +98,7 @@ class SettingsDialog {
           text: translation.text(ScreenEditorText.save),
           onPressed: () {
             screenEditorState.tapSave();
+            Navigator.pop(context, true);
           },
         ),
       ],
