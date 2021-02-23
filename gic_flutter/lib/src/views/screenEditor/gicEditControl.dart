@@ -5,23 +5,34 @@ import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewMode
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 
 typedef void SelectedWidgetCallback(int selectedControlIndex);
-typedef void DragControl(double newLeft, double newTop, int selectedControlIndex);
+typedef void DragControl(
+    double newLeft, double newTop, int selectedControlIndex);
 
 class GicEditControl extends StatefulWidget {
-
   final SelectedWidgetCallback onSelected;
   final DragControl onDrag;
 
   final ControlViewModel control;
-  final TextStyle textStyle;
   final int controlIndex;
+  final double pixelRatio;
 
-  GicEditControl({Key key, @required this.control, @required this.controlIndex, @required this.textStyle, @required this.onSelected, @required this.onDrag})
+  GicEditControl(
+      {Key key,
+      @required this.control,
+      @required this.controlIndex,
+      @required this.onSelected,
+      @required this.onDrag,
+      @required this.pixelRatio})
       : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return GicEditControlState(control: control, controlIndex: controlIndex, textStyle: textStyle, onSelected: onSelected, onDrag: onDrag);
+    return GicEditControlState(
+        control: control,
+        controlIndex: controlIndex,
+        onSelected: onSelected,
+        onDrag: onDrag,
+    pixelRatio: pixelRatio);
   }
 }
 
@@ -30,11 +41,16 @@ class GicEditControlState extends State<GicEditControl> {
   final DragControl onDrag;
 
   final ControlViewModel control;
-  final TextStyle textStyle;
   final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
   final int controlIndex;
+  final double pixelRatio;
 
-  GicEditControlState({@required this.control, @required this.controlIndex, @required this.textStyle, @required this.onSelected, @required this.onDrag});
+  GicEditControlState(
+      {@required this.control,
+      @required this.controlIndex,
+      @required this.onSelected,
+      @required this.onDrag,
+      @required this.pixelRatio});
 
   Color color;
 
@@ -47,14 +63,14 @@ class GicEditControlState extends State<GicEditControl> {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: control.top,
-      left: control.left,
+      top: control.top / pixelRatio,
+      left: control.left / pixelRatio,
       child: GestureDetector(
           onPanUpdate: (tapInfo) {
             setState(() {
               control.left += tapInfo.delta.dx;
               control.top += tapInfo.delta.dy;
-              onDrag(control.left, control.top, controlIndex);
+              onDrag(control.left / pixelRatio, control.top / pixelRatio, controlIndex);
             });
           },
           child: Stack(children: <Widget>[
@@ -62,8 +78,8 @@ class GicEditControlState extends State<GicEditControl> {
             FlatButton(
                 onPressed: _onTap,
                 child: Text("", style: _getTextStyle(control.font)),
-                minWidth: control.width,
-                height: control.height)
+                minWidth: control.width / pixelRatio,
+                height: control.height / pixelRatio)
           ])),
     );
   }
@@ -82,8 +98,8 @@ class GicEditControlState extends State<GicEditControl> {
   Widget _gicImage() {
     return Image.file(
       File(control.images[0]),
-      width: control.width,
-      height: control.height,
+      width: control.width / pixelRatio,
+      height: control.height / pixelRatio,
     );
   }
 
@@ -93,17 +109,17 @@ class GicEditControlState extends State<GicEditControl> {
 
   TextStyle _getTextStyle(Font font) {
     return TextStyle(
-        color: font.color, fontFamily: font.family, fontSize: font.size);
+        color: font.color, fontFamily: font.family, fontSize: font.size / pixelRatio);
   }
 
   Container _gicButton() {
     return Container(
-      width: control.width,
-      height: control.height,
+      width: control.width / pixelRatio,
+      height: control.height / pixelRatio,
       decoration: _buildButton(),
       child: Center(
           child: Text(control.text,
-              textAlign: TextAlign.center, style: textStyle)),
+              textAlign: TextAlign.center, style: _getTextStyle(control.font))),
     );
   }
 

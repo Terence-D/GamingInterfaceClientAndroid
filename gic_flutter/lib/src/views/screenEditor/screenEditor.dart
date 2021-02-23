@@ -51,27 +51,15 @@ class ScreenEditorState extends State<ScreenEditor> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    return _buildScreen();
-  }
-
-  void tapSave() {
-    _service.activeScreenViewModel.save();
-  }
-
-  TextStyle _getTextStyle(Font font) {
-    return TextStyle(
-        color: font.color, fontFamily: font.family, fontSize: font.size);
-  }
-
-  Widget _buildScreen() {
+    double pixelRatio = MediaQuery.of(context).devicePixelRatio;
     int n = 0;
     List<Widget> widgets = [];
     widgets.add(_highlightSelection());
     if (_service.activeScreenViewModel != null) {
       _service.activeScreenViewModel.controls.forEach((element) {
         widgets.add(GicEditControl(
+          pixelRatio: pixelRatio,
           control: element,
-          textStyle: _getTextStyle(element.font),
           controlIndex: n,
           onSelected: (int id) {
             _onSelected(id);
@@ -107,6 +95,10 @@ class ScreenEditorState extends State<ScreenEditor> {
       },
       child: Scaffold(body: screen),
     );
+  }
+
+  void tapSave() {
+    _service.activeScreenViewModel.save();
   }
 
   Positioned _highlightSelection() {
