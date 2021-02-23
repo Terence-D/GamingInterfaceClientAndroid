@@ -10,11 +10,12 @@ class GicButton extends BaseGicButton {
   final ControlViewModel control;
   final TextStyle textStyle;
   final NetworkModel networkModel;
+  final double pixelRatio;
 
-  GicButton({Key key, @required this.control, @required this.textStyle, @required this.networkModel}) : super(key: key, control: control, textStyle: textStyle);
+  GicButton({Key key, @required this.control, @required this.textStyle, @required this.networkModel, @required this.pixelRatio}) : super(key: key, control: control, textStyle: textStyle);
   @override
   State<StatefulWidget> createState() {
-    return GicButtonState(control: control, textStyle: textStyle, networkModel: networkModel);
+    return GicButtonState(control: control, textStyle: textStyle, networkModel: networkModel, pixelRatio: pixelRatio);
   }
 }
 
@@ -23,12 +24,13 @@ class GicButtonState extends State<GicButton> {
   final TextStyle textStyle;
   final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
   final NetworkModel networkModel;
+  final double pixelRatio;
 
   BoxDecoration unpressed;
   BoxDecoration pressed;
   BoxDecoration active;
 
-  GicButtonState({@required this.control, @required this.textStyle, @required this.networkModel}) {
+  GicButtonState({@required this.control, @required this.textStyle, @required this.networkModel, @required this.pixelRatio}) {
     unpressed = _buildDesign(false);
     pressed = _buildDesign(true);
     active = unpressed;
@@ -40,8 +42,8 @@ class GicButtonState extends State<GicButton> {
         onTapDown: (TapDownDetails details) => onTap(),
         onTapUp: (TapUpDetails details) => onTapUp(),
         child: Container(
-          width: control.width,
-          height: control.height,
+          width: control.width / pixelRatio,
+          height: control.height / pixelRatio,
           decoration: active,
           child: Center(child: Text(control.text, textAlign: TextAlign.center, style: textStyle)),
         ));

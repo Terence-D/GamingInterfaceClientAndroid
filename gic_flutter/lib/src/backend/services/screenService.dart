@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/compressedFileService.dart';
@@ -148,13 +149,15 @@ class ScreenService {
 
       //get a screen object based on the JSON extracted
       String importFile = path.join(importPath, "data.json");
-      rv = _importScreen(fileToImport: importFile);
+      File jsonFile = File(importFile);
+      rv = _importScreen(jsonToImport: jsonFile.readAsStringSync());
 
       //finally, clean up the cache
       Directory(importPath).deleteSync(recursive: true);
     } else if (file.endsWith("json")) {
       //simple import, this should be an absolute path to asset folder
-      rv = _importScreen(fileToImport: file);
+      String json = await rootBundle.loadString(file);
+      rv = _importScreen(jsonToImport: json);
     }
     return rv;
   }
@@ -196,11 +199,10 @@ class ScreenService {
   }
 
   /// This will save a screen object
-  int _importScreen({String fileToImport, String backgroundPath = ""}) {
+  int _importScreen({String jsonToImport, String backgroundPath = ""}) {
     //get a screen object based on the JSON extracted
-    File jsonFile = File(fileToImport);
     ScreenViewModel screenToImport =
-        ScreenViewModel.fromJson(json.decode(jsonFile.readAsStringSync()));
+        ScreenViewModel.fromJson(json.decode(jsonToImport));
 
     //now we need to get a new ID and Name, as the existing one is probably taken
     screenToImport.screenId =
