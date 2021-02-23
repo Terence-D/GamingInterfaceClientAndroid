@@ -76,40 +76,52 @@ class ControlViewModel {
         width = json['width'],
         height = json['height'],
         type = getTypeFromString(json['type']),
-        commands = commandFromJson(json),
+        commands = _getCommandsFromJson(json),
         font = Font.fromJson(json['font']),
-        colors = _getColorsFromJson(json['colors']),
-        images = json['images'];
+        colors = _getColorsFromJson(json),
+        images = _getImagesFromJson(json);
 
-  static commandFromJson(Map<String, dynamic> json) {
+  static List<String> _getImagesFromJson(Map<String, dynamic> json) {
+    var list = json['images'] as List;
+    List<String> images = new List<String>();
+    list.forEach((value) {
+      images.add(value);
+    });
+    return images;
+  }
+
+  static List<Command> _getCommandsFromJson(Map<String, dynamic> json) {
     var list = json['commands'] as List;
     List<Command> commands = new List<Command>();
-    list.forEach((value) { commands.add(Command.fromJson(value));});
+    list.forEach((value) {
+      commands.add(Command.fromJson(value));
+    });
     return commands;
+  }
+
+  static List<Color> _getColorsFromJson(Map<String, dynamic> json) {
+    var list = json['colors'] as List;
+    List<Color> colors = new List<Color>();
+    list.forEach((value) {
+      colors.add(Color(value));
+    });
+    return colors;
   }
 
   Map<String, dynamic> toJson() => {
         'version': 2,
-        'type': type.toString(),
         'design': design.toString(),
-        'commands': commands,
         'text': text,
         'left': left,
-        'width': width,
         'top': top,
+        'width': width,
         'height': height,
+        'type': type.toString(),
+        'commands': commands,
         'font': font,
         'colors': _colorsToJson(colors),
         'images': images,
       };
-
-  static List<Color> _getColorsFromJson(List<int> json) {
-    List<Color> rv = new List<Color>();
-    json.forEach((int element) {
-      rv.add(new Color(element));
-    });
-    return rv;
-  }
 
   static List<int> _colorsToJson(List<Color> colors) {
     List<int> rv = new List<int>();

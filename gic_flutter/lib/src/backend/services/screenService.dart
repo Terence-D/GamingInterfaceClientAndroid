@@ -93,7 +93,7 @@ class ScreenService {
       activeScreenViewModel = screenViewModels.first;
       return true;
     } catch (e) {
-      // If encountering an error, return 0.
+      // If encountering an error, return false.
       return false;
     }
   }

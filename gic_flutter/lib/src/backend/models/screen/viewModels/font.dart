@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 class Font {
+  int version;
   Color color;
   double size = 36;
   String family;
@@ -8,13 +9,14 @@ class Font {
   Font({this.color, this.size, this.family});
 
   Font.fromJson(Map<String, dynamic> json)
-      : color = new Color(int.parse(json['color'])),
+      : version = json['version'],
+        color = new Color(json['color']),
         size = json['size'],
         family = json['family'];
 
   Map<String, dynamic> toJson() => {
-        'version': "2",
-        'type': color.value,
+        'version': 2,
+        'color': color.value,
         'size': size,
         'family': family
       };

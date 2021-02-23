@@ -34,7 +34,7 @@ class ScreenViewModel {
         name = json['name'],
         controls = convertJsonToControl(json),
         newControlId = json['newControlId'],
-        backgroundColor = new Color(int.parse(json['backgroundColor'])),
+        backgroundColor = new Color(json['backgroundColor']),
         backgroundPath = json['backgroundPath'];
 
   static convertJsonToControl(Map<String, dynamic> json) {
