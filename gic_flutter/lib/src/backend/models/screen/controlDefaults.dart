@@ -24,6 +24,22 @@ class ControlDefaults {
     defaultButton = ControlViewModel.fromLegacyModel(loadControl("$screenId$_buttonDefaults"));
     defaultText = ControlViewModel.fromLegacyModel(loadControl("$screenId$_textDefaults"));
     defaultToggle = ControlViewModel.fromLegacyModel(loadControl("$screenId$_switchDefaults"));
+
+    //if nothing was loaded in
+    if (defaultImage.type != ControlViewModelType.Image) {
+      defaultImage.type = ControlViewModelType.Image;
+      defaultImage.images = new List();
+    }
+    if (defaultButton.type != ControlViewModelType.Button)
+      defaultButton.type = ControlViewModelType.Button;
+    if (defaultText.type != ControlViewModelType.Text)
+      defaultText.type = ControlViewModelType.Text;
+    if (defaultToggle.type != ControlViewModelType.Toggle) {
+      defaultToggle.type = ControlViewModelType.Toggle;
+      defaultToggle.images = new List();
+      defaultToggle.images.add("toggle_off");
+      defaultToggle.images.add("toggle_on");
+    }
   }
 
   GicControl loadControl(String preference) {

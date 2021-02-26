@@ -28,17 +28,18 @@ class ScreenViewModel {
       this.backgroundColor,
       this.backgroundPath});
 
-  ScreenViewModel.fromJson(Map<String, dynamic> json)
-      : version = json['version'],
-        screenId = json['screenId'],
-        name = json['name'],
-        controls = convertJsonToControl(json),
-        newControlId = json['newControlId'],
-        backgroundColor = new Color(json['backgroundColor']),
-        backgroundPath = json['backgroundPath'];
+  ScreenViewModel.fromJson(Map<String, dynamic> json) {
+    version = json['version'];
+    screenId = json['screenId'];
+    name = json['name'];
+    controls = convertJsonToControl(json, 'controls');
+    newControlId = json['newControlId'];
+    backgroundColor = new Color(json['backgroundColor']);
+    backgroundPath = json['backgroundPath'];
+  }
 
-  static convertJsonToControl(Map<String, dynamic> json) {
-    var list = json['controls'] as List;
+  static convertJsonToControl(Map<String, dynamic> json, String key) {
+    var list = json[key] as List;
     List<ControlViewModel> controls = new List<ControlViewModel>();
     list.forEach((value) {
       controls.add(ControlViewModel.fromJson(value));

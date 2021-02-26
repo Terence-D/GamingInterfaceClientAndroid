@@ -32,7 +32,7 @@ class GicEditControl extends StatefulWidget {
         controlIndex: controlIndex,
         onSelected: onSelected,
         onDrag: onDrag,
-    pixelRatio: pixelRatio);
+        pixelRatio: pixelRatio);
   }
 }
 
@@ -70,7 +70,8 @@ class GicEditControlState extends State<GicEditControl> {
             setState(() {
               control.left += tapInfo.delta.dx;
               control.top += tapInfo.delta.dy;
-              onDrag(control.left / pixelRatio, control.top / pixelRatio, controlIndex);
+              onDrag(control.left / pixelRatio, control.top / pixelRatio,
+                  controlIndex);
             });
           },
           child: Stack(children: <Widget>[
@@ -96,11 +97,21 @@ class GicEditControlState extends State<GicEditControl> {
   }
 
   Widget _gicImage() {
-    return Image.file(
-      File(control.images[0]),
-      width: control.width / pixelRatio,
-      height: control.height / pixelRatio,
-    );
+    if (control.images.length < 1)
+      return Container(
+          width: control.width / pixelRatio,
+          height: control.height / pixelRatio,
+          decoration:BoxDecoration(
+              image: new DecorationImage(
+                  image: new AssetImage(
+                      "assets/images/icons/app_icon.png"),
+                  fit: BoxFit.cover)));
+    else
+      return Image.file(
+        File(control.images[0]),
+        width: control.width / pixelRatio,
+        height: control.height / pixelRatio,
+      );
   }
 
   Widget _gicText() {
@@ -109,7 +120,9 @@ class GicEditControlState extends State<GicEditControl> {
 
   TextStyle _getTextStyle(Font font) {
     return TextStyle(
-        color: font.color, fontFamily: font.family, fontSize: font.size / pixelRatio);
+        color: font.color,
+        fontFamily: font.family,
+        fontSize: font.size / pixelRatio);
   }
 
   Container _gicButton() {

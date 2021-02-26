@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/compressedFileService.dart';
-import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -50,14 +49,15 @@ class ScreenService {
   // Sets which screen we are using as active
   // Returns true on success, false when no matching screen id is found
   bool setActiveScreen(int screenId) {
+    bool rv = false;
     if (screenViewModels != null && screenViewModels.isNotEmpty)
       screenViewModels.forEach((element) {
         if (element.screenId == screenId) {
           activeScreenViewModel = element;
-          return true;
+          rv = true;
         }
       });
-    return false;
+    return rv;
   }
 
   // void addControl(Offset localPosition, BuildContext context) {
