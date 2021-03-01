@@ -34,8 +34,9 @@ class AboutViewState extends BaseState<AboutView> {
 
   @override
   Widget build(BuildContext context) {
+
     String title = " ";
-    if (viewModel != null)
+    if (viewModel != null && viewModel.toolbarTitle != null)
       title = viewModel.toolbarTitle;
     return Scaffold(
         appBar: AppBar(

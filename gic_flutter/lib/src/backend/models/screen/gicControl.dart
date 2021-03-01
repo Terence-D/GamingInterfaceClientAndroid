@@ -19,9 +19,9 @@ class GicControl {
   Command command = new Command.empty();
   String text = "NONE";
   double left = 140;
-  int width = 320;
+  double width = 320;
   double top = 200;
-  int height = 120;
+  double height = 120;
   int fontColor = -1;
   int primaryColor = -1;
   int secondaryColor = -1;
@@ -68,9 +68,9 @@ class GicControl {
       command: Command.fromJson(json['command']),
       text: json['text'],
       left: json['left'],
-      width: json['width'],
+      width: json['width'].toDouble(),
       top: json['top'],
-      height: json['height'],
+      height: json['height'].toDouble(),
       fontColor: json['fontColor'],
       primaryColor: json['primaryColor'],
       secondaryColor: json['secondaryColor'],
