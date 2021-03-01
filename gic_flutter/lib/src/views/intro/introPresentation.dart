@@ -126,6 +126,7 @@ class IntroPresentation {
 
     //import each selected screen
     ScreenService screenService = new ScreenService();
+    await screenService.loadScreens();
     screenList.forEach((screen) async {
       String assetFile = path.join("assets", "screens", "${screen.title}-$device.json");
       await screenService.import(assetFile);

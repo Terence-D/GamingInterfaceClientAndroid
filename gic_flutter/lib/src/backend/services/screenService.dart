@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
+import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/compressedFileService.dart';
 import 'package:path/path.dart' as path;
@@ -118,21 +119,25 @@ class ScreenService {
     //remove the json file
     try {
       final Directory directory = await getApplicationDocumentsDirectory();
-      final String path = directory.path;
-      final File file = File('$path/$idToDelete.json');
-      file.delete();
+      final String appPath = directory.path;
+      String pathToDelete = path.join(appPath, "screens", idToDelete.toString());
+      Directory dirToDelete = new Directory(pathToDelete);
+      dirToDelete.deleteSync(recursive: true);
     } catch (_) {
       // If encountering an error, return 0.
       return -2;
     }
 
     int originalLength = screenViewModels.length;
+    ScreenViewModel toRemove;
     screenViewModels.forEach((screen) {
       if (screen.screenId == idToDelete) {
         //remove the model from the list
-        screenViewModels.remove(screen);
+        toRemove = screen;
       }
     });
+    if (toRemove != null)
+      screenViewModels.remove(toRemove);
     return originalLength - screenViewModels.length;
   }
 
@@ -200,10 +205,20 @@ class ScreenService {
 
   /// This will save a screen object
   int _importScreen({String jsonToImport, String backgroundPath = ""}) {
-    //get a screen object based on the JSON extracted
-    ScreenViewModel screenToImport =
-        ScreenViewModel.fromJson(json.decode(jsonToImport));
 
+    Map rawJson = json.decode(jsonToImport);
+    ScreenViewModel screenToImport;
+    if (rawJson.containsKey("version")) {
+      //get a screen object based on the JSON extracted
+      screenToImport = ScreenViewModel.fromJson(json.decode(jsonToImport));
+    } else {
+      //legacy
+      // get a screen object based on the JSON extracted
+      Map controlMap = jsonDecode(jsonToImport);
+      //build the new screen from the incoming json
+      Screen legacy = new Screen.fromJson(controlMap);
+      screenToImport = ScreenViewModel.fromLegacyModel(legacy);
+    }
     //now we need to get a new ID and Name, as the existing one is probably taken
     screenToImport.screenId =
         _findUniqueId(startingId: screenToImport.screenId);
