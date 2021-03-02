@@ -1,4 +1,5 @@
-import 'dart:developer';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog.dart';
+import 'package:path/path.dart' as path;
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -10,6 +11,7 @@ import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewMode
 import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:gic_flutter/src/views/screenEditor/backgroundDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'settingsDialog.dart';
 
@@ -169,8 +171,13 @@ class ScreenEditorState extends State<ScreenEditor> {
     );
     if (result != null) {
       PlatformFile file = result.files.first;
+      Directory dest = await getApplicationDocumentsDirectory();
+      String filename = path.basename(file.path);
+      String destPath = path.join(dest.path, "screens",
+          _service.activeScreenViewModel.screenId.toString(), filename);
+      File newFile = File(file.path).copySync(destPath);
       setState(() {
-        _service.activeScreenViewModel.backgroundPath = file.path;
+        _service.activeScreenViewModel.backgroundPath = newFile.path;
         Navigator.pop(context, true);
       });
     }
@@ -188,13 +195,12 @@ class ScreenEditorState extends State<ScreenEditor> {
       child: AlertDialog(
         title: Text(translation.text(ScreenEditorText.backgroundColor)),
         content: SingleChildScrollView(
-          child: ColorPicker(
-            pickerColor: pickerColor,
-            onColorChanged: _changeColor,
-            showLabel: true,
-            enableAlpha: false,
-          )
-        ),
+            child: ColorPicker(
+          pickerColor: pickerColor,
+          onColorChanged: _changeColor,
+          showLabel: true,
+          enableAlpha: false,
+        )),
         actions: <Widget>[
           FlatButton(
             child: Text(translation.text(ScreenEditorText.ok)),
@@ -228,7 +234,6 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   void _handleDoubleTap() {
-    print('Double tap on position ${_doubleTapDetails.localPosition}');
     setState(() {
       selectedVisible = false;
       showPopupDialog(SettingsDialog.display(context, this));
@@ -236,31 +241,48 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   void _onSelected(int selectedControlIndex) {
-    setState(() {
+    if (controlId != selectedControlIndex) {
       controlId = selectedControlIndex;
-      selectedLeft =
-          _service.activeScreenViewModel.controls[selectedControlIndex].left -
-              highlightBorder;
-      selectedTop =
-          _service.activeScreenViewModel.controls[selectedControlIndex].top -
-              highlightBorder;
-      selectedWidth =
-          _service.activeScreenViewModel.controls[selectedControlIndex].width +
-              (highlightBorder * 2);
-      selectedHeight =
-          _service.activeScreenViewModel.controls[selectedControlIndex].height +
-              (highlightBorder * 2);
-      selectedVisible = true;
-    });
+      setState(() {
+        selectedLeft = (_service
+                    .activeScreenViewModel.controls[selectedControlIndex].left /
+                pixelRatio) -
+            highlightBorder;
+        selectedTop =
+            (_service.activeScreenViewModel.controls[selectedControlIndex].top /
+                    pixelRatio) -
+                highlightBorder;
+        selectedWidth = (_service.activeScreenViewModel
+                    .controls[selectedControlIndex].width /
+                pixelRatio) +
+            (highlightBorder * 2);
+        selectedHeight = (_service.activeScreenViewModel
+                    .controls[selectedControlIndex].height /
+                pixelRatio) +
+            (highlightBorder * 2);
+        selectedVisible = true;
+      });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return ControlDialog(
+                control: GicEditControl(
+                    pixelRatio: pixelRatio,
+                    control: _service
+                        .activeScreenViewModel.controls[selectedControlIndex],
+                    controlIndex: selectedControlIndex,
+                    onSelected: null,
+                    onDrag: null));
+          });
+    }
   }
 
   void _onDrag(double newLeft, double newTop, int selectedControlIndex) {
-    setState(() {
-      _service.activeScreenViewModel.controls[selectedControlIndex].left =
-          newLeft;
-      _service.activeScreenViewModel.controls[selectedControlIndex].top =
-          newTop;
-    });
+    _service.activeScreenViewModel.controls[selectedControlIndex].left =
+        newLeft;
+    _service.activeScreenViewModel.controls[selectedControlIndex].top = newTop;
+    setState(() {});
   }
 
   _handleSwipe(details) {

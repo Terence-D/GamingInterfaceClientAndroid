@@ -70,7 +70,7 @@ class GicEditControlState extends State<GicEditControl> {
             setState(() {
               control.left += tapInfo.delta.dx;
               control.top += tapInfo.delta.dy;
-              onDrag(control.left / pixelRatio, control.top / pixelRatio,
+              onDrag(control.left, control.top,
                   controlIndex);
             });
           },
