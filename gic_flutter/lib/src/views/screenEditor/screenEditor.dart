@@ -1,10 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
+import 'package:gic_flutter/src/views/screenEditor/backgroundDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
 import 'settingsDialog.dart';
@@ -21,6 +25,8 @@ class ScreenEditor extends StatefulWidget {
 }
 
 class ScreenEditorState extends State<ScreenEditor> {
+  Color pickerColor = Color(0xff443a49);
+  IntlScreenEditor translation;
   int controlId = -1;
   int gridSize;
   ScreenService _service;
@@ -46,9 +52,7 @@ class ScreenEditorState extends State<ScreenEditor> {
     super.initState();
 
     _buildService().then((value) {
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
@@ -61,9 +65,9 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   @override
   Widget build(BuildContext context) {
+    translation = new IntlScreenEditor(context);
     SystemChrome.setEnabledSystemUIOverlays([]);
-    if (!_loaded)
-      return Scaffold();
+    if (!_loaded) return Scaffold();
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
     int n = 0;
     List<Widget> widgets = [];
@@ -77,7 +81,9 @@ class ScreenEditorState extends State<ScreenEditor> {
           onSelected: (int id) {
             _onSelected(id);
           },
-          onDrag: (double newLeft, double newTop, int selectedControlIndex) {_onDrag(newLeft, newTop, selectedControlIndex);},
+          onDrag: (double newLeft, double newTop, int selectedControlIndex) {
+            _onDrag(newLeft, newTop, selectedControlIndex);
+          },
         ));
         n++;
       });
@@ -89,7 +95,8 @@ class ScreenEditorState extends State<ScreenEditor> {
       screen = Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: FileImage(File(_service.activeScreenViewModel.backgroundPath)),
+              image: FileImage(
+                  File(_service.activeScreenViewModel.backgroundPath)),
               fit: BoxFit.fill,
             ),
           ),
@@ -133,11 +140,75 @@ class ScreenEditorState extends State<ScreenEditor> {
         newControl = _service.defaultControls.defaultToggle;
         break;
     }
-    newControl.left = (_doubleTapDetails.localPosition.dx * pixelRatio) - (newControl.width / 2);
-    newControl.top = (_doubleTapDetails.localPosition.dy * pixelRatio) - (newControl.height / 2);
+    newControl.left = (_doubleTapDetails.localPosition.dx * pixelRatio) -
+        (newControl.width / 2);
+    newControl.top = (_doubleTapDetails.localPosition.dy * pixelRatio) -
+        (newControl.height / 2);
     setState(() {
       _service.activeScreenViewModel.controls.add(newControl);
     });
+  }
+
+  void showPopupDialog(Widget dialog) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return dialog;
+        });
+  }
+
+  void showBackgroundDialog() {
+    Navigator.pop(context, true);
+    showPopupDialog(BackgroundDialog.display(context, this));
+  }
+
+  void pickBackgroundImage() async {
+    FilePickerResult result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'gif'],
+    );
+    if (result != null) {
+      PlatformFile file = result.files.first;
+      setState(() {
+        _service.activeScreenViewModel.backgroundPath = file.path;
+        Navigator.pop(context, true);
+      });
+    }
+  }
+
+// ValueChanged<Color> callback
+  void _changeColor(Color color) {
+    setState(() => pickerColor = color);
+  }
+
+  void pickBackgroundColor() {
+    pickerColor = _service.activeScreenViewModel.backgroundColor;
+    showDialog(
+      context: context,
+      child: AlertDialog(
+        title: Text(translation.text(ScreenEditorText.backgroundColor)),
+        content: SingleChildScrollView(
+          child: ColorPicker(
+            pickerColor: pickerColor,
+            onColorChanged: _changeColor,
+            showLabel: true,
+            enableAlpha: false,
+          )
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text(translation.text(ScreenEditorText.ok)),
+            onPressed: () {
+              setState(() {
+                _service.activeScreenViewModel.backgroundColor = pickerColor;
+                _service.activeScreenViewModel.backgroundPath = null;
+              });
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   Positioned _highlightSelection() {
@@ -160,45 +231,45 @@ class ScreenEditorState extends State<ScreenEditor> {
     print('Double tap on position ${_doubleTapDetails.localPosition}');
     setState(() {
       selectedVisible = false;
-      _showSettingsDialog();
+      showPopupDialog(SettingsDialog.display(context, this));
     });
-  }
-
-  void _showSettingsDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return SettingsDialog.display(context, this);
-        });
   }
 
   void _onSelected(int selectedControlIndex) {
     setState(() {
       controlId = selectedControlIndex;
       selectedLeft =
-          _service.activeScreenViewModel.controls[selectedControlIndex].left - highlightBorder;
+          _service.activeScreenViewModel.controls[selectedControlIndex].left -
+              highlightBorder;
       selectedTop =
-          _service.activeScreenViewModel.controls[selectedControlIndex].top - highlightBorder;
-      selectedWidth = _service.activeScreenViewModel.controls[selectedControlIndex].width +
-          (highlightBorder * 2);
-      selectedHeight = _service.activeScreenViewModel.controls[selectedControlIndex].height +
-          (highlightBorder * 2);
+          _service.activeScreenViewModel.controls[selectedControlIndex].top -
+              highlightBorder;
+      selectedWidth =
+          _service.activeScreenViewModel.controls[selectedControlIndex].width +
+              (highlightBorder * 2);
+      selectedHeight =
+          _service.activeScreenViewModel.controls[selectedControlIndex].height +
+              (highlightBorder * 2);
       selectedVisible = true;
     });
   }
 
   void _onDrag(double newLeft, double newTop, int selectedControlIndex) {
     setState(() {
-      _service.activeScreenViewModel.controls[selectedControlIndex].left = newLeft;
-      _service.activeScreenViewModel.controls[selectedControlIndex].top = newTop;
+      _service.activeScreenViewModel.controls[selectedControlIndex].left =
+          newLeft;
+      _service.activeScreenViewModel.controls[selectedControlIndex].top =
+          newTop;
     });
   }
 
   _handleSwipe(details) {
     if (controlId > -1) {
       setState(() {
-        _service.activeScreenViewModel.controls[controlId].width += details.delta.dx;
-        _service.activeScreenViewModel.controls[controlId].height += details.delta.dy;
+        _service.activeScreenViewModel.controls[controlId].width +=
+            details.delta.dx;
+        _service.activeScreenViewModel.controls[controlId].height +=
+            details.delta.dy;
         if (_service.activeScreenViewModel.controls[controlId].width < minSize)
           _service.activeScreenViewModel.controls[controlId].width = minSize;
         if (_service.activeScreenViewModel.controls[controlId].height < minSize)
