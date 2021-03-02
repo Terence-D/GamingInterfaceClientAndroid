@@ -8,7 +8,12 @@ enum ScreenEditorText {
   addImage,
   setBackground,
   setGrid,
-  save
+  save,
+  menu,
+  backgroundMenu,
+  backgroundColor,
+  backgroundImage,
+  ok
 }
 
 class IntlScreenEditor {
@@ -28,7 +33,12 @@ class IntlScreenEditor {
       ScreenEditorText.addImage: "Add Image",
       ScreenEditorText.setBackground: "Background",
       ScreenEditorText.setGrid: "Grid Size",
-      ScreenEditorText.save: "Save"
+      ScreenEditorText.save: "Save",
+      ScreenEditorText.menu: "Menu",
+      ScreenEditorText.backgroundMenu: "Background Style",
+      ScreenEditorText.backgroundColor: "Color",
+      ScreenEditorText.backgroundImage: "Image",
+      ScreenEditorText.ok: "Ok",
     }
   };
 }
