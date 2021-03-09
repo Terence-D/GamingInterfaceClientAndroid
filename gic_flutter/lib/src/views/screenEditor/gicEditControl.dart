@@ -15,6 +15,7 @@ class GicEditControl extends StatefulWidget {
   final ControlViewModel control;
   final int controlIndex;
   final double pixelRatio;
+  final bool isStatic;
 
   GicEditControl(
       {Key key,
@@ -22,6 +23,7 @@ class GicEditControl extends StatefulWidget {
       @required this.controlIndex,
       @required this.onSelected,
       @required this.onDrag,
+      this.isStatic = false,
       @required this.pixelRatio})
       : super(key: key);
 
@@ -32,6 +34,7 @@ class GicEditControl extends StatefulWidget {
         controlIndex: controlIndex,
         onSelected: onSelected,
         onDrag: onDrag,
+        isStatic: isStatic,
         pixelRatio: pixelRatio);
   }
 }
@@ -44,12 +47,14 @@ class GicEditControlState extends State<GicEditControl> {
   final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
   final int controlIndex;
   final double pixelRatio;
+  final bool isStatic;
 
   GicEditControlState(
       {@required this.control,
       @required this.controlIndex,
       @required this.onSelected,
       @required this.onDrag,
+      @required this.isStatic,
       @required this.pixelRatio});
 
   Color color;
@@ -62,27 +67,36 @@ class GicEditControlState extends State<GicEditControl> {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      top: control.top / pixelRatio,
-      left: control.left / pixelRatio,
-      child: GestureDetector(
-          onPanUpdate: (tapInfo) {
-            setState(() {
-              control.left += tapInfo.delta.dx;
-              control.top += tapInfo.delta.dy;
+    if (isStatic) {
+      return _buildGesture();
+    } else {
+      return Positioned(
+        top: control.top / pixelRatio,
+        left: control.left / pixelRatio,
+        child: _buildGesture(),
+      );
+    }
+  }
+
+  Widget _buildGesture() {
+    return GestureDetector(
+        onPanUpdate: (tapInfo) {
+          setState(() {
+            control.left += tapInfo.delta.dx;
+            control.top += tapInfo.delta.dy;
+            if (onDrag != null)
               onDrag(control.left, control.top,
                   controlIndex);
-            });
-          },
-          child: Stack(children: <Widget>[
-            _dynamicControl(),
-            FlatButton(
-                onPressed: _onTap,
-                child: Text("", style: _getTextStyle(control.font)),
-                minWidth: control.width / pixelRatio,
-                height: control.height / pixelRatio)
-          ])),
-    );
+          });
+        },
+        child: Stack(children: <Widget>[
+          _dynamicControl(),
+          FlatButton(
+              onPressed: _onTap,
+              child: Text("", style: _getTextStyle(control.font)),
+              minWidth: control.width / pixelRatio,
+              height: control.height / pixelRatio)
+        ]));
   }
 
   Widget _dynamicControl() {
@@ -136,8 +150,8 @@ class GicEditControlState extends State<GicEditControl> {
     );
   }
 
-  BoxDecoration _buildButton() {
-    int imageIndex = 0;
+  BoxDecoration _buildButton({int toggleImage = 0}) {
+    int imageIndex = 0 + toggleImage;
     Alignment begin = Alignment.bottomCenter;
     Alignment end = Alignment.topCenter;
 
@@ -160,8 +174,9 @@ class GicEditControlState extends State<GicEditControl> {
   }
 
   _onTap() {
-    setState(() {
-      onSelected(controlIndex);
-    });
+    if (onSelected != null)
+      setState(() {
+        onSelected(controlIndex);
+      });
   }
 }

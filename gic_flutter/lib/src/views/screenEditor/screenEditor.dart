@@ -273,6 +273,7 @@ class ScreenEditorState extends State<ScreenEditor> {
                         .activeScreenViewModel.controls[selectedControlIndex],
                     controlIndex: selectedControlIndex,
                     onSelected: null,
+                    isStatic: true,
                     onDrag: null));
           });
     }
