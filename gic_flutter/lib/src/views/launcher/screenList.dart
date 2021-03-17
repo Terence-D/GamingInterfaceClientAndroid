@@ -266,8 +266,10 @@ class ScreenList extends StatelessWidget {
   }
 
   _editScreen(int selectedScreenIndex, BuildContext context) async {
+    int screenId = _screens[selectedScreenIndex].id;
+
     await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-        ScreenEditor(screenId: selectedScreenIndex)));
+        ScreenEditor(screenId: screenId)));
 
     // MethodChannel platform = new MethodChannel(Channel.channelView);
     // try {

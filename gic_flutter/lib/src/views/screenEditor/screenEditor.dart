@@ -1,3 +1,4 @@
+import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
@@ -70,25 +71,32 @@ class ScreenEditorState extends State<ScreenEditor> {
     translation = new IntlScreenEditor(context);
     SystemChrome.setEnabledSystemUIOverlays([]);
     if (!_loaded) return Scaffold();
-    pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    pixelRatio = MediaQuery
+        .of(context)
+        .devicePixelRatio;
     int n = 0;
     List<Widget> widgets = [];
     widgets.add(_highlightSelection());
     if (_service.activeScreenViewModel != null) {
       _service.activeScreenViewModel.controls.forEach((element) {
-        widgets.add(GicEditControl(
-          pixelRatio: pixelRatio,
-          control: element,
-          controlIndex: n,
-          onSelected: (int id) {
-            _onSelected(id);
-          },
-          onDrag: (double newLeft, double newTop, int selectedControlIndex) {
-            _onDrag(newLeft, newTop, selectedControlIndex);
-          },
-        ));
-        n++;
-      });
+        widgets.add(
+            Positioned(
+                top: element.top / pixelRatio,
+                left: element.left / pixelRatio,
+                child: GicEditControl(
+                  pixelRatio: pixelRatio,
+                  control: element,
+                  controlIndex: n,
+                  onSelected: (int id) {
+                    _onSelected(id);
+                  },
+                  onDrag: (double newLeft, double newTop,
+                      int selectedControlIndex) {
+                    _onDrag(newLeft, newTop, selectedControlIndex);
+                  },
+                )));
+            n++;
+        });
     }
 
     Container screen;
@@ -183,7 +191,6 @@ class ScreenEditorState extends State<ScreenEditor> {
     }
   }
 
-// ValueChanged<Color> callback
   void _changeColor(Color color) {
     setState(() => pickerColor = color);
   }
@@ -196,11 +203,11 @@ class ScreenEditorState extends State<ScreenEditor> {
         title: Text(translation.text(ScreenEditorText.backgroundColor)),
         content: SingleChildScrollView(
             child: ColorPicker(
-          pickerColor: pickerColor,
-          onColorChanged: _changeColor,
-          showLabel: true,
-          enableAlpha: false,
-        )),
+              pickerColor: pickerColor,
+              onColorChanged: _changeColor,
+              showLabel: true,
+              enableAlpha: false,
+            )),
         actions: <Widget>[
           FlatButton(
             child: Text(translation.text(ScreenEditorText.ok)),
@@ -245,20 +252,20 @@ class ScreenEditorState extends State<ScreenEditor> {
       controlId = selectedControlIndex;
       setState(() {
         selectedLeft = (_service
-                    .activeScreenViewModel.controls[selectedControlIndex].left /
-                pixelRatio) -
+            .activeScreenViewModel.controls[selectedControlIndex].left /
+            pixelRatio) -
             highlightBorder;
         selectedTop =
             (_service.activeScreenViewModel.controls[selectedControlIndex].top /
-                    pixelRatio) -
+                pixelRatio) -
                 highlightBorder;
         selectedWidth = (_service.activeScreenViewModel
-                    .controls[selectedControlIndex].width /
-                pixelRatio) +
+            .controls[selectedControlIndex].width /
+            pixelRatio) +
             (highlightBorder * 2);
         selectedHeight = (_service.activeScreenViewModel
-                    .controls[selectedControlIndex].height /
-                pixelRatio) +
+            .controls[selectedControlIndex].height /
+            pixelRatio) +
             (highlightBorder * 2);
         selectedVisible = true;
       });
@@ -273,7 +280,6 @@ class ScreenEditorState extends State<ScreenEditor> {
                         .activeScreenViewModel.controls[selectedControlIndex],
                     controlIndex: selectedControlIndex,
                     onSelected: null,
-                    isStatic: true,
                     onDrag: null));
           });
     }

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
-import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 
 import 'gicButton.dart';
@@ -45,44 +44,12 @@ class ScreenView extends StatelessWidget {
 
   Widget _buildGicControl(ControlViewModel element, double pixelRatio) {
     return Positioned(
-      left: element.left / pixelRatio,
-      top: element.top / pixelRatio,
-      child: _dynamicControl(element, pixelRatio),
-    );
-  }
-
-  Widget _dynamicControl(ControlViewModel element, double pixelRatio) {
-    switch (element.type) {
-      case ControlViewModelType.Text:
-        return _gicText(element, pixelRatio);
-      case ControlViewModelType.Image:
-        return _gicImage(element, pixelRatio);
-      default:
-        return GicButton(
+        left: element.left / pixelRatio,
+        top: element.top / pixelRatio,
+        child: GicControl(
             control: element,
-            textStyle: _getTextStyle(element.font, pixelRatio),
             networkModel: networkModel,
-            pixelRatio: pixelRatio
-        );
-    }
+            pixelRatio: pixelRatio));
   }
 
-  Widget _gicImage(ControlViewModel element, double pixelRatio) {
-    return Image.file(
-      File(element.images[0]),
-      width: element.width / pixelRatio,
-      height: element.height / pixelRatio,
-    );
-  }
-
-  Widget _gicText(ControlViewModel element, double pixelRatio) {
-    return new Container(
-        width: element.width / pixelRatio,
-        child: Text(element.text, style: _getTextStyle(element.font, pixelRatio)));
-  }
-
-  TextStyle _getTextStyle(Font font, double pixelRatio) {
-    return TextStyle(
-        color: font.color, fontFamily: font.family, fontSize: font.size / pixelRatio);
-  }
 }
