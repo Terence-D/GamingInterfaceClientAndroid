@@ -199,7 +199,7 @@ class ScreenEditorState extends State<ScreenEditor> {
     pickerColor = _service.activeScreenViewModel.backgroundColor;
     showDialog(
       context: context,
-      child: AlertDialog(
+      builder: (_) => AlertDialog(
         title: Text(translation.text(ScreenEditorText.backgroundColor)),
         content: SingleChildScrollView(
             child: ColorPicker(
