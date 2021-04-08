@@ -22,9 +22,11 @@ class _ControlDialogState extends State<ControlDialog> {
     );
   }
   contentBox(context){
-    return Stack(
+    return Column(
       children: <Widget>[
+        widget.control,
         Container(
+          height: 500,
           margin: EdgeInsets.only(),
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
@@ -36,7 +38,18 @@ class _ControlDialogState extends State<ControlDialog> {
               ]
           ),
         ),
-        widget.control,
+        Container(
+          margin: EdgeInsets.only(),
+          decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: Colors.blue,
+              boxShadow: [
+                BoxShadow(color: Colors.black,offset: Offset(0,10),
+                    blurRadius: 10
+                ),
+              ]
+          ),
+        ),
       ],
     );
   }
