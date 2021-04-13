@@ -15,41 +15,57 @@ class _ControlDialogState extends State<ControlDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(),
-      elevation: 0,
-      backgroundColor: Colors.transparent,
-      child: contentBox(context),
-    );
+        shape: RoundedRectangleBorder(),
+        elevation: 0,
+        child: DefaultTabController(
+            length: 4,
+            child: Scaffold(
+              appBar: AppBar(
+                bottom: TabBar(
+                  tabs: [
+                    Tab(icon: Icon(Icons.build)),
+                    Tab(icon: Icon(Icons.image)),
+                    Tab(icon: Icon(Icons.text_fields)),
+                    Tab(icon: Icon(Icons.straighten)),
+                  ],
+                ),
+                title: widget.control,
+              ),
+              body: TabBarView(
+                children: [
+                  commandTab(context),
+                  textTab(context),
+                  imageTab(context),
+                  sizingTab(context),
+                ],
+              ),
+            ))); // child:,
   }
-  contentBox(context){
+
+  commandTab(context) {
     return Column(
       children: <Widget>[
-        widget.control,
-        Container(
-          height: 500,
-          margin: EdgeInsets.only(),
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(color: Colors.black,offset: Offset(0,10),
-                    blurRadius: 10
-                ),
-              ]
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.only(),
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.blue,
-              boxShadow: [
-                BoxShadow(color: Colors.black,offset: Offset(0,10),
-                    blurRadius: 10
-                ),
-              ]
-          ),
-        ),
+      ],
+    );
+  }
+
+  textTab(context) {
+    return Column(
+      children: <Widget>[
+      ],
+    );
+  }
+
+  imageTab(context) {
+    return Column(
+      children: <Widget>[
+      ],
+    );
+  }
+
+  sizingTab(context) {
+    return Column(
+      children: <Widget>[
       ],
     );
   }
