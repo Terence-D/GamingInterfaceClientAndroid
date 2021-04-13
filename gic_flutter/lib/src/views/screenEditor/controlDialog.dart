@@ -1,69 +1,107 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
 class ControlDialog extends StatefulWidget {
-  final GicEditControl control;
+  final GicEditControl gicEditControl;
 
-  const ControlDialog({Key key, this.control}) : super(key: key);
+  const ControlDialog({Key key, this.gicEditControl}) : super(key: key);
 
   @override
   _ControlDialogState createState() => _ControlDialogState();
 }
 
 class _ControlDialogState extends State<ControlDialog> {
+  List<Widget> tabs = [];
+  List<Widget> tabContents = [];
+
+
+  @override
+  void initState() {
+    switch (widget.gicEditControl.control.type) {
+      case ControlViewModelType.Text:
+        tabs.add(textTab());
+        tabContents.add(textTabContents());
+        break;
+      case ControlViewModelType.Button:
+      case ControlViewModelType.Image:
+        tabs.add(imageTab());
+        tabContents.add(imageTabContents());
+        break;
+      case ControlViewModelType.Toggle:
+      case ControlViewModelType.QuickButton:
+        tabs.add(commandTab());
+        tabContents.add(commandTabContents());
+        tabs.add(imageTab());
+        tabContents.add(imageTabContents());
+        tabs.add(textTab());
+        tabContents.add(textTabContents());
+        break;
+    }
+    //everyone gets sizing
+    tabs.add(sizingTab());
+    tabContents.add(sizingTabContents());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
         shape: RoundedRectangleBorder(),
         elevation: 0,
         child: DefaultTabController(
-            length: 4,
+            length: tabs.length,
             child: Scaffold(
               appBar: AppBar(
                 bottom: TabBar(
-                  tabs: [
-                    Tab(icon: Icon(Icons.build)),
-                    Tab(icon: Icon(Icons.image)),
-                    Tab(icon: Icon(Icons.text_fields)),
-                    Tab(icon: Icon(Icons.straighten)),
-                  ],
+                  tabs: tabs,
                 ),
-                title: widget.control,
+                title: widget.gicEditControl,
               ),
               body: TabBarView(
-                children: [
-                  commandTab(context),
-                  textTab(context),
-                  imageTab(context),
-                  sizingTab(context),
-                ],
+                children: tabContents,
               ),
-            ))); // child:,
+            )));
   }
 
-  commandTab(context) {
+  commandTab() {
+    return Tab(icon: Icon(Icons.build));
+  }
+
+  imageTab() {
+    return Tab(icon: Icon(Icons.image));
+  }
+
+  textTab() {
+    return Tab(icon: Icon(Icons.text_fields));
+  }
+
+  sizingTab() {
+    return Tab(icon: Icon(Icons.straighten));
+  }
+
+  commandTabContents() {
     return Column(
       children: <Widget>[
       ],
     );
   }
 
-  textTab(context) {
+  textTabContents() {
     return Column(
       children: <Widget>[
       ],
     );
   }
 
-  imageTab(context) {
+  imageTabContents() {
     return Column(
       children: <Widget>[
       ],
     );
   }
 
-  sizingTab(context) {
+  sizingTabContents() {
     return Column(
       children: <Widget>[
       ],
