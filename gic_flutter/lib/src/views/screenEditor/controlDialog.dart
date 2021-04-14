@@ -16,7 +16,6 @@ class _ControlDialogState extends State<ControlDialog> {
   List<Widget> tabs = [];
   List<Widget> tabContents = [];
 
-
   @override
   void initState() {
     switch (widget.gicEditControl.control.type) {
@@ -24,15 +23,20 @@ class _ControlDialogState extends State<ControlDialog> {
         tabs.add(textTab());
         tabContents.add(textTabContents());
         break;
-      case ControlViewModelType.Button:
       case ControlViewModelType.Image:
         tabs.add(imageTab());
         tabContents.add(imageTabContents());
         break;
-      case ControlViewModelType.Toggle:
+      case ControlViewModelType.Button:
       case ControlViewModelType.QuickButton:
-        tabs.add(commandTab());
-        tabContents.add(commandTabContents());
+        buildCommandTab(true);
+        tabs.add(imageTab());
+        tabContents.add(imageTabContents());
+        tabs.add(textTab());
+        tabContents.add(textTabContents());
+        break;
+      case ControlViewModelType.Toggle:
+        buildCommandTab(false);
         tabs.add(imageTab());
         tabContents.add(imageTabContents());
         tabs.add(textTab());
@@ -64,8 +68,139 @@ class _ControlDialogState extends State<ControlDialog> {
             )));
   }
 
-  commandTab() {
-    return Tab(icon: Icon(Icons.build));
+  void buildCommandTab(bool isButton) {
+    tabs.add(Tab(icon: Icon(Icons.build)));
+    List<Widget> widgets = [];
+    List<String> dropdownItems = <String>['A', 'B', 'C'];
+
+    //everyone has at least 1 command to pick
+    widgets.add(Text("Primary"));
+    widgets.add(DropdownButton<String>(
+      isExpanded: true,
+      value: "A",
+      elevation: 16,
+      underline: Container(
+        height: 2,
+      ),
+      onChanged: (String newValue) {
+        setState(() {
+        });
+      },
+      items: dropdownItems.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    ));
+    widgets.add(Row(
+      children: [
+        Text("Ctrl"),
+        Checkbox(
+          value: true, //do something here
+          onChanged: (bool value) {
+            setState(() {
+              //this.showvalue = value;
+            });
+          },
+        ),
+        Text("Alt"),
+        Checkbox(
+          value: true, //do something here
+          onChanged: (bool value) {
+            setState(() {
+              //this.showvalue = value;
+            });
+          },
+        ),
+        Text("Shift"),
+        Checkbox(
+          value: true, //do something here
+          onChanged: (bool value) {
+            setState(() {
+              //this.showvalue = value;
+            });
+          },
+        )
+      ],
+    ));
+
+    if (!isButton) {
+      widgets.add(Text("Secondary"));
+      widgets.add(DropdownButton<String>(
+        isExpanded: true,
+        value: "A",
+        elevation: 16,
+        underline: Container(
+          height: 2,
+        ),
+        onChanged: (String newValue) {
+          setState(() {
+          });
+        },
+        items: dropdownItems.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
+      ));
+      widgets.add(Row(
+        children: [
+          Text("Ctrl"),
+          Checkbox(
+            value: true, //do something here
+            onChanged: (bool value) {
+              setState(() {
+                //this.showvalue = value;
+              });
+            },
+          ),
+          Text("Alt"),
+          Checkbox(
+            value: true, //do something here
+            onChanged: (bool value) {
+              setState(() {
+                //this.showvalue = value;
+              });
+            },
+          ),
+          Text("Shift"),
+          Checkbox(
+            value: true, //do something here
+            onChanged: (bool value) {
+              setState(() {
+                //this.showvalue = value;
+              });
+            },
+          )
+        ],
+      ));
+    }
+
+    //buttons have the quick toggle feature
+    if (isButton) {
+      bool isOn = false;
+      if (widget.gicEditControl.control.type ==
+          ControlViewModelType.QuickButton) isOn = true;
+      widgets.add(Row(
+        children: [
+          Text("Quick Mode"),
+          Switch(
+            value: isOn,
+            onChanged: (value) {
+              setState(() {
+                isOn = value;
+              });
+            },
+          )
+        ],
+      ));
+    }
+
+    tabContents.add(Column(
+      children: widgets,
+    ));
   }
 
   imageTab() {
@@ -80,31 +215,21 @@ class _ControlDialogState extends State<ControlDialog> {
     return Tab(icon: Icon(Icons.straighten));
   }
 
-  commandTabContents() {
-    return Column(
-      children: <Widget>[
-      ],
-    );
-  }
-
   textTabContents() {
     return Column(
-      children: <Widget>[
-      ],
+      children: <Widget>[],
     );
   }
 
   imageTabContents() {
     return Column(
-      children: <Widget>[
-      ],
+      children: <Widget>[],
     );
   }
 
   sizingTabContents() {
     return Column(
-      children: <Widget>[
-      ],
+      children: <Widget>[],
     );
   }
 }
