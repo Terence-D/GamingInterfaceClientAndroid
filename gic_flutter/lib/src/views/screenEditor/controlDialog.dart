@@ -1,24 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
+import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
 class ControlDialog extends StatefulWidget {
+  final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
 
-  const ControlDialog({Key key, this.gicEditControl}) : super(key: key);
+  const ControlDialog({Key key, this.gicEditControl, this.translation})
+      : super(key: key);
 
   @override
-  _ControlDialogState createState() => _ControlDialogState();
+  _ControlDialogState createState() => _ControlDialogState(translation);
 }
 
 class _ControlDialogState extends State<ControlDialog> {
-  List<Widget> _tabs = [];
-  List<Widget> _tabContents = [];
+  final IntlScreenEditor translation;
   final AutoItKeyMap _commandList = new AutoItKeyMap();
   final List<String> _dropDownItems = [];
-  String switchText =
-      "Disabled"; //text to show when the quick button is toggled
+  List<Widget> _tabs = [];
+  List<Widget> _tabContents = [];
+  String switchText; //text to show when the quick button is toggled
+
+  _ControlDialogState(this.translation);
 
   Widget imageTab() => Tab(icon: Icon(Icons.image));
 
@@ -29,6 +34,12 @@ class _ControlDialogState extends State<ControlDialog> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.gicEditControl.control.type == ControlViewModelType.QuickButton)
+      switchText = translation.text(ScreenEditorText.enabled);
+    else
+      switchText = translation.text(ScreenEditorText.disabled);
+
     _commandList.map.entries.forEach((e) => _dropDownItems.add(e.value));
     widget.gicEditControl.control.commands.forEach((element) {
       if (element.key == null) element.key = _commandList.map.keys.first;
@@ -99,10 +110,11 @@ class _ControlDialogState extends State<ControlDialog> {
     _tabs.add(Tab(icon: Icon(Icons.build)));
     List<Widget> widgets = [];
 
-    widgets.add(Text("Commands", style: Theme.of(context).textTheme.headline5));
+    widgets.add(Text(translation.text(ScreenEditorText.commandTabHeader),
+        style: Theme.of(context).textTheme.headline5));
     //everyone has at least 1 command to pick
-    widgets.add(Text(
-        "Choose a command to send, along with any modifiers (such as Control or Shift keys)"));
+    widgets
+        .add(Text(translation.text(ScreenEditorText.commandTabPrimaryDetails)));
     widgets.add(buildCommandDropDown(0));
     widgets.add(Row(children: modifierCheckboxes(0)));
 
@@ -114,14 +126,13 @@ class _ControlDialogState extends State<ControlDialog> {
     ));
 
     if (!isButton) {
-      widgets.add(Text("Secondary"));
+      widgets.add(
+          Text(translation.text(ScreenEditorText.commandTabSecondaryDetails)));
       widgets.add(buildCommandDropDown(1));
       widgets.add(Row(children: modifierCheckboxes(1)));
     } else {
       widgets.add(
-        Text(
-            "Quick Mode - Enable this if you need to quickly send a command.  Disable if you need to hold it down longer for the command to activate on the server."),
-      );
+          Text(translation.text(ScreenEditorText.commandTabQuickModeDetails)));
       widgets.add(Row(
         children: [
           Text(switchText),
@@ -163,11 +174,11 @@ class _ControlDialogState extends State<ControlDialog> {
           if ((widget.gicEditControl.control.type ==
               ControlViewModelType.QuickButton)) {
             widget.gicEditControl.control.type = ControlViewModelType.Button;
-            switchText = "Disabled";
+            switchText = translation.text(ScreenEditorText.disabled);
           } else {
             widget.gicEditControl.control.type =
                 ControlViewModelType.QuickButton;
-            switchText = "Enabled";
+            switchText = translation.text(ScreenEditorText.enabled);
           }
         });
       },
@@ -179,7 +190,7 @@ class _ControlDialogState extends State<ControlDialog> {
   DropdownButton<String> buildCommandDropDown(int commandIndex) {
     return DropdownButton<String>(
       isExpanded: true,
-      hint: Text("Command to send"),
+      hint: Text(translation.text(ScreenEditorText.commandDropDownHint)),
       value: _commandList
           .map[widget.gicEditControl.control.commands[commandIndex].key],
       underline: Container(
