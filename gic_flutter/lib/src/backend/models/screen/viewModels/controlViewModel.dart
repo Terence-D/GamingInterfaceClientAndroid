@@ -35,7 +35,7 @@ class ControlViewModel {
   ControlViewModelType type = ControlViewModelType.Button;
   ControlDesignType design = ControlDesignType.Image;
 
-  List<Command> commands = new List<Command>();
+  List<Command> commands = [];
 
   String text = "-";
   Font font = new Font();
