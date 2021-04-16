@@ -3,14 +3,14 @@ class Command {
   static const int KEY_UP = 1;
 
   String key = " ";
-  List<String> modifiers = new List<String>();
+  Set<String> modifiers = new Set();
   int activatorType = 0; //key down, key up, etc
 
   Command.empty();
 
   Command ({this.key, this.modifiers, this.activatorType}) {
     if (this.modifiers == null)
-      this.modifiers = new List<String>();
+      this.modifiers = new Set();
   }
 
   Map<String, dynamic> toJson() =>
@@ -22,7 +22,7 @@ class Command {
 
   factory Command.fromJson(Map<String, dynamic> json) {
     if (json['modifiers'] == null)
-      json['modifiers'] = new List<String>();
+      json['modifiers'] = [];
     var jsonMods = json['modifiers'];
     List<String> mods = new List<String>.from(jsonMods);
     String jsonKey = json['key'];
@@ -30,7 +30,7 @@ class Command {
 
     return Command(
       key: jsonKey,
-      modifiers: mods,
+      modifiers: mods.toSet(),
       activatorType: jsonActivator
     );
   }
