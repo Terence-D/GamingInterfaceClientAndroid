@@ -1,5 +1,3 @@
-import 'dart:collection';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
@@ -19,6 +17,14 @@ class _ControlDialogState extends State<ControlDialog> {
   List<Widget> _tabContents = [];
   final AutoItKeyMap _commandList = new AutoItKeyMap();
   final List<String> _dropDownItems = [];
+  String switchText =
+      "Disabled"; //text to show when the quick button is toggled
+
+  Widget imageTab() => Tab(icon: Icon(Icons.image));
+
+  Widget textTab() => Tab(icon: Icon(Icons.text_fields));
+
+  Widget sizingTab() => Tab(icon: Icon(Icons.straighten));
 
   @override
   void initState() {
@@ -53,6 +59,8 @@ class _ControlDialogState extends State<ControlDialog> {
             )));
   }
 
+  //sets up the tabs, based on type of control we're editing
+  //different control types need different tab views
   void buildTabs() {
     _tabs = [];
     _tabContents = [];
@@ -86,6 +94,7 @@ class _ControlDialogState extends State<ControlDialog> {
     _tabContents.add(sizingTabContents());
   }
 
+  //Command Tab - handles the tab to design sending commands to the server
   void buildCommandTab(bool isButton) {
     _tabs.add(Tab(icon: Icon(Icons.build)));
     List<Widget> widgets = [];
@@ -108,36 +117,15 @@ class _ControlDialogState extends State<ControlDialog> {
       widgets.add(Text("Secondary"));
       widgets.add(buildCommandDropDown(1));
       widgets.add(Row(children: modifierCheckboxes(1)));
-    }
-
-    //buttons have the quick toggle feature
-    if (isButton) {
-      bool isOn = false;
-      if (widget.gicEditControl.control.type ==
-          ControlViewModelType.QuickButton) isOn = true;
+    } else {
       widgets.add(
         Text(
             "Quick Mode - Enable this if you need to quickly send a command.  Disable if you need to hold it down longer for the command to activate on the server."),
       );
       widgets.add(Row(
         children: [
-          Text("Disabled"),
-          Switch(
-            value: (widget.gicEditControl.control.type ==
-                ControlViewModelType.QuickButton),
-            onChanged: (value) {
-              setState(() {
-                if ((widget.gicEditControl.control.type ==
-                    ControlViewModelType.QuickButton))
-                  widget.gicEditControl.control.type =
-                      ControlViewModelType.Button;
-                else
-                  widget.gicEditControl.control.type =
-                      ControlViewModelType.QuickButton;
-                isOn = value;
-              });
-            },
-          ),
+          Text(switchText),
+          buildQuickMode(),
         ],
       ));
     }
@@ -147,6 +135,47 @@ class _ControlDialogState extends State<ControlDialog> {
     ));
   }
 
+  Widget textTabContents() {
+    return Column(
+      children: <Widget>[],
+    );
+  }
+
+  Widget imageTabContents() {
+    return Column(
+      children: <Widget>[],
+    );
+  }
+
+  Widget sizingTabContents() {
+    return Column(
+      children: <Widget>[],
+    );
+  }
+
+  //toggle switch letting the enabling/disabling of quick mode for buttons
+  Switch buildQuickMode() {
+    return Switch(
+      value: (widget.gicEditControl.control.type ==
+          ControlViewModelType.QuickButton),
+      onChanged: (value) {
+        setState(() {
+          if ((widget.gicEditControl.control.type ==
+              ControlViewModelType.QuickButton)) {
+            widget.gicEditControl.control.type = ControlViewModelType.Button;
+            switchText = "Disabled";
+          } else {
+            widget.gicEditControl.control.type =
+                ControlViewModelType.QuickButton;
+            switchText = "Enabled";
+          }
+        });
+      },
+    );
+  }
+
+  //this drop down provides a list of all supported commands
+  //the index determines if we are doing this for the primary or secondary controls
   DropdownButton<String> buildCommandDropDown(int commandIndex) {
     return DropdownButton<String>(
       isExpanded: true,
@@ -173,36 +202,8 @@ class _ControlDialogState extends State<ControlDialog> {
     );
   }
 
-  Widget imageTab() {
-    return Tab(icon: Icon(Icons.image));
-  }
-
-  Widget textTab() {
-    return Tab(icon: Icon(Icons.text_fields));
-  }
-
-  Widget sizingTab() {
-    return Tab(icon: Icon(Icons.straighten));
-  }
-
-  Widget textTabContents() {
-    return Column(
-      children: <Widget>[],
-    );
-  }
-
-  Widget imageTabContents() {
-    return Column(
-      children: <Widget>[],
-    );
-  }
-
-  Widget sizingTabContents() {
-    return Column(
-      children: <Widget>[],
-    );
-  }
-
+  //these modifiers are used for commands and are to allow the selection
+  //of modifier keys like ctrl alt shift
   List<Widget> modifierCheckboxes(int commandIndex) {
     List<Widget> widgets = [];
     widgets.add(Text("Ctrl"));
@@ -214,6 +215,7 @@ class _ControlDialogState extends State<ControlDialog> {
     return widgets;
   }
 
+  //builds the actual checkbox for the modifierCheckboxes method
   Checkbox modifierCheckbox(int commandIndex, String modifier) {
     return Checkbox(
         value: widget.gicEditControl.control.commands[commandIndex].modifiers
