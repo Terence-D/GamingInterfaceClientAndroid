@@ -24,9 +24,9 @@ class _ControlDialogState extends State<ControlDialog> {
   void initState() {
     super.initState();
     _commandList.map.entries.forEach((e) => _dropDownItems.add(e.value));
-    if (widget.gicEditControl.control.commands[0].key == null)
-      widget.gicEditControl.control.commands[0].key =
-          _commandList.map.keys.first;
+    widget.gicEditControl.control.commands.forEach((element) {
+      if (element.key == null) element.key = _commandList.map.keys.first;
+    });
   }
 
   @override
@@ -94,81 +94,20 @@ class _ControlDialogState extends State<ControlDialog> {
     //everyone has at least 1 command to pick
     widgets.add(Text(
         "Choose a command to send, along with any modifiers (such as Control or Shift keys)"));
-    widgets.add(DropdownButton<String>(
-      isExpanded: true,
-      hint: Text("Command to send"),
-      value: _commandList.map[widget.gicEditControl.control.commands[0].key],
-      underline: Container(
-        height: 24,
-      ),
-      onChanged: (String newValue) {
-        setState(() {
-          widget.gicEditControl.control.commands[0].key = _commandList.map.keys
-              .firstWhere((element) => _commandList.map[element] == newValue,
-                  orElse: () => _commandList.map.keys.first);
-        });
-      },
-      items: _dropDownItems.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
-    ));
-    widgets.add(Row(
-      children: modifierCheckboxes(0)
+    widgets.add(buildCommandDropDown(0));
+    widgets.add(Row(children: modifierCheckboxes(0)));
+
+    widgets.add(const Divider(
+      height: 40,
+      thickness: 5,
+      indent: 20,
+      endIndent: 20,
     ));
 
     if (!isButton) {
       widgets.add(Text("Secondary"));
-      widgets.add(DropdownButton<String>(
-        isExpanded: true,
-        value: "A",
-        elevation: 16,
-        underline: Container(
-          height: 2,
-        ),
-        onChanged: (String newValue) {
-          setState(() {});
-        },
-        items: _dropDownItems.map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-      ));
-      widgets.add(Row(
-        children: [
-          Text("Ctrl"),
-          Checkbox(
-            value: true, //do something here
-            onChanged: (bool value) {
-              setState(() {
-                //this.showvalue = value;
-              });
-            },
-          ),
-          Text("Alt"),
-          Checkbox(
-            value: true, //do something here
-            onChanged: (bool value) {
-              setState(() {
-                //this.showvalue = value;
-              });
-            },
-          ),
-          Text("Shift"),
-          Checkbox(
-            value: true, //do something here
-            onChanged: (bool value) {
-              setState(() {
-                //this.showvalue = value;
-              });
-            },
-          )
-        ],
-      ));
+      widgets.add(buildCommandDropDown(1));
+      widgets.add(Row(children: modifierCheckboxes(1)));
     }
 
     //buttons have the quick toggle feature
@@ -176,12 +115,6 @@ class _ControlDialogState extends State<ControlDialog> {
       bool isOn = false;
       if (widget.gicEditControl.control.type ==
           ControlViewModelType.QuickButton) isOn = true;
-      widgets.add(const Divider(
-        height: 40,
-        thickness: 5,
-        indent: 20,
-        endIndent: 20,
-      ));
       widgets.add(
         Text(
             "Quick Mode - Enable this if you need to quickly send a command.  Disable if you need to hold it down longer for the command to activate on the server."),
@@ -190,9 +123,17 @@ class _ControlDialogState extends State<ControlDialog> {
         children: [
           Text("Disabled"),
           Switch(
-            value: isOn,
+            value: (widget.gicEditControl.control.type ==
+                ControlViewModelType.QuickButton),
             onChanged: (value) {
               setState(() {
+                if ((widget.gicEditControl.control.type ==
+                    ControlViewModelType.QuickButton))
+                  widget.gicEditControl.control.type =
+                      ControlViewModelType.Button;
+                else
+                  widget.gicEditControl.control.type =
+                      ControlViewModelType.QuickButton;
                 isOn = value;
               });
             },
@@ -204,6 +145,32 @@ class _ControlDialogState extends State<ControlDialog> {
     _tabContents.add(Column(
       children: widgets,
     ));
+  }
+
+  DropdownButton<String> buildCommandDropDown(int commandIndex) {
+    return DropdownButton<String>(
+      isExpanded: true,
+      hint: Text("Command to send"),
+      value: _commandList
+          .map[widget.gicEditControl.control.commands[commandIndex].key],
+      underline: Container(
+        height: 24,
+      ),
+      onChanged: (String newValue) {
+        setState(() {
+          widget.gicEditControl.control.commands[commandIndex].key =
+              _commandList.map.keys.firstWhere(
+                  (element) => _commandList.map[element] == newValue,
+                  orElse: () => _commandList.map.keys.first);
+        });
+      },
+      items: _dropDownItems.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
   }
 
   Widget imageTab() {
