@@ -25,7 +25,8 @@ class _ControlDialogState extends State<ControlDialog> {
     super.initState();
     _commandList.map.entries.forEach((e) => _dropDownItems.add(e.value));
     if (widget.gicEditControl.control.commands[0].key == null)
-      widget.gicEditControl.control.commands[0].key = _commandList.map.keys.first;
+      widget.gicEditControl.control.commands[0].key =
+          _commandList.map.keys.first;
   }
 
   @override
@@ -91,7 +92,8 @@ class _ControlDialogState extends State<ControlDialog> {
 
     widgets.add(Text("Commands", style: Theme.of(context).textTheme.headline5));
     //everyone has at least 1 command to pick
-    widgets.add(Text("Choose a command to send, along with any modifiers (such as Control or Shift keys)"));
+    widgets.add(Text(
+        "Choose a command to send, along with any modifiers (such as Control or Shift keys)"));
     widgets.add(DropdownButton<String>(
       isExpanded: true,
       hint: Text("Command to send"),
@@ -101,7 +103,9 @@ class _ControlDialogState extends State<ControlDialog> {
       ),
       onChanged: (String newValue) {
         setState(() {
-          widget.gicEditControl.control.commands[0].key = _commandList.map.keys.firstWhere((element) => _commandList.map[element] == newValue, orElse: () => _commandList.map.keys.first);
+          widget.gicEditControl.control.commands[0].key = _commandList.map.keys
+              .firstWhere((element) => _commandList.map[element] == newValue,
+                  orElse: () => _commandList.map.keys.first);
         });
       },
       items: _dropDownItems.map<DropdownMenuItem<String>>((String value) {
@@ -112,35 +116,7 @@ class _ControlDialogState extends State<ControlDialog> {
       }).toList(),
     ));
     widgets.add(Row(
-      children: [
-        Text("Ctrl"),
-        Checkbox(
-          value: true, //do something here
-          onChanged: (bool value) {
-            setState(() {
-              //this.showvalue = value;
-            });
-          },
-        ),
-        Text("Alt"),
-        Checkbox(
-          value: true, //do something here
-          onChanged: (bool value) {
-            setState(() {
-              //this.showvalue = value;
-            });
-          },
-        ),
-        Text("Shift"),
-        Checkbox(
-          value: true, //do something here
-          onChanged: (bool value) {
-            setState(() {
-              //this.showvalue = value;
-            });
-          },
-        )
-      ],
+      children: modifierCheckboxes(0)
     ));
 
     if (!isButton) {
@@ -153,8 +129,7 @@ class _ControlDialogState extends State<ControlDialog> {
           height: 2,
         ),
         onChanged: (String newValue) {
-          setState(() {
-          });
+          setState(() {});
         },
         items: _dropDownItems.map<DropdownMenuItem<String>>((String value) {
           return DropdownMenuItem<String>(
@@ -207,22 +182,23 @@ class _ControlDialogState extends State<ControlDialog> {
         indent: 20,
         endIndent: 20,
       ));
-      widgets.add(          Text("Quick Mode - Enable this if you need to quickly send a command.  Disable if you need to hold it down longer for the command to activate on the server."),
-      );
       widgets.add(
-        Row(
-          children: [
-            Text("Disabled"),
-            Switch(
-                value: isOn,
-                onChanged: (value) {
-                  setState(() {
-                    isOn = value;
-                  });
-                },
-      ),
-          ],
-        ));
+        Text(
+            "Quick Mode - Enable this if you need to quickly send a command.  Disable if you need to hold it down longer for the command to activate on the server."),
+      );
+      widgets.add(Row(
+        children: [
+          Text("Disabled"),
+          Switch(
+            value: isOn,
+            onChanged: (value) {
+              setState(() {
+                isOn = value;
+              });
+            },
+          ),
+        ],
+      ));
     }
 
     _tabContents.add(Column(
@@ -230,33 +206,60 @@ class _ControlDialogState extends State<ControlDialog> {
     ));
   }
 
-  imageTab() {
+  Widget imageTab() {
     return Tab(icon: Icon(Icons.image));
   }
 
-  textTab() {
+  Widget textTab() {
     return Tab(icon: Icon(Icons.text_fields));
   }
 
-  sizingTab() {
+  Widget sizingTab() {
     return Tab(icon: Icon(Icons.straighten));
   }
 
-  textTabContents() {
+  Widget textTabContents() {
     return Column(
       children: <Widget>[],
     );
   }
 
-  imageTabContents() {
+  Widget imageTabContents() {
     return Column(
       children: <Widget>[],
     );
   }
 
-  sizingTabContents() {
+  Widget sizingTabContents() {
     return Column(
       children: <Widget>[],
     );
+  }
+
+  List<Widget> modifierCheckboxes(int commandIndex) {
+    List<Widget> widgets = [];
+    widgets.add(Text("Ctrl"));
+    widgets.add(modifierCheckbox(commandIndex, "CTRL"));
+    widgets.add(Text("Alt"));
+    widgets.add(modifierCheckbox(commandIndex, "ALT"));
+    widgets.add(Text("Shift"));
+    widgets.add(modifierCheckbox(commandIndex, "SHIFT"));
+    return widgets;
+  }
+
+  Checkbox modifierCheckbox(int commandIndex, String modifier) {
+    return Checkbox(
+        value: widget.gicEditControl.control.commands[commandIndex].modifiers
+            .contains(modifier), //do something here
+        onChanged: (bool value) {
+          setState(() {
+            if (value)
+              widget.gicEditControl.control.commands[commandIndex].modifiers
+                  .add(modifier);
+            else
+              widget.gicEditControl.control.commands[commandIndex].modifiers
+                  .remove(modifier);
+          });
+        });
   }
 }
