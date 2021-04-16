@@ -19,6 +19,7 @@ enum ScreenEditorText {
   enabled,
   commandTabHeader,
   commandTabPrimaryDetails,
+  commandTabPrimaryToggleDetails,
   commandTabSecondaryDetails,
   commandTabQuickModeDetails,
   commandDropDownHint
@@ -51,6 +52,7 @@ class IntlScreenEditor {
       ScreenEditorText.enabled: "Enabled",
       ScreenEditorText.commandTabHeader: "Commands",
       ScreenEditorText.commandTabPrimaryDetails: "Choose a command to send, along with any modifiers (such as Control or Shift keys)",
+      ScreenEditorText.commandTabPrimaryToggleDetails: "Choose a command to send when the toggle is set, along with any modifiers (such as Control or Shift keys)",
       ScreenEditorText.commandTabSecondaryDetails: "Choose a command to send when the toggle is reset, along with any modifiers (such as Control or Shift keys)",
       ScreenEditorText.commandTabQuickModeDetails: "Quick Mode - Enable this if you need to quickly send a command.  Disable if you need to hold it down longer for the command to activate on the server.",
       ScreenEditorText.commandDropDownHint: "Choose a Command"

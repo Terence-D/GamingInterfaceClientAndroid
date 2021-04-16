@@ -113,6 +113,10 @@ class _ControlDialogState extends State<ControlDialog> {
     widgets.add(Text(translation.text(ScreenEditorText.commandTabHeader),
         style: Theme.of(context).textTheme.headline5));
     //everyone has at least 1 command to pick
+    if (widget.gicEditControl.control.type == ControlViewModelType.Toggle)
+      widgets
+          .add(Text(translation.text(ScreenEditorText.commandTabPrimaryToggleDetails)));
+      else
     widgets
         .add(Text(translation.text(ScreenEditorText.commandTabPrimaryDetails)));
     widgets.add(buildCommandDropDown(0));
