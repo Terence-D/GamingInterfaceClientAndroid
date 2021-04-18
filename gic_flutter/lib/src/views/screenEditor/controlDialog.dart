@@ -19,6 +19,8 @@ class _ControlDialogState extends State<ControlDialog> {
   final IntlScreenEditor translation;
   final AutoItKeyMap _commandList = new AutoItKeyMap();
   final List<String> _dropDownItems = [];
+
+  List<TextEditingController> textControllers = [];
   List<Widget> _tabs = [];
   List<Widget> _tabContents = [];
   String switchText; //text to show when the quick button is toggled
@@ -70,6 +72,13 @@ class _ControlDialogState extends State<ControlDialog> {
             )));
   }
 
+
+  @override
+  void dispose() {
+    textControllers.forEach((element) =>element.dispose());
+    super.dispose();
+  }
+
   //sets up the tabs, based on type of control we're editing
   //different control types need different tab views
   void buildTabs() {
@@ -77,8 +86,7 @@ class _ControlDialogState extends State<ControlDialog> {
     _tabContents = [];
     switch (widget.gicEditControl.control.type) {
       case ControlViewModelType.Text:
-        _tabs.add(textTab());
-        _tabContents.add(textTabContents());
+        buildTextTab(false);
         break;
       case ControlViewModelType.Image:
         _tabs.add(imageTab());
@@ -89,20 +97,38 @@ class _ControlDialogState extends State<ControlDialog> {
         buildCommandTab(true);
         _tabs.add(imageTab());
         _tabContents.add(imageTabContents());
-        _tabs.add(textTab());
-        _tabContents.add(textTabContents());
+        buildTextTab(false);
         break;
       case ControlViewModelType.Toggle:
         buildCommandTab(false);
         _tabs.add(imageTab());
         _tabContents.add(imageTabContents());
-        _tabs.add(textTab());
-        _tabContents.add(textTabContents());
+        buildTextTab(true);
         break;
     }
     //everyone gets sizing
     _tabs.add(sizingTab());
     _tabContents.add(sizingTabContents());
+  }
+
+  void buildTextTab(bool isToggle) {
+    List<Widget> widgets = [];
+
+    _tabs.add(textTab());
+
+    widgets.add(Text(translation.text(ScreenEditorText.textTabHeader),
+        style: Theme.of(context).textTheme.headline5));
+    //everyone has at least 1 command to pick
+    if (isToggle)
+      widgets.add(Text(translation.text(ScreenEditorText.textTabPrimaryToggleDetails)));
+    else
+      widgets
+          .add(Text(translation.text(ScreenEditorText.textTabPrimaryDetails)));
+    widgets.add(buildText(0));
+
+    _tabContents.add( Column(
+      children: widgets,
+    ));
   }
 
   //Command Tab - handles the tab to design sending commands to the server
@@ -150,12 +176,6 @@ class _ControlDialogState extends State<ControlDialog> {
     ));
   }
 
-  Widget textTabContents() {
-    return Column(
-      children: <Widget>[],
-    );
-  }
-
   Widget imageTabContents() {
     return Column(
       children: <Widget>[],
@@ -165,6 +185,18 @@ class _ControlDialogState extends State<ControlDialog> {
   Widget sizingTabContents() {
     return Column(
       children: <Widget>[],
+    );
+  }
+
+  //show text editing widget for the supplied index
+  TextField buildText(int textIndex) {
+    TextEditingController controller = new TextEditingController();
+
+    textControllers.add(controller);
+    controller.text = widget.gicEditControl.control.text;
+
+    return TextField(
+      controller: controller,
     );
   }
 
