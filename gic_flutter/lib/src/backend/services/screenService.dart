@@ -90,26 +90,25 @@ class ScreenService {
         Directory screenDirectory = new Directory(screenPath);
 
         Stream stream = screenDirectory.list();
-        if (! (await stream.isEmpty)) {
-          await stream.forEach((element) {
-            File file = File(path.join(element.path, "data.json"));
-            screenViewModels.add(
-                ScreenViewModel.fromJson(json.decode(file.readAsStringSync())));
-          });
-          activeScreenViewModel = screenViewModels.first;
-        }
+        await stream.forEach((element) {
+          File file = File(path.join(element.path, "data.json"));
+          screenViewModels.add(
+              ScreenViewModel.fromJson(json.decode(file.readAsStringSync())));
+        }).catchError((error, stackTrace) => {
+          print("test")
+        }).whenComplete(() => activeScreenViewModel = screenViewModels.first);
       }
       return true;
     } catch (e) {
       // If encountering an error, return false.
-      return false;
+        return false;
     }
   }
 
   /// Create an empty screen, makes it active, and place it in the model list
   /// This does NOT save it to the file system
   void createScreen() {
-    ScreenViewModel newScreenVM = new ScreenViewModel();
+    ScreenViewModel newScreenVM = ScreenViewModel.empty();
     newScreenVM.screenId = _findUniqueId();
     newScreenVM.name = _findUniqueName();
     screenViewModels.add(newScreenVM);

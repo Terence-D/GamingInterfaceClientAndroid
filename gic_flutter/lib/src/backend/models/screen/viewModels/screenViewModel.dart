@@ -11,13 +11,23 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class ScreenViewModel {
-  int version;
+  int version = 2;
   int screenId = -1;
-  String name;
+  String name = "";
   List<ControlViewModel> controls = [];
   int newControlId = -1;
-  Color backgroundColor;
-  String backgroundPath;
+  Color backgroundColor = new Color(1);
+  String backgroundPath = "";
+
+  ScreenViewModel.empty() {
+    version = 2;
+    screenId = -1;
+    name = "";
+    controls = [];
+    newControlId = -1;
+    backgroundColor = new Color(1);
+    backgroundPath = "";
+  }
 
   ScreenViewModel(
       {this.version,
@@ -99,16 +109,18 @@ class ScreenViewModel {
           String newBackgroundImageFile = path.join(screenPath, backgroundPath);
           backgroundFile.copy(newBackgroundImageFile);
         }
-        controls.forEach((control) {
-          control.images.forEach((image) {
-            File imageFile = new File(image);
-            //if the path is an absolute path, copy them in to the local path
-            if (imageFile.isAbsolute) {
-              imageFile.copy(screenPath);
-            }
-            image = path.basename(imageFile.path);
+        if (controls != null) {
+          controls.forEach((control) {
+            control.images.forEach((image) {
+              File imageFile = new File(image);
+              //if the path is an absolute path, copy them in to the local path
+              if (imageFile.isAbsolute) {
+                imageFile.copy(screenPath);
+              }
+              image = path.basename(imageFile.path);
+            });
           });
-        });
+        }
       }
 
       //save the json file

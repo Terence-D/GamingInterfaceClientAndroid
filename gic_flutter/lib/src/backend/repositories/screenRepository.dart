@@ -22,7 +22,7 @@ class ScreenRepository {
   int defaultBackground = 0xFF383838;
 
   _load(SharedPreferences prefs) async {
-    _cache = new List<Screen>();
+    _cache = [];
     await prefs.reload();
     Set<String> keys = prefs.getKeys();
 
@@ -53,7 +53,7 @@ class ScreenRepository {
   }
 
   _loadControls(SharedPreferences prefs, Screen screen) {
-    screen.controls = new List<GicControl>();
+    screen.controls = [];
     prefs.getKeys().forEach((key) {
       if (key.contains("${screen.screenId}$_prefsControl")) {
         try {
