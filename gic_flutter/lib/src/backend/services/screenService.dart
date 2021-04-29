@@ -24,7 +24,7 @@ class ScreenService {
   ScreenViewModel activeScreenViewModel;
 
   //list of all screens available
-  List<ScreenViewModel> screenViewModels;
+  List<ScreenViewModel> screenViewModels = [];
 
   //default control values to use
   ControlDefaults defaultControls;
@@ -78,21 +78,27 @@ class ScreenService {
   Future<bool> loadScreens() async {
     try {
       if (screenViewModels == null)
-        screenViewModels = new List<ScreenViewModel>();
+        screenViewModels = [];
       else
         screenViewModels.clear();
       final Directory appSupportPath = await getApplicationDocumentsDirectory();
       String screenPath = path.join(appSupportPath.path, screenFolder);
-      Directory screenDirectory = new Directory(screenPath);
 
-      Stream stream = screenDirectory.list();
-      await stream.forEach((element) {
-        File file = File(path.join(element.path, "data.json"));
-        screenViewModels.add(
-            ScreenViewModel.fromJson(json.decode(file.readAsStringSync())));
-      });
+      if (!Directory(screenPath).existsSync()) {
+        new Directory(screenPath).createSync(recursive: true);
+      } else {
+        Directory screenDirectory = new Directory(screenPath);
 
-      activeScreenViewModel = screenViewModels.first;
+        Stream stream = screenDirectory.list();
+        if (! (await stream.isEmpty)) {
+          await stream.forEach((element) {
+            File file = File(path.join(element.path, "data.json"));
+            screenViewModels.add(
+                ScreenViewModel.fromJson(json.decode(file.readAsStringSync())));
+          });
+          activeScreenViewModel = screenViewModels.first;
+        }
+      }
       return true;
     } catch (e) {
       // If encountering an error, return false.
