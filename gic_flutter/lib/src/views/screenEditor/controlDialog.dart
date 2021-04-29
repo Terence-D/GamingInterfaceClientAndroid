@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
@@ -61,7 +62,6 @@ class _ControlDialogState extends State<ControlDialog> {
                 bottom: TabBar(
                   tabs: _tabs,
                 ),
-                title: widget.gicEditControl,
               ),
               body: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -72,10 +72,9 @@ class _ControlDialogState extends State<ControlDialog> {
             )));
   }
 
-
   @override
   void dispose() {
-    textControllers.forEach((element) =>element.dispose());
+    textControllers.forEach((element) => element.dispose());
     super.dispose();
   }
 
@@ -118,17 +117,64 @@ class _ControlDialogState extends State<ControlDialog> {
 
     widgets.add(Text(translation.text(ScreenEditorText.textTabHeader),
         style: Theme.of(context).textTheme.headline5));
-    //everyone has at least 1 command to pick
-    if (isToggle)
-      widgets.add(Text(translation.text(ScreenEditorText.textTabPrimaryToggleDetails)));
-    else
-      widgets
-          .add(Text(translation.text(ScreenEditorText.textTabPrimaryDetails)));
+    //everyone has at least 1 text
+    widgets.add(Text(translation.text(ScreenEditorText.textTabPrimaryDetails)));
     widgets.add(buildText(0));
 
-    _tabContents.add( Column(
+    if (isToggle) {
+      widgets.add(
+          Text(translation.text(ScreenEditorText.textTabPrimaryToggleDetails)));
+      widgets.add(buildText(1));
+    }
+
+    widgets.add(MaterialButton(
+      child: Text(translation.text(ScreenEditorText.textTabFontColor)),
+      onPressed: () {},
+    ));
+
+    widgets.add(MaterialButton(
+      child: Text(translation.text(ScreenEditorText.textTabFont)),
+      onPressed: () {},
+    ));
+
+    widgets.add(Text(translation.text(ScreenEditorText.textTabFontSize)));
+
+    widgets.add(
+      Slider(
+        min: 8,
+        max: 512,
+        value: widget.gicEditControl.control.font.size,
+        onChanged: (value) {
+          setState(() {
+            widget.gicEditControl.control.font.size = value.roundToDouble();
+          });
+        },
+      ),
+    );
+
+    widgets.add(size());
+
+    _tabContents.add(Column(
       children: widgets,
     ));
+  }
+
+  TextField size() {
+    TextEditingController controller = new TextEditingController();
+    textControllers.add(controller);
+    controller.text = widget.gicEditControl.control.font.size.toString();
+    controller.addListener(() {
+      widget.gicEditControl.control.font.size = double.parse(controller.text);
+    });
+
+    return TextField(
+        controller: controller, keyboardType: TextInputType.number);
+  }
+
+  Color pickerColor = Color(0xff443a49);
+
+  void _changeColor(Color color) {
+    setState(() => pickerColor = color);
   }
 
   //Command Tab - handles the tab to design sending commands to the server
@@ -140,11 +186,11 @@ class _ControlDialogState extends State<ControlDialog> {
         style: Theme.of(context).textTheme.headline5));
     //everyone has at least 1 command to pick
     if (widget.gicEditControl.control.type == ControlViewModelType.Toggle)
-      widgets
-          .add(Text(translation.text(ScreenEditorText.commandTabPrimaryToggleDetails)));
-      else
-    widgets
-        .add(Text(translation.text(ScreenEditorText.commandTabPrimaryDetails)));
+      widgets.add(Text(
+          translation.text(ScreenEditorText.commandTabPrimaryToggleDetails)));
+    else
+      widgets.add(
+          Text(translation.text(ScreenEditorText.commandTabPrimaryDetails)));
     widgets.add(buildCommandDropDown(0));
     widgets.add(Row(children: modifierCheckboxes(0)));
 
@@ -194,6 +240,9 @@ class _ControlDialogState extends State<ControlDialog> {
 
     textControllers.add(controller);
     controller.text = widget.gicEditControl.control.text;
+    controller.addListener(() {
+      widget.gicEditControl.control.text = controller.text;
+    });
 
     return TextField(
       controller: controller,

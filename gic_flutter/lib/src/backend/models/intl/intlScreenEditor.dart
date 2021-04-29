@@ -26,6 +26,9 @@ enum ScreenEditorText {
   textTabHeader,
   textTabPrimaryDetails,
   textTabPrimaryToggleDetails,
+  textTabFontColor,
+  textTabFont,
+  textTabFontSize
 }
 
 class IntlScreenEditor {
@@ -62,6 +65,9 @@ class IntlScreenEditor {
       ScreenEditorText.textTabHeader: "Text/Font",
       ScreenEditorText.textTabPrimaryDetails: "Enter the text you want shown",
       ScreenEditorText.textTabPrimaryToggleDetails: "Enter the text you want shown when toggle is off",
+      ScreenEditorText.textTabFontColor: "Font Color",
+      ScreenEditorText.textTabFont: "Font",
+      ScreenEditorText.textTabFontSize: "Font Size"
     }
   };
 }

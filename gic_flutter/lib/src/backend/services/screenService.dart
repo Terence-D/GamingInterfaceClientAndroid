@@ -95,7 +95,6 @@ class ScreenService {
           screenViewModels.add(
               ScreenViewModel.fromJson(json.decode(file.readAsStringSync())));
         }).catchError((error, stackTrace) => {
-          print("test")
         }).whenComplete(() => activeScreenViewModel = screenViewModels.first);
       }
       return true;

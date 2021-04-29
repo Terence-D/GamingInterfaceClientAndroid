@@ -209,7 +209,7 @@ class ScreenEditorState extends State<ScreenEditor> {
               enableAlpha: false,
             )),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text(translation.text(ScreenEditorText.ok)),
             onPressed: () {
               setState(() {
