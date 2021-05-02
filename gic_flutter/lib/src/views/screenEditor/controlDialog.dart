@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/backend/models/screen/fonts.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
@@ -19,6 +21,8 @@ class _ControlDialogState extends State<ControlDialog> {
   final IntlScreenEditor translation;
   final AutoItKeyMap _commandList = new AutoItKeyMap();
   final List<String> _dropDownItems = [];
+
+  List<TextEditingController> textControllers = [];
   List<Widget> _tabs = [];
   List<Widget> _tabContents = [];
   String switchText; //text to show when the quick button is toggled
@@ -59,7 +63,6 @@ class _ControlDialogState extends State<ControlDialog> {
                 bottom: TabBar(
                   tabs: _tabs,
                 ),
-                title: widget.gicEditControl,
               ),
               body: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -70,6 +73,12 @@ class _ControlDialogState extends State<ControlDialog> {
             )));
   }
 
+  @override
+  void dispose() {
+    textControllers.forEach((element) => element.dispose());
+    super.dispose();
+  }
+
   //sets up the tabs, based on type of control we're editing
   //different control types need different tab views
   void buildTabs() {
@@ -77,8 +86,7 @@ class _ControlDialogState extends State<ControlDialog> {
     _tabContents = [];
     switch (widget.gicEditControl.control.type) {
       case ControlViewModelType.Text:
-        _tabs.add(textTab());
-        _tabContents.add(textTabContents());
+        buildTextTab(false);
         break;
       case ControlViewModelType.Image:
         _tabs.add(imageTab());
@@ -89,20 +97,122 @@ class _ControlDialogState extends State<ControlDialog> {
         buildCommandTab(true);
         _tabs.add(imageTab());
         _tabContents.add(imageTabContents());
-        _tabs.add(textTab());
-        _tabContents.add(textTabContents());
+        buildTextTab(false);
         break;
       case ControlViewModelType.Toggle:
         buildCommandTab(false);
         _tabs.add(imageTab());
         _tabContents.add(imageTabContents());
-        _tabs.add(textTab());
-        _tabContents.add(textTabContents());
+        buildTextTab(true);
         break;
     }
     //everyone gets sizing
     _tabs.add(sizingTab());
     _tabContents.add(sizingTabContents());
+  }
+
+  void buildTextTab(bool isToggle) {
+    List<Widget> widgets = [];
+
+    _tabs.add(textTab());
+
+    widgets.add(Text(translation.text(ScreenEditorText.textTabHeader),
+        style: Theme.of(context).textTheme.headline5));
+    //everyone has at least 1 text
+    widgets.add(Text(translation.text(ScreenEditorText.textTabPrimaryDetails)));
+    widgets.add(buildText(0));
+
+    if (isToggle) {
+      widgets.add(
+          Text(translation.text(ScreenEditorText.textTabPrimaryToggleDetails)));
+      widgets.add(buildText(1));
+    }
+
+    widgets.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ElevatedButton(
+          child: Text(translation.text(ScreenEditorText.textTabFontColor)),
+          onPressed: () {
+            pickColor();
+          },
+        ),
+        ElevatedButton(
+          child: Text(translation.text(ScreenEditorText.textTabFont)),
+          onPressed: () {
+            pickFont();
+          },
+        )
+      ],
+    ));
+
+    widgets.add(Text(translation.text(ScreenEditorText.textTabFontSize)));
+
+    widgets.add(
+      Row(
+        children: [
+          Slider(
+            min: 8,
+            max: 512,
+            value: widget.gicEditControl.control.font.size,
+            onChanged: (value) {
+              setState(() {
+                widget.gicEditControl.control.font.size = value.roundToDouble();
+              });
+            },
+          ),
+          Flexible(child: size())
+        ],
+      ),
+    );
+
+    _tabContents.add(Column(
+      children: widgets,
+    ));
+  }
+
+  TextField size() {
+    TextEditingController controller = new TextEditingController();
+    textControllers.add(controller);
+    controller.text = widget.gicEditControl.control.font.size.toString();
+    controller.addListener(() {
+      widget.gicEditControl.control.font.size = double.parse(controller.text);
+    });
+
+    return TextField(
+        controller: controller, keyboardType: TextInputType.number);
+  }
+
+  Color pickerColor = Color(0xff443a49);
+
+  void _changeColor(Color color) {
+    setState(() => pickerColor = color);
+  }
+
+  void pickColor() {
+    pickerColor = widget.gicEditControl.control.font.color;
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(translation.text(ScreenEditorText.backgroundColor)),
+        content: SingleChildScrollView(
+            child: ColorPicker(
+          pickerColor: pickerColor,
+          onColorChanged: _changeColor,
+          showLabel: true,
+          enableAlpha: false,
+        )),
+        actions: <Widget>[
+          TextButton(
+            child: Text(translation.text(ScreenEditorText.ok)),
+            onPressed: () {
+              widget.gicEditControl.control.font.color = pickerColor;
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   //Command Tab - handles the tab to design sending commands to the server
@@ -114,11 +224,11 @@ class _ControlDialogState extends State<ControlDialog> {
         style: Theme.of(context).textTheme.headline5));
     //everyone has at least 1 command to pick
     if (widget.gicEditControl.control.type == ControlViewModelType.Toggle)
-      widgets
-          .add(Text(translation.text(ScreenEditorText.commandTabPrimaryToggleDetails)));
-      else
-    widgets
-        .add(Text(translation.text(ScreenEditorText.commandTabPrimaryDetails)));
+      widgets.add(Text(
+          translation.text(ScreenEditorText.commandTabPrimaryToggleDetails)));
+    else
+      widgets.add(
+          Text(translation.text(ScreenEditorText.commandTabPrimaryDetails)));
     widgets.add(buildCommandDropDown(0));
     widgets.add(Row(children: modifierCheckboxes(0)));
 
@@ -150,12 +260,6 @@ class _ControlDialogState extends State<ControlDialog> {
     ));
   }
 
-  Widget textTabContents() {
-    return Column(
-      children: <Widget>[],
-    );
-  }
-
   Widget imageTabContents() {
     return Column(
       children: <Widget>[],
@@ -165,6 +269,21 @@ class _ControlDialogState extends State<ControlDialog> {
   Widget sizingTabContents() {
     return Column(
       children: <Widget>[],
+    );
+  }
+
+  //show text editing widget for the supplied index
+  TextField buildText(int textIndex) {
+    TextEditingController controller = new TextEditingController();
+
+    textControllers.add(controller);
+    controller.text = widget.gicEditControl.control.text;
+    controller.addListener(() {
+      widget.gicEditControl.control.text = controller.text;
+    });
+
+    return TextField(
+      controller: controller,
     );
   }
 
@@ -244,6 +363,41 @@ class _ControlDialogState extends State<ControlDialog> {
               widget.gicEditControl.control.commands[commandIndex].modifiers
                   .remove(modifier);
           });
+        });
+  }
+
+  void pickFont() {
+    List<Widget> fontButtons = [];
+    Fonts.list().forEach((key, value) {
+      fontButtons.add (
+        TextButton(
+          onPressed: () {
+            widget.gicEditControl.control.font.family = key;
+            Navigator.pop(context);
+          },
+          child: Text(
+            value,
+            style: TextStyle(fontFamily: key, fontSize: 36),
+          ),
+        ),
+      );
+    });
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Container(
+              height: 300,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: fontButtons,
+                ),
+              ),
+            ),
+          );
         });
   }
 }

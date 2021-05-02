@@ -170,7 +170,7 @@ class LauncherRepository {
 
     //load screens
     if (await _screenService.loadScreens()) {
-      viewModel.screens = new List();
+      viewModel.screens = [];
       if (_screenService.screenViewModels.length < 1) {
         _screenService.createScreen();
         _screenService.activeScreenViewModel.save();
