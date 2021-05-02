@@ -64,10 +64,10 @@ class IntlScreenEditor {
       ScreenEditorText.commandDropDownHint: "Choose a Command",
       ScreenEditorText.textTabHeader: "Text/Font",
       ScreenEditorText.textTabPrimaryDetails: "Enter the text you want shown",
-      ScreenEditorText.textTabPrimaryToggleDetails: "Enter the text you want shown when toggle is off",
-      ScreenEditorText.textTabFontColor: "Font Color",
+      ScreenEditorText.textTabPrimaryToggleDetails: "Enter the text you want shown when toggle is off, and customize the display of the font",
+      ScreenEditorText.textTabFontColor: "Color",
       ScreenEditorText.textTabFont: "Font",
-      ScreenEditorText.textTabFontSize: "Font Size"
+      ScreenEditorText.textTabFontSize: "Size"
     }
   };
 }

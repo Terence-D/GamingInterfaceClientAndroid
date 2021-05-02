@@ -127,32 +127,42 @@ class _ControlDialogState extends State<ControlDialog> {
       widgets.add(buildText(1));
     }
 
-    widgets.add(MaterialButton(
-      child: Text(translation.text(ScreenEditorText.textTabFontColor)),
-      onPressed: () {},
-    ));
-
-    widgets.add(MaterialButton(
-      child: Text(translation.text(ScreenEditorText.textTabFont)),
-      onPressed: () {},
+    widgets.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ElevatedButton(
+          child: Text(translation.text(ScreenEditorText.textTabFontColor)),
+          onPressed: () {
+            pickBackgroundColor();
+          },
+        ),
+        ElevatedButton(
+          child: Text(translation.text(ScreenEditorText.textTabFont)),
+          onPressed: () {},
+        )
+      ],
     ));
 
     widgets.add(Text(translation.text(ScreenEditorText.textTabFontSize)));
 
     widgets.add(
-      Slider(
-        min: 8,
-        max: 512,
-        value: widget.gicEditControl.control.font.size,
-        onChanged: (value) {
-          setState(() {
-            widget.gicEditControl.control.font.size = value.roundToDouble();
-          });
-        },
+      Row(
+        children: [
+          Slider(
+            min: 8,
+            max: 512,
+            value: widget.gicEditControl.control.font.size,
+
+            onChanged: (value) {
+              setState(() {
+                widget.gicEditControl.control.font.size = value.roundToDouble();
+              });
+            },
+          ),
+          Flexible(child:size())
+        ],
       ),
     );
-
-    widgets.add(size());
 
     _tabContents.add(Column(
       children: widgets,
@@ -172,10 +182,37 @@ class _ControlDialogState extends State<ControlDialog> {
   }
 
   Color pickerColor = Color(0xff443a49);
-
   void _changeColor(Color color) {
     setState(() => pickerColor = color);
   }
+
+  void pickBackgroundColor() {
+    pickerColor = widget.gicEditControl.control.font.color;
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(translation.text(ScreenEditorText.backgroundColor)),
+        content: SingleChildScrollView(
+            child: ColorPicker(
+              pickerColor: pickerColor,
+              onColorChanged: _changeColor,
+              showLabel: true,
+              enableAlpha: false,
+            )),
+        actions: <Widget>[
+          TextButton(
+            child: Text(translation.text(ScreenEditorText.ok)),
+            onPressed: () {
+                widget.gicEditControl.control.font.color = pickerColor;
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+
 
   //Command Tab - handles the tab to design sending commands to the server
   void buildCommandTab(bool isButton) {
