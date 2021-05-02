@@ -5,7 +5,6 @@ import 'package:gic_flutter/src/backend/models/screen/fonts.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
-
 class TextTab extends StatefulWidget {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
