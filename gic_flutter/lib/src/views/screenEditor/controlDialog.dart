@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/backend/models/screen/fonts.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
@@ -133,12 +134,14 @@ class _ControlDialogState extends State<ControlDialog> {
         ElevatedButton(
           child: Text(translation.text(ScreenEditorText.textTabFontColor)),
           onPressed: () {
-            pickBackgroundColor();
+            pickColor();
           },
         ),
         ElevatedButton(
           child: Text(translation.text(ScreenEditorText.textTabFont)),
-          onPressed: () {},
+          onPressed: () {
+            pickFont();
+          },
         )
       ],
     ));
@@ -152,14 +155,13 @@ class _ControlDialogState extends State<ControlDialog> {
             min: 8,
             max: 512,
             value: widget.gicEditControl.control.font.size,
-
             onChanged: (value) {
               setState(() {
                 widget.gicEditControl.control.font.size = value.roundToDouble();
               });
             },
           ),
-          Flexible(child:size())
+          Flexible(child: size())
         ],
       ),
     );
@@ -182,11 +184,12 @@ class _ControlDialogState extends State<ControlDialog> {
   }
 
   Color pickerColor = Color(0xff443a49);
+
   void _changeColor(Color color) {
     setState(() => pickerColor = color);
   }
 
-  void pickBackgroundColor() {
+  void pickColor() {
     pickerColor = widget.gicEditControl.control.font.color;
     showDialog(
       context: context,
@@ -194,16 +197,16 @@ class _ControlDialogState extends State<ControlDialog> {
         title: Text(translation.text(ScreenEditorText.backgroundColor)),
         content: SingleChildScrollView(
             child: ColorPicker(
-              pickerColor: pickerColor,
-              onColorChanged: _changeColor,
-              showLabel: true,
-              enableAlpha: false,
-            )),
+          pickerColor: pickerColor,
+          onColorChanged: _changeColor,
+          showLabel: true,
+          enableAlpha: false,
+        )),
         actions: <Widget>[
           TextButton(
             child: Text(translation.text(ScreenEditorText.ok)),
             onPressed: () {
-                widget.gicEditControl.control.font.color = pickerColor;
+              widget.gicEditControl.control.font.color = pickerColor;
               Navigator.of(context).pop();
             },
           ),
@@ -211,8 +214,6 @@ class _ControlDialogState extends State<ControlDialog> {
       ),
     );
   }
-
-
 
   //Command Tab - handles the tab to design sending commands to the server
   void buildCommandTab(bool isButton) {
@@ -362,6 +363,41 @@ class _ControlDialogState extends State<ControlDialog> {
               widget.gicEditControl.control.commands[commandIndex].modifiers
                   .remove(modifier);
           });
+        });
+  }
+
+  void pickFont() {
+    List<Widget> fontButtons = [];
+    Fonts.list().forEach((key, value) {
+      fontButtons.add (
+        TextButton(
+          onPressed: () {
+            widget.gicEditControl.control.font.family = key;
+            Navigator.pop(context);
+          },
+          child: Text(
+            value,
+            style: TextStyle(fontFamily: key, fontSize: 36),
+          ),
+        ),
+      );
+    });
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            child: Container(
+              height: 300,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: fontButtons,
+                ),
+              ),
+            ),
+          );
         });
   }
 }
