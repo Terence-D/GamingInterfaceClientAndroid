@@ -24,6 +24,7 @@ class CommandTabState extends State<CommandTab> {
 
   @override
   void initState() {
+    super.initState();
     if (widget.gicEditControl.control.type == ControlViewModelType.QuickButton)
       switchText = widget.translation.text(ScreenEditorText.enabled);
     else
