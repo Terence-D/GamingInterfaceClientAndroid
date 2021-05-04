@@ -1,5 +1,4 @@
-import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
-import 'package:gic_flutter/src/views/screenEditor/controlDialog.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/controlDialog.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 
