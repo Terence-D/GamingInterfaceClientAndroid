@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/commandTab.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/sizeTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/textTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
@@ -101,16 +102,11 @@ class _ControlDialogState extends State<ControlDialog> {
     }
     //everyone gets sizing
     _tabs.add(sizingTab());
-    _tabContents.add(sizingTabContents());
+    _tabContents.add(SizeTab(
+        gicEditControl: widget.gicEditControl, translation: translation));
   }
 
   Widget imageTabContents() {
-    return Column(
-      children: <Widget>[],
-    );
-  }
-
-  Widget sizingTabContents() {
     return Column(
       children: <Widget>[],
     );

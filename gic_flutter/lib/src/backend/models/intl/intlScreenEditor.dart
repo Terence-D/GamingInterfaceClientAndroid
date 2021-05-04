@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
-import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
 
 enum ScreenEditorText {
   addButton,
@@ -28,7 +27,13 @@ enum ScreenEditorText {
   textTabPrimaryToggleDetails,
   textTabFontColor,
   textTabFont,
-  textTabFontSize
+  textTabFontSize,
+  sizeTabHeader,
+  sizeTabLeft,
+  sizeTabTop,
+  sizeTabWidth,
+  sizeTabHeight,
+  sizeTabDetails
 }
 
 class IntlScreenEditor {
@@ -67,7 +72,13 @@ class IntlScreenEditor {
       ScreenEditorText.textTabPrimaryToggleDetails: "Enter the text you want shown when toggle is off, and customize the display of the font",
       ScreenEditorText.textTabFontColor: "Color",
       ScreenEditorText.textTabFont: "Font",
-      ScreenEditorText.textTabFontSize: "Size"
+      ScreenEditorText.textTabFontSize: "Size",
+      ScreenEditorText.sizeTabHeader: "Dimensions",
+      ScreenEditorText.sizeTabDetails: "Fine tune the size and position of the control",
+      ScreenEditorText.sizeTabLeft: "Left",
+      ScreenEditorText.sizeTabTop: "Top ",
+      ScreenEditorText.sizeTabWidth: "Width",
+      ScreenEditorText.sizeTabHeight: "Height",
     }
   };
 }

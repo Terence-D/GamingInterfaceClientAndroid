@@ -43,7 +43,7 @@ class TextTabState extends State<TextTab> {
             children: [
               ElevatedButton(
                 child:
-                    Text(widget.translation.text(ScreenEditorText.textTabFontColor)),
+                Text(widget.translation.text(ScreenEditorText.textTabFontColor)),
                 onPressed: () {
                   _pickColor(context);
                 },
@@ -56,6 +56,7 @@ class TextTabState extends State<TextTab> {
               ),
             ],
           ),
+          Text(widget.translation.text(ScreenEditorText.textTabFontSize)),
           Row(
             children: [
               Slider(
@@ -63,7 +64,9 @@ class TextTabState extends State<TextTab> {
                 max: 512,
                 value: widget.gicEditControl.control.font.size,
                 onChanged: (value) {
-                  widget.gicEditControl.control.font.size = value.roundToDouble();
+                  setState(() {
+                    widget.gicEditControl.control.font.size = value.roundToDouble();
+                  });
                 },
               ),
               Flexible(child: _size())
