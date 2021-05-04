@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/commandTab.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/imageTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/sizeTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/textTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
@@ -72,7 +73,8 @@ class _ControlDialogState extends State<ControlDialog> {
         break;
       case ControlViewModelType.Image:
         _tabs.add(imageTab());
-        _tabContents.add(imageTabContents());
+        _tabContents.add(ImageTab(
+            gicEditControl: widget.gicEditControl, translation: translation));
         break;
       case ControlViewModelType.Button:
       case ControlViewModelType.QuickButton:
@@ -82,7 +84,8 @@ class _ControlDialogState extends State<ControlDialog> {
             translation: translation,
             isButton: true));
         _tabs.add(imageTab());
-        _tabContents.add(imageTabContents());
+        _tabContents.add(ImageTab(
+            gicEditControl: widget.gicEditControl, translation: translation));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
             gicEditControl: widget.gicEditControl, translation: translation));
@@ -94,7 +97,8 @@ class _ControlDialogState extends State<ControlDialog> {
             translation: translation,
             isButton: true));
         _tabs.add(imageTab());
-        _tabContents.add(imageTabContents());
+        _tabContents.add(ImageTab(
+            gicEditControl: widget.gicEditControl, translation: translation));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
             gicEditControl: widget.gicEditControl, translation: translation));
@@ -104,11 +108,5 @@ class _ControlDialogState extends State<ControlDialog> {
     _tabs.add(sizingTab());
     _tabContents.add(SizeTab(
         gicEditControl: widget.gicEditControl, translation: translation));
-  }
-
-  Widget imageTabContents() {
-    return Column(
-      children: <Widget>[],
-    );
   }
 }
