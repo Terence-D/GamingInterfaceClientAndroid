@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/dialogItem.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
@@ -22,7 +22,6 @@ class BackgroundDialog extends StatefulWidget {
 }
 
 class _BackgroundDialogState extends State<BackgroundDialog> {
-  Color _pickerColor = Color(0xff443a49);
   IntlScreenEditor translation;
   ScreenViewModel screenViewModel;
 
@@ -30,7 +29,6 @@ class _BackgroundDialogState extends State<BackgroundDialog> {
 
   @override
   Widget build(BuildContext context) {
-    _pickerColor = screenViewModel.backgroundColor;
     return SimpleDialog(
       title: Text(translation.text(ScreenEditorText.backgroundMenu)),
       children: [
@@ -72,35 +70,21 @@ class _BackgroundDialogState extends State<BackgroundDialog> {
     }
   }
 
-  _changeColor(Color color) {
-    setState(() => _pickerColor = color);
+  void _pickedColor(Color color) {
+    setState(() {
+      screenViewModel.backgroundColor = color;
+      screenViewModel.backgroundPath = null;
+      Navigator.pop(context);
+    });
   }
 
   void _pickBackgroundColor() {
     showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(translation.text(ScreenEditorText.backgroundColor)),
-        content: SingleChildScrollView(
-            child: ColorPicker(
-          pickerColor: _pickerColor,
-          onColorChanged: _changeColor,
-          showLabel: true,
-          enableAlpha: false,
-        )),
-        actions: <Widget>[
-          TextButton(
-            child: Text(translation.text(ScreenEditorText.ok)),
-            onPressed: () {
-              setState(() {
-                screenViewModel.backgroundColor = _pickerColor;
-                screenViewModel.backgroundPath = null;
-              });
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
+        context: context,
+        builder: (_) => ColorPickerDialog(
+              title: translation.text(ScreenEditorText.backgroundColor),
+              pickerColor: screenViewModel.backgroundColor,
+              onPressedCallback: _pickedColor,
+            ));
   }
 }

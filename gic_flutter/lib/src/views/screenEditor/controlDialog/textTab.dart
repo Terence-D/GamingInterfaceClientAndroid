@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/fonts.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
 class TextTab extends StatefulWidget {
@@ -45,7 +45,7 @@ class TextTabState extends State<TextTab> {
                 child:
                 Text(widget.translation.text(ScreenEditorText.textTabFontColor)),
                 onPressed: () {
-                  _pickColor(context);
+                  _pickColor();
                 },
               ),
               ElevatedButton(
@@ -95,38 +95,21 @@ class TextTabState extends State<TextTab> {
         controller: controller, keyboardType: TextInputType.number);
   }
 
-  void _changeColor(Color color) {
-    _pickerColor = color;
+
+  void _pickedColor(Color color) {
+    setState(() {
+      widget.gicEditControl.control.font.color = color;
+    });
   }
 
-  void _pickColor(BuildContext context) {
-    if (widget.gicEditControl.control.font.color != null)
-      _pickerColor = widget.gicEditControl.control.font.color;
-    else
-      _pickerColor = Colors.blue;
-
+  void _pickColor() {
     showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(widget.translation.text(ScreenEditorText.backgroundColor)),
-        content: SingleChildScrollView(
-            child: ColorPicker(
-          pickerColor: _pickerColor,
-          onColorChanged: _changeColor,
-          showLabel: true,
-          enableAlpha: false,
-        )),
-        actions: <Widget>[
-          TextButton(
-            child: Text(widget.translation.text(ScreenEditorText.ok)),
-            onPressed: () {
-              Navigator.of(context).pop();
-              widget.gicEditControl.control.font.color = _pickerColor;
-            },
-          ),
-        ],
-      ),
-    );
+        context: context,
+        builder: (_) => ColorPickerDialog(
+          title: widget.translation.text(ScreenEditorText.backgroundColor),
+          pickerColor: widget.gicEditControl.control.font.color,
+          onPressedCallback: _pickedColor,
+        ));
   }
 
   void _pickFont(BuildContext context) {
