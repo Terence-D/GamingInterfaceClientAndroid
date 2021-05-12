@@ -45,8 +45,8 @@ class ControlViewModel {
   double top = 120;
   double height = 120;
 
-  List<Color> colors = new List<Color>();
-  List<String> images = new List<String>();
+  List<Color> colors = [];
+  List<String> images = [];
 
   ControlViewModel();
 
@@ -83,7 +83,7 @@ class ControlViewModel {
 
   static List<String> _getImagesFromJson(Map<String, dynamic> json) {
     var list = json['images'] as List;
-    List<String> images = new List<String>();
+    List<String> images = [];
     list.forEach((value) {
       images.add(value);
     });
@@ -92,7 +92,7 @@ class ControlViewModel {
 
   static List<Command> _getCommandsFromJson(Map<String, dynamic> json) {
     var list = json['commands'] as List;
-    List<Command> commands = new List<Command>();
+    List<Command> commands = [];
     list.forEach((value) {
       commands.add(Command.fromJson(value));
     });
@@ -101,7 +101,7 @@ class ControlViewModel {
 
   static List<Color> _getColorsFromJson(Map<String, dynamic> json) {
     var list = json['colors'] as List;
-    List<Color> colors = new List<Color>();
+    List<Color> colors = <Color>[];
     list.forEach((value) {
       colors.add(Color(value));
     });
@@ -124,7 +124,7 @@ class ControlViewModel {
       };
 
   static List<int> _colorsToJson(List<Color> colors) {
-    List<int> rv = new List<int>();
+    List<int> rv = <int>[];
     colors.forEach((Color element) {
       rv.add(element.value);
     });
@@ -147,7 +147,7 @@ class ControlViewModel {
   }
 
   static List<Command> _getCommands(GicControl model) {
-    List<Command> rv = new List<Command>();
+    List<Command> rv = <Command>[];
     if (model.command != null) {
       rv.add(model.command);
       if (model.commandSecondary != null) rv.add(model.commandSecondary);
@@ -170,7 +170,7 @@ class ControlViewModel {
   }
 
   static List<Color> _getColors(GicControl model) {
-    List<Color> colors = new List<Color>();
+    List<Color> colors = <Color>[];
     if (model.primaryColor == -1)
       colors.add(Colors.black);
     else
@@ -189,7 +189,7 @@ class ControlViewModel {
   }
 
   static List<String> _getImages(GicControl model) {
-    List<String> images = new List<String>();
+    List<String> images = <String>[];
     if (model.primaryImage != null && model.primaryImage.isNotEmpty)
       images.add(model.primaryImage);
     else if (model.primaryImageResource != -1)

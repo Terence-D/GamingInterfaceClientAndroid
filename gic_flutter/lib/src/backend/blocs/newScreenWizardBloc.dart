@@ -71,7 +71,7 @@ class NewScreenWizardBloc {
     control.left = (_margins + ((_margins + controlWidth) * x));
     control.top = (_margins + ((_margins + controlHeight) * y));
 
-    Set<String> mods = new Set();
+    List<String> mods = [];
     if (element.ctrl) mods.add("CTRL");
     if (element.alt) mods.add("ALT");
     if (element.shift) mods.add("SHIFT");

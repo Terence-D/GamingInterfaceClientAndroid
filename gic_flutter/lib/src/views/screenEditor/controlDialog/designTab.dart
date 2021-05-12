@@ -1,22 +1,28 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 enum dimensions { left, top, width, height }
 
-class ImageTab extends StatefulWidget {
+class DesignTab extends StatefulWidget {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
+  final int screenId;
 
-  ImageTab({Key key, this.gicEditControl, this.translation}) : super(key: key);
+  DesignTab({Key key, this.gicEditControl, this.translation, this.screenId}) : super(key: key);
 
   @override
-  ImageTabState createState() => ImageTabState();
+  DesignTabState createState() => DesignTabState();
 }
 
-class ImageTabState extends State<ImageTab> {
+class DesignTabState extends State<DesignTab> {
   final List<TextEditingController> textControllers = [];
 
   @override
@@ -25,7 +31,7 @@ class ImageTabState extends State<ImageTab> {
       child: Column(
         children: [
           _imageToggle(),
-          _imageButton(),
+          _imageButton(0),
           _colorButton(0),
           Visibility(
             visible: widget.gicEditControl.control.type ==
@@ -36,7 +42,7 @@ class ImageTabState extends State<ImageTab> {
                     ControlViewModelType.Toggle,
             child: Column(
               children: [
-                _imageButton(),
+                _imageButton(1),
                 _colorButton(1),
               ],
             ),
@@ -81,13 +87,13 @@ class ImageTabState extends State<ImageTab> {
         ));
   }
 
-  Widget _imageButton() {
+  Widget _imageButton(int index) {
     return Visibility(
         visible:
             widget.gicEditControl.control.design == ControlDesignType.Image,
         child: ElevatedButton(
-            onPressed: () {
-              setState(() {});
+            onPressed: () async {
+                await _pickImage(index);
             },
             child: Text("Image")));
   }
@@ -98,12 +104,12 @@ class ImageTabState extends State<ImageTab> {
             ControlDesignType.UpDownGradient,
         child: ElevatedButton(
             onPressed: () {
-              _pickBackgroundColor(index);
+              _pickColor(index);
             },
             child: Text("Color")));
   }
 
-  void _pickBackgroundColor(int index) {
+  void _pickColor(int index) {
     showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
@@ -114,5 +120,24 @@ class ImageTabState extends State<ImageTab> {
                 widget.gicEditControl.control.colors[index] = color;
               });
             }));
+  }
+
+  Future<void> _pickImage(int index) async {
+    FilePickerResult result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'png', 'gif'],
+    );
+    if (result != null) {
+      PlatformFile file = result.files.first;
+      Directory dest = await getApplicationDocumentsDirectory();
+      String filename = path.basename(file.path);
+      String destPath = path.join(
+          dest.path, "screens", widget.screenId.toString(), filename);
+      File newFile = File(file.path).copySync(destPath);
+      setState(() {
+        widget.gicEditControl.control.images[index] = newFile.path;
+        Navigator.pop(context, true);
+      });
+    }
   }
 }

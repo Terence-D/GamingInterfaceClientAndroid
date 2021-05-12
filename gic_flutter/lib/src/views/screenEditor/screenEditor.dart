@@ -216,6 +216,7 @@ class ScreenEditorState extends State<ScreenEditor> {
           builder: (BuildContext context) {
             return ControlDialog(
                 translation: translation,
+                screenId: _service.activeScreenViewModel.screenId,
                 gicEditControl: GicEditControl(
                     pixelRatio: pixelRatio,
                     control: _service

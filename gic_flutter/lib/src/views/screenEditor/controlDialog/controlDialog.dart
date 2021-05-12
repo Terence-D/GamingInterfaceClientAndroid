@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/commandTab.dart';
-import 'package:gic_flutter/src/views/screenEditor/controlDialog/imageTab.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/designTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/sizeTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/textTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
@@ -10,8 +10,9 @@ import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 class ControlDialog extends StatefulWidget {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
+  final int screenId;
 
-  const ControlDialog({Key key, this.gicEditControl, this.translation})
+  const ControlDialog({Key key, this.gicEditControl, this.translation, this.screenId})
       : super(key: key);
 
   @override
@@ -73,8 +74,8 @@ class _ControlDialogState extends State<ControlDialog> {
         break;
       case ControlViewModelType.Image:
         _tabs.add(imageTab());
-        _tabContents.add(ImageTab(
-            gicEditControl: widget.gicEditControl, translation: translation));
+        _tabContents.add(DesignTab(
+            gicEditControl: widget.gicEditControl, translation: translation, screenId: widget.screenId,));
         break;
       case ControlViewModelType.Button:
       case ControlViewModelType.QuickButton:
@@ -84,8 +85,8 @@ class _ControlDialogState extends State<ControlDialog> {
             translation: translation,
             isButton: true));
         _tabs.add(imageTab());
-        _tabContents.add(ImageTab(
-            gicEditControl: widget.gicEditControl, translation: translation));
+        _tabContents.add(DesignTab(
+            gicEditControl: widget.gicEditControl, translation: translation, screenId: widget.screenId,));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
             gicEditControl: widget.gicEditControl, translation: translation));
@@ -97,8 +98,8 @@ class _ControlDialogState extends State<ControlDialog> {
             translation: translation,
             isButton: true));
         _tabs.add(imageTab());
-        _tabContents.add(ImageTab(
-            gicEditControl: widget.gicEditControl, translation: translation));
+        _tabContents.add(DesignTab(
+            gicEditControl: widget.gicEditControl, translation: translation, screenId: widget.screenId,));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
             gicEditControl: widget.gicEditControl, translation: translation));
