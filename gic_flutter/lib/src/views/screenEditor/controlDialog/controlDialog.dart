@@ -42,12 +42,12 @@ class _ControlDialogState extends State<ControlDialog> {
   Widget build(BuildContext context) {
     buildTabs();
     return Dialog(
-        shape: RoundedRectangleBorder(),
-        elevation: 0,
         child: DefaultTabController(
             length: _tabs.length,
             child: Scaffold(
               appBar: AppBar(
+                title: Text("widget"),
+                actions: [],
                 bottom: TabBar(
                   tabs: _tabs,
                 ),

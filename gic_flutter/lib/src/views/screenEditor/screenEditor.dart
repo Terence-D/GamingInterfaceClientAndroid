@@ -188,7 +188,7 @@ class ScreenEditorState extends State<ScreenEditor> {
     });
   }
 
-  void _onSelected(int selectedControlIndex) {
+  Future<void> _onSelected(int selectedControlIndex) async {
     if (controlId != selectedControlIndex) {
       controlId = selectedControlIndex;
       setState(() {
@@ -211,7 +211,7 @@ class ScreenEditorState extends State<ScreenEditor> {
         selectedVisible = true;
       });
     } else {
-      showDialog(
+      await showDialog(
           context: context,
           builder: (BuildContext context) {
             return ControlDialog(
@@ -225,6 +225,10 @@ class ScreenEditorState extends State<ScreenEditor> {
                     onSelected: null,
                     onDrag: null));
           });
+        print("hi");
+        setState(() {
+          print (_service.activeScreenViewModel.controls[selectedControlIndex].images[0]);
+        });
     }
   }
 

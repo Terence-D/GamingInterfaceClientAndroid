@@ -117,6 +117,7 @@ class DesignTabState extends State<DesignTab> {
             pickerColor: widget.gicEditControl.control.colors[index],
             onPressedCallback: (Color color) {
               setState(() {
+                widget.gicEditControl.control.design = ControlDesignType.UpDownGradient;
                 widget.gicEditControl.control.colors[index] = color;
               });
             }));
@@ -132,11 +133,11 @@ class DesignTabState extends State<DesignTab> {
       Directory dest = await getApplicationDocumentsDirectory();
       String filename = path.basename(file.path);
       String destPath = path.join(
-          dest.path, "screens", widget.screenId.toString(), filename);
+          dest.path, "files", widget.screenId.toString(), filename);
       File newFile = File(file.path).copySync(destPath);
       setState(() {
+        widget.gicEditControl.control.design = ControlDesignType.Image;
         widget.gicEditControl.control.images[index] = newFile.path;
-        Navigator.pop(context, true);
       });
     }
   }

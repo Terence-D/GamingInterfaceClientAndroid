@@ -126,7 +126,9 @@ class ScreenViewModel {
       //save the json file
       String screenJsonFile = path.join(screenPath, "data.json");
       final File file = File(screenJsonFile);
-      return file.writeAsString(json.encode(toJson()));
+      final String output = json.encode(toJson());
+      File toWrite = await file.writeAsString(output);
+      return toWrite;
     } catch (_) {
       return null;
     }
