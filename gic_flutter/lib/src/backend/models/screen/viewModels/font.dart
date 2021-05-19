@@ -1,10 +1,18 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class Font {
   int version;
-  Color color;
+  Color color = Colors.blue;
   double size = 36;
-  String family;
+  String family = "";
+
+  Font.empty() {
+    color = Colors.blue;
+    size = 36;
+    family = "";
+  }
 
   Font({this.color, this.size, this.family});
 
@@ -14,10 +22,13 @@ class Font {
         size = json['size'],
         family = json['family'];
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() {
+
+    return {
         'version': 2,
         'color': color.value,
         'size': size,
         'family': family
       };
+  }
 }

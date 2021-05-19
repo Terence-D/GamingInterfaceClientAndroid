@@ -107,7 +107,7 @@ class ScreenViewModel {
               pathToUse, ScreenService.backgroundImageFolder, backgroundPath);
           File backgroundFile = new File(originalBackgroundImagePath);
           String newBackgroundImageFile = path.join(screenPath, backgroundPath);
-          backgroundFile.copy(newBackgroundImageFile);
+          await backgroundFile.copy(newBackgroundImageFile);
         }
         if (controls != null) {
           controls.forEach((control) {
@@ -115,9 +115,9 @@ class ScreenViewModel {
               File imageFile = new File(image);
               //if the path is an absolute path, copy them in to the local path
               if (imageFile.isAbsolute) {
-                imageFile.copy(screenPath);
+                imageFile.copy(path.join(screenPath, path.basename(imageFile.path)));
+                image = path.join(screenPath, path.basename(imageFile.path));
               }
-              image = path.basename(imageFile.path);
             });
           });
         }
@@ -146,7 +146,7 @@ class ScreenViewModel {
   /// LEGACY CODE BELOW
   factory ScreenViewModel.fromLegacyModel(Screen model) {
     ScreenViewModel rv = new ScreenViewModel();
-    rv.controls = new List<ControlViewModel>();
+    rv.controls = [];
     rv.screenId = model.screenId;
     rv.name = model.name;
     model.controls.forEach((element) {

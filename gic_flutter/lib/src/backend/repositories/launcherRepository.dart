@@ -28,7 +28,7 @@ class LauncherRepository {
     /// convert legacy screen
     if (_prefs.getBool(_prefConvertB) ?? true) {
       await _convertLegacyScreens();
-      _prefs.setBool(_prefConvertB, false);
+      await _prefs.setBool(_prefConvertB, false);
     }
     return await _loadVM();
   }
@@ -37,15 +37,15 @@ class LauncherRepository {
   /// Based on the network model
   void saveMainSettings(NetworkModel networkModel) async {
     if (networkModel.address != null && networkModel.port.isNotEmpty) {
-      _prefs.setString(_prefAddress, networkModel.address);
+      await _prefs.setString(_prefAddress, networkModel.address);
     }
     if (networkModel.port != null &&
         networkModel.port.isNotEmpty &&
         _isNumeric(networkModel.port)) {
-      _prefs.setString(_prefPort, networkModel.port);
+      await _prefs.setString(_prefPort, networkModel.port);
     }
     if (networkModel.password != null && networkModel.password.isNotEmpty) {
-      _prefs.setString(
+      await _prefs.setString(
           _prefPassword, await _encryptPassword(networkModel.password));
     }
   }
@@ -143,7 +143,7 @@ class LauncherRepository {
     double adjustX = deviceInfo[1] / screenInfo[1];
     double adjustY = deviceInfo[2] / screenInfo[2];
 
-    _screenService.duplicateScreen(oldId);
+    await _screenService.duplicateScreen(oldId);
 
     _screenService.activeScreenViewModel.controls.forEach((control) {
       control.left = control.left * adjustX;
@@ -151,7 +151,7 @@ class LauncherRepository {
       control.top = control.top * adjustY;
       control.height = (control.height * adjustY);
     });
-    _screenService.activeScreenViewModel.save(jsonOnly: true);
+    await _screenService.activeScreenViewModel.save(jsonOnly: true);
     return _screenService.activeScreenViewModel.screenId;
   }
 
@@ -172,8 +172,8 @@ class LauncherRepository {
     if (await _screenService.loadScreens()) {
       viewModel.screens = [];
       if (_screenService.screenViewModels.length < 1) {
-        _screenService.createScreen();
-        _screenService.activeScreenViewModel.save();
+        await _screenService.createScreen();
+        await _screenService.activeScreenViewModel.save();
       }
       _screenService.screenViewModels.forEach((element) {
         viewModel.screens

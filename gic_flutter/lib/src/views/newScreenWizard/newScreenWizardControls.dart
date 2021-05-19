@@ -23,7 +23,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
   int _itemCount = 0;
   List<_Key> _keyMap = [];
   AutoItKeyMap autoItKeyMap = new AutoItKeyMap();
-  List<_Key> selectedKey = new List();
+  List<_Key> selectedKey = [];
   List<String> controlTypeText;
 
   @override

@@ -44,7 +44,7 @@ void main() {
     LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
 
     //Act
-    toTest.updateScreenName(1, "newName");
+    await toTest.updateScreenName(1, "newName");
 
     //Assert
     verify(mockedRepo.updateName(1, "newName")).called(1);

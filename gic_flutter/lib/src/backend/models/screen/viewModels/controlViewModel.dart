@@ -38,7 +38,7 @@ class ControlViewModel {
   List<Command> commands = [];
 
   String text = "-";
-  Font font = new Font();
+  Font font = Font.empty();
 
   double left = 0;
   double width = 320;

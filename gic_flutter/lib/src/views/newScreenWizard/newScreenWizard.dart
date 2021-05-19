@@ -16,7 +16,6 @@ class NewScreenWizard extends StatefulWidget {
 }
 
 class NewScreenWizardState extends State<NewScreenWizard> {
-
   IntlNewScreenWizard translation;
   NewScreenWizardModel viewModel = new NewScreenWizardModel();
 
@@ -26,19 +25,29 @@ class NewScreenWizardState extends State<NewScreenWizard> {
 
   final _bloc = NewScreenWizardBloc();
 
-  final TextEditingController screenNameTextController = new TextEditingController();
-  final TextEditingController screenWidthTextController = new TextEditingController();
-  final TextEditingController screenHeightTextController = new TextEditingController();
-  List<TextEditingController> keyNameController = new List<TextEditingController>();
+  final TextEditingController screenNameTextController =
+      new TextEditingController();
+  final TextEditingController screenWidthTextController =
+      new TextEditingController();
+  final TextEditingController screenHeightTextController =
+      new TextEditingController();
+  List<TextEditingController> keyNameController = [];
 
   @override
   void initState() {
     super.initState();
     translation = new IntlNewScreenWizard(context);
-    screenNameTextController.addListener(() {    viewModel.screenName = screenNameTextController.text;});
+    screenNameTextController.addListener(() {
+      viewModel.screenName = screenNameTextController.text;
+    });
+    screenNameTextController.text = "New Screen";
     //get screen dimensions
-    screenHeightTextController.addListener(() {    viewModel.screenHeight = double.parse(screenHeightTextController.text);});
-    screenWidthTextController.addListener(() {    viewModel.screenWidth = double.parse(screenWidthTextController.text);});
+    screenHeightTextController.addListener(() {
+      viewModel.screenHeight = double.parse(screenHeightTextController.text);
+    });
+    screenWidthTextController.addListener(() {
+      viewModel.screenWidth = double.parse(screenWidthTextController.text);
+    });
   }
 
   @override
@@ -55,13 +64,13 @@ class NewScreenWizardState extends State<NewScreenWizard> {
     return Scaffold(
         appBar: _launcherAppBar(),
         body: _mainContent(),
-        floatingActionButton: _fab(context)
-    );
+        floatingActionButton: _fab(context));
   }
 
   AppBar _launcherAppBar() {
     return AppBar(
-      leading: Image.asset("assets/images/icons/app_icon.png", fit: BoxFit.cover),
+      leading:
+          Image.asset("assets/images/icons/app_icon.png", fit: BoxFit.cover),
       title: Text(translation.text(NewScreenWizardText.toolbarTitle)),
     );
   }
@@ -76,31 +85,32 @@ class NewScreenWizardState extends State<NewScreenWizard> {
 
   Widget _fab(BuildContext context) {
     String text = translation.text(NewScreenWizardText.next);
-    if (currentView == 1)
-      text = translation.text(NewScreenWizardText.save);
+    if (currentView == 1) text = translation.text(NewScreenWizardText.save);
 
     return FloatingActionButton.extended(
-      onPressed: () {
-        if (currentView >= 1) { //save
-          _save();
-        } else {
-          if (screenNameTextController.text.isEmpty) {
-            Fluttertoast.showToast(msg: translation.text(NewScreenWizardText.errorEnterScreenName));
+        onPressed: () {
+          if (currentView >= 1) {
+            //save
+            _save();
           } else {
-            setState(() {
-              currentView++;
-            });
+            if (screenNameTextController.text.isEmpty) {
+              Fluttertoast.showToast(
+                  msg: translation
+                      .text(NewScreenWizardText.errorEnterScreenName));
+            } else {
+              setState(() {
+                currentView++;
+              });
+            }
           }
-        }
-      },
-      backgroundColor: Theme.of(context).primaryColor,
-      label: Text(text)
-    );
+        },
+        backgroundColor: Theme.of(context).primaryColor,
+        label: Text(text));
   }
 
   Future<void> _save() async {
     //add in the text
-    for (int i=0; i < keyNameController.length; i++) {
+    for (int i = 0; i < keyNameController.length; i++) {
       viewModel.controls[i].text = keyNameController[i].text;
     }
 
@@ -115,7 +125,7 @@ class NewScreenWizardState extends State<NewScreenWizard> {
     if (Navigator.canPop(context)) {
       Navigator.pop(context);
     } else {
-      SystemNavigator.pop();
+      await SystemNavigator.pop();
     }
   }
 }

@@ -39,10 +39,12 @@ class ScreenService {
   /// Initialize our service with values from preferences
   Future initDefaults() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (activeScreenViewModel == null) //didn't load anything in, lets do it here
-      loadScreens();
+    if (activeScreenViewModel ==
+        null) //didn't load anything in, lets do it here
+      await loadScreens();
 
-    defaultControls = new ControlDefaults(prefs, activeScreenViewModel.screenId);
+    defaultControls =
+        new ControlDefaults(prefs, activeScreenViewModel.screenId);
     gridSize = prefs.getInt(_prefGridSize);
     if (gridSize == null) gridSize = 0;
   }
@@ -94,19 +96,21 @@ class ScreenService {
           File file = File(path.join(element.path, "data.json"));
           screenViewModels.add(
               ScreenViewModel.fromJson(json.decode(file.readAsStringSync())));
-        }).catchError((error, stackTrace) => {
+        }).catchError((error, stackTrace) {
+          throw (error);
         }).whenComplete(() => activeScreenViewModel = screenViewModels.first);
       }
       return true;
     } catch (e) {
       // If encountering an error, return false.
-        return false;
+      return false;
     }
   }
 
   /// Create an empty screen, makes it active, and place it in the model list
   /// This does NOT save it to the file system
-  void createScreen() {
+  Future<void> createScreen() async {
+    await loadScreens();
     ScreenViewModel newScreenVM = ScreenViewModel.empty();
     newScreenVM.screenId = _findUniqueId();
     newScreenVM.name = _findUniqueName();
@@ -124,7 +128,8 @@ class ScreenService {
     try {
       final Directory directory = await getApplicationDocumentsDirectory();
       final String appPath = directory.path;
-      String pathToDelete = path.join(appPath, "screens", idToDelete.toString());
+      String pathToDelete =
+          path.join(appPath, "screens", idToDelete.toString());
       Directory dirToDelete = new Directory(pathToDelete);
       dirToDelete.deleteSync(recursive: true);
     } catch (_) {
@@ -140,8 +145,7 @@ class ScreenService {
         toRemove = screen;
       }
     });
-    if (toRemove != null)
-      screenViewModels.remove(toRemove);
+    if (toRemove != null) screenViewModels.remove(toRemove);
     return originalLength - screenViewModels.length;
   }
 
@@ -176,28 +180,31 @@ class ScreenService {
     //build the path to the original screen
     try {
       Directory appSupportPath = await getApplicationSupportDirectory();
-      String originalPath = path.join(appSupportPath.path, screenFolder, originalScreenId.toString());
+      String originalPath = path.join(
+          appSupportPath.path, screenFolder, originalScreenId.toString());
       Directory originalDirectory = new Directory(originalPath);
 
       //get a new folder path
       int newId = _findUniqueId();
-      String newPath = path.join(appSupportPath.path, screenFolder, newId.toString());
+      String newPath =
+          path.join(appSupportPath.path, screenFolder, newId.toString());
       Directory newDirectory = new Directory(newPath);
       newDirectory.createSync();
 
       //copy the files over
-      originalDirectory.list().forEach((element) {
+      await originalDirectory.list().forEach((element) {
         File originalFile = new File(element.path);
         originalFile.copySync(newPath);
       });
 
       //now we need to update the json with its new id
-      File newScreenJson = new File (path.join(newPath, "data.json"));
-      ScreenViewModel newScreen = ScreenViewModel.fromJson(json.decode(newScreenJson.readAsStringSync()));
+      File newScreenJson = new File(path.join(newPath, "data.json"));
+      ScreenViewModel newScreen = ScreenViewModel.fromJson(
+          json.decode(newScreenJson.readAsStringSync()));
       newScreen.screenId = newId;
-      newScreen.save(jsonOnly: true);
+      await newScreen.save(jsonOnly: true);
       //reload now and set our active screen to the new one
-      loadScreens();
+      await loadScreens();
       setActiveScreen(newId);
     } on Exception catch (e) {
       log(e.toString());
@@ -209,7 +216,6 @@ class ScreenService {
 
   /// This will save a screen object
   int _importScreen({String jsonToImport, String backgroundPath = ""}) {
-
     Map rawJson = json.decode(jsonToImport);
     ScreenViewModel screenToImport;
     if (rawJson.containsKey("version")) {

@@ -132,7 +132,7 @@ class IntroPresentation {
       await screenService.import(assetFile);
     });
 
-    Fluttertoast.showToast(
+    await Fluttertoast.showToast(
       msg: Intl.of(context).onboardImportSuccess,
     );
   }

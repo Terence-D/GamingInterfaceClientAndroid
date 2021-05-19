@@ -54,7 +54,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   Future<void> _buildService() async {
-    _service = new ScreenService();
+    _service = ScreenService();
     await _service.loadScreens();
     _loaded = _service.setActiveScreen(screenId);
     await _service.initDefaults();
@@ -108,6 +108,12 @@ class ScreenEditorState extends State<ScreenEditor> {
           child: Stack(children: widgets));
     }
 
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+    (context as Element).visitChildren(rebuild);
+
     return GestureDetector(
       onDoubleTapDown: _handleDoubleTapDown,
       onDoubleTap: _handleDoubleTap,
@@ -125,7 +131,7 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   //add the chosen control
   void addControl(ControlViewModelType controlType) {
-    ControlViewModel newControl = new ControlViewModel();
+    ControlViewModel newControl = ControlViewModel();
     switch (controlType) {
       case ControlViewModelType.QuickButton:
       case ControlViewModelType.Button:

@@ -393,7 +393,7 @@ class ScreenList extends StatelessWidget {
     int screenId = _screens[screenIndex].id;
 
     NetworkModel networkModel = new NetworkModel();
-    networkModel.init(_parent.passwordController.text, _parent.addressController.text,  _parent.portController.text);
+    await networkModel.init(_parent.passwordController.text, _parent.addressController.text,  _parent.portController.text);
 
     if (await _checkScreenDimensions(screenId, networkModel, context)) {
       return;
@@ -453,7 +453,7 @@ class ScreenList extends StatelessWidget {
 
   void _deleteScreen(int index) async {
     await _parent.launcherBloc.deleteScreen(_screens[index].id);
-    Fluttertoast.showToast(
+    await Fluttertoast.showToast(
       msg: _translations.text(LauncherText.deleteComplete),
     );
   }
@@ -479,7 +479,7 @@ class ScreenList extends StatelessWidget {
 
       if (exportPath != null && exportPath.isNotEmpty) {
         await _parent.launcherBloc.export(exportPath, id);
-        Fluttertoast.showToast(
+        await Fluttertoast.showToast(
           msg: _translations.text(LauncherText.exportComplete),
         );
       }

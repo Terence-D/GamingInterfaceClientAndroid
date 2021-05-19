@@ -28,7 +28,7 @@ class ControlDefaults {
     //if nothing was loaded in
     if (defaultImage.type != ControlViewModelType.Image) {
       defaultImage.type = ControlViewModelType.Image;
-      defaultImage.images = new List();
+      defaultImage.images = [];
     }
     if (defaultButton.type != ControlViewModelType.Button)
       defaultButton.type = ControlViewModelType.Button;
@@ -36,7 +36,7 @@ class ControlDefaults {
       defaultText.type = ControlViewModelType.Text;
     if (defaultToggle.type != ControlViewModelType.Toggle) {
       defaultToggle.type = ControlViewModelType.Toggle;
-      defaultToggle.images = new List();
+      defaultToggle.images = [];
       defaultToggle.images.add("toggle_off");
       defaultToggle.images.add("toggle_on");
     }

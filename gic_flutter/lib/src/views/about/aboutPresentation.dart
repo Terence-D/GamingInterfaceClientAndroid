@@ -54,29 +54,29 @@ class AboutPresentation implements BasePresentation {
   }
 
   List<ViewSection> _buildThirdPartyLibraries(BuildContext context) {
-    List<ViewSection> libraries = new List<ViewSection>();
+    List<ViewSection> libraries = <ViewSection>[];
 
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.cryptoTitle),
       Intl.of(context).about(AboutText.cryptoText),
       Intl.of(context).about(AboutText.cryptoUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.colorTitle),
       Intl.of(context).about(AboutText.colorText),
       Intl.of(context).about(AboutText.colorUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.flutterDevTitle),
       Intl.of(context).about(AboutText.flutterDevText),
       Intl.of(context).about(AboutText.flutterDevUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.httpTitle),
       Intl.of(context).about(AboutText.httpText),
       Intl.of(context).about(AboutText.httpUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.fluttertoastTitle),
       Intl.of(context).about(AboutText.fluttertoastText),
       Intl.of(context).about(AboutText.fluttertoastUrl),

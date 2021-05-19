@@ -9,7 +9,7 @@ import 'package:gic_flutter/src/backend/services/screenService.dart';
 /// but in the interest of keeping like minded code together, keeping the
 /// naming convention standard
 class NewScreenWizardBloc {
-  ScreenService _screenService = new ScreenService();
+  ScreenService _screenService = ScreenService();
   int _margins = 32; //may want to make this user selectable in a future release
 
   /// Creates a new empty screen
@@ -17,9 +17,9 @@ class NewScreenWizardBloc {
   /// Saves it
   Future<void> saveScreen(NewScreenWizardModel model) async {
     //create an initial screen in the list / set the active screen to it
-    _screenService.createScreen();
+    await _screenService.createScreen();
     //now that we have an active, lets load in the defaults
-    _screenService.initDefaults();
+    await _screenService.initDefaults();
 
     //set up the defaults based on the model
     _screenService.activeScreenViewModel.name = model.screenName;
@@ -27,7 +27,7 @@ class NewScreenWizardBloc {
     await _buildControls(model);
 
     //save it
-    _screenService.activeScreenViewModel.save();
+    await _screenService.activeScreenViewModel.save();
   }
 
   /// Here we build all of the controls we will add to the new screen
@@ -65,7 +65,7 @@ class NewScreenWizardBloc {
   /// This builds an individual control we are adding to the new screen
   ControlViewModel _buildControl(double controlHeight, double controlWidth,
       int x, int y, NewScreenWizardControl element) {
-    ControlViewModel control = new ControlViewModel();
+    ControlViewModel control = ControlViewModel();
     control.height = controlHeight;
     control.width = controlWidth;
     control.left = (_margins + ((_margins + controlWidth) * x));
@@ -76,7 +76,7 @@ class NewScreenWizardBloc {
     if (element.alt) mods.add("ALT");
     if (element.shift) mods.add("SHIFT");
     control.commands
-        .add(new Command(key: element.key, modifiers: mods, activatorType: 0));
+        .add(Command(key: element.key, modifiers: mods, activatorType: 0));
 
     ControlViewModel defaultControl =
         _screenService.defaultControls.defaultButton;

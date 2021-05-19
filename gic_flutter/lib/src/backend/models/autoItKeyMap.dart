@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 class AutoItKeyMap {
-  Map<String, String> map = new LinkedHashMap();
+  Map<String, String> map = LinkedHashMap();
 
   AutoItKeyMap() {
     //add every char in the english alphabet

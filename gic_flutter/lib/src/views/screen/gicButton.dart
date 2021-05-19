@@ -39,7 +39,7 @@ class GicButtonState extends BaseGicControlState {
     NetworkResponse response = await NetworkService.sendCommand(
         networkModel, commandUrl, control.commands[commandIndex]);
     if (response == NetworkResponse.Error)
-      Fluttertoast.showToast(
+      await Fluttertoast.showToast(
         msg: "error",
         toastLength: Toast.LENGTH_SHORT,
       );

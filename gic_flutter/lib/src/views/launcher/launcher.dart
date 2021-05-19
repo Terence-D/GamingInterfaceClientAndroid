@@ -247,7 +247,7 @@ class LauncherState extends State<Launcher> {
         context,
         MaterialPageRoute(
             builder: (context) => ui)); // ManageView()) // AboutView())
-    launcherBloc.fetchAllPreferences();
+    await launcherBloc.fetchAllPreferences();
   }
 
   void _showHelp() {
@@ -283,7 +283,7 @@ class LauncherState extends State<Launcher> {
     if (result != null) {
       newScreenId = await launcherBloc.import(result.files.single.path);
       if (newScreenId > 0)
-        Fluttertoast.showToast(
+        await Fluttertoast.showToast(
           msg: translation.text(LauncherText.importComplete),
         );
     }

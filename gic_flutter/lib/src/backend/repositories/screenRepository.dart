@@ -126,7 +126,7 @@ class ScreenRepository {
 
   updateName(int id, String newName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("$_prefsScreen$id", newName);
+    await prefs.setString("$_prefsScreen$id", newName);
   }
 
   loadFromJson(
@@ -196,12 +196,13 @@ class ScreenRepository {
     if (_cache.length < 2)
       return -1;
 
-    prefs.remove("$_prefsScreen$id");
-    prefs.remove("${id}_background");
-    prefs.remove("${id}_background_path");
-    prefs.getKeys().forEach((key) {
-      if (key.contains("$id" + "_control_"))
+    await prefs.remove("$_prefsScreen$id");
+    await prefs.remove("${id}_background");
+    await prefs.remove("${id}_background_path");
+    await prefs.getKeys().forEach((key) {
+      if (key.contains("$id" + "_control_")) {
         prefs.remove(key);
+      }
     });
 
     for (int i = 0; i < _cache.length; i++) {
@@ -209,7 +210,7 @@ class ScreenRepository {
         if (_cache[i].backgroundPath != null &&
             _cache[i].backgroundPath.isNotEmpty) {
           final File background = new File(_cache[i].backgroundPath);
-          background.delete();
+          await background.delete();
         }
         _cache[i].controls.forEach((element) {
           if (element.primaryImage.contains("_control_")) {

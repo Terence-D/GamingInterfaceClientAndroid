@@ -129,15 +129,22 @@ class DesignTabState extends State<DesignTab> {
       allowedExtensions: ['jpg', 'png', 'gif'],
     );
     if (result != null) {
-      PlatformFile file = result.files.first;
-      Directory dest = await getApplicationDocumentsDirectory();
-      String filename = path.basename(file.path);
-      String destPath = path.join(
-          dest.path, "files", widget.screenId.toString(), filename);
-      File newFile = File(file.path).copySync(destPath);
+      File sourceFile = File(result.files.single.path);
+      // Directory dest = await getApplicationDocumentsDirectory();
+      // File newFile;
+      // String destPath;
+      // for (int i=0; i < 1000; i++) {
+      //   String filename = "control_${i.toString()}.${result.files.first.extension}";
+      //   destPath = path.join(
+      //       dest.path, "screens", widget.screenId.toString(), filename);
+      //   newFile = File(destPath);
+      //   if (!newFile.existsSync())
+      //     break;
+      // }
+
       setState(() {
         widget.gicEditControl.control.design = ControlDesignType.Image;
-        widget.gicEditControl.control.images[index] = newFile.path;
+        widget.gicEditControl.control.images[index] = sourceFile.path;
       });
     }
   }
