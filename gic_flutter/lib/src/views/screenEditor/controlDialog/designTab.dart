@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
-import 'package:gic_flutter/src/backend/models/screen/controlTypes.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
@@ -54,6 +53,7 @@ class DesignTabState extends State<DesignTab> {
               ],
             ),
           ),
+          _importButton()
         ],
       ),
     );
@@ -87,11 +87,13 @@ class DesignTabState extends State<DesignTab> {
                           ControlDesignType.Image) {
                         widget.gicEditControl.control.design =
                             ControlDesignType.UpDownGradient;
-                        switchText = widget.translation.text(ScreenEditorText.designTabColorBased);
+                        switchText = widget.translation
+                            .text(ScreenEditorText.designTabColorBased);
                       } else {
                         widget.gicEditControl.control.design =
                             ControlDesignType.Image;
-                        switchText = widget.translation.text(ScreenEditorText.designTabImageBased);
+                        switchText = widget.translation
+                            .text(ScreenEditorText.designTabImageBased);
                       }
                     });
                   },
@@ -194,5 +196,19 @@ class DesignTabState extends State<DesignTab> {
         widget.gicEditControl.control.images[index] = sourceFile.path;
       });
     }
+  }
+
+  Widget _importButton() {
+    return Visibility(
+      visible: widget.gicEditControl.control.design == ControlDesignType.Image,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ElevatedButton(
+            onPressed: () {
+
+            },
+            child: Text(widget.translation.text(ScreenEditorText.designTabImport))),
+      ),
+    );
   }
 }

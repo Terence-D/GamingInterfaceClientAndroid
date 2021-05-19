@@ -103,7 +103,7 @@ class IntlScreenEditor {
       ScreenEditorText.designTabImport: "Import Custom Image",
       ScreenEditorText.designTabHeader: "Design",
       ScreenEditorText.designTabPressedImage:
-          "Image to display when pressing the button",
+          "Button Pressed Image",
       ScreenEditorText.designTabPrimaryColor: "Primary Color",
       ScreenEditorText.designTabSecondaryColor: "Secondary Color",
       ScreenEditorText.designTabToggleOffImage:
@@ -111,11 +111,11 @@ class IntlScreenEditor {
       ScreenEditorText.designTabToggleOnImage:
           "Toggled on Image",
       ScreenEditorText.designTabUnpressedImage:
-          "Image to display when the button is not pressed",
+          "Button Unpressed Image",
       ScreenEditorText.designTabPickColor: "Choose a color",
       ScreenEditorText.designTabChooseImage: "Choose an existing image, or for a custom image choose Import first",
-      ScreenEditorText.designTabColorBased: "Use color gradient",
-      ScreenEditorText.designTabImageBased: "Use images",
+      ScreenEditorText.designTabColorBased: "Use Colors",
+      ScreenEditorText.designTabImageBased: "Use Images",
     }
   };
 }
