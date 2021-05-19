@@ -231,7 +231,6 @@ class ScreenEditorState extends State<ScreenEditor> {
                     onSelected: null,
                     onDrag: null));
           });
-        print("hi");
         setState(() {
           print (_service.activeScreenViewModel.controls[selectedControlIndex].images[0]);
         });
