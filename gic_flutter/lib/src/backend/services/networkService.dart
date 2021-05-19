@@ -22,7 +22,7 @@ class NetworkService {
         headers["Authorization"] = 'Basic $basicAuth';
 
         String body = json.encode(keystroke);//.toJson();
-        await http.post(Uri.http("${networkModel.address}:${networkModel.port}", "/api/$command"), body: body, headers:headers)
+        NetworkResponse response = await http.post(Uri.http("${networkModel.address}:${networkModel.port}", "/api/$command"), body: body, headers:headers)
             .timeout(const Duration(seconds: 5))
             .then((response) {
                 return NetworkResponse.Ok;
@@ -31,6 +31,8 @@ class NetworkService {
                 return NetworkResponse.Error;
             }
         );
+
+        return response;
     }
 
     static Future<NetworkResponse> checkVersion(NetworkModel networkModel) async {

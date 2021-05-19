@@ -68,7 +68,7 @@ void main() {
     when(mockedRepo.deleteScreen(1)).thenAnswer((_) async => 5);
 
     //Act
-    int rv = await toTest.deleteScreen(1);
+    await toTest.deleteScreen(1);
 
     //Assert
     verify(mockedRepo.deleteScreen(1)).called(1);

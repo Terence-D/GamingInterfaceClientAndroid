@@ -1,7 +1,3 @@
-import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
-import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
-import 'package:gic_flutter/src/views/screen/screenView.dart';
-
 import 'gicControl.dart';
 
 class Screen {

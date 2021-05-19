@@ -218,7 +218,7 @@ class LauncherRepository {
     String encrypted = _prefs.getString(_prefPassword) ?? "";
     try {
       return CryptoService.decrypt(encrypted);
-    } catch (Exception) {
+    } catch (_) {
       //will probably fail on legacy
       return "";
     }

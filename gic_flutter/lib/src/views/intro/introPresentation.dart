@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
@@ -7,13 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
-import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/views/intro/screenListWidget.dart';
 import 'package:gic_flutter/src/views/intro/screenSizeWidget.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:path_provider/path_provider.dart';
 
 abstract class IntroViewContract {
   void onIntroLoadCompleted(List<PageViewModel> _pages);

@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Command {
   static const int KEY_DOWN = 0;
   static const int KEY_UP = 1;

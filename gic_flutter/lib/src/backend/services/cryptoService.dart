@@ -93,7 +93,7 @@ class CryptoService {
 
             return Uint8List(len)
                 ..setRange(0, len, src);
-        } catch (Exception) {
+        } catch (_) {
             return null;
         }
     }

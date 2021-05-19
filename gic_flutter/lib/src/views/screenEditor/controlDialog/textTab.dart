@@ -18,7 +18,6 @@ class TextTab extends StatefulWidget {
 
 class TextTabState extends State<TextTab> {
   final List<TextEditingController> textControllers = [];
-  Color _pickerColor;
 
   @override
   Widget build(BuildContext context) {

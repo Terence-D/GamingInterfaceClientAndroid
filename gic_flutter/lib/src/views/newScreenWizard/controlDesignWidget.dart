@@ -66,12 +66,12 @@ class ControlDesignState extends State<ControlDesignWidget> {
     );
   }
 
-  void _updateControlDesign() {
-    setState(() {
-      widget.state.viewModel.isLandscape = !widget.state.viewModel.isLandscape;
-      _setButton();
-    });
-  }
+  // void _updateControlDesign() {
+  //   setState(() {
+  //     widget.state.viewModel.isLandscape = !widget.state.viewModel.isLandscape;
+  //     _setButton();
+  //   });
+  // }
 
   void _setButton() {
     icon = Icon(Icons.screen_lock_portrait);

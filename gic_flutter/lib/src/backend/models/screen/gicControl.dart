@@ -1,5 +1,3 @@
-import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
-
 import 'command.dart';
 
 class GicControl {

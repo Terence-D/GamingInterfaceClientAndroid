@@ -1,8 +1,5 @@
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
-import 'package:gic_flutter/src/theme/theme.dart';
-import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'dart:io';
 
 import 'package:filesystem_picker/filesystem_picker.dart';
@@ -194,14 +191,14 @@ class ScreenList extends StatelessWidget {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Yes'),
               onPressed: () {
                 _deleteScreen(index);
                 Navigator.of(context).pop();
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -279,27 +276,27 @@ class ScreenList extends StatelessWidget {
     // }
   }
 
-  _showLoaderDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-      content: Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(margin: EdgeInsets.only(left: 7), child: Text(_translations.text(LauncherText.loading))),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  // _showLoaderDialog(BuildContext context) {
+  //   AlertDialog alert = AlertDialog(
+  //     content: Row(
+  //       children: [
+  //         CircularProgressIndicator(),
+  //         Container(margin: EdgeInsets.only(left: 7), child: Text(_translations.text(LauncherText.loading))),
+  //       ],
+  //     ),
+  //   );
+  //   showDialog(
+  //     barrierDismissible: false,
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
   _showResizeDialog(BuildContext context, String optionalText, NetworkModel networkModel, int screenId) {
     // set up the buttons
-    Widget resizeButton = FlatButton(
+    Widget resizeButton = TextButton(
       child: Text("Resize"),
       onPressed: () {
         Navigator.pop(context);
@@ -307,7 +304,7 @@ class ScreenList extends StatelessWidget {
         _validateSettings(networkModel, context, screenId);
       },
     );
-    Widget continueButton = FlatButton(
+    Widget continueButton = TextButton(
       child: Text("Continue"),
       onPressed: () {
         Navigator.pop(context);
@@ -333,43 +330,43 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  _showUpgradeDialog(BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Ok"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-    Widget continueButton = RaisedButton(
-        onPressed: () async {
-          Email email = Email(
-            body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
-            subject: Intl.of(context).onboardEmailSubject,
-          );
-          await FlutterEmailSender.send(email);
-        },
-        child: Text(Intl.of(context).onboardSendLink, style: TextStyle(color: Colors.white)),
-        color: CustomTheme.of(context).primaryColor);
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Upgrade Server"),
-      content: Text(_translations.text(LauncherText.errorOutOfDate)),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  // _showUpgradeDialog(BuildContext context) {
+  //   // set up the buttons
+  //   Widget cancelButton = FlatButton(
+  //     child: Text("Ok"),
+  //     onPressed: () {
+  //       Navigator.pop(context);
+  //     },
+  //   );
+  //   Widget continueButton = RaisedButton(
+  //       onPressed: () async {
+  //         Email email = Email(
+  //           body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
+  //           subject: Intl.of(context).onboardEmailSubject,
+  //         );
+  //         await FlutterEmailSender.send(email);
+  //       },
+  //       child: Text(Intl.of(context).onboardSendLink, style: TextStyle(color: Colors.white)),
+  //       color: CustomTheme.of(context).primaryColor);
+  //
+  //   // set up the AlertDialog
+  //   AlertDialog alert = AlertDialog(
+  //     title: Text("Upgrade Server"),
+  //     content: Text(_translations.text(LauncherText.errorOutOfDate)),
+  //     actions: [
+  //       cancelButton,
+  //       continueButton,
+  //     ],
+  //   );
+  //
+  //   // show the dialog
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
   Future<bool> _checkScreenDimensions(int screenId, NetworkModel networkModel, BuildContext context) async {
     List deviceInfo = _parent.launcherBloc.getDimensions(context);

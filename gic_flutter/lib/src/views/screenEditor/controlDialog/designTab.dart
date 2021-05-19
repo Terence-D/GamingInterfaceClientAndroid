@@ -6,8 +6,6 @@ import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 
 enum dimensions { left, top, width, height }
 
