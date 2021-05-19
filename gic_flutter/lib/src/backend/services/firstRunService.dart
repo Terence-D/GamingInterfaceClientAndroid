@@ -19,8 +19,9 @@ class FirstRunService {
 
   dynamic _getBoolFromDisk(String key) {
     var value = true;
-    if (_preferences.containsKey(key))
+    if (_preferences.containsKey(key)) {
       value  = _preferences.get(key);
+    }
     return value;
   }
 
@@ -30,8 +31,9 @@ class FirstRunService {
 
   bool get firstRun {
     bool firstRun = _getBoolFromDisk(_prefFirstRun);
-    if (firstRun)
+    if (firstRun) {
       _saveBoolToDisk(_prefFirstRun, false);
+    }
     return firstRun;
   }
 }

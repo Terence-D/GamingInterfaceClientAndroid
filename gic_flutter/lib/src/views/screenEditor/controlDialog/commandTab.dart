@@ -18,17 +18,18 @@ class CommandTab extends StatefulWidget {
 
 class CommandTabState extends State<CommandTab> {
   final List<TextEditingController> textControllers = [];
-  final AutoItKeyMap _commandList = new AutoItKeyMap();
+  final AutoItKeyMap _commandList = AutoItKeyMap();
   final List<String> _dropDownItems = [];
   String switchText;
 
   @override
   void initState() {
     super.initState();
-    if (widget.gicEditControl.control.type == ControlViewModelType.QuickButton)
+    if (widget.gicEditControl.control.type == ControlViewModelType.QuickButton) {
       switchText = widget.translation.text(ScreenEditorText.enabled);
-    else
+    } else {
       switchText = widget.translation.text(ScreenEditorText.disabled);
+    }
 
     _commandList.map.entries.forEach((e) => _dropDownItems.add(e.value));
     widget.gicEditControl.control.commands.forEach((element) {
@@ -167,12 +168,13 @@ class CommandTabState extends State<CommandTab> {
             .contains(modifier), //do something here
         onChanged: (bool value) {
           setState(() {
-            if (value)
+            if (value) {
               widget.gicEditControl.control.commands[commandIndex].modifiers
                   .add(modifier);
-            else
+            } else {
               widget.gicEditControl.control.commands[commandIndex].modifiers
                   .remove(modifier);
+            }
           });
         });
   }

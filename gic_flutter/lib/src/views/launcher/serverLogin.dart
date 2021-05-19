@@ -34,19 +34,19 @@ class _ServerLoginState extends State<ServerLogin> {
 
   @override
   Widget build(BuildContext context) {
-    if (_orientation == Orientation.portrait)
+    if (_orientation == Orientation.portrait) {
       return SingleChildScrollView(child:
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children:_serverInput(context))
 
       );
-
-    else
+    } else {
       return Expanded(
         child: SingleChildScrollView(
         child: Column(children: _serverInput(context)))
       );
+    }
   }
 
   List<Widget> _serverInput(BuildContext context) {
@@ -96,7 +96,7 @@ class _ServerLoginState extends State<ServerLogin> {
         description: _translations.text(LauncherText.helpIpAddress),
         child: TextFormField(
           inputFormatters: [
-            new BlacklistingTextInputFormatter(new RegExp('[\\ ]')),
+            BlacklistingTextInputFormatter(RegExp('[\\ ]')),
           ],
           controller: _parent.addressController,
           decoration: InputDecoration(hintText: _translations.text(LauncherText.address)),

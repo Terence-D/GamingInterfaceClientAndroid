@@ -17,7 +17,7 @@ class NewScreenWizard extends StatefulWidget {
 
 class NewScreenWizardState extends State<NewScreenWizard> {
   IntlNewScreenWizard translation;
-  NewScreenWizardModel viewModel = new NewScreenWizardModel();
+  NewScreenWizardModel viewModel = NewScreenWizardModel();
 
   //tracks if we are on the general settings view (0)
   //or the create controls view (1)
@@ -26,17 +26,17 @@ class NewScreenWizardState extends State<NewScreenWizard> {
   final _bloc = NewScreenWizardBloc();
 
   final TextEditingController screenNameTextController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController screenWidthTextController =
-      new TextEditingController();
+      TextEditingController();
   final TextEditingController screenHeightTextController =
-      new TextEditingController();
+      TextEditingController();
   List<TextEditingController> keyNameController = [];
 
   @override
   void initState() {
     super.initState();
-    translation = new IntlNewScreenWizard(context);
+    translation = IntlNewScreenWizard(context);
     screenNameTextController.addListener(() {
       viewModel.screenName = screenNameTextController.text;
     });
@@ -77,10 +77,11 @@ class NewScreenWizardState extends State<NewScreenWizard> {
 
   /// This determines the main view to return, general settings or controls
   _mainContent() {
-    if (currentView == 0)
-      return new NewScreenWizardGeneral(this);
-    else
-      return new NewScreenWizardControls(this);
+    if (currentView == 0) {
+      return NewScreenWizardGeneral(this);
+    } else {
+      return NewScreenWizardControls(this);
+    }
   }
 
   Widget _fab(BuildContext context) {
@@ -114,10 +115,12 @@ class NewScreenWizardState extends State<NewScreenWizard> {
       viewModel.controls[i].text = keyNameController[i].text;
     }
 
-    if (double.parse(screenHeightTextController.text) > 0)
+    if (double.parse(screenHeightTextController.text) > 0) {
       viewModel.screenHeight = double.parse(screenHeightTextController.text);
-    if (double.parse(screenWidthTextController.text) > 0)
+    }
+    if (double.parse(screenWidthTextController.text) > 0) {
       viewModel.screenWidth = double.parse(screenWidthTextController.text);
+    }
 
     await _bloc.saveScreen(viewModel);
 

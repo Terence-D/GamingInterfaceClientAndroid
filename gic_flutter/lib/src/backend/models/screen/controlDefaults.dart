@@ -30,10 +30,12 @@ class ControlDefaults {
       defaultImage.type = ControlViewModelType.Image;
       defaultImage.images = [];
     }
-    if (defaultButton.type != ControlViewModelType.Button)
+    if (defaultButton.type != ControlViewModelType.Button) {
       defaultButton.type = ControlViewModelType.Button;
-    if (defaultText.type != ControlViewModelType.Text)
+    }
+    if (defaultText.type != ControlViewModelType.Text) {
       defaultText.type = ControlViewModelType.Text;
+    }
     if (defaultToggle.type != ControlViewModelType.Toggle) {
       defaultToggle.type = ControlViewModelType.Toggle;
       defaultToggle.images = [];
@@ -44,7 +46,7 @@ class ControlDefaults {
 
   GicControl loadControl(String preference) {
     if (!_prefs.containsKey(preference)) {
-        return new GicControl.empty();
+        return GicControl.empty();
     } else {
       Map controlMap = jsonDecode(_prefs.getString(preference));
       return GicControl.fromJson(controlMap);

@@ -18,7 +18,7 @@ class Font {
 
   Font.fromJson(Map<String, dynamic> json)
       : version = json['version'],
-        color = new Color(json['color']),
+        color = Color(json['color']),
         size = json['size'],
         family = json['family'];
 

@@ -22,7 +22,7 @@ abstract class IntroViewContract {
 class IntroPresentation {
 
   List<PageViewModel> _pages;
-  List<ScreenItem> _screens = <ScreenItem>[new ScreenItem("SC"), new ScreenItem("Elite")]; //, new ScreenItem("Truck") next time..
+  List<ScreenItem> _screens = <ScreenItem>[ScreenItem("SC"), ScreenItem("Elite")]; //, new ScreenItem("Truck") next time..
   String device = "Phone";
   IntroViewContract _contract;
 
@@ -88,10 +88,11 @@ class IntroPresentation {
               ScreenListWidget(_screens),
               RaisedButton(
                 onPressed: () {
-                  List<ScreenItem> screens = new List<ScreenItem>();
+                  List<ScreenItem> screens = List<ScreenItem>();
                   _screens.forEach((screen) {
-                    if (screen.selected)
+                    if (screen.selected) {
                       screens.add(screen);
+                    }
                   });
                   _importScreen(device, screens, context);
                 },
@@ -125,7 +126,7 @@ class IntroPresentation {
     device = device.replaceAll(" ", ""); //remove spaces
 
     //import each selected screen
-    ScreenService screenService = new ScreenService();
+    ScreenService screenService = ScreenService();
     await screenService.loadScreens();
     screenList.forEach((screen) async {
       String assetFile = path.join("assets", "screens", "${screen.title}-$device.json");

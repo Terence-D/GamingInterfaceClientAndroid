@@ -42,7 +42,7 @@ class SizeTabState extends State<SizeTab> {
 
   Widget _size(dimensions dimension) {
     String text = "";
-    TextEditingController controller = new TextEditingController();
+    TextEditingController controller = TextEditingController();
     textControllers.add(controller);
     switch (dimension) {
       case dimensions.left:

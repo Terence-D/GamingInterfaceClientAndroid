@@ -26,25 +26,25 @@ class IntroViewState extends State<IntroView> implements IntroViewContract  {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    new IntroPresentation(this).loadPages(context);
+    IntroPresentation(this).loadPages(context);
   }
 
   @override
   Widget build(BuildContext context) {
     _primaryColor = CustomTheme.of(context).primaryColor;
     if (_pages == null) {
-      return new Stack(
+      return Stack(
         children: [
-          new Opacity(
+          Opacity(
             opacity: 0.3,
             child: const ModalBarrier(dismissible: false, color: Colors.grey),
           ),
-          new Center(
-            child: new CircularProgressIndicator(),
+          Center(
+            child: CircularProgressIndicator(),
           ),
         ],
       );
-    } else
+    } else {
       return IntroductionScreen(
         pages: _pages,
         dotsDecorator: DotsDecorator(
@@ -59,6 +59,7 @@ class IntroViewState extends State<IntroView> implements IntroViewContract  {
         next: const Icon(Icons.arrow_forward),
         done: Text(Intl.of(context).onboardDone, style: TextStyle(fontWeight: FontWeight.w600)),
       );
+    }
   }
 
   @override

@@ -22,8 +22,7 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
   BoxDecoration pressed;
   BoxDecoration active;
 
-  BaseGicControlState({@required this.control, @required this.pixelRatio}) {
-  }
+  BaseGicControlState({@required this.control, @required this.pixelRatio});
 
   sendCommand(String commandUrl, int commandIndex);
 
@@ -143,24 +142,25 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
   }
 
   Widget _gicImage() {
-    if (control.images.length < 1)
+    if (control.images.isEmpty) {
       return Container(
           width: control.width / pixelRatio,
           height: control.height / pixelRatio,
           decoration: BoxDecoration(
-              image: new DecorationImage(
-                  image: new AssetImage("assets/images/icons/app_icon.png"),
+              image: DecorationImage(
+                  image: AssetImage("assets/images/icons/app_icon.png"),
                   fit: BoxFit.cover)));
-    else
+    } else {
       return Image.file(
         File(control.images[0]),
         width: control.width / pixelRatio,
         height: control.height / pixelRatio,
       );
+    }
   }
 
   Widget _gicText() {
-    return new Container(
+    return Container(
         width: control.width / pixelRatio,
         child:
             Text(control.text, style: getTextStyle(control.font, pixelRatio)));
@@ -189,15 +189,15 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
       if (File(control.images[imageIndex]).isAbsolute) {
         return BoxDecoration(
             borderRadius: buttonBorder,
-            image: new DecorationImage(
+            image: DecorationImage(
                 image: FileImage(File(
                     control.images[imageIndex])),
                 fit: BoxFit.fill));
       } else {
         return BoxDecoration(
             borderRadius: buttonBorder,
-            image: new DecorationImage(
-                image: new AssetImage(
+            image: DecorationImage(
+                image: AssetImage(
                     "assets/images/controls/${control.images[imageIndex]}.png"),
                 fit: BoxFit.fill));
       }

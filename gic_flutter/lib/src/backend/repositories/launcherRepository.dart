@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LauncherRepository {
   SharedPreferences _prefs;
-  ScreenService _screenService = new ScreenService();
+  ScreenService _screenService = ScreenService();
 
   static const String _prefNightMode = "nightMode";
   static const String _prefPassword = "password";
@@ -163,7 +163,7 @@ class LauncherRepository {
 
   /// Build our view model
   _loadVM() async {
-    LauncherModel viewModel = new LauncherModel();
+    LauncherModel viewModel = LauncherModel();
 
     //get encrypted password
     viewModel.password = await _getPassword();
@@ -171,13 +171,13 @@ class LauncherRepository {
     //load screens
     if (await _screenService.loadScreens()) {
       viewModel.screens = [];
-      if (_screenService.screenViewModels.length < 1) {
+      if (_screenService.screenViewModels.isEmpty) {
         await _screenService.createScreen();
         await _screenService.activeScreenViewModel.save();
       }
       _screenService.screenViewModels.forEach((element) {
         viewModel.screens
-            .add(new ScreenListItem(element.screenId, element.name));
+            .add(ScreenListItem(element.screenId, element.name));
       });
       viewModel.screens
           .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
@@ -189,15 +189,15 @@ class LauncherRepository {
     viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
 
     //donation settings
-    if (_prefs.containsKey(_prefDonate))
+    if (_prefs.containsKey(_prefDonate)) {
       viewModel.donate = _prefs.getBool(_prefDonate);
-    else {
+    } else {
       viewModel.donate = false;
     }
 
-    if (_prefs.containsKey(_prefDonateStar))
+    if (_prefs.containsKey(_prefDonateStar)) {
       viewModel.donateStar = _prefs.getBool(_prefDonateStar);
-    else {
+    } else {
       viewModel.donateStar = false;
     }
 
@@ -205,7 +205,7 @@ class LauncherRepository {
   }
 
   _convertLegacyScreens() async {
-    ScreenRepository legacy = new ScreenRepository();
+    ScreenRepository legacy = ScreenRepository();
     List<Screen> legacyScreens = await legacy.loadScreens();
     legacyScreens.forEach((element) async {
       ScreenViewModel screenViewModel = ScreenViewModel.fromLegacyModel(element);

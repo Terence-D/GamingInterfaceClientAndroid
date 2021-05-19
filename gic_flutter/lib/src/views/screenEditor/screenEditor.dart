@@ -62,7 +62,7 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   @override
   Widget build(BuildContext context) {
-    translation = new IntlScreenEditor(context);
+    translation = IntlScreenEditor(context);
     SystemChrome.setEnabledSystemUIOverlays([]);
     if (!_loaded) return Scaffold();
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
@@ -252,10 +252,12 @@ class ScreenEditorState extends State<ScreenEditor> {
             details.delta.dx;
         _service.activeScreenViewModel.controls[controlId].height +=
             details.delta.dy;
-        if (_service.activeScreenViewModel.controls[controlId].width < minSize)
+        if (_service.activeScreenViewModel.controls[controlId].width < minSize) {
           _service.activeScreenViewModel.controls[controlId].width = minSize;
-        if (_service.activeScreenViewModel.controls[controlId].height < minSize)
+        }
+        if (_service.activeScreenViewModel.controls[controlId].height < minSize) {
           _service.activeScreenViewModel.controls[controlId].height = minSize;
+        }
       });
     }
   }

@@ -11,7 +11,7 @@ class LayoutWidget extends StatefulWidget {
   const LayoutWidget ( this.state, {Key key  }): super(key: key);
 
   @override
-  State<StatefulWidget> createState() => new LayoutState();
+  State<StatefulWidget> createState() => LayoutState();
 }
 
 class LayoutState extends State<LayoutWidget> {
@@ -54,11 +54,13 @@ class LayoutState extends State<LayoutWidget> {
   void _updateCount({int horizontal=0, int vertical=0}) {
     setState(() {
       if (widget.state.viewModel.horizontalControlCount + horizontal > 0 &&
-          widget.state.viewModel.horizontalControlCount + horizontal < 25)
+          widget.state.viewModel.horizontalControlCount + horizontal < 25) {
         widget.state.viewModel.horizontalControlCount += horizontal;
+      }
       if (widget.state.viewModel.verticalControlCount + vertical > 0 &&
-          widget.state.viewModel.verticalControlCount + vertical < 25)
+          widget.state.viewModel.verticalControlCount + vertical < 25) {
         widget.state.viewModel.verticalControlCount += vertical;
+      }
     });
   }
 }

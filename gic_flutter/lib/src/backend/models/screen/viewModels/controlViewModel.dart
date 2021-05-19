@@ -51,7 +51,7 @@ class ControlViewModel {
   ControlViewModel();
 
   factory ControlViewModel.fromLegacyModel(GicControl model) {
-    ControlViewModel rv = new ControlViewModel();
+    ControlViewModel rv = ControlViewModel();
     rv.text = model.text;
     rv.left = model.left;
     rv.top = model.top;
@@ -156,11 +156,12 @@ class ControlViewModel {
   }
 
   static Font _getFont(GicControl model) {
-    Font rv = new Font();
-    if (model.fontColor == -1)
+    Font rv = Font();
+    if (model.fontColor == -1) {
       rv.color = Colors.white;
-    else
+    } else {
       rv.color = _convertJavaColor(model.fontColor);
+    }
     rv.size = model.fontSize.toDouble();
     if (model.fontName != null && model.fontName.isNotEmpty) {
       rv.family = model.fontName;
@@ -171,14 +172,16 @@ class ControlViewModel {
 
   static List<Color> _getColors(GicControl model) {
     List<Color> colors = <Color>[];
-    if (model.primaryColor == -1)
+    if (model.primaryColor == -1) {
       colors.add(Colors.black);
-    else
+    } else {
       colors.add(_convertJavaColor(model.primaryColor));
-    if (model.secondaryColor == -1)
+    }
+    if (model.secondaryColor == -1) {
       colors.add(Colors.white);
-    else
+    } else {
       colors.add(_convertJavaColor(model.secondaryColor));
+    }
 
     return colors;
   }
@@ -190,18 +193,20 @@ class ControlViewModel {
 
   static List<String> _getImages(GicControl model) {
     List<String> images = <String>[];
-    if (model.primaryImage != null && model.primaryImage.isNotEmpty)
+    if (model.primaryImage != null && model.primaryImage.isNotEmpty) {
       images.add(model.primaryImage);
-    else if (model.primaryImageResource != -1)
+    } else if (model.primaryImageResource != -1) {
       images.add(_convertDrawableResource(
           model.primaryImageResource, model.viewType, true));
-    else
-      return images; //mo primary, no secondary
-    if (model.secondaryImage != null && model.secondaryImage.isNotEmpty)
+    } else {
+      return images;
+    } //mo primary, no secondary
+    if (model.secondaryImage != null && model.secondaryImage.isNotEmpty) {
       images.add(model.secondaryImage);
-    else if (model.secondaryImageResource != -1)
+    } else if (model.secondaryImageResource != -1) {
       images.add(_convertDrawableResource(
           model.secondaryImageResource, model.viewType, false));
+    }
 
     return images;
   }
@@ -210,19 +215,23 @@ class ControlViewModel {
       int imageResource, int viewType, bool isPrimary) {
     if (viewType == 0 || viewType == 4) {
 //its a button
-      if (imageResource < ControlTypes.buttonDrawables.length)
+      if (imageResource < ControlTypes.buttonDrawables.length) {
         return ControlTypes.buttonDrawables[imageResource];
-      if (isPrimary)
-        return ControlTypes.buttonDrawables[2]; //blue
-      else
-        return ControlTypes.buttonDrawables[3]; //dark blue
+      }
+      if (isPrimary) {
+        return ControlTypes.buttonDrawables[2];
+      } else {
+        return ControlTypes.buttonDrawables[3];
+      } //dark blue
     } else {
-      if (imageResource < ControlTypes.buttonDrawables.length)
+      if (imageResource < ControlTypes.buttonDrawables.length) {
         return ControlTypes.toggleDrawables[imageResource];
-      if (isPrimary)
+      }
+      if (isPrimary) {
         return ControlTypes.toggleDrawables[2];
-      else
+      } else {
         return ControlTypes.toggleDrawables[3];
+      }
     }
   }
 }

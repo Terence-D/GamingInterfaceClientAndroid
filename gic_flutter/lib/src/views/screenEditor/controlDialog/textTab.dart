@@ -84,7 +84,7 @@ class TextTabState extends State<TextTab> {
   }
 
   TextField _size() {
-    TextEditingController controller = new TextEditingController();
+    TextEditingController controller = TextEditingController();
     textControllers.add(controller);
     controller.text = widget.gicEditControl.control.font.size.toString();
     controller.addListener(() {
@@ -149,7 +149,7 @@ class TextTabState extends State<TextTab> {
 
   //show text editing widget for the supplied index
   TextField _buildText() {
-    TextEditingController controller = new TextEditingController();
+    TextEditingController controller = TextEditingController();
     textControllers.add(controller);
     controller.text = widget.gicEditControl.control.text;
     controller.addListener(() {

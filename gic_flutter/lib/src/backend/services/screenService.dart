@@ -40,11 +40,12 @@ class ScreenService {
   Future initDefaults() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (activeScreenViewModel ==
-        null) //didn't load anything in, lets do it here
+        null) {
       await loadScreens();
+    }
 
     defaultControls =
-        new ControlDefaults(prefs, activeScreenViewModel.screenId);
+        ControlDefaults(prefs, activeScreenViewModel.screenId);
     gridSize = prefs.getInt(_prefGridSize);
     if (gridSize == null) gridSize = 0;
   }
@@ -53,13 +54,14 @@ class ScreenService {
   // Returns true on success, false when no matching screen id is found
   bool setActiveScreen(int screenId) {
     bool rv = false;
-    if (screenViewModels != null && screenViewModels.isNotEmpty)
+    if (screenViewModels != null && screenViewModels.isNotEmpty) {
       screenViewModels.forEach((element) {
         if (element.screenId == screenId) {
           activeScreenViewModel = element;
           rv = true;
         }
       });
+    }
     return rv;
   }
 
@@ -79,17 +81,18 @@ class ScreenService {
   /// Returns true on success, false on any failure
   Future<bool> loadScreens() async {
     try {
-      if (screenViewModels == null)
+      if (screenViewModels == null) {
         screenViewModels = [];
-      else
+      } else {
         screenViewModels.clear();
+      }
       final Directory appSupportPath = await getApplicationDocumentsDirectory();
       String screenPath = path.join(appSupportPath.path, screenFolder);
 
       if (!Directory(screenPath).existsSync()) {
-        new Directory(screenPath).createSync(recursive: true);
+        Directory(screenPath).createSync(recursive: true);
       } else {
-        Directory screenDirectory = new Directory(screenPath);
+        Directory screenDirectory = Directory(screenPath);
 
         Stream stream = screenDirectory.list();
         await stream.forEach((element) {
@@ -130,7 +133,7 @@ class ScreenService {
       final String appPath = directory.path;
       String pathToDelete =
           path.join(appPath, "screens", idToDelete.toString());
-      Directory dirToDelete = new Directory(pathToDelete);
+      Directory dirToDelete = Directory(pathToDelete);
       dirToDelete.deleteSync(recursive: true);
     } catch (_) {
       // If encountering an error, return 0.
@@ -182,23 +185,23 @@ class ScreenService {
       Directory appSupportPath = await getApplicationSupportDirectory();
       String originalPath = path.join(
           appSupportPath.path, screenFolder, originalScreenId.toString());
-      Directory originalDirectory = new Directory(originalPath);
+      Directory originalDirectory = Directory(originalPath);
 
       //get a new folder path
       int newId = _findUniqueId();
       String newPath =
           path.join(appSupportPath.path, screenFolder, newId.toString());
-      Directory newDirectory = new Directory(newPath);
+      Directory newDirectory = Directory(newPath);
       newDirectory.createSync();
 
       //copy the files over
       await originalDirectory.list().forEach((element) {
-        File originalFile = new File(element.path);
+        File originalFile = File(element.path);
         originalFile.copySync(newPath);
       });
 
       //now we need to update the json with its new id
-      File newScreenJson = new File(path.join(newPath, "data.json"));
+      File newScreenJson = File(path.join(newPath, "data.json"));
       ScreenViewModel newScreen = ScreenViewModel.fromJson(
           json.decode(newScreenJson.readAsStringSync()));
       newScreen.screenId = newId;
@@ -226,7 +229,7 @@ class ScreenService {
       // get a screen object based on the JSON extracted
       Map controlMap = jsonDecode(jsonToImport);
       //build the new screen from the incoming json
-      Screen legacy = new Screen.fromJson(controlMap);
+      Screen legacy = Screen.fromJson(controlMap);
       screenToImport = ScreenViewModel.fromLegacyModel(legacy);
     }
     //now we need to get a new ID and Name, as the existing one is probably taken

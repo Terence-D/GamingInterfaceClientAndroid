@@ -12,7 +12,7 @@ class ControlDesignWidget extends StatefulWidget {
   const ControlDesignWidget ( this.state, {Key key  }): super(key: key);
 
   @override
-  State<StatefulWidget> createState() => new ControlDesignState();
+  State<StatefulWidget> createState() => ControlDesignState();
 
 }
 
@@ -74,9 +74,10 @@ class ControlDesignState extends State<ControlDesignWidget> {
   }
 
   void _setButton() {
-    icon = new Icon(Icons.screen_lock_portrait);
-    if (widget.state.viewModel.isLandscape)
-      icon = new Icon(Icons.screen_lock_landscape);
+    icon = Icon(Icons.screen_lock_portrait);
+    if (widget.state.viewModel.isLandscape) {
+      icon = Icon(Icons.screen_lock_landscape);
+    }
   }
 }
 

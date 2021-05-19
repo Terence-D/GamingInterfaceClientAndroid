@@ -7,7 +7,7 @@ import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
 class SettingsDialog {
   static Widget display(
       BuildContext context, ScreenEditorState screenEditorState) {
-    IntlScreenEditor translation = new IntlScreenEditor(context);
+    IntlScreenEditor translation = IntlScreenEditor(context);
 
     return SimpleDialog(
       title: Text(translation.text(ScreenEditorText.menu)),

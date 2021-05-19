@@ -34,7 +34,7 @@ class VersionResponse {
 class ScreenList extends StatelessWidget {
   final List<ScreenListItem> _screens;
   final IntlLauncher _translations;
-  final List<TextEditingController> _screenNameController = new List<TextEditingController>();
+  final List<TextEditingController> _screenNameController = List<TextEditingController>();
   final LauncherState _parent;
 
   ScreenList(this._parent, this._screens, this._translations);
@@ -43,7 +43,7 @@ class ScreenList extends StatelessWidget {
   Widget build(BuildContext context) {
     _screenNameController.clear();
     for (var i = 0; i < _screens.length; i++) {
-      TextEditingController tec = new TextEditingController();
+      TextEditingController tec = TextEditingController();
       tec.text = _screens[i].name;
       _screenNameController.add(tec);
     }
@@ -66,7 +66,7 @@ class ScreenList extends StatelessWidget {
         width: double.maxFinite,
         child: Card(
           elevation: 5,
-          child: new Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[_screenName(index), screenButtons(index, context)],
           ),
@@ -77,7 +77,7 @@ class ScreenList extends StatelessWidget {
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: new Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _startButton(index, context),
@@ -91,7 +91,7 @@ class ScreenList extends StatelessWidget {
   }
 
   Widget _innerDeleteButton(BuildContext context, int index) {
-    return new IconButton(
+    return IconButton(
       color: Theme.of(context).errorColor,
       icon: Icon(Icons.delete_forever),
       tooltip: _translations.text(LauncherText.buttonDelete),
@@ -115,7 +115,7 @@ class ScreenList extends StatelessWidget {
   }
 
   Widget _innerShareButton(int index, BuildContext context) {
-    return new IconButton(
+    return IconButton(
       icon: Icon(Icons.share),
       tooltip: _translations.text(LauncherText.buttonExport),
       onPressed: () {
@@ -149,7 +149,7 @@ class ScreenList extends StatelessWidget {
   }
 
   IconButton _innerEditButton(int index, BuildContext context) {
-    return new IconButton(
+    return IconButton(
       icon: Icon(Icons.edit),
       tooltip: _translations.text(LauncherText.buttonEdit),
       onPressed: () {
@@ -171,7 +171,7 @@ class ScreenList extends StatelessWidget {
   }
 
   AccentButton _innerStartButton(int index, BuildContext context) {
-    return new AccentButton(
+    return AccentButton(
       child: Text(_translations.text(LauncherText.start)),
       onPressed: () {
         _validateScreen(index, context);
@@ -228,8 +228,8 @@ class ScreenList extends StatelessWidget {
   }
 
   Widget _textField(int index) {
-    return new Flexible(
-      child: new TextFormField(
+    return Flexible(
+      child: TextFormField(
         controller: _screenNameController[index],
         decoration: InputDecoration(hintText: _translations.text(LauncherText.screenName)),
       ),
@@ -249,7 +249,7 @@ class ScreenList extends StatelessWidget {
   }
 
   Widget _innerUpdateButton(int index) {
-    return new IconButton(
+    return IconButton(
       icon: Icon(Icons.save),
       tooltip: _translations.text(LauncherText.buttonUpdate),
       onPressed: () {
@@ -281,7 +281,7 @@ class ScreenList extends StatelessWidget {
 
   _showLoaderDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
-      content: new Row(
+      content: Row(
         children: [
           CircularProgressIndicator(),
           Container(margin: EdgeInsets.only(left: 7), child: Text(_translations.text(LauncherText.loading))),
@@ -376,8 +376,9 @@ class ScreenList extends StatelessWidget {
     List screenInfo = await _parent.launcherBloc.checkScreenSize(screenId);
 
     bool rotate = false;
-    if (deviceInfo[0] != screenInfo[0])
+    if (deviceInfo[0] != screenInfo[0]) {
       rotate = true;
+    }
 
     //add some buffer for the check
     if ((deviceInfo[1] + 10 < screenInfo[1] || deviceInfo[2] + 10 < screenInfo[2])) {
@@ -392,7 +393,7 @@ class ScreenList extends StatelessWidget {
   _validateScreen(int screenIndex, BuildContext context) async {
     int screenId = _screens[screenIndex].id;
 
-    NetworkModel networkModel = new NetworkModel();
+    NetworkModel networkModel = NetworkModel();
     await networkModel.init(_parent.passwordController.text, _parent.addressController.text,  _parent.portController.text);
 
     if (await _checkScreenDimensions(screenId, networkModel, context)) {
@@ -459,7 +460,7 @@ class ScreenList extends StatelessWidget {
   }
 
   Future<void> _export(BuildContext context, int id) async {
-    const platform = const MethodChannel(Channel.channelUtil);
+    const platform = MethodChannel(Channel.channelUtil);
     String externalPath;
     try {
       externalPath = await platform.invokeMethod(Channel.actionGetDownloadFolder);

@@ -12,7 +12,7 @@ class OrientationWidget extends StatefulWidget {
   const OrientationWidget ( this.state, {Key key  }): super(key: key);
 
   @override
-  State<StatefulWidget> createState() => new OrientationState();
+  State<StatefulWidget> createState() => OrientationState();
 
 }
 
@@ -82,9 +82,10 @@ class OrientationState extends State<OrientationWidget> {
   }
 
   void _setButton() {
-    icon = new Icon(Icons.screen_lock_portrait);
-    if (widget.state.viewModel.isLandscape)
-      icon = new Icon(Icons.screen_lock_landscape);
+    icon = Icon(Icons.screen_lock_portrait);
+    if (widget.state.viewModel.isLandscape) {
+      icon = Icon(Icons.screen_lock_landscape);
+    }
   }
 
   void _buildDimensions() {

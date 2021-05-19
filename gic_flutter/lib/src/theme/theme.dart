@@ -42,7 +42,7 @@ class CustomTheme extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  CustomThemeState createState() => new CustomThemeState();
+  CustomThemeState createState() => CustomThemeState();
 
   static ThemeData of(BuildContext context) {
     _CustomTheme inherited = context.dependOnInheritedWidgetOfExactType<_CustomTheme>();
@@ -74,7 +74,7 @@ class CustomThemeState extends State<CustomTheme> {
 
   @override
   Widget build(BuildContext context) {
-    return new _CustomTheme(
+    return _CustomTheme(
       data: this,
       child: widget.child,
     );

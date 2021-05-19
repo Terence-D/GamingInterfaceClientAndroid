@@ -17,11 +17,11 @@ class AboutView extends BasePage {
 }
 
 class AboutViewState extends BaseState<AboutView> {
-  AboutVM viewModel = new AboutVM();
+  AboutVM viewModel = AboutVM();
 
   @override
   void initState() {
-    presentation = new AboutPresentation(this);
+    presentation = AboutPresentation(this);
     super.initState();
   }
 
@@ -36,8 +36,9 @@ class AboutViewState extends BaseState<AboutView> {
   Widget build(BuildContext context) {
 
     String title = " ";
-    if (viewModel != null && viewModel.toolbarTitle != null)
+    if (viewModel != null && viewModel.toolbarTitle != null) {
       title = viewModel.toolbarTitle;
+    }
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
@@ -77,7 +78,7 @@ class AboutViewState extends BaseState<AboutView> {
 
   Widget _libraries(List<ViewSection> sections) {
     if (sections != null) {
-      List<Widget> widgets = new List<Widget>();
+      List<Widget> widgets = List<Widget>();
       TextStyle textStyle = Theme.of(context).textTheme.subtitle1;
       sections.forEach((s) => widgets.add(section(s, optionalHeaderStyle: textStyle)));
 

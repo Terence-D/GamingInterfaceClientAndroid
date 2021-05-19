@@ -11,8 +11,9 @@ class Command {
   Command.empty();
 
   Command ({this.key, this.modifiers, this.activatorType}) {
-    if (this.modifiers == null)
+    if (this.modifiers == null) {
       this.modifiers = [];
+    }
   }
 
   Map<String, dynamic> toJson() =>
@@ -23,10 +24,11 @@ class Command {
   };
 
   factory Command.fromJson(Map<String, dynamic> json) {
-    if (json['modifiers'] == null)
+    if (json['modifiers'] == null) {
       json['modifiers'] = [];
+    }
     var jsonMods = json['modifiers'];
-    List<String> mods = new List<String>.from(jsonMods);
+    List<String> mods = List<String>.from(jsonMods);
     String jsonKey = json['key'];
     int jsonActivator = json['activatorType'];
 

@@ -39,8 +39,9 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
 
   Widget section(ViewSection model, {TextStyle optionalHeaderStyle, bool centered = false}) {
     var align = CrossAxisAlignment.start;
-    if (centered)
+    if (centered) {
       align = CrossAxisAlignment.center;
+    }
     return
       Column(
           crossAxisAlignment: align,
@@ -65,8 +66,9 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
   }
 
   Widget header(String text, [TextStyle textStyle]) {
-    if (textStyle == null)
+    if (textStyle == null) {
       textStyle = Theme.of(context).textTheme.headline5;
+    }
     return Text(
       text,
       style: textStyle,

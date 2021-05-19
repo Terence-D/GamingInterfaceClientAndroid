@@ -92,7 +92,7 @@ class NewScreenWizardBloc {
       control.top = control.top + control.height;
       control.text = "";
       //add a text control below it
-      ControlViewModel textControl = new ControlViewModel();
+      ControlViewModel textControl = ControlViewModel();
       textControl = _screenService.defaultControls.defaultText;
       textControl.type = ControlViewModelType.Text;
       textControl.text = element.text;

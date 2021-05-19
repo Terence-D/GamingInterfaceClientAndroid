@@ -18,8 +18,9 @@ class _ColorPickerDialogState extends State<ColorPickerDialog> {
   Color pickerColor;
 
   _ColorPickerDialogState(this.pickerColor) {
-    if (pickerColor == null)
+    if (pickerColor == null) {
       pickerColor = Colors.blue;
+    }
   }
 
   @override

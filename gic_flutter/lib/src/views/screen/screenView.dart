@@ -9,7 +9,7 @@ import 'gicButton.dart';
 
 class ScreenView extends StatelessWidget {
   final ScreenViewModel screen;
-  final List<Widget> widgets = new List<Widget>();
+  final List<Widget> widgets = List<Widget>();
   final NetworkModel networkModel;
 
   ScreenView({Key key, @required this.screen, @required this.networkModel});
@@ -17,10 +17,11 @@ class ScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    if (screen != null)
+    if (screen != null) {
       screen.controls.forEach((element) {
         widgets.add(_buildGicControl(element, pixelRatio));
       });
+    }
 
     if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
       return Scaffold(

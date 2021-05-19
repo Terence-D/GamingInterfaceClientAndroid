@@ -74,12 +74,13 @@ class DesignTabState extends State<DesignTab> {
               onChanged: (value) {
                 setState(() {
                   if (widget.gicEditControl.control.design ==
-                      ControlDesignType.Image)
+                      ControlDesignType.Image) {
                     widget.gicEditControl.control.design =
                         ControlDesignType.UpDownGradient;
-                  else
+                  } else {
                     widget.gicEditControl.control.design =
                         ControlDesignType.Image;
+                  }
                 });
               },
             ),
