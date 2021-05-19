@@ -12,7 +12,8 @@ class ControlDialog extends StatefulWidget {
   final GicEditControl gicEditControl;
   final int screenId;
 
-  const ControlDialog({Key key, this.gicEditControl, this.translation, this.screenId})
+  const ControlDialog(
+      {Key key, this.gicEditControl, this.translation, this.screenId})
       : super(key: key);
 
   @override
@@ -27,9 +28,11 @@ class _ControlDialogState extends State<ControlDialog> {
 
   _ControlDialogState(this.translation);
 
-  Widget imageTab() => Tab(icon: Icon(Icons.image));
+  Widget designTab() => Tab(icon: Icon(Icons.image));
 
   Widget textTab() => Tab(icon: Icon(Icons.text_fields));
+
+  Widget buildTab() => Tab(icon: Icon(Icons.build));
 
   Widget sizingTab() => Tab(icon: Icon(Icons.straighten));
 
@@ -73,33 +76,42 @@ class _ControlDialogState extends State<ControlDialog> {
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
       case ControlViewModelType.Image:
-        _tabs.add(imageTab());
+        _tabs.add(designTab());
         _tabContents.add(DesignTab(
-            gicEditControl: widget.gicEditControl, translation: translation, screenId: widget.screenId,));
+          gicEditControl: widget.gicEditControl,
+          translation: translation,
+          screenId: widget.screenId,
+        ));
         break;
       case ControlViewModelType.Button:
       case ControlViewModelType.QuickButton:
-        _tabs.add(Tab(icon: Icon(Icons.build)));
+        _tabs.add(buildTab());
         _tabContents.add(CommandTab(
             gicEditControl: widget.gicEditControl,
             translation: translation,
             isButton: true));
-        _tabs.add(imageTab());
+        _tabs.add(designTab());
         _tabContents.add(DesignTab(
-            gicEditControl: widget.gicEditControl, translation: translation, screenId: widget.screenId,));
+          gicEditControl: widget.gicEditControl,
+          translation: translation,
+          screenId: widget.screenId,
+        ));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
       case ControlViewModelType.Toggle:
-        _tabs.add(Tab(icon: Icon(Icons.build)));
+        _tabs.add(buildTab());
         _tabContents.add(CommandTab(
             gicEditControl: widget.gicEditControl,
             translation: translation,
             isButton: true));
-        _tabs.add(imageTab());
+        _tabs.add(designTab());
         _tabContents.add(DesignTab(
-            gicEditControl: widget.gicEditControl, translation: translation, screenId: widget.screenId,));
+          gicEditControl: widget.gicEditControl,
+          translation: translation,
+          screenId: widget.screenId,
+        ));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
             gicEditControl: widget.gicEditControl, translation: translation));

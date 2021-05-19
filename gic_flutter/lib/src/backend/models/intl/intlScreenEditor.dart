@@ -33,13 +33,26 @@ enum ScreenEditorText {
   sizeTabTop,
   sizeTabWidth,
   sizeTabHeight,
-  sizeTabDetails
+  sizeTabDetails,
+  designTabHeader,
+  designTabDetails,
+  designTabPrimaryColor,
+  designTabSecondaryColor,
+  designTabPressedImage,
+  designTabUnpressedImage,
+  designTabToggleOffImage,
+  designTabToggleOnImage,
+  designTabImport,
+  designTabPickColor,
+  designTabChooseImage,
+  designTabImageBased,
+  designTabColorBased,
 }
 
 class IntlScreenEditor {
   BuildContext _context;
 
-  IntlScreenEditor(this ._context);
+  IntlScreenEditor(this._context);
 
   String text(ScreenEditorText text) {
     return _localizedStrings[Intl.of(_context).locale.languageCode][text];
@@ -59,26 +72,50 @@ class IntlScreenEditor {
       ScreenEditorText.backgroundColor: "Color",
       ScreenEditorText.backgroundImage: "Image",
       ScreenEditorText.ok: "Ok",
-      ScreenEditorText.disabled: "Disabled",
-      ScreenEditorText.enabled: "Enabled",
+      ScreenEditorText.disabled: "Quick Mode Off",
+      ScreenEditorText.enabled: "Quick Mode On",
       ScreenEditorText.commandTabHeader: "Commands",
-      ScreenEditorText.commandTabPrimaryDetails: "Choose a command to send, along with any modifiers (such as Control or Shift keys)",
-      ScreenEditorText.commandTabPrimaryToggleDetails: "Choose a command to send when the toggle is set, along with any modifiers (such as Control or Shift keys)",
-      ScreenEditorText.commandTabSecondaryDetails: "Choose a command to send when the toggle is reset, along with any modifiers (such as Control or Shift keys)",
-      ScreenEditorText.commandTabQuickModeDetails: "Quick Mode - Enable this if you need to quickly send a command.  Disable if you need to hold it down longer for the command to activate on the server.",
+      ScreenEditorText.commandTabPrimaryDetails:
+          "Choose a command to send, along with any modifiers (such as Control or Shift keys)",
+      ScreenEditorText.commandTabPrimaryToggleDetails:
+          "Choose a command to send when the toggle is set, along with any modifiers (such as Control or Shift keys)",
+      ScreenEditorText.commandTabSecondaryDetails:
+          "Choose a command to send when the toggle is reset, along with any modifiers (such as Control or Shift keys)",
+      ScreenEditorText.commandTabQuickModeDetails:
+          "Quick Mode - Enable this if you need to quickly send a command.  Disable if you need to hold it down longer for the command to activate on the server.",
       ScreenEditorText.commandDropDownHint: "Choose a Command",
       ScreenEditorText.textTabHeader: "Text/Font",
       ScreenEditorText.textTabPrimaryDetails: "Enter the text you want shown",
-      ScreenEditorText.textTabPrimaryToggleDetails: "Enter the text you want shown when toggle is off, and customize the display of the font",
+      ScreenEditorText.textTabPrimaryToggleDetails:
+          "Enter the text you want shown when toggle is off, and customize the display of the font",
       ScreenEditorText.textTabFontColor: "Color",
       ScreenEditorText.textTabFont: "Font",
       ScreenEditorText.textTabFontSize: "Size",
       ScreenEditorText.sizeTabHeader: "Dimensions",
-      ScreenEditorText.sizeTabDetails: "Fine tune the size and position of the control",
+      ScreenEditorText.sizeTabDetails:
+          "Fine tune the size and position of the control",
       ScreenEditorText.sizeTabLeft: "Left",
       ScreenEditorText.sizeTabTop: "Top ",
       ScreenEditorText.sizeTabWidth: "Width",
       ScreenEditorText.sizeTabHeight: "Height",
+      ScreenEditorText.designTabDetails:
+          "An image or a color gradient can be used decorate your buttons.  If you want to use a custom image, choose Import first.",
+      ScreenEditorText.designTabImport: "Import Custom Image",
+      ScreenEditorText.designTabHeader: "Design",
+      ScreenEditorText.designTabPressedImage:
+          "Image to display when pressing the button",
+      ScreenEditorText.designTabPrimaryColor: "Primary Color",
+      ScreenEditorText.designTabSecondaryColor: "Secondary Color",
+      ScreenEditorText.designTabToggleOffImage:
+          "Toggled off Image",
+      ScreenEditorText.designTabToggleOnImage:
+          "Toggled on Image",
+      ScreenEditorText.designTabUnpressedImage:
+          "Image to display when the button is not pressed",
+      ScreenEditorText.designTabPickColor: "Choose a color",
+      ScreenEditorText.designTabChooseImage: "Choose an existing image, or for a custom image choose Import first",
+      ScreenEditorText.designTabColorBased: "Use color gradient",
+      ScreenEditorText.designTabImageBased: "Use images",
     }
   };
 }

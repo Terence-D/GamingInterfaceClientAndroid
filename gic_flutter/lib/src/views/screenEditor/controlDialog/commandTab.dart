@@ -73,7 +73,8 @@ class CommandTabState extends State<CommandTab> {
                   Row(children: modifierCheckboxes(1))
                 ],
               ),
-              visible: !widget.isButton),
+              visible: widget.gicEditControl.control.type ==
+                  ControlViewModelType.Toggle),
           Visibility(
               child: Column(
                 children: [
@@ -87,7 +88,9 @@ class CommandTabState extends State<CommandTab> {
                   )
                 ],
               ),
-              visible: widget.isButton)
+              visible: widget.gicEditControl.control.type ==
+                  ControlViewModelType.Button || widget.gicEditControl.control.type ==
+                  ControlViewModelType.QuickButton)
         ],
       ),
     );
@@ -123,6 +126,9 @@ class CommandTabState extends State<CommandTab> {
   //this drop down provides a list of all supported commands
   //the index determines if we are doing this for the primary or secondary controls
   DropdownButton<String> buildCommandDropDown(int commandIndex) {
+    if (commandIndex >= widget.gicEditControl.control.commands.length ) {
+      commandIndex = 0;
+    }
     return DropdownButton<String>(
       isExpanded: true,
       hint: Text(widget.translation.text(ScreenEditorText.commandDropDownHint)),
@@ -163,6 +169,9 @@ class CommandTabState extends State<CommandTab> {
 
   //builds the actual checkbox for the modifierCheckboxes method
   Checkbox modifierCheckbox(int commandIndex, String modifier) {
+    if (commandIndex >= widget.gicEditControl.control.commands.length) {
+      commandIndex = 0;
+    }
     return Checkbox(
         value: widget.gicEditControl.control.commands[commandIndex].modifiers
             .contains(modifier), //do something here
