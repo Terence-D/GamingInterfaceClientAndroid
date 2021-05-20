@@ -39,24 +39,30 @@ class DesignTabState extends State<DesignTab> {
     return Container(
       child: Column(
         children: [
-          _imageToggle(),
-          _imageButton(0),
-          _colorButton(0),
           Visibility(
-            visible: widget.gicEditControl.control.type ==
-                    ControlViewModelType.Button ||
-                widget.gicEditControl.control.type ==
-                    ControlViewModelType.QuickButton ||
-                widget.gicEditControl.control.type ==
-                    ControlViewModelType.Toggle,
-            child: Column(
-              children: [
+              visible: widget.gicEditControl.control.type !=
+                      ControlViewModelType.Image &&
+                  widget.gicEditControl.control.design ==
+                      ControlDesignType.Image,
+              child: Column(children: [
+                _imageToggle(),
+                _imageButton(0),
                 _imageButton(1),
+                _importButton()
+              ])),
+          Visibility(
+              visible: widget.gicEditControl.control.type !=
+                      ControlViewModelType.Image &&
+                  widget.gicEditControl.control.design ==
+                      ControlDesignType.UpDownGradient,
+              child: Column(children: [
+                _colorButton(0),
                 _colorButton(1),
-              ],
-            ),
-          ),
-          _importButton()
+              ])),
+          Visibility(
+              visible: widget.gicEditControl.control.type ==
+                  ControlViewModelType.Image,
+              child: Column(children: [_importButton()])),
         ],
       ),
     );
@@ -69,42 +75,36 @@ class DesignTabState extends State<DesignTab> {
   }
 
   Widget _imageToggle() {
-    return Visibility(
-        visible: widget.gicEditControl.control.type ==
-                ControlViewModelType.Button ||
-            widget.gicEditControl.control.type ==
-                ControlViewModelType.QuickButton ||
-            widget.gicEditControl.control.type == ControlViewModelType.Toggle,
-        child: Column(
+    return Column(
+      children: [
+        Text(widget.translation.text(ScreenEditorText.designTabDetails)),
+        Row(
           children: [
-            Text(widget.translation.text(ScreenEditorText.designTabDetails)),
-            Row(
-              children: [
-                Text(switchText),
-                Switch(
-                  value: (widget.gicEditControl.control.design ==
-                      ControlDesignType.Image),
-                  onChanged: (value) {
-                    setState(() {
-                      if (widget.gicEditControl.control.design ==
-                          ControlDesignType.Image) {
-                        widget.gicEditControl.control.design =
-                            ControlDesignType.UpDownGradient;
-                        switchText = widget.translation
-                            .text(ScreenEditorText.designTabColorBased);
-                      } else {
-                        widget.gicEditControl.control.design =
-                            ControlDesignType.Image;
-                        switchText = widget.translation
-                            .text(ScreenEditorText.designTabImageBased);
-                      }
-                    });
-                  },
-                ),
-              ],
+            Text(switchText),
+            Switch(
+              value: (widget.gicEditControl.control.design ==
+                  ControlDesignType.Image),
+              onChanged: (value) {
+                setState(() {
+                  if (widget.gicEditControl.control.design ==
+                      ControlDesignType.Image) {
+                    widget.gicEditControl.control.design =
+                        ControlDesignType.UpDownGradient;
+                    switchText = widget.translation
+                        .text(ScreenEditorText.designTabColorBased);
+                  } else {
+                    widget.gicEditControl.control.design =
+                        ControlDesignType.Image;
+                    switchText = widget.translation
+                        .text(ScreenEditorText.designTabImageBased);
+                  }
+                });
+              },
             ),
           ],
-        ));
+        ),
+      ],
+    );
   }
 
   Widget _imageButton(int index) {
@@ -128,15 +128,11 @@ class DesignTabState extends State<DesignTab> {
             widget.translation.text(ScreenEditorText.designTabUnpressedImage);
       }
     }
-    return Visibility(
-        visible: widget.gicEditControl.control.design ==
-                ControlDesignType.Image ||
-            widget.gicEditControl.control.type == ControlViewModelType.Image,
-        child: ElevatedButton(
-            onPressed: () async {
-              await _pickImage(index);
-            },
-            child: Text(textToDisplay)));
+    return ElevatedButton(
+        onPressed: () async {
+          await _pickImage(index);
+        },
+        child: Text(textToDisplay));
   }
 
   Widget _colorButton(int index) {
@@ -146,18 +142,15 @@ class DesignTabState extends State<DesignTab> {
       textToDisplay = widget.translation
           .text(ScreenEditorText.designTabSecondaryColor); //default to image
     }
-    return Visibility(
-        visible: widget.gicEditControl.control.design ==
-            ControlDesignType.UpDownGradient,
-        child: Column(
-          children: [
-            ElevatedButton(
-                onPressed: () {
-                  _pickColor(index);
-                },
-                child: Text(textToDisplay)),
-          ],
-        ));
+    return Column(
+      children: [
+        ElevatedButton(
+            onPressed: () {
+              _pickColor(index);
+            },
+            child: Text(textToDisplay)),
+      ],
+    );
   }
 
   void _pickColor(int index) {
@@ -180,22 +173,18 @@ class DesignTabState extends State<DesignTab> {
         context: context,
         builder: (BuildContext context) {
           return ImageDialog();
-        }).then((value) =>
-        widget.gicEditControl.control.images[index] = value
-    );
+        }).then((value) => widget.gicEditControl.control.images[index] = value);
   }
 
   Widget _importButton() {
-    return Visibility(
-      visible: widget.gicEditControl.control.design == ControlDesignType.Image,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ElevatedButton(
-            onPressed: () {
-              _importImage();
-            },
-            child: Text(widget.translation.text(ScreenEditorText.designTabImport))),
-      ),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ElevatedButton(
+          onPressed: () {
+            _importImage();
+          },
+          child:
+              Text(widget.translation.text(ScreenEditorText.designTabImport))),
     );
   }
 
@@ -206,19 +195,29 @@ class DesignTabState extends State<DesignTab> {
     );
     if (result != null) {
       File sourceFile = File(result.files.single.path);
-      Directory filesDir = await getApplicationSupportDirectory();
       File newFile;
-      String destPath;
-      for (int i=0; i < 1000; i++) {
-        String filename = "button_${i.toString()}.${result.files.first.extension}";
-        destPath = path.join(
-            filesDir.path, filename);
-        newFile = File(destPath);
-        if (!newFile.existsSync()) {
-          break;
-        }
+      if (widget.gicEditControl.control.type == ControlViewModelType.Image) {
+        newFile = await _getDestinationName(result, "${widget.screenId.toString()}_control_");
+      } else {
+        newFile = await _getDestinationName(result, "button_");
       }
       sourceFile.copySync(newFile.path);
     }
+  }
+
+  Future<File> _getDestinationName(FilePickerResult result, String filePrefix) async {
+    Directory filesDir = await getApplicationSupportDirectory();
+    File newFile;
+    String destPath;
+    for (int i = 0; i < 1000; i++) {
+      String filename =
+          "$filePrefix${i.toString()}.${result.files.first.extension}";
+      destPath = path.join(filesDir.path, filename);
+      newFile = File(destPath);
+      if (!newFile.existsSync()) {
+        break;
+      }
+    }
+    return newFile;
   }
 }
