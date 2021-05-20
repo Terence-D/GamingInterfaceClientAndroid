@@ -183,32 +183,6 @@ class DesignTabState extends State<DesignTab> {
         }).then((value) =>
         widget.gicEditControl.control.images[index] = value
     );
-
-    //
-    // FilePickerResult result = await FilePicker.platform.pickFiles(
-    //   type: FileType.custom,
-    //   allowedExtensions: ['jpg', 'png', 'gif'],
-    // );
-    // if (result != null) {
-    //   File sourceFile = File(result.files.single.path);
-    //   // Directory dest = await getApplicationDocumentsDirectory();
-    //   // File newFile;
-    //   // String destPath;
-    //   // for (int i=0; i < 1000; i++) {
-    //   //   String filename = "control_${i.toString()}.${result.files.first.extension}";
-    //   //   destPath = path.join(
-    //   //       dest.path, "screens", widget.screenId.toString(), filename);
-    //   //   newFile = File(destPath);
-    //   //   if (!newFile.existsSync())
-    //   //     break;
-    //   // }
-    //
-    //   setState(() {
-    //     widget.gicEditControl.control.design = ControlDesignType.Image;
-    //     widget.gicEditControl.control.images[index] = sourceFile.path;
-    //   });
-
-    // }
   }
 
   Widget _importButton() {
