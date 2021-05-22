@@ -197,7 +197,13 @@ class DesignTabState extends State<DesignTab> {
       File sourceFile = File(result.files.single.path);
       File newFile;
       if (widget.gicEditControl.control.type == ControlViewModelType.Image) {
-        newFile = await _getDestinationName(result, "${widget.screenId.toString()}_control_");
+        newFile = await _getDestinationName(
+            result, "${widget.screenId.toString()}_control_");
+        if (widget.gicEditControl.control.images.isEmpty) {
+          widget.gicEditControl.control.images.add(newFile.path);
+        } else {
+          widget.gicEditControl.control.images[0] = newFile.path;
+        }
       } else {
         newFile = await _getDestinationName(result, "button_");
       }
@@ -205,7 +211,8 @@ class DesignTabState extends State<DesignTab> {
     }
   }
 
-  Future<File> _getDestinationName(FilePickerResult result, String filePrefix) async {
+  Future<File> _getDestinationName(
+      FilePickerResult result, String filePrefix) async {
     Directory filesDir = await getApplicationSupportDirectory();
     File newFile;
     String destPath;

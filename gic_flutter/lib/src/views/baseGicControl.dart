@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/screen/command.dart';
+import 'package:gic_flutter/src/backend/models/screen/controlTypes.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 
@@ -30,9 +31,11 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
 
   @override
   Widget build(BuildContext context) {
-    unpressed = _buildButtonDesign(false);
-    pressed = _buildButtonDesign(true);
-    active = unpressed;
+    if (control.type == ControlViewModelType.Button) {
+      unpressed = _buildButtonDesign(false);
+      pressed = _buildButtonDesign(true);
+      active = unpressed;
+    }
     return buildControl();
   }
 
@@ -69,6 +72,7 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
           break;
         case ControlViewModelType.Text:
         case ControlViewModelType.Image:
+          sendCommand(null, -1);
           break;
       }
     });
