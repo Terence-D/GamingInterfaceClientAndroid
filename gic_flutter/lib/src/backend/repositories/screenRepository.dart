@@ -29,7 +29,7 @@ class ScreenRepository {
     keys.forEach((key) {
       if (key.contains(_prefsScreen)) {
         int screenId = int.parse(key.substring(_prefsScreen.length));
-        Screen screen = new Screen(screenId: screenId);
+        Screen screen = Screen(screenId: screenId);
         try {
           //legacy used an integer dummy value, so need to handle that
           screen.name = prefs.getString(key);
@@ -86,8 +86,9 @@ class ScreenRepository {
   /// Once it has exhausted the whole list and has not found a match, it wil
   /// return this unused number
   int findUniqueId({int startingId = -1}) {
-    if (startingId < 0)
+    if (startingId < 0) {
       startingId = _cache.length;
+    }
 
     _cache.forEach((screen) {
       if (screen.screenId == startingId) {
@@ -109,13 +110,14 @@ class ScreenRepository {
 
     //clear out the old
     prefs.getKeys().forEach((key) {
-      if (key.contains("${screen.screenId}$_prefsControl"))
+      if (key.contains("${screen.screenId}$_prefsControl")) {
         prefs.remove(key);
+      }
     });
 
     //add the updated controls
     int i = 0;
-    if (screen.controls != null && screen.controls.length > 0) {
+    if (screen.controls != null && screen.controls.isNotEmpty) {
       screen.controls.forEach((control) {
         String json = jsonEncode(control.toJson());
         prefs.setString("${screen.screenId}$_prefsControl$i", json);
@@ -126,14 +128,15 @@ class ScreenRepository {
 
   updateName(int id, String newName) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString("$_prefsScreen$id", newName);
+    await prefs.setString("$_prefsScreen$id", newName);
   }
 
   loadFromJson(
       List<ScreenItem> screens, String device, BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (_cache == null || _cache.length < 1)
+    if (_cache == null || _cache.isEmpty) {
       await _load(prefs);
+    }
 
     //the name will have spaces, but the asset file does not.
     // so turn Large Tablet into LargeTablet
@@ -146,7 +149,7 @@ class ScreenRepository {
       Map controlMap = jsonDecode(jsonString);
 
       //build the new screen from the incoming json
-      Screen newScreen = new Screen.fromJson(controlMap);
+      Screen newScreen = Screen.fromJson(controlMap);
 
       //get a unique name and ID
       newScreen.name = _findUniqueName(newScreen.name);
@@ -159,9 +162,9 @@ class ScreenRepository {
   }
 
   Future<List<Screen>> loadScreens() async {
-    if (_cache != null)
+    if (_cache != null) {
       return _cache;
-    else {
+    } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.reload();
       await _load(prefs);
@@ -172,7 +175,7 @@ class ScreenRepository {
 
   //Loads in the screen name list
   Future<LinkedHashMap> getScreenList() async {
-    LinkedHashMap rv = new LinkedHashMap<int, String>();
+    LinkedHashMap rv = LinkedHashMap<int, String>();
 
     await loadScreens();
 
@@ -182,7 +185,7 @@ class ScreenRepository {
     return rv;
   }
 
-  Future save({screen: Screen}) async {
+  Future save({screen = Screen}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _save(prefs, screen);
     _load(prefs);
@@ -190,30 +193,33 @@ class ScreenRepository {
 
   Future<int> delete(int id) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (_cache == null)
+    if (_cache == null) {
       await _load(prefs);
+    }
 
-    if (_cache.length < 2)
+    if (_cache.length < 2) {
       return -1;
+    }
 
-    prefs.remove("$_prefsScreen$id");
-    prefs.remove("${id}_background");
-    prefs.remove("${id}_background_path");
-    prefs.getKeys().forEach((key) {
-      if (key.contains("$id" + "_control_"))
+    await prefs.remove("$_prefsScreen$id");
+    await prefs.remove("${id}_background");
+    await prefs.remove("${id}_background_path");
+    await prefs.getKeys().forEach((key) {
+      if (key.contains("$id" + "_control_")) {
         prefs.remove(key);
+      }
     });
 
     for (int i = 0; i < _cache.length; i++) {
       if (_cache[i].screenId == id) {
         if (_cache[i].backgroundPath != null &&
             _cache[i].backgroundPath.isNotEmpty) {
-          final File background = new File(_cache[i].backgroundPath);
-          background.delete();
+          final File background = File(_cache[i].backgroundPath);
+          await background.delete();
         }
         _cache[i].controls.forEach((element) {
           if (element.primaryImage.contains("_control_")) {
-            final File control = new File(element.primaryImage);
+            final File control = File(element.primaryImage);
             control.delete();
           }
         });
@@ -263,11 +269,11 @@ class ScreenRepository {
     // If we find any other files with that name, we'll search for a new id
     // then update the screen with that new id
 
-    Directory cache = new Directory(importLocation);
+    Directory cache = Directory(importLocation);
 
     //keep track of id's we already modified and their new id
-    final Map<int, int> foundButtonIds = new Map<int, int>();
-    final Map<int, int> foundSwitchIds = new Map<int, int>();
+    final Map<int, int> foundButtonIds = Map<int, int>();
+    final Map<int, int> foundSwitchIds = Map<int, int>();
 
     //we need to check against these filename types:
     //screenId_background.png
@@ -437,7 +443,7 @@ class ScreenRepository {
 
     Map controlMap = jsonDecode(jsonString);
     //build the new screen from the incoming json
-    Screen screen = new Screen.fromJson(controlMap);
+    Screen screen = Screen.fromJson(controlMap);
 
     return screen;
   }
@@ -446,8 +452,9 @@ class ScreenRepository {
     Directory cache = await getTemporaryDirectory();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (_cache == null || _cache.length < 1)
+    if (_cache == null || _cache.isEmpty) {
       await _load(prefs);
+    }
 
     String filesPath = (await getApplicationSupportDirectory()).path;
     for (int i = 0; i < _cache.length; i++) {
@@ -461,30 +468,32 @@ class ScreenRepository {
   Future<int> _exportScreen(screen, cache, exportPath, filesPath) async {
     String rawJson = jsonEncode(screen);
     //store the json data file in the directory
-    File jsonData = new File(path.join(cache.path, "data.json"));
+    File jsonData = File(path.join(cache.path, "data.json"));
     await jsonData.writeAsString(rawJson);
 
     var archive = ZipFileEncoder();
     archive.create(path.join(exportPath, screen.name + ".zip"));
     archive.addFile(jsonData);
     if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
-      File background = new File(path.join(
+      File background = File(path.join(
         filesPath,
         path.split(screen.backgroundPath).last,
       ));
       archive.addFile(background);
     }
     screen.controls.forEach((control) {
-      if (control.primaryImage != null && control.primaryImage.isNotEmpty)
-        archive.addFile(new File(path.join(
+      if (control.primaryImage != null && control.primaryImage.isNotEmpty) {
+        archive.addFile(File(path.join(
           filesPath,
           path.split(control.primaryImage).last,
         )));
-      if (control.secondaryImage != null && control.secondaryImage.isNotEmpty)
-        archive.addFile(new File(path.join(
+      }
+      if (control.secondaryImage != null && control.secondaryImage.isNotEmpty) {
+        archive.addFile(File(path.join(
           filesPath,
           path.split(control.secondaryImage).last,
         )));
+      }
     });
 
     archive.close();

@@ -9,7 +9,7 @@ class CompressedFileService {
   /// 0 on success, sub zero on fail
   static int extract(String file, String tempPath) {
     try {
-      final File compressedFile = new File(file);
+      final File compressedFile = File(file);
       // Read the Zip file from disk.
       final bytes = compressedFile.readAsBytesSync();
       // Decode the Zip file
@@ -40,10 +40,11 @@ class CompressedFileService {
   static Future<int> compressFolder(String folderToCompress, String destinationFolder, String exportFile) async {
     //add the zip extension if required
     try {
-      if (!exportFile.endsWith(".zip"))
+      if (!exportFile.endsWith(".zip")) {
         exportFile += ".zip";
+      }
 
-      Directory source = new Directory(folderToCompress);
+      Directory source = Directory(folderToCompress);
 
       ZipFileEncoder zipFileEncoder = ZipFileEncoder();
       zipFileEncoder.create(path.join(destinationFolder, exportFile));

@@ -18,17 +18,18 @@ class CommandTab extends StatefulWidget {
 
 class CommandTabState extends State<CommandTab> {
   final List<TextEditingController> textControllers = [];
-  final AutoItKeyMap _commandList = new AutoItKeyMap();
+  final AutoItKeyMap _commandList = AutoItKeyMap();
   final List<String> _dropDownItems = [];
   String switchText;
 
   @override
   void initState() {
     super.initState();
-    if (widget.gicEditControl.control.type == ControlViewModelType.QuickButton)
+    if (widget.gicEditControl.control.type == ControlViewModelType.QuickButton) {
       switchText = widget.translation.text(ScreenEditorText.enabled);
-    else
+    } else {
       switchText = widget.translation.text(ScreenEditorText.disabled);
+    }
 
     _commandList.map.entries.forEach((e) => _dropDownItems.add(e.value));
     widget.gicEditControl.control.commands.forEach((element) {
@@ -72,7 +73,8 @@ class CommandTabState extends State<CommandTab> {
                   Row(children: modifierCheckboxes(1))
                 ],
               ),
-              visible: !widget.isButton),
+              visible: widget.gicEditControl.control.type ==
+                  ControlViewModelType.Toggle),
           Visibility(
               child: Column(
                 children: [
@@ -86,7 +88,9 @@ class CommandTabState extends State<CommandTab> {
                   )
                 ],
               ),
-              visible: widget.isButton)
+              visible: widget.gicEditControl.control.type ==
+                  ControlViewModelType.Button || widget.gicEditControl.control.type ==
+                  ControlViewModelType.QuickButton)
         ],
       ),
     );
@@ -122,6 +126,9 @@ class CommandTabState extends State<CommandTab> {
   //this drop down provides a list of all supported commands
   //the index determines if we are doing this for the primary or secondary controls
   DropdownButton<String> buildCommandDropDown(int commandIndex) {
+    if (commandIndex >= widget.gicEditControl.control.commands.length ) {
+      commandIndex = 0;
+    }
     return DropdownButton<String>(
       isExpanded: true,
       hint: Text(widget.translation.text(ScreenEditorText.commandDropDownHint)),
@@ -162,17 +169,21 @@ class CommandTabState extends State<CommandTab> {
 
   //builds the actual checkbox for the modifierCheckboxes method
   Checkbox modifierCheckbox(int commandIndex, String modifier) {
+    if (commandIndex >= widget.gicEditControl.control.commands.length) {
+      commandIndex = 0;
+    }
     return Checkbox(
         value: widget.gicEditControl.control.commands[commandIndex].modifiers
             .contains(modifier), //do something here
         onChanged: (bool value) {
           setState(() {
-            if (value)
+            if (value) {
               widget.gicEditControl.control.commands[commandIndex].modifiers
                   .add(modifier);
-            else
+            } else {
               widget.gicEditControl.control.commands[commandIndex].modifiers
                   .remove(modifier);
+            }
           });
         });
   }

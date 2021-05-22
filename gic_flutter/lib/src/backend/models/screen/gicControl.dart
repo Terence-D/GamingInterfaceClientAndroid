@@ -1,5 +1,3 @@
-import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
-
 import 'command.dart';
 
 class GicControl {
@@ -16,7 +14,7 @@ class GicControl {
   //3 - switched on, ready for mouse up
   //after 3, we reset back to 0
   int stage = 0;
-  Command command = new Command.empty();
+  Command command = Command.empty();
   String text = "NONE";
   double left = 140;
   double width = 320;
@@ -33,7 +31,7 @@ class GicControl {
   String secondaryImage = "";
   String fontName = "";
   int fontType = 0;
-  Command commandSecondary = new Command.empty();
+  Command commandSecondary = Command.empty();
 
   GicControl.empty() {
     primaryImage = "button_black";

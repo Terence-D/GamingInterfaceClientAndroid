@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
@@ -7,13 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
-import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/views/intro/screenListWidget.dart';
 import 'package:gic_flutter/src/views/intro/screenSizeWidget.dart';
 import 'package:introduction_screen/introduction_screen.dart';
-import 'package:path_provider/path_provider.dart';
 
 abstract class IntroViewContract {
   void onIntroLoadCompleted(List<PageViewModel> _pages);
@@ -22,7 +19,7 @@ abstract class IntroViewContract {
 class IntroPresentation {
 
   List<PageViewModel> _pages;
-  List<ScreenItem> _screens = <ScreenItem>[new ScreenItem("SC"), new ScreenItem("Elite")]; //, new ScreenItem("Truck") next time..
+  List<ScreenItem> _screens = <ScreenItem>[ScreenItem("SC"), ScreenItem("Elite")]; //, new ScreenItem("Truck") next time..
   String device = "Phone";
   IntroViewContract _contract;
 
@@ -88,10 +85,11 @@ class IntroPresentation {
               ScreenListWidget(_screens),
               RaisedButton(
                 onPressed: () {
-                  List<ScreenItem> screens = new List<ScreenItem>();
+                  List<ScreenItem> screens = List<ScreenItem>();
                   _screens.forEach((screen) {
-                    if (screen.selected)
+                    if (screen.selected) {
                       screens.add(screen);
+                    }
                   });
                   _importScreen(device, screens, context);
                 },
@@ -125,14 +123,14 @@ class IntroPresentation {
     device = device.replaceAll(" ", ""); //remove spaces
 
     //import each selected screen
-    ScreenService screenService = new ScreenService();
+    ScreenService screenService = ScreenService();
     await screenService.loadScreens();
     screenList.forEach((screen) async {
       String assetFile = path.join("assets", "screens", "${screen.title}-$device.json");
       await screenService.import(assetFile);
     });
 
-    Fluttertoast.showToast(
+    await Fluttertoast.showToast(
       msg: Intl.of(context).onboardImportSuccess,
     );
   }

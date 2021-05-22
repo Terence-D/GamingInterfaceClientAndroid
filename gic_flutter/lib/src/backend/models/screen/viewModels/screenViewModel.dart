@@ -16,7 +16,7 @@ class ScreenViewModel {
   String name = "";
   List<ControlViewModel> controls = [];
   int newControlId = -1;
-  Color backgroundColor = new Color(1);
+  Color backgroundColor = Color(1);
   String backgroundPath = "";
 
   ScreenViewModel.empty() {
@@ -25,7 +25,7 @@ class ScreenViewModel {
     name = "";
     controls = [];
     newControlId = -1;
-    backgroundColor = new Color(1);
+    backgroundColor = Color(1);
     backgroundPath = "";
   }
 
@@ -44,13 +44,13 @@ class ScreenViewModel {
     name = json['name'];
     controls = convertJsonToControl(json, 'controls');
     newControlId = json['newControlId'];
-    backgroundColor = new Color(json['backgroundColor']);
+    backgroundColor = Color(json['backgroundColor']);
     backgroundPath = json['backgroundPath'];
   }
 
   static convertJsonToControl(Map<String, dynamic> json, String key) {
     var list = json[key] as List;
-    List<ControlViewModel> controls = new List<ControlViewModel>();
+    List<ControlViewModel> controls = List<ControlViewModel>();
     list.forEach((value) {
       controls.add(ControlViewModel.fromJson(value));
     });
@@ -70,7 +70,7 @@ class ScreenViewModel {
 
   /// Create a clone of this object
   ScreenViewModel buildClone() {
-    ScreenViewModel newModel = new ScreenViewModel();
+    ScreenViewModel newModel = ScreenViewModel();
     newModel.screenId = screenId;
     newModel.name = name;
     newControlId = newControlId;
@@ -85,39 +85,41 @@ class ScreenViewModel {
   /// It'll use the builtin ScreenService.backgroundImagePath
   /// Returns either the file we wrote, or null on error
   Future<File> save(
-      {bool jsonOnly = false, String backgroundImageLocation: ""}) async {
+      {bool jsonOnly = false, String backgroundImageLocation = ""}) async {
     if (screenId < 0) return null;
 
     try {
       final Directory appFolder = await getApplicationDocumentsDirectory();
       final String screenPath = path.join(
           appFolder.path, ScreenService.screenFolder, screenId.toString());
-      final Directory screenFolder = new Directory(screenPath);
+      final Directory screenFolder = Directory(screenPath);
       if (!jsonOnly) {
         //create folder if doesn't exist
-        if (!screenFolder.existsSync())
+        if (!screenFolder.existsSync()) {
           screenFolder.createSync(recursive: true);
+        }
 
         //copy in resources
         String pathToUse = appFolder.path;
-        if (backgroundImageLocation.isNotEmpty)
+        if (backgroundImageLocation.isNotEmpty) {
           pathToUse = backgroundImageLocation;
+        }
         if (backgroundPath != null && backgroundPath.isNotEmpty) {
           String originalBackgroundImagePath = path.join(
               pathToUse, ScreenService.backgroundImageFolder, backgroundPath);
-          File backgroundFile = new File(originalBackgroundImagePath);
+          File backgroundFile = File(originalBackgroundImagePath);
           String newBackgroundImageFile = path.join(screenPath, backgroundPath);
-          backgroundFile.copy(newBackgroundImageFile);
+          await backgroundFile.copy(newBackgroundImageFile);
         }
         if (controls != null) {
           controls.forEach((control) {
             control.images.forEach((image) {
-              File imageFile = new File(image);
+              File imageFile = File(image);
               //if the path is an absolute path, copy them in to the local path
               if (imageFile.isAbsolute) {
-                imageFile.copy(screenPath);
+                imageFile.copy(path.join(screenPath, path.basename(imageFile.path)));
+                image = path.join(screenPath, path.basename(imageFile.path));
               }
-              image = path.basename(imageFile.path);
             });
           });
         }
@@ -126,7 +128,9 @@ class ScreenViewModel {
       //save the json file
       String screenJsonFile = path.join(screenPath, "data.json");
       final File file = File(screenJsonFile);
-      return file.writeAsString(json.encode(toJson()));
+      final String output = json.encode(toJson());
+      File toWrite = await file.writeAsString(output);
+      return toWrite;
     } catch (_) {
       return null;
     }
@@ -143,19 +147,20 @@ class ScreenViewModel {
 
   /// LEGACY CODE BELOW
   factory ScreenViewModel.fromLegacyModel(Screen model) {
-    ScreenViewModel rv = new ScreenViewModel();
-    rv.controls = new List<ControlViewModel>();
+    ScreenViewModel rv = ScreenViewModel();
+    rv.controls = [];
     rv.screenId = model.screenId;
     rv.name = model.name;
     model.controls.forEach((element) {
-      rv.controls.add(new ControlViewModel.fromLegacyModel(element));
+      rv.controls.add(ControlViewModel.fromLegacyModel(element));
     });
     rv.newControlId = model.newControlId;
 
-    if (model.backgroundColor == -1 || model.backgroundColor == null)
+    if (model.backgroundColor == -1 || model.backgroundColor == null) {
       rv.backgroundColor = Colors.black;
-    else
+    } else {
       rv.backgroundColor = _convertLegacyColor(model.backgroundColor);
+    }
     rv.backgroundPath = model.backgroundPath;
     return rv;
   }

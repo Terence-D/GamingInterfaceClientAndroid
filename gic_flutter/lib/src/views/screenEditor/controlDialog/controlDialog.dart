@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/commandTab.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/designTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/sizeTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/textTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
@@ -9,8 +10,10 @@ import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 class ControlDialog extends StatefulWidget {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
+  final int screenId;
 
-  const ControlDialog({Key key, this.gicEditControl, this.translation})
+  const ControlDialog(
+      {Key key, this.gicEditControl, this.translation, this.screenId})
       : super(key: key);
 
   @override
@@ -25,9 +28,11 @@ class _ControlDialogState extends State<ControlDialog> {
 
   _ControlDialogState(this.translation);
 
-  Widget imageTab() => Tab(icon: Icon(Icons.image));
+  Widget designTab() => Tab(icon: Icon(Icons.image));
 
   Widget textTab() => Tab(icon: Icon(Icons.text_fields));
+
+  Widget buildTab() => Tab(icon: Icon(Icons.build));
 
   Widget sizingTab() => Tab(icon: Icon(Icons.straighten));
 
@@ -40,12 +45,12 @@ class _ControlDialogState extends State<ControlDialog> {
   Widget build(BuildContext context) {
     buildTabs();
     return Dialog(
-        shape: RoundedRectangleBorder(),
-        elevation: 0,
         child: DefaultTabController(
             length: _tabs.length,
             child: Scaffold(
               appBar: AppBar(
+                title: Text("widget"),
+                actions: [],
                 bottom: TabBar(
                   tabs: _tabs,
                 ),
@@ -71,30 +76,42 @@ class _ControlDialogState extends State<ControlDialog> {
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
       case ControlViewModelType.Image:
-        _tabs.add(imageTab());
-        _tabContents.add(imageTabContents());
+        _tabs.add(designTab());
+        _tabContents.add(DesignTab(
+          gicEditControl: widget.gicEditControl,
+          translation: translation,
+          screenId: widget.screenId,
+        ));
         break;
       case ControlViewModelType.Button:
       case ControlViewModelType.QuickButton:
-        _tabs.add(Tab(icon: Icon(Icons.build)));
+        _tabs.add(buildTab());
         _tabContents.add(CommandTab(
             gicEditControl: widget.gicEditControl,
             translation: translation,
             isButton: true));
-        _tabs.add(imageTab());
-        _tabContents.add(imageTabContents());
+        _tabs.add(designTab());
+        _tabContents.add(DesignTab(
+          gicEditControl: widget.gicEditControl,
+          translation: translation,
+          screenId: widget.screenId,
+        ));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
       case ControlViewModelType.Toggle:
-        _tabs.add(Tab(icon: Icon(Icons.build)));
+        _tabs.add(buildTab());
         _tabContents.add(CommandTab(
             gicEditControl: widget.gicEditControl,
             translation: translation,
             isButton: true));
-        _tabs.add(imageTab());
-        _tabContents.add(imageTabContents());
+        _tabs.add(designTab());
+        _tabContents.add(DesignTab(
+          gicEditControl: widget.gicEditControl,
+          translation: translation,
+          screenId: widget.screenId,
+        ));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
             gicEditControl: widget.gicEditControl, translation: translation));
@@ -104,11 +121,5 @@ class _ControlDialogState extends State<ControlDialog> {
     _tabs.add(sizingTab());
     _tabContents.add(SizeTab(
         gicEditControl: widget.gicEditControl, translation: translation));
-  }
-
-  Widget imageTabContents() {
-    return Column(
-      children: <Widget>[],
-    );
   }
 }

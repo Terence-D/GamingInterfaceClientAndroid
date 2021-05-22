@@ -1,14 +1,14 @@
 import 'dart:collection';
 
 class AutoItKeyMap {
-  Map<String, String> map = new LinkedHashMap();
+  Map<String, String> map = LinkedHashMap();
 
   AutoItKeyMap() {
     //add every char in the english alphabet
     int c = "A".codeUnitAt(0);
     int end = "Z".codeUnitAt(0);
     while (c <= end) {
-      map[new String.fromCharCode(c)] = new String.fromCharCode(c);
+      map[String.fromCharCode(c)] = String.fromCharCode(c);
       c++;
     }
 

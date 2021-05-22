@@ -1,8 +1,5 @@
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
-import 'package:gic_flutter/src/theme/theme.dart';
-import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'dart:io';
 
 import 'package:filesystem_picker/filesystem_picker.dart';
@@ -34,7 +31,7 @@ class VersionResponse {
 class ScreenList extends StatelessWidget {
   final List<ScreenListItem> _screens;
   final IntlLauncher _translations;
-  final List<TextEditingController> _screenNameController = new List<TextEditingController>();
+  final List<TextEditingController> _screenNameController = List<TextEditingController>();
   final LauncherState _parent;
 
   ScreenList(this._parent, this._screens, this._translations);
@@ -43,7 +40,7 @@ class ScreenList extends StatelessWidget {
   Widget build(BuildContext context) {
     _screenNameController.clear();
     for (var i = 0; i < _screens.length; i++) {
-      TextEditingController tec = new TextEditingController();
+      TextEditingController tec = TextEditingController();
       tec.text = _screens[i].name;
       _screenNameController.add(tec);
     }
@@ -66,7 +63,7 @@ class ScreenList extends StatelessWidget {
         width: double.maxFinite,
         child: Card(
           elevation: 5,
-          child: new Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[_screenName(index), screenButtons(index, context)],
           ),
@@ -77,7 +74,7 @@ class ScreenList extends StatelessWidget {
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: new Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             _startButton(index, context),
@@ -91,7 +88,7 @@ class ScreenList extends StatelessWidget {
   }
 
   Widget _innerDeleteButton(BuildContext context, int index) {
-    return new IconButton(
+    return IconButton(
       color: Theme.of(context).errorColor,
       icon: Icon(Icons.delete_forever),
       tooltip: _translations.text(LauncherText.buttonDelete),
@@ -115,7 +112,7 @@ class ScreenList extends StatelessWidget {
   }
 
   Widget _innerShareButton(int index, BuildContext context) {
-    return new IconButton(
+    return IconButton(
       icon: Icon(Icons.share),
       tooltip: _translations.text(LauncherText.buttonExport),
       onPressed: () {
@@ -149,7 +146,7 @@ class ScreenList extends StatelessWidget {
   }
 
   IconButton _innerEditButton(int index, BuildContext context) {
-    return new IconButton(
+    return IconButton(
       icon: Icon(Icons.edit),
       tooltip: _translations.text(LauncherText.buttonEdit),
       onPressed: () {
@@ -171,7 +168,7 @@ class ScreenList extends StatelessWidget {
   }
 
   AccentButton _innerStartButton(int index, BuildContext context) {
-    return new AccentButton(
+    return AccentButton(
       child: Text(_translations.text(LauncherText.start)),
       onPressed: () {
         _validateScreen(index, context);
@@ -194,14 +191,14 @@ class ScreenList extends StatelessWidget {
             ),
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               child: Text('Yes'),
               onPressed: () {
                 _deleteScreen(index);
                 Navigator.of(context).pop();
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text('No'),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -228,8 +225,8 @@ class ScreenList extends StatelessWidget {
   }
 
   Widget _textField(int index) {
-    return new Flexible(
-      child: new TextFormField(
+    return Flexible(
+      child: TextFormField(
         controller: _screenNameController[index],
         decoration: InputDecoration(hintText: _translations.text(LauncherText.screenName)),
       ),
@@ -249,7 +246,7 @@ class ScreenList extends StatelessWidget {
   }
 
   Widget _innerUpdateButton(int index) {
-    return new IconButton(
+    return IconButton(
       icon: Icon(Icons.save),
       tooltip: _translations.text(LauncherText.buttonUpdate),
       onPressed: () {
@@ -279,27 +276,27 @@ class ScreenList extends StatelessWidget {
     // }
   }
 
-  _showLoaderDialog(BuildContext context) {
-    AlertDialog alert = AlertDialog(
-      content: new Row(
-        children: [
-          CircularProgressIndicator(),
-          Container(margin: EdgeInsets.only(left: 7), child: Text(_translations.text(LauncherText.loading))),
-        ],
-      ),
-    );
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  // _showLoaderDialog(BuildContext context) {
+  //   AlertDialog alert = AlertDialog(
+  //     content: Row(
+  //       children: [
+  //         CircularProgressIndicator(),
+  //         Container(margin: EdgeInsets.only(left: 7), child: Text(_translations.text(LauncherText.loading))),
+  //       ],
+  //     ),
+  //   );
+  //   showDialog(
+  //     barrierDismissible: false,
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
   _showResizeDialog(BuildContext context, String optionalText, NetworkModel networkModel, int screenId) {
     // set up the buttons
-    Widget resizeButton = FlatButton(
+    Widget resizeButton = TextButton(
       child: Text("Resize"),
       onPressed: () {
         Navigator.pop(context);
@@ -307,7 +304,7 @@ class ScreenList extends StatelessWidget {
         _validateSettings(networkModel, context, screenId);
       },
     );
-    Widget continueButton = FlatButton(
+    Widget continueButton = TextButton(
       child: Text("Continue"),
       onPressed: () {
         Navigator.pop(context);
@@ -333,51 +330,52 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  _showUpgradeDialog(BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Ok"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-    Widget continueButton = RaisedButton(
-        onPressed: () async {
-          Email email = Email(
-            body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
-            subject: Intl.of(context).onboardEmailSubject,
-          );
-          await FlutterEmailSender.send(email);
-        },
-        child: Text(Intl.of(context).onboardSendLink, style: TextStyle(color: Colors.white)),
-        color: CustomTheme.of(context).primaryColor);
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Upgrade Server"),
-      content: Text(_translations.text(LauncherText.errorOutOfDate)),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  // _showUpgradeDialog(BuildContext context) {
+  //   // set up the buttons
+  //   Widget cancelButton = FlatButton(
+  //     child: Text("Ok"),
+  //     onPressed: () {
+  //       Navigator.pop(context);
+  //     },
+  //   );
+  //   Widget continueButton = RaisedButton(
+  //       onPressed: () async {
+  //         Email email = Email(
+  //           body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
+  //           subject: Intl.of(context).onboardEmailSubject,
+  //         );
+  //         await FlutterEmailSender.send(email);
+  //       },
+  //       child: Text(Intl.of(context).onboardSendLink, style: TextStyle(color: Colors.white)),
+  //       color: CustomTheme.of(context).primaryColor);
+  //
+  //   // set up the AlertDialog
+  //   AlertDialog alert = AlertDialog(
+  //     title: Text("Upgrade Server"),
+  //     content: Text(_translations.text(LauncherText.errorOutOfDate)),
+  //     actions: [
+  //       cancelButton,
+  //       continueButton,
+  //     ],
+  //   );
+  //
+  //   // show the dialog
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
   Future<bool> _checkScreenDimensions(int screenId, NetworkModel networkModel, BuildContext context) async {
     List deviceInfo = _parent.launcherBloc.getDimensions(context);
     List screenInfo = await _parent.launcherBloc.checkScreenSize(screenId);
 
     bool rotate = false;
-    if (deviceInfo[0] != screenInfo[0])
+    if (deviceInfo[0] != screenInfo[0]) {
       rotate = true;
+    }
 
     //add some buffer for the check
     if ((deviceInfo[1] + 10 < screenInfo[1] || deviceInfo[2] + 10 < screenInfo[2])) {
@@ -392,8 +390,8 @@ class ScreenList extends StatelessWidget {
   _validateScreen(int screenIndex, BuildContext context) async {
     int screenId = _screens[screenIndex].id;
 
-    NetworkModel networkModel = new NetworkModel();
-    networkModel.init(_parent.passwordController.text, _parent.addressController.text,  _parent.portController.text);
+    NetworkModel networkModel = NetworkModel();
+    await networkModel.init(_parent.passwordController.text, _parent.addressController.text,  _parent.portController.text);
 
     if (await _checkScreenDimensions(screenId, networkModel, context)) {
       return;
@@ -453,13 +451,13 @@ class ScreenList extends StatelessWidget {
 
   void _deleteScreen(int index) async {
     await _parent.launcherBloc.deleteScreen(_screens[index].id);
-    Fluttertoast.showToast(
+    await Fluttertoast.showToast(
       msg: _translations.text(LauncherText.deleteComplete),
     );
   }
 
   Future<void> _export(BuildContext context, int id) async {
-    const platform = const MethodChannel(Channel.channelUtil);
+    const platform = MethodChannel(Channel.channelUtil);
     String externalPath;
     try {
       externalPath = await platform.invokeMethod(Channel.actionGetDownloadFolder);
@@ -479,7 +477,7 @@ class ScreenList extends StatelessWidget {
 
       if (exportPath != null && exportPath.isNotEmpty) {
         await _parent.launcherBloc.export(exportPath, id);
-        Fluttertoast.showToast(
+        await Fluttertoast.showToast(
           msg: _translations.text(LauncherText.exportComplete),
         );
       }

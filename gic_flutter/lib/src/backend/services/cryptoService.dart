@@ -12,11 +12,11 @@ class CryptoService {
 
     static Future<String> encrypt(String toEncrypt) async {
         Uint8List derivedKey = _buildKey();
-        KeyParameter keyParam = new KeyParameter(derivedKey);
-        BlockCipher aes = new AESFastEngine();
+        KeyParameter keyParam = KeyParameter(derivedKey);
+        BlockCipher aes = AESFastEngine();
         Uint8List ivBytes = _createUint8ListFromString(iv);
-        BlockCipher cipher = new CBCBlockCipher(aes);
-        ParametersWithIV params = new ParametersWithIV(keyParam, ivBytes);
+        BlockCipher cipher = CBCBlockCipher(aes);
+        ParametersWithIV params = ParametersWithIV(keyParam, ivBytes);
 
         cipher.init(true, params);
 
@@ -29,53 +29,54 @@ class CryptoService {
 
     static Future<String> decrypt(String toDecrypt) async {
         Uint8List derivedKey = _buildKey();
-        KeyParameter keyParam = new KeyParameter(derivedKey);
-        BlockCipher aes = new AESFastEngine();
+        KeyParameter keyParam = KeyParameter(derivedKey);
+        BlockCipher aes = AESFastEngine();
         Uint8List ivBytes = _createUint8ListFromString(iv);
-        BlockCipher cipher = new CBCBlockCipher(aes);
-        ParametersWithIV params = new ParametersWithIV(keyParam, ivBytes);
+        BlockCipher cipher = CBCBlockCipher(aes);
+        ParametersWithIV params = ParametersWithIV(keyParam, ivBytes);
 
         Uint8List cipherBytesFromEncode = base64.decode(toDecrypt);
 
-        Uint8List cipherIvBytes = new Uint8List(cipherBytesFromEncode.length + ivBytes.length)
+        Uint8List cipherIvBytes = Uint8List(cipherBytesFromEncode.length + ivBytes.length)
             ..setAll(0, ivBytes)
             ..setAll(ivBytes.length, cipherBytesFromEncode);
 
         cipher.init(false, params);
 
         int cipherLen = cipherIvBytes.length - aes.blockSize;
-        Uint8List cipherBytes = new Uint8List(cipherLen)
+        Uint8List cipherBytes = Uint8List(cipherLen)
             ..setRange(0, cipherLen, cipherIvBytes, aes.blockSize);
         Uint8List paddedText = _processBlocks(cipher, cipherBytes);
         Uint8List textBytes = _unpad(paddedText);
 
-        if (textBytes == null)
-            return "";
+        if (textBytes == null) {
+          return "";
+        }
 
-        return new String.fromCharCodes(textBytes);
+        return String.fromCharCodes(textBytes);
     }
 
     static Uint8List _buildKey() {
         if (passphrase == null || passphrase.isEmpty) {
-            throw new ArgumentError('passphrase must not be empty');
+            throw ArgumentError('passphrase must not be empty');
         }
 
         Uint8List passphraseBytes = _createUint8ListFromString(passphrase);
         Uint8List saltBytes = _createUint8ListFromString(salt);
 
-        Pbkdf2Parameters params = new Pbkdf2Parameters(saltBytes, iterations, size);
-        KeyDerivator keyDerivator = new PBKDF2KeyDerivator(new HMac(new SHA1Digest(), 64));
+        Pbkdf2Parameters params = Pbkdf2Parameters(saltBytes, iterations, size);
+        KeyDerivator keyDerivator = PBKDF2KeyDerivator(HMac(SHA1Digest(), 64));
         keyDerivator.init(params);
 
         return keyDerivator.process(passphraseBytes);
     }
 
     static Uint8List _pad(Uint8List src, int blockSize) {
-        var pad = new PKCS7Padding();
+        var pad = PKCS7Padding();
         pad.init(null);
 
         int padLength = blockSize - (src.length % blockSize);
-        var out = new Uint8List(src.length + padLength)
+        var out = Uint8List(src.length + padLength)
             ..setAll(0, src);
         pad.addPadding(out, src.length);
 
@@ -84,21 +85,21 @@ class CryptoService {
 
     static Uint8List _unpad(Uint8List src) {
         try {
-            PKCS7Padding pad = new PKCS7Padding();
+            PKCS7Padding pad = PKCS7Padding();
             pad.init(null);
 
             int padLength = pad.padCount(src);
             int len = src.length - padLength;
 
-            return new Uint8List(len)
+            return Uint8List(len)
                 ..setRange(0, len, src);
-        } catch (Exception) {
+        } catch (_) {
             return null;
         }
     }
 
     static Uint8List _processBlocks(BlockCipher cipher, Uint8List inp) {
-        var out = new Uint8List(inp.lengthInBytes);
+        var out = Uint8List(inp.lengthInBytes);
 
         for (var offset = 0; offset < inp.lengthInBytes;) {
             var len = cipher.processBlock(inp, offset, out, offset);

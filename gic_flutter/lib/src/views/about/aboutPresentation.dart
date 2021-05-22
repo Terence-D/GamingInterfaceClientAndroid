@@ -15,7 +15,7 @@ class AboutPresentation implements BasePresentation {
   }
 
   Future<void> buildVM(BuildContext context) async {
-    AboutVM _viewModel = new AboutVM();
+    AboutVM _viewModel = AboutVM();
 
     _viewModel.toolbarTitle = Intl.of(context).about(AboutText.toolbarTitle);
     _viewModel.emailTo = Intl.of(context).about(AboutText.emailTo);
@@ -23,13 +23,13 @@ class AboutPresentation implements BasePresentation {
     _viewModel.versionText = await _buildVersion(context);
     _viewModel.appName = await _appName(context);
 
-    _viewModel.legal = new ViewSection(
+    _viewModel.legal = ViewSection(
       Intl.of(context).about(AboutText.legalTitle),
       Intl.of(context).about(AboutText.legalText),
       Intl.of(context).about(AboutText.legalUrl),
     );
 
-    _viewModel.server = new ViewSection(
+    _viewModel.server = ViewSection(
       Intl.of(context).about(AboutText.serverTitle),
       Intl.of(context).about(AboutText.serverText),
       Intl.of(context).about(AboutText.serverUrl),
@@ -54,79 +54,79 @@ class AboutPresentation implements BasePresentation {
   }
 
   List<ViewSection> _buildThirdPartyLibraries(BuildContext context) {
-    List<ViewSection> libraries = new List<ViewSection>();
+    List<ViewSection> libraries = <ViewSection>[];
 
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.cryptoTitle),
       Intl.of(context).about(AboutText.cryptoText),
       Intl.of(context).about(AboutText.cryptoUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.colorTitle),
       Intl.of(context).about(AboutText.colorText),
       Intl.of(context).about(AboutText.colorUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.flutterDevTitle),
       Intl.of(context).about(AboutText.flutterDevText),
       Intl.of(context).about(AboutText.flutterDevUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.httpTitle),
       Intl.of(context).about(AboutText.httpText),
       Intl.of(context).about(AboutText.httpUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.fluttertoastTitle),
       Intl.of(context).about(AboutText.fluttertoastText),
       Intl.of(context).about(AboutText.fluttertoastUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.introductionScreenTitle),
       Intl.of(context).about(AboutText.introductionScreenText),
       Intl.of(context).about(AboutText.introductionScreenUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.flutterEmailSenderTitle),
       Intl.of(context).about(AboutText.flutterEmailSenderText),
       Intl.of(context).about(AboutText.flutterEmailSenderUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.flutterCommunityTitle),
       Intl.of(context).about(AboutText.flutterCommunityText),
       Intl.of(context).about(AboutText.flutterCommunityUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.flutterLinkifyTitle),
       Intl.of(context).about(AboutText.flutterLinkifyText),
       Intl.of(context).about(AboutText.flutterLinkifyUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.archiveTitle),
       Intl.of(context).about(AboutText.archiveText),
       Intl.of(context).about(AboutText.archiveUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.scrollablePositionedListTitle),
       Intl.of(context).about(AboutText.scrollablePositionedListText),
       Intl.of(context).about(AboutText.scrollablePositionedListUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.permissionHandlerTitle),
       Intl.of(context).about(AboutText.permissionHandlerText),
       Intl.of(context).about(AboutText.permissionHandlerUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.filePickerTitle),
       Intl.of(context).about(AboutText.filePickerText),
       Intl.of(context).about(AboutText.filePickerUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.showcaseviewTitle),
       Intl.of(context).about(AboutText.showcaseviewText),
       Intl.of(context).about(AboutText.showcaseviewUrl),
     ) );
-    libraries.add( new ViewSection(
+    libraries.add( ViewSection(
       Intl.of(context).about(AboutText.fileSystemPickerTitle),
       Intl.of(context).about(AboutText.fileSystemPickerText),
       Intl.of(context).about(AboutText.fileSystemPickerUrl),

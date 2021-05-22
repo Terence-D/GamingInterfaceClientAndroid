@@ -9,47 +9,50 @@ abstract class BaseGicControl extends StatefulWidget {
   final ControlViewModel control;
   final double pixelRatio;
 
-  BaseGicControl(
-      {Key key,
-      @required this.control,
-      @required this.pixelRatio})
+  BaseGicControl({Key key, @required this.control, @required this.pixelRatio})
       : super(key: key);
 }
 
 abstract class BaseGicControlState extends State<BaseGicControl> {
   final ControlViewModel control;
   final double pixelRatio;
-  final BorderRadius buttonBorder = new BorderRadius.all(Radius.circular(5));
+  final BorderRadius buttonBorder = BorderRadius.all(Radius.circular(5));
 
   BoxDecoration unpressed;
   BoxDecoration pressed;
   BoxDecoration active;
 
-  BaseGicControlState(
-      {@required this.control,
-      @required this.pixelRatio}) {
-    unpressed = _buildButtonDesign(false);
-    pressed = _buildButtonDesign(true);
-    active = unpressed;
-  }
+  BaseGicControlState({@required this.control, @required this.pixelRatio});
 
   sendCommand(String commandUrl, int commandIndex);
+
   GestureDetector buildControl();
 
   @override
   Widget build(BuildContext context) {
+    unpressed = _buildButtonDesign(false);
+    pressed = _buildButtonDesign(true);
+    active = unpressed;
     return buildControl();
   }
 
   Widget buildControlContainer() {
+    Widget toReturn;
     switch (control.type) {
       case ControlViewModelType.Text:
-        return _gicText();
+        toReturn = _gicText();
+        break;
       case ControlViewModelType.Image:
-        return _gicImage();
+        toReturn = _gicImage();
+        break;
       default:
-        return _gicButton();
+        toReturn = _gicButton();
+        break;
     }
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+      return toReturn;
+    });
   }
 
   onTap() {
@@ -133,31 +136,34 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
       decoration: active,
       child: Center(
           child: Text(control.text,
-              textAlign: TextAlign.center, style: getTextStyle(control.font, pixelRatio))),
+              textAlign: TextAlign.center,
+              style: getTextStyle(control.font, pixelRatio))),
     );
   }
 
   Widget _gicImage() {
-    if (control.images.length < 1)
+    if (control.images.isEmpty) {
       return Container(
           width: control.width / pixelRatio,
           height: control.height / pixelRatio,
           decoration: BoxDecoration(
-              image: new DecorationImage(
-                  image: new AssetImage("assets/images/icons/app_icon.png"),
+              image: DecorationImage(
+                  image: AssetImage("assets/images/icons/app_icon.png"),
                   fit: BoxFit.cover)));
-    else
+    } else {
       return Image.file(
         File(control.images[0]),
         width: control.width / pixelRatio,
         height: control.height / pixelRatio,
       );
+    }
   }
 
   Widget _gicText() {
-    return new Container(
+    return Container(
         width: control.width / pixelRatio,
-        child: Text(control.text, style: getTextStyle(control.font, pixelRatio)));
+        child:
+            Text(control.text, style: getTextStyle(control.font, pixelRatio)));
   }
 
   BoxDecoration _buildButtonDesign(bool isPressed) {
@@ -180,12 +186,21 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
             end: end,
           ));
     } else {
-      return BoxDecoration(
-          borderRadius: buttonBorder,
-          image: new DecorationImage(
-              image: new AssetImage(
-                  "assets/images/controls/${control.images[imageIndex]}.png"),
-              fit: BoxFit.cover));
+      if (File(control.images[imageIndex]).isAbsolute) {
+        return BoxDecoration(
+            borderRadius: buttonBorder,
+            image: DecorationImage(
+                image: FileImage(File(
+                    control.images[imageIndex])),
+                fit: BoxFit.fill));
+      } else {
+        return BoxDecoration(
+            borderRadius: buttonBorder,
+            image: DecorationImage(
+                image: AssetImage(
+                    "assets/images/controls/${control.images[imageIndex]}.png"),
+                fit: BoxFit.fill));
+      }
     }
   }
 }

@@ -17,12 +17,12 @@ class NetworkService {
 
     static Future<NetworkResponse> sendCommand(NetworkModel networkModel, String command, Command keystroke) async {
         String basicAuth = base64Encode(Latin1Codec().encode('gic:${networkModel.password}'));
-        Map<String, String> headers = new Map();
+        Map<String, String> headers = Map();
         headers['Content-Type'] = 'application/json; charset=UTF-8';
         headers["Authorization"] = 'Basic $basicAuth';
 
         String body = json.encode(keystroke);//.toJson();
-        await http.post(new Uri.http("${networkModel.address}:${networkModel.port}", "/api/$command"), body: body, headers:headers)
+        NetworkResponse response = await http.post(Uri.http("${networkModel.address}:${networkModel.port}", "/api/$command"), body: body, headers:headers)
             .timeout(const Duration(seconds: 5))
             .then((response) {
                 return NetworkResponse.Ok;
@@ -31,16 +31,19 @@ class NetworkService {
                 return NetworkResponse.Error;
             }
         );
+
+        return response;
     }
 
     static Future<NetworkResponse> checkVersion(NetworkModel networkModel) async {
-        return await http.post(new Uri.http("${networkModel.address}:${networkModel.port}", "api/version"))
+        return await http.post(Uri.http("${networkModel.address}:${networkModel.port}", "api/version"))
             .timeout(const Duration(seconds: 30)).then((response) {
             if (response != null && response.statusCode == 200) {
                 // If the server did return a 200 OK response then parse the JSON.
                 VersionResponse versionResponse = VersionResponse.fromJson(jsonDecode(response.body));
-                if (versionResponse.version == serverApiVersion)
-                    return NetworkResponse.Ok;
+                if (versionResponse.version == serverApiVersion) {
+                  return NetworkResponse.Ok;
+                }
             }
             return NetworkResponse.OutOfDate;
        }).catchError((err) {

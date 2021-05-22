@@ -13,7 +13,7 @@ class AboutVM implements ViewModel {
   String emailTitle = "";
   String url = "";
   List<ViewSection> libraries;
-  ViewSection legal = new ViewSection("","","");
-  ViewSection server = new ViewSection("","","");
+  ViewSection legal = ViewSection("","","");
+  ViewSection server = ViewSection("","","");
 }
 

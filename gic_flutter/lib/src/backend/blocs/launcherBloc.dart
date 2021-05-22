@@ -13,13 +13,13 @@ class LauncherBloc {
   PublishSubject _modelFetcher;
 
   LauncherBloc() {
-    this._repository = new LauncherRepository();
-    this._modelFetcher = new PublishSubject<LauncherModel>();
+    this._repository = LauncherRepository();
+    this._modelFetcher = PublishSubject<LauncherModel>();
   }
 
   LauncherBloc.withMocks (repository) {
     _repository = repository;
-    this._modelFetcher = new PublishSubject<LauncherModel>();
+    this._modelFetcher = PublishSubject<LauncherModel>();
   }
 
   Stream<LauncherModel> get preferences => _modelFetcher.stream;
@@ -56,7 +56,7 @@ class LauncherBloc {
   /// @param id Id of the screen we want to update the name of
   /// @param newName New name of the screen
   Future<void> updateScreenName(int id, String newName) async {
-    _repository.updateName(id, newName);
+    await _repository.updateName(id, newName);
   }
 
   /// Deletes the screen
@@ -67,7 +67,7 @@ class LauncherBloc {
     int rv = await _repository.deleteScreen(id);
 
     if (rv >= 0) {
-      fetchAllPreferences();
+      await fetchAllPreferences();
     }
 
     return rv;
@@ -79,7 +79,7 @@ class LauncherBloc {
   /// @return the new Id of the imported screen, or a negative value on failure
   Future<int> import(String file) async {
     int newItemId = await _repository.import(file);
-    fetchAllPreferences();
+    await fetchAllPreferences();
 
     return newItemId;
   }
@@ -105,7 +105,7 @@ class LauncherBloc {
   /// saved as a new screen
   void resize(int screenId, BuildContext context) async {
     await _repository.resizeScreen(screenId, context);
-    fetchAllPreferences();
+    await fetchAllPreferences();
   }
 
   ScreenViewModel loadScreen(int screenId) {

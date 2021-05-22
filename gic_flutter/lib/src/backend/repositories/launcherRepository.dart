@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class LauncherRepository {
   SharedPreferences _prefs;
-  ScreenService _screenService = new ScreenService();
+  ScreenService _screenService = ScreenService();
 
   static const String _prefNightMode = "nightMode";
   static const String _prefPassword = "password";
@@ -28,7 +28,7 @@ class LauncherRepository {
     /// convert legacy screen
     if (_prefs.getBool(_prefConvertB) ?? true) {
       await _convertLegacyScreens();
-      _prefs.setBool(_prefConvertB, false);
+      await _prefs.setBool(_prefConvertB, false);
     }
     return await _loadVM();
   }
@@ -37,15 +37,15 @@ class LauncherRepository {
   /// Based on the network model
   void saveMainSettings(NetworkModel networkModel) async {
     if (networkModel.address != null && networkModel.port.isNotEmpty) {
-      _prefs.setString(_prefAddress, networkModel.address);
+      await _prefs.setString(_prefAddress, networkModel.address);
     }
     if (networkModel.port != null &&
         networkModel.port.isNotEmpty &&
         _isNumeric(networkModel.port)) {
-      _prefs.setString(_prefPort, networkModel.port);
+      await _prefs.setString(_prefPort, networkModel.port);
     }
     if (networkModel.password != null && networkModel.password.isNotEmpty) {
-      _prefs.setString(
+      await _prefs.setString(
           _prefPassword, await _encryptPassword(networkModel.password));
     }
   }
@@ -143,7 +143,7 @@ class LauncherRepository {
     double adjustX = deviceInfo[1] / screenInfo[1];
     double adjustY = deviceInfo[2] / screenInfo[2];
 
-    _screenService.duplicateScreen(oldId);
+    await _screenService.duplicateScreen(oldId);
 
     _screenService.activeScreenViewModel.controls.forEach((control) {
       control.left = control.left * adjustX;
@@ -151,7 +151,7 @@ class LauncherRepository {
       control.top = control.top * adjustY;
       control.height = (control.height * adjustY);
     });
-    _screenService.activeScreenViewModel.save(jsonOnly: true);
+    await _screenService.activeScreenViewModel.save(jsonOnly: true);
     return _screenService.activeScreenViewModel.screenId;
   }
 
@@ -163,7 +163,7 @@ class LauncherRepository {
 
   /// Build our view model
   _loadVM() async {
-    LauncherModel viewModel = new LauncherModel();
+    LauncherModel viewModel = LauncherModel();
 
     //get encrypted password
     viewModel.password = await _getPassword();
@@ -171,13 +171,13 @@ class LauncherRepository {
     //load screens
     if (await _screenService.loadScreens()) {
       viewModel.screens = [];
-      if (_screenService.screenViewModels.length < 1) {
-        _screenService.createScreen();
-        _screenService.activeScreenViewModel.save();
+      if (_screenService.screenViewModels.isEmpty) {
+        await _screenService.createScreen();
+        await _screenService.activeScreenViewModel.save();
       }
       _screenService.screenViewModels.forEach((element) {
         viewModel.screens
-            .add(new ScreenListItem(element.screenId, element.name));
+            .add(ScreenListItem(element.screenId, element.name));
       });
       viewModel.screens
           .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
@@ -189,15 +189,15 @@ class LauncherRepository {
     viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
 
     //donation settings
-    if (_prefs.containsKey(_prefDonate))
+    if (_prefs.containsKey(_prefDonate)) {
       viewModel.donate = _prefs.getBool(_prefDonate);
-    else {
+    } else {
       viewModel.donate = false;
     }
 
-    if (_prefs.containsKey(_prefDonateStar))
+    if (_prefs.containsKey(_prefDonateStar)) {
       viewModel.donateStar = _prefs.getBool(_prefDonateStar);
-    else {
+    } else {
       viewModel.donateStar = false;
     }
 
@@ -205,7 +205,7 @@ class LauncherRepository {
   }
 
   _convertLegacyScreens() async {
-    ScreenRepository legacy = new ScreenRepository();
+    ScreenRepository legacy = ScreenRepository();
     List<Screen> legacyScreens = await legacy.loadScreens();
     legacyScreens.forEach((element) async {
       ScreenViewModel screenViewModel = ScreenViewModel.fromLegacyModel(element);
@@ -218,7 +218,7 @@ class LauncherRepository {
     String encrypted = _prefs.getString(_prefPassword) ?? "";
     try {
       return CryptoService.decrypt(encrypted);
-    } catch (Exception) {
+    } catch (_) {
       //will probably fail on legacy
       return "";
     }

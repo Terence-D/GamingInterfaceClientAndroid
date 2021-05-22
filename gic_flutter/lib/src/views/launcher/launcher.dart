@@ -52,9 +52,9 @@ class LauncherState extends State<Launcher> {
 
   final launcherBloc = LauncherBloc();
 
-  final TextEditingController passwordController = new TextEditingController();
-  final TextEditingController addressController = new TextEditingController();
-  final TextEditingController portController = new TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController portController = TextEditingController();
   final ItemScrollController itemScrollController = ItemScrollController();
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
@@ -64,7 +64,7 @@ class LauncherState extends State<Launcher> {
   @override
   void initState() {
     super.initState();
-    translation = new IntlLauncher(context);
+    translation = IntlLauncher(context);
     passwordController.addListener(_passwordListener);
     addressController.addListener(_addressListener);
     portController.addListener(_portListener);
@@ -208,11 +208,11 @@ class LauncherState extends State<Launcher> {
 
   //action to take when picking from the menu
   void _menuSelectAction(MenuOption choice) {
-    if (choice.title == translation.text(LauncherText.menuDonate))
+    if (choice.title == translation.text(LauncherText.menuDonate)) {
       _getNewActivity(Channel.actionViewDonate);
-    else if (choice.title == translation.text(LauncherText.menuAbout))
+    } else if (choice.title == translation.text(LauncherText.menuAbout)) {
       _showUi(AboutView());
-    else if (choice.title == translation.text(LauncherText.menuIntro)) {
+    } else if (choice.title == translation.text(LauncherText.menuIntro)) {
       _showUi(IntroView());
     } else if (choice.title == translation.text(LauncherText.menuImport)) {
       _import();
@@ -233,7 +233,7 @@ class LauncherState extends State<Launcher> {
 
   /// legacy native code calling
   Future<void> _getNewActivity(String activity) async {
-    MethodChannel platform = new MethodChannel(Channel.channelView);
+    MethodChannel platform = MethodChannel(Channel.channelView);
     try {
       await platform.invokeMethod(activity);
     } on PlatformException catch (e) {
@@ -247,7 +247,7 @@ class LauncherState extends State<Launcher> {
         context,
         MaterialPageRoute(
             builder: (context) => ui)); // ManageView()) // AboutView())
-    launcherBloc.fetchAllPreferences();
+    await launcherBloc.fetchAllPreferences();
   }
 
   void _showHelp() {
@@ -282,26 +282,28 @@ class LauncherState extends State<Launcher> {
 
     if (result != null) {
       newScreenId = await launcherBloc.import(result.files.single.path);
-      if (newScreenId > 0)
-        Fluttertoast.showToast(
+      if (newScreenId > 0) {
+        await Fluttertoast.showToast(
           msg: translation.text(LauncherText.importComplete),
         );
+      }
     }
   }
 
   _newScreen() async {
-    _showUi(new NewScreenWizard());
+    _showUi(NewScreenWizard());
     //newScreenId = await launcherBloc.newScreen();
   }
 
   _scrollTo() {
-    if (newScreenId >= 0 && _viewModel.screens.length > 0) {
+    if (newScreenId >= 0 && _viewModel.screens.isNotEmpty) {
       for (int i = 0; i < _viewModel.screens.length; i++) {
-        if (_viewModel.screens[i].id == newScreenId)
+        if (_viewModel.screens[i].id == newScreenId) {
           itemScrollController.scrollTo(
               index: i,
               duration: Duration(seconds: 2),
               curve: Curves.easeInOutCubic);
+        }
       }
       newScreenId = -1;
     }

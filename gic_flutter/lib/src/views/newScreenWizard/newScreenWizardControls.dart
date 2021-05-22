@@ -22,30 +22,30 @@ class NewScreenWizardControls extends StatefulWidget {
 class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
   int _itemCount = 0;
   List<_Key> _keyMap = [];
-  AutoItKeyMap autoItKeyMap = new AutoItKeyMap();
-  List<_Key> selectedKey = new List();
+  AutoItKeyMap autoItKeyMap = AutoItKeyMap();
+  List<_Key> selectedKey = [];
   List<String> controlTypeText;
 
   @override
   void initState() {
-    controlTypeText = new List();
+    controlTypeText = List();
 
     _itemCount = widget.state.viewModel.horizontalControlCount * widget.state.viewModel.verticalControlCount;
-    selectedKey = new List(_itemCount);
+    selectedKey = List(_itemCount);
 
-    widget.state.keyNameController = new List(_itemCount);
-    widget.state.viewModel.controls = new List(_itemCount);
+    widget.state.keyNameController = List(_itemCount);
+    widget.state.viewModel.controls = List(_itemCount);
 
     //initialize values to be sane
     for (var i = 0; i < _itemCount; i++) {
-      TextEditingController tec = new TextEditingController();
+      TextEditingController tec = TextEditingController();
       widget.state.keyNameController[i] = tec;
-      widget.state.viewModel.controls[i] = new NewScreenWizardControl();
+      widget.state.viewModel.controls[i] = NewScreenWizardControl();
       controlTypeText.add(widget.state.translation.text(NewScreenWizardText.buttonType));
     }
 
     autoItKeyMap.map.forEach((key, value) {
-      _keyMap.add(new _Key(key, value));
+      _keyMap.add(_Key(key, value));
     });
 
     super.initState();
@@ -79,7 +79,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
         child: Card(
           elevation: 5,
           child:
-          new Column(
+          Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Row(
@@ -155,24 +155,28 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
 
       if (isSwitch != null) {
         widget.state.viewModel.controls[index].isSwitch = isSwitch;
-        if (isSwitch)
+        if (isSwitch) {
           controlTypeText[index] = widget.state.translation.text(NewScreenWizardText.switchType);
-        else
+        } else {
           controlTypeText[index] = widget.state.translation.text(NewScreenWizardText.buttonType);
+        }
       }
 
-      if (ctrl != null)
+      if (ctrl != null) {
         widget.state.viewModel.controls[index].ctrl = ctrl;
-      if (alt != null)
+      }
+      if (alt != null) {
         widget.state.viewModel.controls[index].alt = alt;
-      if (shift != null)
+      }
+      if (shift != null) {
         widget.state.viewModel.controls[index].shift = shift;
+      }
     });
   }
 
   List<DropdownMenuItem<_Key>> _dropdownItems() {
     return _keyMap.map((_Key key) {
-      return new DropdownMenuItem<_Key>(
+      return DropdownMenuItem<_Key>(
           value: key,
           child: Text(key.text));
     }).toList();

@@ -7,17 +7,17 @@ import 'package:mockito/mockito.dart';
 class MockLauncherRepository extends Mock implements LauncherRepository {}
 
 void main() {
-  MockLauncherRepository mockedRepo = new MockLauncherRepository();
+  MockLauncherRepository mockedRepo = MockLauncherRepository();
 
   setUp(() {
     TestWidgetsFlutterBinding.ensureInitialized();
-    mockedRepo = new MockLauncherRepository();
+    mockedRepo = MockLauncherRepository();
   });
 
   test('saving main calls the matching repo method', () async {
     //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
-    NetworkModel networkModel = new NetworkModel();
+    LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);
+    NetworkModel networkModel = NetworkModel();
     networkModel.toTest("password", "address", "port");
 
     //Act
@@ -30,7 +30,7 @@ void main() {
 
   test('setting theme calls the matching repo method', () async {
     //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
+    LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);
 
     //Act
     toTest.setTheme(true);
@@ -41,10 +41,10 @@ void main() {
 
   test('updating the name calls the matching repo method', () async {
     //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
+    LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);
 
     //Act
-    toTest.updateScreenName(1, "newName");
+    await toTest.updateScreenName(1, "newName");
 
     //Assert
     verify(mockedRepo.updateName(1, "newName")).called(1);
@@ -52,7 +52,7 @@ void main() {
 
   test('deleting a screen will return the new cache length', () async {
     //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
+    LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);
     when(mockedRepo.deleteScreen(1)).thenAnswer((_) async => 5);
 
     //Act
@@ -64,11 +64,11 @@ void main() {
 
   test('deleting a screen will call matching repo method', () async {
     //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
+    LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);
     when(mockedRepo.deleteScreen(1)).thenAnswer((_) async => 5);
 
     //Act
-    int rv = await toTest.deleteScreen(1);
+    await toTest.deleteScreen(1);
 
     //Assert
     verify(mockedRepo.deleteScreen(1)).called(1);
@@ -76,7 +76,7 @@ void main() {
 
   test('deleting an invalid screen will return -1 for an error', () async {
     //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
+    LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);
     when(mockedRepo.deleteScreen(999)).thenAnswer((_) async => -1);
 
     //Act
@@ -88,7 +88,7 @@ void main() {
 
   test('exporting a screen will return an integer', () async {
     //Assign
-    LauncherBloc toTest = new LauncherBloc.withMocks(mockedRepo);
+    LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);
     when(mockedRepo.export("path", 1)).thenAnswer((_) async => 1);
 
     //Act
