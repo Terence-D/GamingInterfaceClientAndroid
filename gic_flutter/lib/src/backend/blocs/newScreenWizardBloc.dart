@@ -104,8 +104,8 @@ class NewScreenWizardBloc {
     } else {
       control.type = ControlViewModelType.Button;
       control.text = element.text;
-      control.images.add("default_button_primary");
-      control.images.add("default_button_secondary");
+      control.images.add("button_black");
+      control.images.add("button_black2");
     }
 
     control.colors = defaultControl.colors;

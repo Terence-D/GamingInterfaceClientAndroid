@@ -267,13 +267,13 @@ class ScreenService {
   int _findUniqueId({int startingId = -1}) {
     int startingId = screenViewModels.length;
 
-    screenViewModels.forEach((screen) {
+    for (var screen in screenViewModels) {
       if (screen.screenId == startingId) {
         startingId++;
         return _findUniqueId(startingId: startingId);
       }
       return startingId;
-    });
+    }
 
     return startingId;
   }
