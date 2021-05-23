@@ -47,6 +47,9 @@ enum ScreenEditorText {
   designTabChooseImage,
   designTabImageBased,
   designTabColorBased,
+  controlDialogTitle,
+  widgetDeleted,
+  undo
 }
 
 class IntlScreenEditor {
@@ -116,6 +119,9 @@ class IntlScreenEditor {
       ScreenEditorText.designTabChooseImage: "Choose an existing image, or for a custom image choose Import first",
       ScreenEditorText.designTabColorBased: "Use Colors",
       ScreenEditorText.designTabImageBased: "Use Images",
+      ScreenEditorText.controlDialogTitle: "Control",
+      ScreenEditorText.widgetDeleted: "Control Removed",
+      ScreenEditorText.undo: "Undo"
     }
   };
 }
