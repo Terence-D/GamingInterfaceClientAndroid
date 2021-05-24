@@ -12,8 +12,7 @@ class ControlDialog extends StatefulWidget {
   final GicEditControl gicEditControl;
   final int screenId;
 
-  const ControlDialog(
-      {Key key, this.gicEditControl, this.translation, this.screenId})
+  ControlDialog({Key key, this.gicEditControl, this.translation, this.screenId})
       : super(key: key);
 
   @override
@@ -49,8 +48,21 @@ class _ControlDialogState extends State<ControlDialog> {
             length: _tabs.length,
             child: Scaffold(
               appBar: AppBar(
-                title: Text("widget"),
-                actions: [],
+                title:
+                    Text(translation.text(ScreenEditorText.controlDialogTitle)),
+                actions: <Widget>[
+                  Padding(
+                      padding: EdgeInsets.only(right: 20.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context, true);
+                        },
+                        child: Icon(
+                          Icons.delete,
+                          size: 26.0,
+                        ),
+                      )),
+                ],
                 bottom: TabBar(
                   tabs: _tabs,
                 ),

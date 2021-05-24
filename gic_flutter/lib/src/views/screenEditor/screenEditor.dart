@@ -1,3 +1,4 @@
+import 'package:gic_flutter/src/backend/models/intl/intlAbout.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/controlDialog.dart';
 import 'dart:io';
 
@@ -30,6 +31,9 @@ class ScreenEditorState extends State<ScreenEditor> {
   final double highlightBorder = 2.0;
   final double minSize = 16.0;
   final int screenId;
+
+  ControlViewModel deletedWidget;
+
   double pixelRatio;
 
   double selectedLeft = 0;
@@ -112,6 +116,7 @@ class ScreenEditorState extends State<ScreenEditor> {
       el.markNeedsBuild();
       el.visitChildren(rebuild);
     }
+
     (context as Element).visitChildren(rebuild);
 
     return GestureDetector(
@@ -217,7 +222,8 @@ class ScreenEditorState extends State<ScreenEditor> {
         selectedVisible = true;
       });
     } else {
-      await showDialog(
+      bool deleteWidget = false;
+      deleteWidget = await showDialog(
           context: context,
           builder: (BuildContext context) {
             return ControlDialog(
@@ -231,9 +237,16 @@ class ScreenEditorState extends State<ScreenEditor> {
                     onSelected: null,
                     onDrag: null));
           });
-        setState(() {
-          print (_service.activeScreenViewModel.controls[selectedControlIndex].images[0]);
-        });
+      setState(() {
+        if (deleteWidget != null && deleteWidget) {
+          selectedVisible = false;
+          deletedWidget =
+              _service.activeScreenViewModel.controls[selectedControlIndex];
+          _service.activeScreenViewModel.controls
+              .removeAt(selectedControlIndex);
+          _showDeleteToast();
+        }
+      });
     }
   }
 
@@ -251,13 +264,33 @@ class ScreenEditorState extends State<ScreenEditor> {
             details.delta.dx;
         _service.activeScreenViewModel.controls[controlId].height +=
             details.delta.dy;
-        if (_service.activeScreenViewModel.controls[controlId].width < minSize) {
+        if (_service.activeScreenViewModel.controls[controlId].width <
+            minSize) {
           _service.activeScreenViewModel.controls[controlId].width = minSize;
         }
-        if (_service.activeScreenViewModel.controls[controlId].height < minSize) {
+        if (_service.activeScreenViewModel.controls[controlId].height <
+            minSize) {
           _service.activeScreenViewModel.controls[controlId].height = minSize;
         }
       });
     }
+  }
+
+  void _showDeleteToast() {
+    final snackBar = SnackBar(
+      content: Text(translation.text(ScreenEditorText.widgetDeleted)),
+      action: SnackBarAction(
+        label: translation.text(ScreenEditorText.undo),
+        onPressed: () {
+          setState(() {
+            _service.activeScreenViewModel.controls.add(deletedWidget);
+          });
+        },
+      ),
+    );
+
+    // Find the ScaffoldMessenger in the widget tree
+    // and use it to show a SnackBar.
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
