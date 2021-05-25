@@ -36,19 +36,24 @@ class DesignTabState extends State<DesignTab> {
 
   @override
   Widget build(BuildContext context) {
+    String detailsText = widget.translation.text(ScreenEditorText.designTabDetails);
+    if (widget.gicEditControl.control.type == ControlViewModelType.Image) {
+      detailsText = widget.translation.text(ScreenEditorText.designTabImageDetails);
+    }
+
     return Container(
       child: Column(
         children: [
+          Text(widget.translation.text(ScreenEditorText.designTabHeader),
+              style: Theme.of(context).textTheme.headline5),
+          Text(detailsText),
           Visibility(
               visible: widget.gicEditControl.control.type !=
-                      ControlViewModelType.Image &&
-                  widget.gicEditControl.control.design ==
-                      ControlDesignType.Image,
+                  ControlViewModelType.Image,
               child: Column(children: [
                 _imageToggle(),
                 _imageButton(0),
                 _imageButton(1),
-                _importButton()
               ])),
           Visibility(
               visible: widget.gicEditControl.control.type !=
@@ -60,8 +65,8 @@ class DesignTabState extends State<DesignTab> {
                 _colorButton(1),
               ])),
           Visibility(
-              visible: widget.gicEditControl.control.type ==
-                  ControlViewModelType.Image,
+              visible: widget.gicEditControl.control.type !=
+                      ControlViewModelType.Text,
               child: Column(children: [_importButton()])),
         ],
       ),
@@ -77,7 +82,6 @@ class DesignTabState extends State<DesignTab> {
   Widget _imageToggle() {
     return Column(
       children: [
-        Text(widget.translation.text(ScreenEditorText.designTabDetails)),
         Row(
           children: [
             Text(switchText),
@@ -108,8 +112,7 @@ class DesignTabState extends State<DesignTab> {
   }
 
   Widget _imageButton(int index) {
-    String textToDisplay = widget.translation
-        .text(ScreenEditorText.designTabChooseImage); //default to image
+    String textToDisplay;
     if (index > 0) {
       //we know its a button or a toggle
       if (widget.gicEditControl.control.type == ControlViewModelType.Toggle) {
@@ -128,11 +131,14 @@ class DesignTabState extends State<DesignTab> {
             widget.translation.text(ScreenEditorText.designTabUnpressedImage);
       }
     }
-    return ElevatedButton(
-        onPressed: () async {
-          await _pickImage(index);
-        },
-        child: Text(textToDisplay));
+    return Visibility(
+      visible: widget.gicEditControl.control.design == ControlDesignType.Image,
+      child: ElevatedButton(
+          onPressed: () async {
+            await _pickImage(index);
+          },
+          child: Text(textToDisplay)),
+    );
   }
 
   Widget _colorButton(int index) {

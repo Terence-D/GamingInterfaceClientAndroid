@@ -36,6 +36,7 @@ enum ScreenEditorText {
   sizeTabDetails,
   designTabHeader,
   designTabDetails,
+  designTabImageDetails,
   designTabPrimaryColor,
   designTabSecondaryColor,
   designTabPressedImage,
@@ -44,7 +45,6 @@ enum ScreenEditorText {
   designTabToggleOnImage,
   designTabImport,
   designTabPickColor,
-  designTabChooseImage,
   designTabImageBased,
   designTabColorBased,
   controlDialogTitle,
@@ -103,20 +103,17 @@ class IntlScreenEditor {
       ScreenEditorText.sizeTabHeight: "Height",
       ScreenEditorText.designTabDetails:
           "An image or a color gradient can be used decorate your buttons.  If you want to use a custom image, choose Import first.",
+      ScreenEditorText.designTabImageDetails:
+          "Import an image to display",
       ScreenEditorText.designTabImport: "Import Custom Image",
       ScreenEditorText.designTabHeader: "Design",
-      ScreenEditorText.designTabPressedImage:
-          "Button Pressed Image",
+      ScreenEditorText.designTabPressedImage: "Button Pressed Image",
       ScreenEditorText.designTabPrimaryColor: "Primary Color",
       ScreenEditorText.designTabSecondaryColor: "Secondary Color",
-      ScreenEditorText.designTabToggleOffImage:
-          "Toggled off Image",
-      ScreenEditorText.designTabToggleOnImage:
-          "Toggled on Image",
-      ScreenEditorText.designTabUnpressedImage:
-          "Button Unpressed Image",
+      ScreenEditorText.designTabToggleOffImage: "Toggled off Image",
+      ScreenEditorText.designTabToggleOnImage: "Toggled on Image",
+      ScreenEditorText.designTabUnpressedImage: "Button Unpressed Image",
       ScreenEditorText.designTabPickColor: "Choose a color",
-      ScreenEditorText.designTabChooseImage: "Choose an existing image, or for a custom image choose Import first",
       ScreenEditorText.designTabColorBased: "Use Colors",
       ScreenEditorText.designTabImageBased: "Use Images",
       ScreenEditorText.controlDialogTitle: "Control",
