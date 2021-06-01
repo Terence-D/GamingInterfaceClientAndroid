@@ -1,6 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
+class ColorDialog {
+  static Color pickerColor;
+
+  static show(BuildContext context, changeColorCallback, onPressedCallback) {
+    return showDialog(
+      context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Pick a color!'),
+            content: SingleChildScrollView(
+              child: ColorPicker(
+                pickerColor: pickerColor,
+                onColorChanged: changeColorCallback,
+                showLabel: true,
+                pickerAreaHeightPercent: 0.8,
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Got it'),
+                onPressed: onPressedCallback,
+              ),
+            ],
+          );
+        },
+    );
+  }
+}
+
 class ColorPickerDialog extends StatefulWidget {
   final Function(Color color) onPressedCallback;
   final String title;

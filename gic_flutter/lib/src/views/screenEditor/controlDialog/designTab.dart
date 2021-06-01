@@ -27,6 +27,7 @@ class DesignTab extends StatefulWidget {
 class DesignTabState extends State<DesignTab> {
   String switchText;
   final List<TextEditingController> textControllers = [];
+  double pixelRatio;
 
   @override
   void initState() {
@@ -36,16 +37,24 @@ class DesignTabState extends State<DesignTab> {
 
   @override
   Widget build(BuildContext context) {
-    String detailsText = widget.translation.text(ScreenEditorText.designTabDetails);
+    pixelRatio = MediaQuery
+        .of(context)
+        .devicePixelRatio;
+    String detailsText =
+    widget.translation.text(ScreenEditorText.designTabDetails);
     if (widget.gicEditControl.control.type == ControlViewModelType.Image) {
-      detailsText = widget.translation.text(ScreenEditorText.designTabImageDetails);
+      detailsText =
+          widget.translation.text(ScreenEditorText.designTabImageDetails);
     }
 
     return Container(
       child: Column(
         children: [
           Text(widget.translation.text(ScreenEditorText.designTabHeader),
-              style: Theme.of(context).textTheme.headline5),
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headline5),
           Text(detailsText),
           Visibility(
               visible: widget.gicEditControl.control.type !=
@@ -57,7 +66,7 @@ class DesignTabState extends State<DesignTab> {
               ])),
           Visibility(
               visible: widget.gicEditControl.control.type !=
-                      ControlViewModelType.Image &&
+                  ControlViewModelType.Image &&
                   widget.gicEditControl.control.design ==
                       ControlDesignType.UpDownGradient,
               child: Column(children: [
@@ -66,8 +75,9 @@ class DesignTabState extends State<DesignTab> {
               ])),
           Visibility(
               visible: widget.gicEditControl.control.type !=
-                      ControlViewModelType.Text,
+                  ControlViewModelType.Text,
               child: Column(children: [_importButton()])),
+          _preview(),
         ],
       ),
     );
@@ -159,19 +169,25 @@ class DesignTabState extends State<DesignTab> {
     );
   }
 
+  // ValueChanged<Color> callback
+  void changeColor(Color color) {
+    setState(() => pickerColor = color);
+  }
   void _pickColor(int index) {
     showDialog(
         context: context,
-        builder: (_) => ColorPickerDialog(
-            title: widget.translation.text(ScreenEditorText.designTabPickColor),
-            pickerColor: widget.gicEditControl.control.colors[index],
-            onPressedCallback: (Color color) {
-              setState(() {
-                widget.gicEditControl.control.design =
-                    ControlDesignType.UpDownGradient;
-                widget.gicEditControl.control.colors[index] = color;
-              });
-            }));
+        builder: (_) =>
+            ColorPickerDialog(
+                title: widget.translation.text(
+                    ScreenEditorText.designTabPickColor),
+                pickerColor: widget.gicEditControl.control.colors[index],
+                onPressedCallback: (Color color) {
+                  setState(() {
+                    widget.gicEditControl.control.design =
+                        ControlDesignType.UpDownGradient;
+                    widget.gicEditControl.control.colors[index] = color;
+                  });
+                }));
   }
 
   Future<void> _pickImage(int index) async {
@@ -179,7 +195,11 @@ class DesignTabState extends State<DesignTab> {
         context: context,
         builder: (BuildContext context) {
           return ImageDialog();
-        }).then((value) => widget.gicEditControl.control.images[index] = value);
+        }).then((value) {
+      setState(() {
+        widget.gicEditControl.control.images[index] = value;
+      });
+    });
   }
 
   Widget _importButton() {
@@ -190,7 +210,7 @@ class DesignTabState extends State<DesignTab> {
             _importImage();
           },
           child:
-              Text(widget.translation.text(ScreenEditorText.designTabImport))),
+          Text(widget.translation.text(ScreenEditorText.designTabImport))),
     );
   }
 
@@ -217,8 +237,8 @@ class DesignTabState extends State<DesignTab> {
     }
   }
 
-  Future<File> _getDestinationName(
-      FilePickerResult result, String filePrefix) async {
+  Future<File> _getDestinationName(FilePickerResult result,
+      String filePrefix) async {
     Directory filesDir = await getApplicationSupportDirectory();
     File newFile;
     String destPath;
@@ -232,5 +252,15 @@ class DesignTabState extends State<DesignTab> {
       }
     }
     return newFile;
+  }
+
+  Widget _preview() {
+    return GicEditControl(
+      pixelRatio: pixelRatio,
+      control: widget.gicEditControl.control,
+      controlIndex: widget.gicEditControl.controlIndex,
+      onSelected: (int id) {},
+      onDrag: (double newLeft, double newTop, int selectedControlIndex) {},
+    );
   }
 }
