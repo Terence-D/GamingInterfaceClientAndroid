@@ -31,7 +31,9 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
 
   @override
   void initState() {
-    if (control.type == ControlViewModelType.Button) {
+    if (control.type == ControlViewModelType.Button ||
+        control.type == ControlViewModelType.QuickButton ||
+        control.type == ControlViewModelType.Toggle ) {
       unpressed = _buildButtonDesign(false);
       pressed = _buildButtonDesign(true);
       active = unpressed;
