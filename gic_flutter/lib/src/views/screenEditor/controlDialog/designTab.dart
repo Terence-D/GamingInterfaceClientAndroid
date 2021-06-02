@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -8,27 +8,19 @@ import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/imageDialog.dart';
-import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 import 'package:path_provider/path_provider.dart';
 
-enum dimensions { left, top, width, height }
-
-class DesignTab extends StatefulWidget {
-  final IntlScreenEditor translation;
-  final GicEditControl gicEditControl;
-  final int screenId;
-
-  DesignTab({Key key, this.gicEditControl, this.translation, this.screenId})
-      : super(key: key);
+class DesignTab extends BaseTab {
+  DesignTab({Key key, gicEditControl, translation, screenId})
+      : super(key: key, gicEditControl: gicEditControl, translation: translation, screenId: screenId);
 
   @override
   DesignTabState createState() => DesignTabState();
 }
 
-class DesignTabState extends State<DesignTab> {
+class DesignTabState extends BaseTabState {
   String switchText;
   final List<TextEditingController> textControllers = [];
-  double pixelRatio;
 
   @override
   void initState() {
@@ -73,7 +65,7 @@ class DesignTabState extends State<DesignTab> {
               visible: widget.gicEditControl.control.type !=
                   ControlViewModelType.Text,
               child: Column(children: [_importButton()])),
-          _preview(),
+          preview(),
         ],
       ),
     );
@@ -242,15 +234,5 @@ class DesignTabState extends State<DesignTab> {
       }
     }
     return newFile;
-  }
-
-  Widget _preview() {
-    return GicEditControl(
-      pixelRatio: pixelRatio,
-      control: widget.gicEditControl.control,
-      controlIndex: widget.gicEditControl.controlIndex,
-      onSelected: (int id) {},
-      onDrag: (double newLeft, double newTop, int selectedControlIndex) {},
-    );
   }
 }

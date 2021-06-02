@@ -49,7 +49,8 @@ enum ScreenEditorText {
   designTabColorBased,
   controlDialogTitle,
   widgetDeleted,
-  undo
+  undo,
+  previewHeader
 }
 
 class IntlScreenEditor {
@@ -118,7 +119,8 @@ class IntlScreenEditor {
       ScreenEditorText.designTabImageBased: "Use Images",
       ScreenEditorText.controlDialogTitle: "Control",
       ScreenEditorText.widgetDeleted: "Control Removed",
-      ScreenEditorText.undo: "Undo"
+      ScreenEditorText.undo: "Undo",
+      ScreenEditorText.previewHeader: "Preview",
     }
   };
 }

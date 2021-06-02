@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
 enum dimensions { left, top, width, height }
 
-class SizeTab extends StatefulWidget {
+class SizeTab extends BaseTab {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
 
@@ -14,11 +15,12 @@ class SizeTab extends StatefulWidget {
   SizeTabState createState() => SizeTabState();
 }
 
-class SizeTabState extends State<SizeTab> {
+class SizeTabState extends BaseTabState {
   final List<TextEditingController> textControllers = [];
 
   @override
   Widget build(BuildContext context) {
+    pixelRatio = MediaQuery.of(context).devicePixelRatio;
     return Container(
       child: Column(
         children: [
@@ -34,6 +36,7 @@ class SizeTabState extends State<SizeTab> {
               _size(dimensions.height),
             ],
           ),
+          preview()
         ],
       ),
     );
