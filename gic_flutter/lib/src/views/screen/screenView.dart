@@ -5,11 +5,11 @@ import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 
-import 'gicButton.dart';
+import 'gicControl.dart';
 
 class ScreenView extends StatelessWidget {
   final ScreenViewModel screen;
-  final List<Widget> widgets = List<Widget>();
+  final List<Widget> widgets = [];
   final NetworkModel networkModel;
 
   ScreenView({Key key, @required this.screen, @required this.networkModel});
