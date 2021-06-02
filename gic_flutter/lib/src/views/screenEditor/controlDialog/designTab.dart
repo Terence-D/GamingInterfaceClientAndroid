@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -37,11 +38,9 @@ class DesignTabState extends State<DesignTab> {
 
   @override
   Widget build(BuildContext context) {
-    pixelRatio = MediaQuery
-        .of(context)
-        .devicePixelRatio;
+    pixelRatio = MediaQuery.of(context).devicePixelRatio;
     String detailsText =
-    widget.translation.text(ScreenEditorText.designTabDetails);
+        widget.translation.text(ScreenEditorText.designTabDetails);
     if (widget.gicEditControl.control.type == ControlViewModelType.Image) {
       detailsText =
           widget.translation.text(ScreenEditorText.designTabImageDetails);
@@ -51,10 +50,7 @@ class DesignTabState extends State<DesignTab> {
       child: Column(
         children: [
           Text(widget.translation.text(ScreenEditorText.designTabHeader),
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headline5),
+              style: Theme.of(context).textTheme.headline5),
           Text(detailsText),
           Visibility(
               visible: widget.gicEditControl.control.type !=
@@ -66,7 +62,7 @@ class DesignTabState extends State<DesignTab> {
               ])),
           Visibility(
               visible: widget.gicEditControl.control.type !=
-                  ControlViewModelType.Image &&
+                      ControlViewModelType.Image &&
                   widget.gicEditControl.control.design ==
                       ControlDesignType.UpDownGradient,
               child: Column(children: [
@@ -169,25 +165,19 @@ class DesignTabState extends State<DesignTab> {
     );
   }
 
-  // ValueChanged<Color> callback
-  void changeColor(Color color) {
-    setState(() => pickerColor = color);
-  }
   void _pickColor(int index) {
     showDialog(
         context: context,
-        builder: (_) =>
-            ColorPickerDialog(
-                title: widget.translation.text(
-                    ScreenEditorText.designTabPickColor),
-                pickerColor: widget.gicEditControl.control.colors[index],
-                onPressedCallback: (Color color) {
-                  setState(() {
-                    widget.gicEditControl.control.design =
-                        ControlDesignType.UpDownGradient;
-                    widget.gicEditControl.control.colors[index] = color;
-                  });
-                }));
+        builder: (_) => ColorPickerDialog(
+            title: widget.translation.text(ScreenEditorText.designTabPickColor),
+            pickerColor: widget.gicEditControl.control.colors[index],
+            onPressedCallback: (Color color) {
+              setState(() {
+                widget.gicEditControl.control.design =
+                    ControlDesignType.UpDownGradient;
+                widget.gicEditControl.control.colors[index] = color;
+              });
+            }));
   }
 
   Future<void> _pickImage(int index) async {
@@ -210,7 +200,7 @@ class DesignTabState extends State<DesignTab> {
             _importImage();
           },
           child:
-          Text(widget.translation.text(ScreenEditorText.designTabImport))),
+              Text(widget.translation.text(ScreenEditorText.designTabImport))),
     );
   }
 
@@ -237,8 +227,8 @@ class DesignTabState extends State<DesignTab> {
     }
   }
 
-  Future<File> _getDestinationName(FilePickerResult result,
-      String filePrefix) async {
+  Future<File> _getDestinationName(
+      FilePickerResult result, String filePrefix) async {
     Directory filesDir = await getApplicationSupportDirectory();
     File newFile;
     String destPath;

@@ -182,20 +182,19 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     }
 
     if (control.design == ControlDesignType.UpDownGradient) {
-      return BoxDecoration(
-          borderRadius: buttonBorder,
-          gradient: LinearGradient(
-            colors: control.colors,
-            begin: begin,
-            end: end,
-          ));
+      List<Color> colors = [control.colors[0], control.colors[1]];
+      LinearGradient linearGradient  = LinearGradient(
+        colors: colors,
+        begin: begin,
+        end: end,
+      );
+      return BoxDecoration(borderRadius: buttonBorder, gradient: linearGradient);
     } else {
       if (File(control.images[imageIndex]).isAbsolute) {
         return BoxDecoration(
             borderRadius: buttonBorder,
             image: DecorationImage(
-                image: FileImage(File(
-                    control.images[imageIndex])),
+                image: FileImage(File(control.images[imageIndex])),
                 fit: BoxFit.fill));
       } else {
         return BoxDecoration(
