@@ -8,7 +8,8 @@ abstract class BaseTab extends StatefulWidget {
   final GicEditControl gicEditControl;
   final int screenId;
 
-  BaseTab({Key key, this.gicEditControl, this.translation, this.screenId}) : super(key: key);
+  BaseTab({Key key, this.gicEditControl, this.translation, this.screenId})
+      : super(key: key);
 }
 
 abstract class BaseTabState extends State<BaseTab> {
@@ -21,10 +22,13 @@ abstract class BaseTabState extends State<BaseTab> {
       children: [
         Text(widget.translation.text(ScreenEditorText.previewHeader),
             style: Theme.of(context).textTheme.headline5),
-        GicControl(
-          pixelRatio: pixelRatio,
-          control: widget.gicEditControl.control, networkModel: null,
+        FittedBox(
+          child: GicControl(
+            pixelRatio: pixelRatio,
+            control: widget.gicEditControl.control,
+            networkModel: null,
           ),
+        ),
       ],
     );
   }
