@@ -30,12 +30,19 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
   GestureDetector buildControl();
 
   @override
-  Widget build(BuildContext context) {
-    if (control.type == ControlViewModelType.Button) {
+  void initState() {
+    if (control.type == ControlViewModelType.Button ||
+        control.type == ControlViewModelType.QuickButton ||
+        control.type == ControlViewModelType.Toggle ) {
       unpressed = _buildButtonDesign(false);
       pressed = _buildButtonDesign(true);
       active = unpressed;
     }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return buildControl();
   }
 
@@ -128,9 +135,9 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
   }
 
   void _buttonTap(String commandUrl, int activatorType, BoxDecoration status) {
+    sendCommand(commandUrl, 0);
     control.commands[0].activatorType = activatorType;
     active = status;
-    sendCommand(commandUrl, 0);
   }
 
   Widget _gicButton() {
@@ -182,29 +189,28 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     }
 
     if (control.design == ControlDesignType.UpDownGradient) {
+      List<Color> colors = [control.colors[0], control.colors[1]];
+      LinearGradient linearGradient  = LinearGradient(
+        colors: colors,
+        begin: begin,
+        end: end,
+      );
+      return BoxDecoration(borderRadius: buttonBorder, gradient: linearGradient);
+    } else {
+      ImageProvider imageProvider;
+      DecorationImage decorationImage;
+      if (File(control.images[imageIndex]).isAbsolute) {
+        imageProvider = FileImage(File(control.images[imageIndex]));
+      } else {
+        imageProvider = AssetImage(
+            "assets/images/controls/${control.images[imageIndex]}.png");
+      }
+      decorationImage =DecorationImage(
+          image: imageProvider,
+          fit: BoxFit.fill);
       return BoxDecoration(
           borderRadius: buttonBorder,
-          gradient: LinearGradient(
-            colors: control.colors,
-            begin: begin,
-            end: end,
-          ));
-    } else {
-      if (File(control.images[imageIndex]).isAbsolute) {
-        return BoxDecoration(
-            borderRadius: buttonBorder,
-            image: DecorationImage(
-                image: FileImage(File(
-                    control.images[imageIndex])),
-                fit: BoxFit.fill));
-      } else {
-        return BoxDecoration(
-            borderRadius: buttonBorder,
-            image: DecorationImage(
-                image: AssetImage(
-                    "assets/images/controls/${control.images[imageIndex]}.png"),
-                fit: BoxFit.fill));
-      }
+          image: decorationImage);
     }
   }
 }

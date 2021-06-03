@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -7,24 +8,17 @@ import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/imageDialog.dart';
-import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 import 'package:path_provider/path_provider.dart';
 
-enum dimensions { left, top, width, height }
-
-class DesignTab extends StatefulWidget {
-  final IntlScreenEditor translation;
-  final GicEditControl gicEditControl;
-  final int screenId;
-
-  DesignTab({Key key, this.gicEditControl, this.translation, this.screenId})
-      : super(key: key);
+class DesignTab extends BaseTab {
+  DesignTab({Key key, gicEditControl, translation, screenId})
+      : super(key: key, gicEditControl: gicEditControl, translation: translation, screenId: screenId);
 
   @override
   DesignTabState createState() => DesignTabState();
 }
 
-class DesignTabState extends State<DesignTab> {
+class DesignTabState extends BaseTabState {
   String switchText;
   final List<TextEditingController> textControllers = [];
 
@@ -36,19 +30,27 @@ class DesignTabState extends State<DesignTab> {
 
   @override
   Widget build(BuildContext context) {
+    pixelRatio = MediaQuery.of(context).devicePixelRatio;
+    String detailsText =
+        widget.translation.text(ScreenEditorText.designTabDetails);
+    if (widget.gicEditControl.control.type == ControlViewModelType.Image) {
+      detailsText =
+          widget.translation.text(ScreenEditorText.designTabImageDetails);
+    }
+
     return Container(
       child: Column(
         children: [
+          Text(widget.translation.text(ScreenEditorText.designTabHeader),
+              style: Theme.of(context).textTheme.headline5),
+          Text(detailsText),
           Visibility(
               visible: widget.gicEditControl.control.type !=
-                      ControlViewModelType.Image &&
-                  widget.gicEditControl.control.design ==
-                      ControlDesignType.Image,
+                  ControlViewModelType.Image,
               child: Column(children: [
                 _imageToggle(),
                 _imageButton(0),
                 _imageButton(1),
-                _importButton()
               ])),
           Visibility(
               visible: widget.gicEditControl.control.type !=
@@ -60,9 +62,10 @@ class DesignTabState extends State<DesignTab> {
                 _colorButton(1),
               ])),
           Visibility(
-              visible: widget.gicEditControl.control.type ==
-                  ControlViewModelType.Image,
+              visible: widget.gicEditControl.control.type !=
+                  ControlViewModelType.Text,
               child: Column(children: [_importButton()])),
+          preview(),
         ],
       ),
     );
@@ -77,7 +80,6 @@ class DesignTabState extends State<DesignTab> {
   Widget _imageToggle() {
     return Column(
       children: [
-        Text(widget.translation.text(ScreenEditorText.designTabDetails)),
         Row(
           children: [
             Text(switchText),
@@ -108,8 +110,7 @@ class DesignTabState extends State<DesignTab> {
   }
 
   Widget _imageButton(int index) {
-    String textToDisplay = widget.translation
-        .text(ScreenEditorText.designTabChooseImage); //default to image
+    String textToDisplay;
     if (index > 0) {
       //we know its a button or a toggle
       if (widget.gicEditControl.control.type == ControlViewModelType.Toggle) {
@@ -128,11 +129,14 @@ class DesignTabState extends State<DesignTab> {
             widget.translation.text(ScreenEditorText.designTabUnpressedImage);
       }
     }
-    return ElevatedButton(
-        onPressed: () async {
-          await _pickImage(index);
-        },
-        child: Text(textToDisplay));
+    return Visibility(
+      visible: widget.gicEditControl.control.design == ControlDesignType.Image,
+      child: ElevatedButton(
+          onPressed: () async {
+            await _pickImage(index);
+          },
+          child: Text(textToDisplay)),
+    );
   }
 
   Widget _colorButton(int index) {
@@ -173,7 +177,11 @@ class DesignTabState extends State<DesignTab> {
         context: context,
         builder: (BuildContext context) {
           return ImageDialog();
-        }).then((value) => widget.gicEditControl.control.images[index] = value);
+        }).then((value) {
+      setState(() {
+        widget.gicEditControl.control.images[index] = value;
+      });
+    });
   }
 
   Widget _importButton() {

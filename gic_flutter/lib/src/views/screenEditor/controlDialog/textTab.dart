@@ -3,24 +3,25 @@ import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/fonts.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
-class TextTab extends StatefulWidget {
+class TextTab extends BaseTab {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
 
-  TextTab({Key key, this.gicEditControl, this.translation})
-      : super(key: key);
+  TextTab({Key key, this.gicEditControl, this.translation}) : super(key: key);
 
   @override
   TextTabState createState() => TextTabState();
 }
 
-class TextTabState extends State<TextTab> {
+class TextTabState extends BaseTabState {
   final List<TextEditingController> textControllers = [];
 
   @override
   Widget build(BuildContext context) {
+    pixelRatio = MediaQuery.of(context).devicePixelRatio;
     return Container(
       child: Column(
         children: [
@@ -29,26 +30,29 @@ class TextTabState extends State<TextTab> {
           Text(widget.translation.text(ScreenEditorText.textTabPrimaryDetails)),
           _buildText(),
           Visibility(
-            child: Text(
-                widget.translation.text(ScreenEditorText.textTabPrimaryToggleDetails)),
-            visible: widget.gicEditControl.control.type == ControlViewModelType.Toggle,
+            child: Text(widget.translation
+                .text(ScreenEditorText.textTabPrimaryToggleDetails)),
+            visible: widget.gicEditControl.control.type ==
+                ControlViewModelType.Toggle,
           ),
           Visibility(
             child: _buildText(),
-            visible: widget.gicEditControl.control.type == ControlViewModelType.Toggle,
+            visible: widget.gicEditControl.control.type ==
+                ControlViewModelType.Toggle,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ElevatedButton(
-                child:
-                Text(widget.translation.text(ScreenEditorText.textTabFontColor)),
+                child: Text(
+                    widget.translation.text(ScreenEditorText.textTabFontColor)),
                 onPressed: () {
                   _pickColor();
                 },
               ),
               ElevatedButton(
-                child: Text(widget.translation.text(ScreenEditorText.textTabFont)),
+                child:
+                    Text(widget.translation.text(ScreenEditorText.textTabFont)),
                 onPressed: () {
                   _pickFont(context);
                 },
@@ -64,13 +68,15 @@ class TextTabState extends State<TextTab> {
                 value: widget.gicEditControl.control.font.size,
                 onChanged: (value) {
                   setState(() {
-                    widget.gicEditControl.control.font.size = value.roundToDouble();
+                    widget.gicEditControl.control.font.size =
+                        value.roundToDouble();
                   });
                 },
               ),
               Flexible(child: _size())
             ],
-          )
+          ),
+          preview()
         ],
       ),
     );
@@ -94,7 +100,6 @@ class TextTabState extends State<TextTab> {
         controller: controller, keyboardType: TextInputType.number);
   }
 
-
   void _pickedColor(Color color) {
     setState(() {
       widget.gicEditControl.control.font.color = color;
@@ -105,16 +110,16 @@ class TextTabState extends State<TextTab> {
     showDialog(
         context: context,
         builder: (_) => ColorPickerDialog(
-          title: widget.translation.text(ScreenEditorText.backgroundColor),
-          pickerColor: widget.gicEditControl.control.font.color,
-          onPressedCallback: _pickedColor,
-        ));
+              title: widget.translation.text(ScreenEditorText.backgroundColor),
+              pickerColor: widget.gicEditControl.control.font.color,
+              onPressedCallback: _pickedColor,
+            ));
   }
 
   void _pickFont(BuildContext context) {
     List<Widget> fontButtons = [];
     Fonts.list().forEach((key, value) {
-      fontButtons.add (
+      fontButtons.add(
         TextButton(
           onPressed: () {
             widget.gicEditControl.control.font.family = key;

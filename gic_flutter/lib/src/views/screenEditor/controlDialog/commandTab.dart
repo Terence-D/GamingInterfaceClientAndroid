@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
-class CommandTab extends StatefulWidget {
+class CommandTab extends BaseTab {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
   final bool isButton;
@@ -16,7 +17,7 @@ class CommandTab extends StatefulWidget {
   CommandTabState createState() => CommandTabState();
 }
 
-class CommandTabState extends State<CommandTab> {
+class CommandTabState extends BaseTabState {
   final List<TextEditingController> textControllers = [];
   final AutoItKeyMap _commandList = AutoItKeyMap();
   final List<String> _dropDownItems = [];
@@ -25,7 +26,8 @@ class CommandTabState extends State<CommandTab> {
   @override
   void initState() {
     super.initState();
-    if (widget.gicEditControl.control.type == ControlViewModelType.QuickButton) {
+    if (widget.gicEditControl.control.type ==
+        ControlViewModelType.QuickButton) {
       switchText = widget.translation.text(ScreenEditorText.enabled);
     } else {
       switchText = widget.translation.text(ScreenEditorText.disabled);
@@ -39,6 +41,7 @@ class CommandTabState extends State<CommandTab> {
 
   @override
   Widget build(BuildContext context) {
+    pixelRatio = MediaQuery.of(context).devicePixelRatio;
     return Container(
       child: Column(
         children: [
@@ -89,8 +92,10 @@ class CommandTabState extends State<CommandTab> {
                 ],
               ),
               visible: widget.gicEditControl.control.type ==
-                  ControlViewModelType.Button || widget.gicEditControl.control.type ==
-                  ControlViewModelType.QuickButton)
+                      ControlViewModelType.Button ||
+                  widget.gicEditControl.control.type ==
+                      ControlViewModelType.QuickButton),
+          preview()
         ],
       ),
     );
@@ -126,7 +131,7 @@ class CommandTabState extends State<CommandTab> {
   //this drop down provides a list of all supported commands
   //the index determines if we are doing this for the primary or secondary controls
   DropdownButton<String> buildCommandDropDown(int commandIndex) {
-    if (commandIndex >= widget.gicEditControl.control.commands.length ) {
+    if (commandIndex >= widget.gicEditControl.control.commands.length) {
       commandIndex = 0;
     }
     return DropdownButton<String>(
