@@ -30,19 +30,22 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
   GestureDetector buildControl();
 
   @override
-  void initState() {
+  Widget build(BuildContext context) {
+    bool isPressed = false;
+    if (active == pressed) {
+      isPressed = true;
+    }
     if (control.type == ControlViewModelType.Button ||
         control.type == ControlViewModelType.QuickButton ||
         control.type == ControlViewModelType.Toggle ) {
       unpressed = _buildButtonDesign(false);
       pressed = _buildButtonDesign(true);
-      active = unpressed;
+      if (isPressed) {
+        active = pressed;
+      } else {
+        active = unpressed;
+      }
     }
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return buildControl();
   }
 
