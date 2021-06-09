@@ -39,13 +39,11 @@ class ScreenService {
   /// Initialize our service with values from preferences
   Future initDefaults() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (activeScreenViewModel ==
-        null) {
+    if (activeScreenViewModel == null) {
       await loadScreens();
     }
 
-    defaultControls =
-        ControlDefaults(prefs, activeScreenViewModel.screenId);
+    defaultControls = ControlDefaults(prefs, activeScreenViewModel.screenId);
     gridSize = prefs.getInt(_prefGridSize);
     if (gridSize == null) gridSize = 0;
   }
@@ -250,7 +248,7 @@ class ScreenService {
     screenViewModels.forEach((screen) {
       if (screen.name == baseName) {
         foundCount++;
-        return _findUniqueName(baseName: baseName, foundCount: foundCount);
+        return _findUniqueName(baseName: "baseName${foundCount}", foundCount: foundCount);
       }
       return "$baseName $foundCount";
     });

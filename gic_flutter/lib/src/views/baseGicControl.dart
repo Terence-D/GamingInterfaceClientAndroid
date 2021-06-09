@@ -139,7 +139,9 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
 
   void _buttonTap(String commandUrl, int activatorType, BoxDecoration status) {
     sendCommand(commandUrl, 0);
-    control.commands[0].activatorType = activatorType;
+    if (control.commands.isNotEmpty) {
+      control.commands[0].activatorType = activatorType;
+    }
     active = status;
   }
 

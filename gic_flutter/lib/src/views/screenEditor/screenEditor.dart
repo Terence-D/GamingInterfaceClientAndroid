@@ -131,6 +131,7 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   //user tapped save in the settings menu
   void tapSave() {
+    _service.defaultControls.saveDefaults(screenId);
     _service.activeScreenViewModel.save();
   }
 
