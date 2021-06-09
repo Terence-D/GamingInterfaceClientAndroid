@@ -194,6 +194,11 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     }
 
     if (control.design == ControlDesignType.UpDownGradient) {
+      if (control.colors.isEmpty) {
+        control.colors = [];
+        control.colors.add(Colors.blue);
+        control.colors.add(Colors.black);
+      }
       List<Color> colors = [control.colors[0], control.colors[1]];
       LinearGradient linearGradient  = LinearGradient(
         colors: colors,
