@@ -117,6 +117,7 @@ class ScreenService {
     newScreenVM.name = _findUniqueName();
     screenViewModels.add(newScreenVM);
     activeScreenViewModel = screenViewModels.last;
+
   }
 
   /// Delete the screen with the associated id
@@ -263,14 +264,15 @@ class ScreenService {
   /// return this unused number
   /// startingId: used for the recursion
   int _findUniqueId({int startingId = -1}) {
-    int startingId = screenViewModels.length;
+    if (startingId < 0) {
+      startingId = screenViewModels.length;
+    }
 
     for (var screen in screenViewModels) {
       if (screen.screenId == startingId) {
         startingId++;
         return _findUniqueId(startingId: startingId);
       }
-      return startingId;
     }
 
     return startingId;

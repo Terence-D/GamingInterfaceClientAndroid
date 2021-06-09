@@ -28,7 +28,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
 
   @override
   void initState() {
-    controlTypeText = List();
+    controlTypeText = [];
 
     _itemCount = widget.state.viewModel.horizontalControlCount * widget.state.viewModel.verticalControlCount;
     selectedKey = List(_itemCount);
