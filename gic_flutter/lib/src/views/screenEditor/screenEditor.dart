@@ -141,16 +141,16 @@ class ScreenEditorState extends State<ScreenEditor> {
     switch (controlType) {
       case ControlViewModelType.QuickButton:
       case ControlViewModelType.Button:
-        newControl = _service.defaultControls.defaultButton;
+        newControl = _service.defaultControls.defaultButton.clone();
         break;
       case ControlViewModelType.Text:
-        newControl = _service.defaultControls.defaultText;
+        newControl = _service.defaultControls.defaultText.clone();
         break;
       case ControlViewModelType.Image:
-        newControl = _service.defaultControls.defaultImage;
+        newControl = _service.defaultControls.defaultImage.clone();
         break;
       case ControlViewModelType.Toggle:
-        newControl = _service.defaultControls.defaultToggle;
+        newControl = _service.defaultControls.defaultToggle.clone();
         break;
     }
     newControl.left = (_doubleTapDetails.localPosition.dx * pixelRatio) -

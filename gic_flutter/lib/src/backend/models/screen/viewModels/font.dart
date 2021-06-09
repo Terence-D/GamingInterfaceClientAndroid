@@ -22,6 +22,16 @@ class Font {
         size = json['size'],
         family = json['family'];
 
+  Font clone() {
+    Font clone = Font();
+    clone.version = version;
+    clone.color = color;
+    clone.size = size;
+    clone.family = family;
+
+    return clone;
+  }
+
   Map<String, dynamic> toJson() {
 
     return {
