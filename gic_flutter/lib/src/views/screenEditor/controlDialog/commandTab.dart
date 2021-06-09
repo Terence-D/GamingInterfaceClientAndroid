@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/backend/models/screen/command.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
@@ -134,11 +135,16 @@ class CommandTabState extends BaseTabState {
     if (commandIndex >= widget.gicEditControl.control.commands.length) {
       commandIndex = 0;
     }
+    var val;
+    if (widget.gicEditControl.control.commands.isEmpty) {
+      widget.gicEditControl.control.commands.add(Command());
+    }
+    val = _commandList
+        .map[widget.gicEditControl.control.commands[commandIndex].key];
     return DropdownButton<String>(
       isExpanded: true,
       hint: Text(widget.translation.text(ScreenEditorText.commandDropDownHint)),
-      value: _commandList
-          .map[widget.gicEditControl.control.commands[commandIndex].key],
+      value: val,
       underline: Container(
         height: 24,
       ),
@@ -175,7 +181,7 @@ class CommandTabState extends BaseTabState {
   //builds the actual checkbox for the modifierCheckboxes method
   Checkbox modifierCheckbox(int commandIndex, String modifier) {
     if (commandIndex >= widget.gicEditControl.control.commands.length) {
-      commandIndex = 0;
+      var val = commandIndex = 0;
     }
     return Checkbox(
         value: widget.gicEditControl.control.commands[commandIndex].modifiers

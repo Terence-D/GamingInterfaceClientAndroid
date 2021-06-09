@@ -30,19 +30,22 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
   GestureDetector buildControl();
 
   @override
-  void initState() {
+  Widget build(BuildContext context) {
+    bool isPressed = false;
+    if (active == pressed) {
+      isPressed = true;
+    }
     if (control.type == ControlViewModelType.Button ||
         control.type == ControlViewModelType.QuickButton ||
         control.type == ControlViewModelType.Toggle ) {
       unpressed = _buildButtonDesign(false);
       pressed = _buildButtonDesign(true);
-      active = unpressed;
+      if (isPressed) {
+        active = pressed;
+      } else {
+        active = unpressed;
+      }
     }
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return buildControl();
   }
 
@@ -136,7 +139,9 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
 
   void _buttonTap(String commandUrl, int activatorType, BoxDecoration status) {
     sendCommand(commandUrl, 0);
-    control.commands[0].activatorType = activatorType;
+    if (control.commands.isNotEmpty) {
+      control.commands[0].activatorType = activatorType;
+    }
     active = status;
   }
 
@@ -189,6 +194,11 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     }
 
     if (control.design == ControlDesignType.UpDownGradient) {
+      if (control.colors.isEmpty) {
+        control.colors = [];
+        control.colors.add(Colors.blue);
+        control.colors.add(Colors.black);
+      }
       List<Color> colors = [control.colors[0], control.colors[1]];
       LinearGradient linearGradient  = LinearGradient(
         colors: colors,

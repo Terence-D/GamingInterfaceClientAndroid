@@ -67,6 +67,24 @@ class ControlViewModel {
     return rv;
   }
 
+  ControlViewModel clone() {
+    ControlViewModel clone = ControlViewModel();
+    clone.version = version;
+    clone.type = type;
+    clone.design = design;
+    clone.commands = List.from(commands);
+    clone.text = text;
+    clone.font = font.clone();
+    clone.left = left;
+    clone.width = width;
+    clone.top = top;
+    clone.height = height;
+    clone.colors = List.from(colors);
+    clone.images = List.from(images);
+
+    return clone;
+  }
+
   ControlViewModel.fromJson(Map<String, dynamic> json)
       : version = json['version'],
         design = getTypeDesignString(json['design']),

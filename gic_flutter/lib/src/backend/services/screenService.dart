@@ -39,13 +39,11 @@ class ScreenService {
   /// Initialize our service with values from preferences
   Future initDefaults() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (activeScreenViewModel ==
-        null) {
+    if (activeScreenViewModel == null) {
       await loadScreens();
     }
 
-    defaultControls =
-        ControlDefaults(prefs, activeScreenViewModel.screenId);
+    defaultControls = ControlDefaults(prefs, activeScreenViewModel.screenId);
     gridSize = prefs.getInt(_prefGridSize);
     if (gridSize == null) gridSize = 0;
   }
@@ -119,6 +117,7 @@ class ScreenService {
     newScreenVM.name = _findUniqueName();
     screenViewModels.add(newScreenVM);
     activeScreenViewModel = screenViewModels.last;
+
   }
 
   /// Delete the screen with the associated id
@@ -250,7 +249,7 @@ class ScreenService {
     screenViewModels.forEach((screen) {
       if (screen.name == baseName) {
         foundCount++;
-        return _findUniqueName(baseName: baseName, foundCount: foundCount);
+        return _findUniqueName(baseName: "baseName${foundCount}", foundCount: foundCount);
       }
       return "$baseName $foundCount";
     });
@@ -265,14 +264,15 @@ class ScreenService {
   /// return this unused number
   /// startingId: used for the recursion
   int _findUniqueId({int startingId = -1}) {
-    int startingId = screenViewModels.length;
+    if (startingId < 0) {
+      startingId = screenViewModels.length;
+    }
 
     for (var screen in screenViewModels) {
       if (screen.screenId == startingId) {
         startingId++;
         return _findUniqueId(startingId: startingId);
       }
-      return startingId;
     }
 
     return startingId;
