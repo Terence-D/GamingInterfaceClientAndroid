@@ -46,8 +46,6 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   TapDownDetails _doubleTapDetails;
 
-  bool ignoreDrag = false;
-
   ScreenEditorState(this.screenId);
 
   @override
@@ -180,13 +178,11 @@ class ScreenEditorState extends State<ScreenEditor> {
   /// startPosition - the raw position, either X or Y based
   /// size - size of the control, on the same axis as startPosition.  -1 ignores
   double _getGridPosition({double startPosition, double size = -1}) {
-    ignoreDrag = true;
     double rawPos = startPosition * pixelRatio;
     if (size > -1) {
       rawPos = rawPos - (size / 2);
     }
     int gridPos = (rawPos.round() / gridSize).round();
-    ignoreDrag = false;
     return gridPos * gridSize.toDouble();
   }
 
@@ -280,9 +276,11 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   void _onDrag(double newLeft, double newTop, int selectedControlIndex) {
-    _service.activeScreenViewModel.controls[selectedControlIndex].left =
+    _service.activeScreenViewModel.controls[selectedControlIndex].left +=
+        // newLeft;
         _getGridPosition(startPosition: newLeft * pixelRatio);
-    _service.activeScreenViewModel.controls[selectedControlIndex].top =
+    _service.activeScreenViewModel.controls[selectedControlIndex].top +=
+        // newTop;
         _getGridPosition(startPosition: newTop * pixelRatio);
     setState(() {});
   }
