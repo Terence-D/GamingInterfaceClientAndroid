@@ -180,9 +180,6 @@ class CommandTabState extends BaseTabState {
 
   //builds the actual checkbox for the modifierCheckboxes method
   Checkbox modifierCheckbox(int commandIndex, String modifier) {
-    if (commandIndex >= widget.gicEditControl.control.commands.length) {
-      var val = commandIndex = 0;
-    }
     return Checkbox(
         value: widget.gicEditControl.control.commands[commandIndex].modifiers
             .contains(modifier), //do something here
