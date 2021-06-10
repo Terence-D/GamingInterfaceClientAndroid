@@ -32,6 +32,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   final double minSize = 16.0;
   final int screenId;
   final String prefKeyGridSize = "prefGridSize";
+  final String prefHelpKey = "-screenEditorHelp";
 
   ControlViewModel deletedWidget;
 
@@ -43,6 +44,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   double selectedHeight = 0;
   bool selectedVisible = false;
 
+  bool _firstVisit = true;
   bool _loaded = false;
 
   TapDownDetails _doubleTapDetails;
@@ -69,6 +71,9 @@ class ScreenEditorState extends State<ScreenEditor> {
     gridSize = 64; //default size
     if (prefs.containsKey(prefKeyGridSize)) {
       gridSize = prefs.getInt(prefKeyGridSize);
+    }
+    if (prefs.containsKey("$screenId$prefHelpKey")) {
+      _firstVisit = prefs.getBool("$screenId$prefHelpKey");
     }
   }
 
@@ -99,6 +104,14 @@ class ScreenEditorState extends State<ScreenEditor> {
             )));
         n++;
       });
+      if (_firstVisit) {
+        widgets.add(Center(child: Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Text(translation.text(ScreenEditorText.helpMessage),
+          style: TextStyle(color: Colors.white, fontSize: 24),
+          ),
+        )));
+      }
     }
 
     Container screen;
@@ -218,6 +231,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   void _handleDoubleTap() {
+    SharedPreferences.getInstance().then((value) => value.setBool("$screenId$prefHelpKey", false));
     setState(() {
       selectedVisible = false;
       showPopupDialog(SettingsDialog.display(context, this));
