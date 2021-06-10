@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-class DialogItem extends StatelessWidget {
-  const DialogItem({Key key, this.icon, this.color, this.text, this.onPressed})
+class DialogButton extends StatelessWidget {
+  const DialogButton(
+      {Key key, this.icon, this.color, this.text, this.onPressed})
       : super(key: key);
 
   final IconData icon;

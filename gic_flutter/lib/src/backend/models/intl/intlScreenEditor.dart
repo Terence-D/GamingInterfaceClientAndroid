@@ -71,7 +71,7 @@ class IntlScreenEditor {
       ScreenEditorText.setBackground: "Background",
       ScreenEditorText.setGrid: "Grid Size",
       ScreenEditorText.save: "Save",
-      ScreenEditorText.menu: "Menu",
+      ScreenEditorText.menu: "Settings",
       ScreenEditorText.backgroundMenu: "Background Style",
       ScreenEditorText.backgroundColor: "Color",
       ScreenEditorText.backgroundImage: "Image",
@@ -104,8 +104,7 @@ class IntlScreenEditor {
       ScreenEditorText.sizeTabHeight: "Height",
       ScreenEditorText.designTabDetails:
           "An image or a color gradient can be used decorate your buttons.  If you want to use a custom image, choose Import first.",
-      ScreenEditorText.designTabImageDetails:
-          "Import an image to display",
+      ScreenEditorText.designTabImageDetails: "Import an image to display",
       ScreenEditorText.designTabImport: "Import Custom Image",
       ScreenEditorText.designTabHeader: "Design",
       ScreenEditorText.designTabPressedImage: "Button Pressed Image",
