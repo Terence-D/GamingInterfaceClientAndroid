@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/screen/command.dart';
-import 'package:gic_flutter/src/backend/models/screen/controlTypes.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 
@@ -37,7 +36,7 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     }
     if (control.type == ControlViewModelType.Button ||
         control.type == ControlViewModelType.QuickButton ||
-        control.type == ControlViewModelType.Toggle ) {
+        control.type == ControlViewModelType.Toggle) {
       unpressed = _buildButtonDesign(false);
       pressed = _buildButtonDesign(true);
       if (isPressed) {
@@ -133,7 +132,9 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
         active = unpressed;
       }
     }
-    control.commands[commandIndex].activatorType = activatorType;
+    if (control.commands.isNotEmpty) {
+      control.commands[commandIndex].activatorType = activatorType;
+    }
     sendCommand(commandType, 0);
   }
 
@@ -200,12 +201,13 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
         control.colors.add(Colors.black);
       }
       List<Color> colors = [control.colors[0], control.colors[1]];
-      LinearGradient linearGradient  = LinearGradient(
+      LinearGradient linearGradient = LinearGradient(
         colors: colors,
         begin: begin,
         end: end,
       );
-      return BoxDecoration(borderRadius: buttonBorder, gradient: linearGradient);
+      return BoxDecoration(
+          borderRadius: buttonBorder, gradient: linearGradient);
     } else {
       ImageProvider imageProvider;
       DecorationImage decorationImage;
@@ -215,12 +217,8 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
         imageProvider = AssetImage(
             "assets/images/controls/${control.images[imageIndex]}.png");
       }
-      decorationImage =DecorationImage(
-          image: imageProvider,
-          fit: BoxFit.fill);
-      return BoxDecoration(
-          borderRadius: buttonBorder,
-          image: decorationImage);
+      decorationImage = DecorationImage(image: imageProvider, fit: BoxFit.fill);
+      return BoxDecoration(borderRadius: buttonBorder, image: decorationImage);
     }
   }
 }

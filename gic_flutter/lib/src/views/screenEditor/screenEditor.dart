@@ -80,7 +80,6 @@ class ScreenEditorState extends State<ScreenEditor> {
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
     int n = 0;
     List<Widget> widgets = [];
-    widgets.add(_highlightSelection());
     if (_service.activeScreenViewModel != null) {
       _service.activeScreenViewModel.controls.forEach((element) {
         widgets.add(Positioned(
@@ -201,18 +200,6 @@ class ScreenEditorState extends State<ScreenEditor> {
         screenViewModel: _service.activeScreenViewModel));
   }
 
-  Positioned _highlightSelection() {
-    return Positioned(
-        left: selectedLeft,
-        top: selectedTop,
-        child: Visibility(
-            visible: selectedVisible,
-            child: Container(
-                width: selectedWidth,
-                height: selectedHeight,
-                color: Colors.yellow)));
-  }
-
   void _handleDoubleTapDown(TapDownDetails details) {
     _doubleTapDetails = details;
   }
@@ -225,54 +212,31 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   Future<void> _onSelected(int selectedControlIndex) async {
-    if (controlId != selectedControlIndex) {
-      controlId = selectedControlIndex;
-      setState(() {
-        selectedLeft = (_service
-                    .activeScreenViewModel.controls[selectedControlIndex].left /
-                pixelRatio) -
-            highlightBorder;
-        selectedTop =
-            (_service.activeScreenViewModel.controls[selectedControlIndex].top /
-                    pixelRatio) -
-                highlightBorder;
-        selectedWidth = (_service.activeScreenViewModel
-                    .controls[selectedControlIndex].width /
-                pixelRatio) +
-            (highlightBorder * 2);
-        selectedHeight = (_service.activeScreenViewModel
-                    .controls[selectedControlIndex].height /
-                pixelRatio) +
-            (highlightBorder * 2);
-        selectedVisible = true;
-      });
-    } else {
-      bool deleteWidget = false;
-      deleteWidget = await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return ControlDialog(
-                translation: translation,
-                screenId: _service.activeScreenViewModel.screenId,
-                gicEditControl: GicEditControl(
-                    pixelRatio: pixelRatio,
-                    control: _service
-                        .activeScreenViewModel.controls[selectedControlIndex],
-                    controlIndex: selectedControlIndex,
-                    onSelected: null,
-                    onDrag: null));
-          });
-      setState(() {
-        if (deleteWidget != null && deleteWidget) {
-          selectedVisible = false;
-          deletedWidget =
-              _service.activeScreenViewModel.controls[selectedControlIndex];
-          _service.activeScreenViewModel.controls
-              .removeAt(selectedControlIndex);
-          _showDeleteToast();
-        }
-      });
-    }
+    controlId = selectedControlIndex;
+    bool deleteWidget = false;
+    deleteWidget = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ControlDialog(
+              translation: translation,
+              screenId: _service.activeScreenViewModel.screenId,
+              gicEditControl: GicEditControl(
+                  pixelRatio: pixelRatio,
+                  control: _service
+                      .activeScreenViewModel.controls[selectedControlIndex],
+                  controlIndex: selectedControlIndex,
+                  onSelected: null,
+                  onDrag: null));
+        });
+    setState(() {
+      if (deleteWidget != null && deleteWidget) {
+        selectedVisible = false;
+        deletedWidget =
+            _service.activeScreenViewModel.controls[selectedControlIndex];
+        _service.activeScreenViewModel.controls.removeAt(selectedControlIndex);
+        _showDeleteToast();
+      }
+    });
   }
 
   void _onDrag(double newLeft, double newTop, int selectedControlIndex) {

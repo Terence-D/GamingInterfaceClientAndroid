@@ -47,7 +47,7 @@ class GicEditControlState extends BaseGicControlState {
 
   GestureDetector buildControl() {
     return GestureDetector(
-        // onTapDown: (TapDownDetails details) => onTap(),
+        onTapDown: (TapDownDetails details) => null,
         onDoubleTap: onTap,
         //onTapUp: (TapUpDetails details) => onTapUp(),
         onPanUpdate: (tapInfo) {
