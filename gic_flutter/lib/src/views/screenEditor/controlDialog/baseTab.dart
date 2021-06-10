@@ -20,8 +20,11 @@ abstract class BaseTabState extends State<BaseTab> {
   Widget preview() {
     return Column(
       children: [
-        Text(widget.translation.text(ScreenEditorText.previewHeader),
-            style: Theme.of(context).textTheme.headline5),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Text(widget.translation.text(ScreenEditorText.previewHeader),
+              style: Theme.of(context).textTheme.headline5),
+        ),
         FittedBox(
           child: GicControl(
             pixelRatio: pixelRatio,
