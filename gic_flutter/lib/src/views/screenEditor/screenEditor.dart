@@ -10,7 +10,7 @@ import 'package:gic_flutter/src/views/screenEditor/controlDialog/controlDialog.d
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'settingsDialog.dart';
+import 'settingsDialog/settingsDialog.dart';
 
 class ScreenEditor extends StatefulWidget {
   final int screenId;
@@ -31,6 +31,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   final double highlightBorder = 2.0;
   final double minSize = 16.0;
   final int screenId;
+  final String prefKeyGridSize = "prefGridSize";
 
   ControlViewModel deletedWidget;
 
@@ -65,10 +66,9 @@ class ScreenEditorState extends State<ScreenEditor> {
 
     //retrieve our settings for grid
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String PREF_KEY_GRID_SIZE = "prefGridSize";
     gridSize = 64; //default size
-    if (prefs.containsKey(PREF_KEY_GRID_SIZE)) {
-      gridSize = prefs.getInt(PREF_KEY_GRID_SIZE);
+    if (prefs.containsKey(prefKeyGridSize)) {
+      gridSize = prefs.getInt(prefKeyGridSize);
     }
   }
 
@@ -173,6 +173,15 @@ class ScreenEditorState extends State<ScreenEditor> {
     });
   }
 
+  void gridChangeListener(double newValue) {
+    setState(() {
+      gridSize = newValue.toInt();
+    });
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setInt(prefKeyGridSize, newValue.toInt());
+    });
+  }
+
   /// Determines where to place something, based on the currently set grid value
   /// startPosition - the raw position, either X or Y based
   /// size - size of the control, on the same axis as startPosition.  -1 ignores
@@ -181,8 +190,12 @@ class ScreenEditorState extends State<ScreenEditor> {
     if (size > -1) {
       rawPos = rawPos - (size / 2);
     }
-    int gridPos = (rawPos.round() / gridSize).round();
-    return gridPos * gridSize.toDouble();
+    int adjustedSize = gridSize;
+    if (gridSize < 1) {
+      adjustedSize = 1;
+    }
+    int gridPos = (rawPos.round() / adjustedSize).round();
+    return gridPos * adjustedSize.toDouble();
   }
 
   void showPopupDialog(Widget dialog) {

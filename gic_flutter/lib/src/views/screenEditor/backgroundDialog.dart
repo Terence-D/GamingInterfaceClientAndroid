@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
-import 'package:gic_flutter/src/views/screenEditor/dialogItem.dart';
+import 'package:gic_flutter/src/views/screenEditor/settingsDialog/dialogButton.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
@@ -32,14 +32,14 @@ class _BackgroundDialogState extends State<BackgroundDialog> {
     return SimpleDialog(
       title: Text(translation.text(ScreenEditorText.backgroundMenu)),
       children: [
-        DialogItem(
+        DialogButton(
             icon: Icons.image,
             color: Colors.blue,
             text: translation.text(ScreenEditorText.backgroundImage),
             onPressed: () {
               _pickBackgroundImage();
             }),
-        DialogItem(
+        DialogButton(
           icon: Icons.color_lens,
           color: Colors.green,
           text: translation.text(ScreenEditorText.backgroundColor),

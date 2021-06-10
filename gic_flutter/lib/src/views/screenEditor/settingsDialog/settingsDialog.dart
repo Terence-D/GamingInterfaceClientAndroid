@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
-import 'package:gic_flutter/src/views/screenEditor/dialogItem.dart';
 import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
+import 'package:gic_flutter/src/views/screenEditor/settingsDialog/dialogButton.dart';
+import 'package:gic_flutter/src/views/screenEditor/settingsDialog/dialogSlider.dart';
 
 class SettingsDialog {
   static Widget display(
@@ -11,8 +12,9 @@ class SettingsDialog {
 
     return SimpleDialog(
       title: Text(translation.text(ScreenEditorText.menu)),
+      elevation: 5,
       children: [
-        DialogItem(
+        DialogButton(
           icon: Icons.smart_button,
           color: Colors.orange,
           text: translation.text(ScreenEditorText.addButton),
@@ -21,7 +23,7 @@ class SettingsDialog {
             Navigator.pop(context, true);
           },
         ),
-        DialogItem(
+        DialogButton(
           icon: Icons.toggle_off_outlined,
           color: Colors.green,
           text: translation.text(ScreenEditorText.addToggle),
@@ -30,7 +32,7 @@ class SettingsDialog {
             Navigator.pop(context, true);
           },
         ),
-        DialogItem(
+        DialogButton(
           icon: Icons.text_fields,
           color: Colors.blue,
           text: translation.text(ScreenEditorText.addText),
@@ -39,7 +41,7 @@ class SettingsDialog {
             Navigator.pop(context, true);
           },
         ),
-        DialogItem(
+        DialogButton(
           icon: Icons.image,
           color: Colors.red,
           text: translation.text(ScreenEditorText.addImage),
@@ -48,7 +50,13 @@ class SettingsDialog {
             Navigator.pop(context, true);
           },
         ),
-        DialogItem(
+        Divider(
+          height: 10,
+          thickness: 5,
+          indent: 20,
+          endIndent: 20,
+        ),
+        DialogButton(
           icon: Icons.color_lens,
           color: Colors.yellow,
           text: translation.text(ScreenEditorText.setBackground),
@@ -56,13 +64,22 @@ class SettingsDialog {
             screenEditorState.showBackgroundDialog();
           },
         ),
-        DialogItem(
+        DialogSlider(
           icon: Icons.grid_on,
           color: Colors.grey,
           text: translation.text(ScreenEditorText.setGrid),
-          onPressed: () {},
+          originalValue: screenEditorState.gridSize,
+          onChanged: (double newValue) {
+            screenEditorState.gridChangeListener(newValue);
+          },
         ),
-        DialogItem(
+        Divider(
+          height: 10,
+          thickness: 5,
+          indent: 20,
+          endIndent: 20,
+        ),
+        DialogButton(
           icon: Icons.save,
           color: Colors.deepPurple,
           text: translation.text(ScreenEditorText.save),
