@@ -1,5 +1,3 @@
-import 'package:gic_flutter/src/backend/models/intl/intlAbout.dart';
-import 'package:gic_flutter/src/views/screenEditor/controlDialog/controlDialog.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,7 +6,9 @@ import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:gic_flutter/src/views/screenEditor/backgroundDialog.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/controlDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'settingsDialog.dart';
 
@@ -46,6 +46,8 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   TapDownDetails _doubleTapDetails;
 
+  bool ignoreDrag = false;
+
   ScreenEditorState(this.screenId);
 
   @override
@@ -62,6 +64,14 @@ class ScreenEditorState extends State<ScreenEditor> {
     await _service.loadScreens();
     _loaded = _service.setActiveScreen(screenId);
     await _service.initDefaults();
+
+    //retrieve our settings for grid
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String PREF_KEY_GRID_SIZE = "prefGridSize";
+    gridSize = 64; //default size
+    if (prefs.containsKey(PREF_KEY_GRID_SIZE)) {
+      gridSize = prefs.getInt(PREF_KEY_GRID_SIZE);
+    }
   }
 
   @override
@@ -153,13 +163,31 @@ class ScreenEditorState extends State<ScreenEditor> {
         newControl = _service.defaultControls.defaultToggle.clone();
         break;
     }
-    newControl.left = (_doubleTapDetails.localPosition.dx * pixelRatio) -
-        (newControl.width / 2);
-    newControl.top = (_doubleTapDetails.localPosition.dy * pixelRatio) -
-        (newControl.height / 2);
+
+    newControl.left = _getGridPosition(
+        startPosition: _doubleTapDetails.localPosition.dx,
+        size: newControl.width);
+    newControl.top = _getGridPosition(
+        startPosition: _doubleTapDetails.localPosition.dy,
+        size: newControl.height);
+
     setState(() {
       _service.activeScreenViewModel.controls.add(newControl);
     });
+  }
+
+  /// Determines where to place something, based on the currently set grid value
+  /// startPosition - the raw position, either X or Y based
+  /// size - size of the control, on the same axis as startPosition.  -1 ignores
+  double _getGridPosition({double startPosition, double size = -1}) {
+    ignoreDrag = true;
+    double rawPos = startPosition * pixelRatio;
+    if (size > -1) {
+      rawPos = rawPos - (size / 2);
+    }
+    int gridPos = (rawPos.round() / gridSize).round();
+    ignoreDrag = false;
+    return gridPos * gridSize.toDouble();
   }
 
   void showPopupDialog(Widget dialog) {
@@ -253,8 +281,9 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   void _onDrag(double newLeft, double newTop, int selectedControlIndex) {
     _service.activeScreenViewModel.controls[selectedControlIndex].left =
-        newLeft;
-    _service.activeScreenViewModel.controls[selectedControlIndex].top = newTop;
+        _getGridPosition(startPosition: newLeft * pixelRatio);
+    _service.activeScreenViewModel.controls[selectedControlIndex].top =
+        _getGridPosition(startPosition: newTop * pixelRatio);
     setState(() {});
   }
 

@@ -51,9 +51,12 @@ class GicEditControlState extends BaseGicControlState {
         //onTapUp: (TapUpDetails details) => onTapUp(),
         onPanUpdate: (tapInfo) {
           setState(() {
-            control.left += tapInfo.delta.dx;
-            control.top += tapInfo.delta.dy;
-            if (onDrag != null) onDrag(control.left, control.top, controlIndex);
+            if (onDrag != null) {
+              onDrag(tapInfo.delta.dx, tapInfo.delta.dy, controlIndex);
+            } else {
+              control.left += tapInfo.delta.dx;
+              control.top += tapInfo.delta.dy;
+            }
           });
         },
         child: buildControlContainer());
