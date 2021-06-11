@@ -27,9 +27,9 @@ class NewScreenWizardState extends State<NewScreenWizard> {
 
   final TextEditingController screenNameTextController =
       TextEditingController();
-  final TextEditingController screenWidthTextController =
+  final TextEditingController screenPrimarySizeTextController =
       TextEditingController();
-  final TextEditingController screenHeightTextController =
+  final TextEditingController screenSecondarySizeTextController =
       TextEditingController();
   List<TextEditingController> keyNameController = [];
 
@@ -42,11 +42,19 @@ class NewScreenWizardState extends State<NewScreenWizard> {
     });
     screenNameTextController.text = "New Screen";
     //get screen dimensions
-    screenHeightTextController.addListener(() {
-      viewModel.screenHeight = double.parse(screenHeightTextController.text);
+    screenSecondarySizeTextController.addListener(() {
+      if (viewModel.isLandscape) {
+        viewModel.screenHeight = double.parse(screenSecondarySizeTextController.text);
+      } else {
+        viewModel.screenWidth = double.parse(screenSecondarySizeTextController.text);
+      }
     });
-    screenWidthTextController.addListener(() {
-      viewModel.screenWidth = double.parse(screenWidthTextController.text);
+    screenPrimarySizeTextController.addListener(() {
+      if (viewModel.isLandscape) {
+        viewModel.screenWidth = double.parse(screenPrimarySizeTextController.text);
+      } else {
+        viewModel.screenHeight = double.parse(screenPrimarySizeTextController.text);
+      }
     });
   }
 
@@ -61,6 +69,8 @@ class NewScreenWizardState extends State<NewScreenWizard> {
 
   @override
   Widget build(BuildContext context) {
+    Orientation currentOrientation = MediaQuery.of(context).orientation;
+    viewModel.isLandscape = (currentOrientation == Orientation.landscape);
     return Scaffold(
         appBar: _launcherAppBar(),
         body: _mainContent(),
@@ -115,11 +125,12 @@ class NewScreenWizardState extends State<NewScreenWizard> {
       viewModel.controls[i].text = keyNameController[i].text;
     }
 
-    if (double.parse(screenHeightTextController.text) > 0) {
-      viewModel.screenHeight = double.parse(screenHeightTextController.text);
+    if (double.parse(screenSecondarySizeTextController.text) > 0) {
+      viewModel.screenHeight = double.parse(screenSecondarySizeTextController.text);
+    } else {
     }
-    if (double.parse(screenWidthTextController.text) > 0) {
-      viewModel.screenWidth = double.parse(screenWidthTextController.text);
+    if (double.parse(screenPrimarySizeTextController.text) > 0) {
+      viewModel.screenWidth = double.parse(screenPrimarySizeTextController.text);
     }
 
     await _bloc.saveScreen(viewModel);

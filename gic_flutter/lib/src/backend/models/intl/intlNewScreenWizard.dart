@@ -25,7 +25,9 @@ enum NewScreenWizardText {
   ctrl, alt, shift,
   errorEnterScreenName,
   controlText,
-  controlCommand
+  controlCommand,
+  width,
+  height
 }
 
 class IntlNewScreenWizard {
@@ -64,7 +66,9 @@ class IntlNewScreenWizard {
       NewScreenWizardText.shift: "Shift",
       NewScreenWizardText.errorEnterScreenName: "Please enter a screen name!",
       NewScreenWizardText.controlCommand: "Command on press",
-      NewScreenWizardText.controlText: "Text to Display"
+      NewScreenWizardText.controlText: "Text to Display",
+      NewScreenWizardText.width: "Width",
+      NewScreenWizardText.height: "Height"
     }
   };
 }
