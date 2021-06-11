@@ -122,7 +122,9 @@ class TextTabState extends BaseTabState {
       fontButtons.add(
         TextButton(
           onPressed: () {
-            widget.gicEditControl.control.font.family = key;
+            setState(() {
+              widget.gicEditControl.control.font.family = key;
+            });
             Navigator.pop(context);
           },
           child: Text(

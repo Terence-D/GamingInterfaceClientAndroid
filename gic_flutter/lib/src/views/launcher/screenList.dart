@@ -31,7 +31,7 @@ class VersionResponse {
 class ScreenList extends StatelessWidget {
   final List<ScreenListItem> _screens;
   final IntlLauncher _translations;
-  final List<TextEditingController> _screenNameController = List<TextEditingController>();
+  final List<TextEditingController> _screenNameController = <TextEditingController>[];
   final LauncherState _parent;
 
   ScreenList(this._parent, this._screens, this._translations);

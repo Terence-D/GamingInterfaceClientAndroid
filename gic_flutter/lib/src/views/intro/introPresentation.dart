@@ -85,7 +85,7 @@ class IntroPresentation {
               ScreenListWidget(_screens),
               RaisedButton(
                 onPressed: () {
-                  List<ScreenItem> screens = List<ScreenItem>();
+                  List<ScreenItem> screens = <ScreenItem>[];
                   _screens.forEach((screen) {
                     if (screen.selected) {
                       screens.add(screen);

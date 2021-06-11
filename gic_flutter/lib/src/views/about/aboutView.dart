@@ -78,7 +78,7 @@ class AboutViewState extends BaseState<AboutView> {
 
   Widget _libraries(List<ViewSection> sections) {
     if (sections != null) {
-      List<Widget> widgets = List<Widget>();
+      List<Widget> widgets = <Widget>[];
       TextStyle textStyle = Theme.of(context).textTheme.subtitle1;
       sections.forEach((s) => widgets.add(section(s, optionalHeaderStyle: textStyle)));
 

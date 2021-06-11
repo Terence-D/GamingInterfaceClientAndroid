@@ -4,7 +4,7 @@ class Screen {
   static const MAX_CONTROL_SIZE = 800;
 
   int screenId = -1;
-  List<GicControl> controls = List<GicControl>();
+  List<GicControl> controls = <GicControl>[];
   //background
   int newControlId = -1;
   int backgroundColor;
@@ -16,7 +16,7 @@ class Screen {
 
   factory Screen.fromJson(Map<String, dynamic> json) {
     var list = json['controls'] as List;
-    List<GicControl> jsonControls = List<GicControl>();
+    List<GicControl> jsonControls = <GicControl>[];
     list.forEach((value) { jsonControls.add(GicControl.fromJson(value));});
 
     return Screen(

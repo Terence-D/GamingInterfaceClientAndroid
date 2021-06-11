@@ -50,7 +50,7 @@ class ScreenViewModel {
 
   static convertJsonToControl(Map<String, dynamic> json, String key) {
     var list = json[key] as List;
-    List<ControlViewModel> controls = List<ControlViewModel>();
+    List<ControlViewModel> controls = <ControlViewModel>[];
     list.forEach((value) {
       controls.add(ControlViewModel.fromJson(value));
     });

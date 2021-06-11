@@ -50,7 +50,8 @@ enum ScreenEditorText {
   controlDialogTitle,
   widgetDeleted,
   undo,
-  previewHeader
+  previewHeader,
+  helpMessage
 }
 
 class IntlScreenEditor {
@@ -89,7 +90,7 @@ class IntlScreenEditor {
           "Quick Mode - Enable this if you need to quickly send a command.  Disable if you need to hold it down longer for the command to activate on the server.",
       ScreenEditorText.commandDropDownHint: "Choose a Command",
       ScreenEditorText.textTabHeader: "Text/Font",
-      ScreenEditorText.textTabPrimaryDetails: "Enter the text you want shown",
+      ScreenEditorText.textTabPrimaryDetails: "Type in the text you want shown, and pick the color, size, and font you want to use.",
       ScreenEditorText.textTabPrimaryToggleDetails:
           "Enter the text you want shown when toggle is off, and customize the display of the font",
       ScreenEditorText.textTabFontColor: "Color",
@@ -120,6 +121,7 @@ class IntlScreenEditor {
       ScreenEditorText.widgetDeleted: "Control Removed",
       ScreenEditorText.undo: "Undo",
       ScreenEditorText.previewHeader: "Preview",
+      ScreenEditorText.helpMessage: "To get started, Double Tap on a Control or on the Screen to start!  You can also use the Back button (or gesture) to exit without saving.  You can move controls around by dragging or in the double tap menu."
     }
   };
 }
