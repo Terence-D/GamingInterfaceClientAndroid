@@ -49,18 +49,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".views.edit.EditActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_edit"
-            android:theme="@style/FullscreenTheme"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
-            android:name=".views.GameActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_game_interface"
-            android:theme="@style/ActivityTheme.Primary.Base.Dark"
-            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>
