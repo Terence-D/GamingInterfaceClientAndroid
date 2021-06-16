@@ -99,6 +99,12 @@ class LauncherRepository {
     });
     if (furthestRight > furthestBottom) orientation = 1;
 
+    if (orientation == 0) {
+      double temp = furthestBottom;
+      furthestBottom = furthestRight;
+      furthestRight = temp;
+    }
+
     return [orientation, furthestRight, furthestBottom];
   }
 
@@ -176,8 +182,7 @@ class LauncherRepository {
         await _screenService.activeScreenViewModel.save();
       }
       _screenService.screenViewModels.forEach((element) {
-        viewModel.screens
-            .add(ScreenListItem(element.screenId, element.name));
+        viewModel.screens.add(ScreenListItem(element.screenId, element.name));
       });
       viewModel.screens
           .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
@@ -208,7 +213,8 @@ class LauncherRepository {
     ScreenRepository legacy = ScreenRepository();
     List<Screen> legacyScreens = await legacy.loadScreens();
     legacyScreens.forEach((element) async {
-      ScreenViewModel screenViewModel = ScreenViewModel.fromLegacyModel(element);
+      ScreenViewModel screenViewModel =
+          ScreenViewModel.fromLegacyModel(element);
       await screenViewModel.save();
     });
   }

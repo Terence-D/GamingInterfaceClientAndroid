@@ -1,14 +1,17 @@
-import 'package:gic_flutter/src/backend/models/networkModel.dart';
-import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'dart:io';
 
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
+import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
+import 'package:gic_flutter/src/backend/models/networkModel.dart';
+import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
@@ -31,7 +34,8 @@ class VersionResponse {
 class ScreenList extends StatelessWidget {
   final List<ScreenListItem> _screens;
   final IntlLauncher _translations;
-  final List<TextEditingController> _screenNameController = <TextEditingController>[];
+  final List<TextEditingController> _screenNameController =
+      <TextEditingController>[];
   final LauncherState _parent;
 
   ScreenList(this._parent, this._screens, this._translations);
@@ -65,7 +69,10 @@ class ScreenList extends StatelessWidget {
           elevation: 5,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[_screenName(index), screenButtons(index, context)],
+            children: <Widget>[
+              _screenName(index),
+              screenButtons(index, context)
+            ],
           ),
         ));
   }
@@ -176,7 +183,8 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  Future<void> _confirmDeleteDialog(int index, String name, BuildContext context) async {
+  Future<void> _confirmDeleteDialog(
+      int index, String name, BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -192,14 +200,14 @@ class ScreenList extends StatelessWidget {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Yes'),
+              child: Text(_parent.translation.text(LauncherText.yes)),
               onPressed: () {
                 _deleteScreen(index);
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('No'),
+              child: Text(_parent.translation.text(LauncherText.no)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -228,7 +236,8 @@ class ScreenList extends StatelessWidget {
     return Flexible(
       child: TextFormField(
         controller: _screenNameController[index],
-        decoration: InputDecoration(hintText: _translations.text(LauncherText.screenName)),
+        decoration: InputDecoration(
+            hintText: _translations.text(LauncherText.screenName)),
       ),
     );
   }
@@ -265,8 +274,10 @@ class ScreenList extends StatelessWidget {
   _editScreen(int selectedScreenIndex, BuildContext context) async {
     int screenId = _screens[selectedScreenIndex].id;
 
-    await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-        ScreenEditor(screenId: screenId)));
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ScreenEditor(screenId: screenId)));
 
     // MethodChannel platform = new MethodChannel(Channel.channelView);
     // try {
@@ -294,10 +305,11 @@ class ScreenList extends StatelessWidget {
   //   );
   // }
 
-  _showResizeDialog(BuildContext context, String optionalText, NetworkModel networkModel, int screenId) {
+  _showResizeDialog(BuildContext context, String optionalText,
+      NetworkModel networkModel, int screenId) {
     // set up the buttons
     Widget resizeButton = TextButton(
-      child: Text("Resize"),
+      child: Text(_parent.translation.text(LauncherText.resize)),
       onPressed: () {
         Navigator.pop(context);
         _parent.launcherBloc.resize(screenId, context);
@@ -305,7 +317,7 @@ class ScreenList extends StatelessWidget {
       },
     );
     Widget continueButton = TextButton(
-      child: Text("Continue"),
+      child: Text(_parent.translation.text(LauncherText.cont)),
       onPressed: () {
         Navigator.pop(context);
         _validateSettings(networkModel, context, screenId);
@@ -313,9 +325,8 @@ class ScreenList extends StatelessWidget {
     );
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Resize Screen"),
-      content: Text(
-          "This appears to be made for a larger device - would you like to adjust the screen to fit your devices dimensions?    Note this will create a new screen with the new dimensions and launch that."),
+      title: Text(_parent.translation.text(LauncherText.resizeScreen)),
+      content: Text(_parent.translation.text(LauncherText.resizeScreenText)),
       actions: [
         continueButton,
         resizeButton,
@@ -330,45 +341,47 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  // _showUpgradeDialog(BuildContext context) {
-  //   // set up the buttons
-  //   Widget cancelButton = FlatButton(
-  //     child: Text("Ok"),
-  //     onPressed: () {
-  //       Navigator.pop(context);
-  //     },
-  //   );
-  //   Widget continueButton = RaisedButton(
-  //       onPressed: () async {
-  //         Email email = Email(
-  //           body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
-  //           subject: Intl.of(context).onboardEmailSubject,
-  //         );
-  //         await FlutterEmailSender.send(email);
-  //       },
-  //       child: Text(Intl.of(context).onboardSendLink, style: TextStyle(color: Colors.white)),
-  //       color: CustomTheme.of(context).primaryColor);
-  //
-  //   // set up the AlertDialog
-  //   AlertDialog alert = AlertDialog(
-  //     title: Text("Upgrade Server"),
-  //     content: Text(_translations.text(LauncherText.errorOutOfDate)),
-  //     actions: [
-  //       cancelButton,
-  //       continueButton,
-  //     ],
-  //   );
-  //
-  //   // show the dialog
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return alert;
-  //     },
-  //   );
-  // }
+  _showUpgradeDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(_parent.translation.text(LauncherText.ok)),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = ElevatedButton(
+        onPressed: () async {
+          Email email = Email(
+            body:
+                "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
+            subject: Intl.of(context).onboardEmailSubject,
+          );
+          await FlutterEmailSender.send(email);
+        },
+        child: Text(Intl.of(context).onboardSendLink,
+            style: TextStyle(color: Colors.white)));
 
-  Future<bool> _checkScreenDimensions(int screenId, NetworkModel networkModel, BuildContext context) async {
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(_parent.translation.text(LauncherText.upgradeServer)),
+      content: Text(_translations.text(LauncherText.errorOutOfDate)),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Future<bool> _checkScreenDimensions(
+      int screenId, NetworkModel networkModel, BuildContext context) async {
     List deviceInfo = _parent.launcherBloc.getDimensions(context);
     List screenInfo = await _parent.launcherBloc.checkScreenSize(screenId);
 
@@ -377,12 +390,26 @@ class ScreenList extends StatelessWidget {
       rotate = true;
     }
 
+    bool tooBig = false;
+    if (rotate &&
+        (deviceInfo[2] + 10 < screenInfo[1] ||
+            deviceInfo[2] + 10 < screenInfo[1])) {
+      tooBig = true;
+    } else if (deviceInfo[1] + 10 < screenInfo[1] ||
+        deviceInfo[2] + 10 < screenInfo[2]) {
+      tooBig = true;
+    }
+
     //add some buffer for the check
-    if ((deviceInfo[1] + 10 < screenInfo[1] || deviceInfo[2] + 10 < screenInfo[2])) {
-      await _showResizeDialog(context, "Note it is recommended to rotate your device for using this screen", networkModel, screenId);
+    if (tooBig) {
+      await _showResizeDialog(
+          context,
+          _parent.translation.text(LauncherText.recommendResize),
+          networkModel,
+          screenId);
       return true;
     } else if (rotate) {
-      _showMessage("Note it is recommended to rotate your device for using this screen");
+      _showMessage(_parent.translation.text(LauncherText.recommendResize));
     }
     return false;
   }
@@ -391,7 +418,8 @@ class ScreenList extends StatelessWidget {
     int screenId = _screens[screenIndex].id;
 
     NetworkModel networkModel = NetworkModel();
-    await networkModel.init(_parent.passwordController.text, _parent.addressController.text,  _parent.portController.text);
+    await networkModel.init(_parent.passwordController.text,
+        _parent.addressController.text, _parent.portController.text);
 
     if (await _checkScreenDimensions(screenId, networkModel, context)) {
       return;
@@ -400,49 +428,56 @@ class ScreenList extends StatelessWidget {
     await _validateSettings(networkModel, context, screenId);
   }
 
-  Future _validateSettings(NetworkModel networkModel, BuildContext context, int screenId) async {
-    // if (networkModel.password == null || networkModel.password.length < 6) {
-    //   _showMessage(_translations.text(LauncherText.errorPassword));
-    //   return;
-    // }
-    // if (networkModel.port == null || int.tryParse(networkModel.port) == null) {
-    //   _showMessage(_translations.text(LauncherText.errorPort));
-    //   return;
-    // }
-    // if (networkModel.address == null || networkModel.address.length == 0) {
-    //   _showMessage(_translations.text(LauncherText.errorServerInvalid));
-    //   return;
-    // }
-    //
-    // //check network version now
-    // Future<NetworkResponse> response = NetworkService.checkVersion(networkModel);
-    //
-    // NetworkResponse test = await response;
-    //
-    // switch (test) {
-    //   case NetworkResponse.Ok:
+  Future _validateSettings(
+      NetworkModel networkModel, BuildContext context, int screenId) async {
+    if (networkModel.password == null || networkModel.password.length < 6) {
+      _showMessage(_translations.text(LauncherText.errorPassword));
+      return;
+    }
+    if (networkModel.port == null || int.tryParse(networkModel.port) == null) {
+      _showMessage(_translations.text(LauncherText.errorPort));
+      return;
+    }
+    if (networkModel.address == null || networkModel.address.isEmpty) {
+      _showMessage(_translations.text(LauncherText.errorServerInvalid));
+      return;
+    }
+
+    //check network version now
+    Future<NetworkResponse> response =
+        NetworkService.checkVersion(networkModel);
+
+    NetworkResponse test = await response;
+
+    switch (test) {
+      case NetworkResponse.Ok:
         _startGame(context, screenId, networkModel);
-    //     break;
-    //   case NetworkResponse.OutOfDate:
-    //     _showUpgradeDialog(context);
-    //     break;
-    //   case NetworkResponse.Error:
-    //     _showMessage("${_translations.text(LauncherText.errorServerError)}");
-    //     break;
-    // }
+        break;
+      case NetworkResponse.OutOfDate:
+        _showUpgradeDialog(context);
+        break;
+      case NetworkResponse.Error:
+        _showMessage("${_translations.text(LauncherText.errorServerError)}");
+        break;
+    }
   }
 
-  _startGame(BuildContext context, int screenId, NetworkModel networkModel) async {
+  _startGame(
+      BuildContext context, int screenId, NetworkModel networkModel) async {
     _parent.launcherBloc.saveConnectionSettings(networkModel);
 
     ScreenViewModel screen = _parent.launcherBloc.loadScreen(screenId);
 
-    await Navigator.push(context, MaterialPageRoute(builder: (context) =>
-        ScreenView(screen: screen, networkModel: networkModel)));
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ScreenView(screen: screen, networkModel: networkModel)));
   }
 
   void _updateScreen(int index) {
-    _parent.launcherBloc.updateScreenName(_screens[index].id, _screenNameController[index].text);
+    _parent.launcherBloc.updateScreenName(
+        _screens[index].id, _screenNameController[index].text);
     _screens[index].name = _screenNameController[index].text;
     Fluttertoast.showToast(
       msg: _translations.text(LauncherText.nameUpdated),
@@ -460,7 +495,8 @@ class ScreenList extends StatelessWidget {
     const platform = MethodChannel(Channel.channelUtil);
     String externalPath;
     try {
-      externalPath = await platform.invokeMethod(Channel.actionGetDownloadFolder);
+      externalPath =
+          await platform.invokeMethod(Channel.actionGetDownloadFolder);
     } on PlatformException catch (_) {
       externalPath = "";
     }
@@ -468,11 +504,11 @@ class ScreenList extends StatelessWidget {
     if (await Permission.storage.request().isGranted) {
       Directory externalDirectory = Directory(externalPath);
       String exportPath = await FilesystemPicker.open(
-        title: 'Save to folder',
+        title: _parent.translation.text(LauncherText.recommendResize),
         context: context,
         rootDirectory: externalDirectory,
         fsType: FilesystemType.folder,
-        pickText: 'Save file to this folder',
+        pickText: _parent.translation.text(LauncherText.recommendResize),
       );
 
       if (exportPath != null && exportPath.isNotEmpty) {
