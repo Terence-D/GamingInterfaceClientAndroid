@@ -19,12 +19,6 @@ import 'package:showcaseview/showcaseview.dart';
 import 'screenList.dart';
 import 'serverLogin.dart';
 
-//import 'package:intent/intent.dart' as android_intent;
-//import 'package:intent/action.dart' as android_action;
-//import 'package:intent/extra.dart' as android_extra;
-//import 'package:intent/category.dart' as android_category;
-//import 'package:intent/flag.dart' as android_flag;
-
 class Launcher extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
