@@ -3,12 +3,15 @@ import 'dart:io';
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
+import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
@@ -338,43 +341,44 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  // _showUpgradeDialog(BuildContext context) {
-  //   // set up the buttons
-  //   Widget cancelButton = FlatButton(
-  //     child: Text("Ok"),
-  //     onPressed: () {
-  //       Navigator.pop(context);
-  //     },
-  //   );
-  //   Widget continueButton = RaisedButton(
-  //       onPressed: () async {
-  //         Email email = Email(
-  //           body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
-  //           subject: Intl.of(context).onboardEmailSubject,
-  //         );
-  //         await FlutterEmailSender.send(email);
-  //       },
-  //       child: Text(Intl.of(context).onboardSendLink, style: TextStyle(color: Colors.white)),
-  //       color: CustomTheme.of(context).primaryColor);
-  //
-  //   // set up the AlertDialog
-  //   AlertDialog alert = AlertDialog(
-  //     title: Text("Upgrade Server"),
-  //     content: Text(_translations.text(LauncherText.errorOutOfDate)),
-  //     actions: [
-  //       cancelButton,
-  //       continueButton,
-  //     ],
-  //   );
-  //
-  //   // show the dialog
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return alert;
-  //     },
-  //   );
-  // }
+  _showUpgradeDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(_parent.translation.text(LauncherText.ok)),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = ElevatedButton(
+        onPressed: () async {
+          Email email = Email(
+            body:
+                "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
+            subject: Intl.of(context).onboardEmailSubject,
+          );
+          await FlutterEmailSender.send(email);
+        },
+        child: Text(Intl.of(context).onboardSendLink,
+            style: TextStyle(color: Colors.white)));
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(_parent.translation.text(LauncherText.upgradeServer)),
+      content: Text(_translations.text(LauncherText.errorOutOfDate)),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
 
   Future<bool> _checkScreenDimensions(
       int screenId, NetworkModel networkModel, BuildContext context) async {
@@ -426,35 +430,36 @@ class ScreenList extends StatelessWidget {
 
   Future _validateSettings(
       NetworkModel networkModel, BuildContext context, int screenId) async {
-    // if (networkModel.password == null || networkModel.password.length < 6) {
-    //   _showMessage(_translations.text(LauncherText.errorPassword));
-    //   return;
-    // }
-    // if (networkModel.port == null || int.tryParse(networkModel.port) == null) {
-    //   _showMessage(_translations.text(LauncherText.errorPort));
-    //   return;
-    // }
-    // if (networkModel.address == null || networkModel.address.length == 0) {
-    //   _showMessage(_translations.text(LauncherText.errorServerInvalid));
-    //   return;
-    // }
-    //
-    // //check network version now
-    // Future<NetworkResponse> response = NetworkService.checkVersion(networkModel);
-    //
-    // NetworkResponse test = await response;
-    //
-    // switch (test) {
-    //   case NetworkResponse.Ok:
-    _startGame(context, screenId, networkModel);
-    //     break;
-    //   case NetworkResponse.OutOfDate:
-    //     _showUpgradeDialog(context);
-    //     break;
-    //   case NetworkResponse.Error:
-    //     _showMessage("${_translations.text(LauncherText.errorServerError)}");
-    //     break;
-    // }
+    if (networkModel.password == null || networkModel.password.length < 6) {
+      _showMessage(_translations.text(LauncherText.errorPassword));
+      return;
+    }
+    if (networkModel.port == null || int.tryParse(networkModel.port) == null) {
+      _showMessage(_translations.text(LauncherText.errorPort));
+      return;
+    }
+    if (networkModel.address == null || networkModel.address.isEmpty) {
+      _showMessage(_translations.text(LauncherText.errorServerInvalid));
+      return;
+    }
+
+    //check network version now
+    Future<NetworkResponse> response =
+        NetworkService.checkVersion(networkModel);
+
+    NetworkResponse test = await response;
+
+    switch (test) {
+      case NetworkResponse.Ok:
+        _startGame(context, screenId, networkModel);
+        break;
+      case NetworkResponse.OutOfDate:
+        _showUpgradeDialog(context);
+        break;
+      case NetworkResponse.Error:
+        _showMessage("${_translations.text(LauncherText.errorServerError)}");
+        break;
+    }
   }
 
   _startGame(
