@@ -87,21 +87,18 @@ class ScreenEditorState extends State<ScreenEditor> {
     List<Widget> widgets = [];
     if (_service.activeScreenViewModel != null) {
       _service.activeScreenViewModel.controls.forEach((element) {
-        widgets.add(Positioned(
-            top: element.top / pixelRatio,
-            left: element.left / pixelRatio,
-            child: GicEditControl(
-              pixelRatio: pixelRatio,
-              control: element,
-              controlIndex: n,
-              onSelected: (int id) {
-                _onSelected(id);
-              },
-              onDrag:
-                  (double newLeft, double newTop, int selectedControlIndex) {
-                _onDrag(newLeft, newTop, selectedControlIndex);
-              },
-            )));
+        widgets.add(GicEditControl(
+          pixelRatio: pixelRatio,
+          control: element,
+          controlIndex: n,
+          onSelected: (int id) {
+            _onSelected(id);
+          },
+          // onDrag:
+          //     (double newLeft, double newTop, int selectedControlIndex) {
+          //   _onDrag(newLeft, newTop, selectedControlIndex);
+          // },
+        ));
         n++;
       });
       if (_firstVisit) {
@@ -142,11 +139,12 @@ class ScreenEditorState extends State<ScreenEditor> {
     return GestureDetector(
       onDoubleTapDown: _handleDoubleTapDown,
       onDoubleTap: _handleDoubleTap,
-      onPanUpdate: (details) {
-        _handleSwipe(details);
-      },
-      child: Scaffold(body: screen),
-    );
+      // onPanUpdate: (details) {
+      //   _handleSwipe(details);
+      // },
+      child:
+      Scaffold(body: screen)
+   );
   }
 
   //user tapped save in the settings menu
@@ -267,13 +265,13 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   void _onDrag(double newLeft, double newTop, int selectedControlIndex) {
-    _service.activeScreenViewModel.controls[selectedControlIndex].left +=
-        // newLeft;
-        _getGridPosition(startPosition: newLeft * pixelRatio);
-    _service.activeScreenViewModel.controls[selectedControlIndex].top +=
-        // newTop;
-        _getGridPosition(startPosition: newTop * pixelRatio);
-    setState(() {});
+    // _service.activeScreenViewModel.controls[selectedControlIndex].left +=
+    //     // newLeft;
+    //     _getGridPosition(startPosition: newLeft * pixelRatio);
+    // _service.activeScreenViewModel.controls[selectedControlIndex].top +=
+    //     // newTop;
+    //     _getGridPosition(startPosition: newTop * pixelRatio);
+    // setState(() {});
   }
 
   _handleSwipe(details) {

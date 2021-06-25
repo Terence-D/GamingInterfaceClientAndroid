@@ -26,7 +26,7 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
 
   sendCommand(String commandUrl, int commandIndex);
 
-  GestureDetector buildControl();
+  Widget buildControl();
 
   @override
   Widget build(BuildContext context) {
