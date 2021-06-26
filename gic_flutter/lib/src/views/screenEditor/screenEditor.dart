@@ -94,18 +94,16 @@ class ScreenEditorState extends State<ScreenEditor> {
           onSelected: (int id) {
             _onSelected(id);
           },
-          // onDrag:
-          //     (double newLeft, double newTop, int selectedControlIndex) {
-          //   _onDrag(newLeft, newTop, selectedControlIndex);
-          // },
         ));
         n++;
       });
       if (_firstVisit) {
-        widgets.add(Center(child: Padding(
+        widgets.add(Center(
+            child: Padding(
           padding: const EdgeInsets.all(32.0),
-          child: Text(translation.text(ScreenEditorText.helpMessage),
-          style: TextStyle(color: Colors.white, fontSize: 24),
+          child: Text(
+            translation.text(ScreenEditorText.helpMessage),
+            style: TextStyle(color: Colors.white, fontSize: 24),
           ),
         )));
       }
@@ -137,14 +135,9 @@ class ScreenEditorState extends State<ScreenEditor> {
     (context as Element).visitChildren(rebuild);
 
     return GestureDetector(
-      onDoubleTapDown: _handleDoubleTapDown,
-      onDoubleTap: _handleDoubleTap,
-      // onPanUpdate: (details) {
-      //   _handleSwipe(details);
-      // },
-      child:
-      Scaffold(body: screen)
-   );
+        onDoubleTapDown: _handleDoubleTapDown,
+        onDoubleTap: _handleDoubleTap,
+        child: Scaffold(body: screen));
   }
 
   //user tapped save in the settings menu
@@ -229,7 +222,8 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   void _handleDoubleTap() {
-    SharedPreferences.getInstance().then((value) => value.setBool("$screenId$prefHelpKey", false));
+    SharedPreferences.getInstance()
+        .then((value) => value.setBool("$screenId$prefHelpKey", false));
     setState(() {
       selectedVisible = false;
       showPopupDialog(SettingsDialog.display(context, this));
@@ -246,12 +240,12 @@ class ScreenEditorState extends State<ScreenEditor> {
               translation: translation,
               screenId: _service.activeScreenViewModel.screenId,
               gicEditControl: GicEditControl(
-                  pixelRatio: pixelRatio,
-                  control: _service
-                      .activeScreenViewModel.controls[selectedControlIndex],
-                  controlIndex: selectedControlIndex,
-                  onSelected: null,
-                  onDrag: null));
+                pixelRatio: pixelRatio,
+                control: _service
+                    .activeScreenViewModel.controls[selectedControlIndex],
+                controlIndex: selectedControlIndex,
+                onSelected: null,
+              ));
         });
     setState(() {
       if (deleteWidget != null && deleteWidget) {
@@ -262,35 +256,6 @@ class ScreenEditorState extends State<ScreenEditor> {
         _showDeleteToast();
       }
     });
-  }
-
-  void _onDrag(double newLeft, double newTop, int selectedControlIndex) {
-    // _service.activeScreenViewModel.controls[selectedControlIndex].left +=
-    //     // newLeft;
-    //     _getGridPosition(startPosition: newLeft * pixelRatio);
-    // _service.activeScreenViewModel.controls[selectedControlIndex].top +=
-    //     // newTop;
-    //     _getGridPosition(startPosition: newTop * pixelRatio);
-    // setState(() {});
-  }
-
-  _handleSwipe(details) {
-    if (controlId > -1) {
-      setState(() {
-        _service.activeScreenViewModel.controls[controlId].width +=
-            details.delta.dx;
-        _service.activeScreenViewModel.controls[controlId].height +=
-            details.delta.dy;
-        if (_service.activeScreenViewModel.controls[controlId].width <
-            minSize) {
-          _service.activeScreenViewModel.controls[controlId].width = minSize;
-        }
-        if (_service.activeScreenViewModel.controls[controlId].height <
-            minSize) {
-          _service.activeScreenViewModel.controls[controlId].height = minSize;
-        }
-      });
-    }
   }
 
   void _showDeleteToast() {
