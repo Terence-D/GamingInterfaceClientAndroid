@@ -2,10 +2,8 @@ import 'dart:io';
 
 import 'package:filesystem_picker/filesystem_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
@@ -15,6 +13,7 @@ import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -492,21 +491,13 @@ class ScreenList extends StatelessWidget {
   }
 
   Future<void> _export(BuildContext context, int id) async {
-    const platform = MethodChannel(Channel.channelUtil);
-    String externalPath;
-    try {
-      externalPath =
-          await platform.invokeMethod(Channel.actionGetDownloadFolder);
-    } on PlatformException catch (_) {
-      externalPath = "";
-    }
+    Directory downloadDir = await getDownloadsDirectory();
 
     if (await Permission.storage.request().isGranted) {
-      Directory externalDirectory = Directory(externalPath);
       String exportPath = await FilesystemPicker.open(
         title: _parent.translation.text(LauncherText.recommendResize),
         context: context,
-        rootDirectory: externalDirectory,
+        rootDirectory: downloadDir,
         fsType: FilesystemType.folder,
         pickText: _parent.translation.text(LauncherText.recommendResize),
       );
