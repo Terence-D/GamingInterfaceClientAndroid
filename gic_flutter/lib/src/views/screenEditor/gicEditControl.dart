@@ -61,22 +61,25 @@ class GicEditControlState extends BaseGicControlState {
   }
 
   void onScaleUpdate(ScaleEvent event) {
-    if (event.focalPoint.dx < 0) {
-      control.width = _originalWidth / event.scale;
-    } else {
-      control.width = _originalWidth * event.scale;
-    }
-    if (event.focalPoint.dy < 0) {
-      control.height = _originalHeight / event.scale;
-    } else {
-      control.height = _originalHeight * event.scale;
-    }
+    setState(() {
+      if (event.focalPoint.dx < 0) {
+        control.width = _originalWidth / event.scale;
+      } else {
+        control.width = _originalWidth * event.scale;
+      }
+      if (event.focalPoint.dy < 0) {
+        control.height = _originalHeight / event.scale;
+      } else {
+        control.height = _originalHeight * event.scale;
+      }
+    });
   }
 
   void onMoveUpdate(MoveEvent event) {
-    print('onMoveUpdate - pos: ${event.localPos} delta: ${event.delta}');
-    control.left = (event.position.dx * pixelRatio) - (control.width / 2);
-    control.top = (event.position.dy * pixelRatio) - (control.height / 2);
+    setState(() {
+      control.left = (event.position.dx * pixelRatio) - (control.width / 2);
+      control.top = (event.position.dy * pixelRatio) - (control.height / 2);
+    });
   }
 
   sendCommand(String commandUrl, int commandIndex) {
