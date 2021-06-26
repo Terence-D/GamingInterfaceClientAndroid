@@ -55,6 +55,7 @@ class GicEditControlState extends BaseGicControlState {
           longPressTimeConsider: 350,
           onMoveUpdate: onMoveUpdate,
           onScaleUpdate: onScaleUpdate,
+          onScaleEnd: onScaleEnd,
           bypassTapEventOnDoubleTap: false,
           child: buildControlContainer()),
     );
@@ -73,6 +74,11 @@ class GicEditControlState extends BaseGicControlState {
         control.height = _originalHeight * event.scale;
       }
     });
+  }
+
+  void onScaleEnd() {
+    _originalHeight = control.height;
+    _originalWidth = control.width;
   }
 
   void onMoveUpdate(MoveEvent event) {
