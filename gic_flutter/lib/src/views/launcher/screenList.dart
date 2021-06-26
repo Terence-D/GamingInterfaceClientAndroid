@@ -1,6 +1,4 @@
-import 'dart:io';
-
-import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,7 +11,6 @@ import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -491,19 +488,11 @@ class ScreenList extends StatelessWidget {
   }
 
   Future<void> _export(BuildContext context, int id) async {
-    Directory downloadDir = await getDownloadsDirectory();
+    String result = await FilePicker.platform.getDirectoryPath();
 
-    if (await Permission.storage.request().isGranted) {
-      String exportPath = await FilesystemPicker.open(
-        title: _parent.translation.text(LauncherText.recommendResize),
-        context: context,
-        rootDirectory: downloadDir,
-        fsType: FilesystemType.folder,
-        pickText: _parent.translation.text(LauncherText.recommendResize),
-      );
-
-      if (exportPath != null && exportPath.isNotEmpty) {
-        await _parent.launcherBloc.export(exportPath, id);
+    if (result != null) {
+      if (await Permission.storage.request().isGranted) {
+        await _parent.launcherBloc.export(result, id);
         await Fluttertoast.showToast(
           msg: _translations.text(LauncherText.exportComplete),
         );
