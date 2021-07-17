@@ -51,14 +51,18 @@ class GicEditControlState extends BaseGicControlState {
       top: control.top / pixelRatio,
       left: control.left / pixelRatio,
       child: XGestureDetector(
-          doubleTapTimeConsider: 300,
-          longPressTimeConsider: 350,
+          longPressTimeConsider: 200,
+          onLongPress: onLongPress,
           onMoveUpdate: onMoveUpdate,
           onScaleUpdate: onScaleUpdate,
           onScaleEnd: onScaleEnd,
           bypassTapEventOnDoubleTap: false,
           child: buildControlContainer()),
     );
+  }
+
+  void onLongPress(event) {
+    onSelected(controlIndex);
   }
 
   void onScaleUpdate(ScaleEvent event) {
