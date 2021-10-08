@@ -44,61 +44,64 @@ class CommandTabState extends BaseTabState {
   Widget build(BuildContext context) {
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
     return Container(
-      child: Column(
-        children: [
-          Text(widget.translation.text(ScreenEditorText.commandTabHeader),
-              style: Theme.of(context).textTheme.headline5),
-          Visibility(
-            child: Text(widget.translation
-                .text(ScreenEditorText.commandTabPrimaryToggleDetails)),
-            visible: widget.gicEditControl.control.type ==
-                ControlViewModelType.Toggle,
-          ),
-          Visibility(
-            child: Text(widget.translation
-                .text(ScreenEditorText.commandTabPrimaryDetails)),
-            visible: widget.gicEditControl.control.type !=
-                ControlViewModelType.Toggle,
-          ),
-          buildCommandDropDown(0),
-          Row(children: modifierCheckboxes(0)),
-          const Divider(
-            height: 40,
-            thickness: 5,
-            indent: 20,
-            endIndent: 20,
-          ),
-          Visibility(
-              child: Column(
-                children: [
-                  Text(widget.translation
-                      .text(ScreenEditorText.commandTabSecondaryDetails)),
-                  buildCommandDropDown(1),
-                  Row(children: modifierCheckboxes(1))
-                ],
-              ),
+      child: LayoutBuilder(
+          builder: (BuildContext ctx, BoxConstraints constraints) {
+        return Column(
+          children: [
+            Text(widget.translation.text(ScreenEditorText.commandTabHeader),
+                style: Theme.of(context).textTheme.headline5),
+            Visibility(
+              child: Text(widget.translation
+                  .text(ScreenEditorText.commandTabPrimaryToggleDetails)),
               visible: widget.gicEditControl.control.type ==
-                  ControlViewModelType.Toggle),
-          Visibility(
-              child: Column(
-                children: [
-                  Text(widget.translation
-                      .text(ScreenEditorText.commandTabQuickModeDetails)),
-                  Row(
-                    children: [
-                      Text(switchText),
-                      buildQuickMode(),
-                    ],
-                  )
-                ],
-              ),
-              visible: widget.gicEditControl.control.type ==
-                      ControlViewModelType.Button ||
-                  widget.gicEditControl.control.type ==
-                      ControlViewModelType.QuickButton),
-          preview()
-        ],
-      ),
+                  ControlViewModelType.Toggle,
+            ),
+            Visibility(
+              child: Text(widget.translation
+                  .text(ScreenEditorText.commandTabPrimaryDetails)),
+              visible: widget.gicEditControl.control.type !=
+                  ControlViewModelType.Toggle,
+            ),
+            buildCommandDropDown(0),
+            Row(children: modifierCheckboxes(0)),
+            const Divider(
+              height: 40,
+              thickness: 5,
+              indent: 20,
+              endIndent: 20,
+            ),
+            Visibility(
+                child: Column(
+                  children: [
+                    Text(widget.translation
+                        .text(ScreenEditorText.commandTabSecondaryDetails)),
+                    buildCommandDropDown(1),
+                    Row(children: modifierCheckboxes(1))
+                  ],
+                ),
+                visible: widget.gicEditControl.control.type ==
+                    ControlViewModelType.Toggle),
+            Visibility(
+                child: Column(
+                  children: [
+                    Text(widget.translation
+                        .text(ScreenEditorText.commandTabQuickModeDetails)),
+                    Row(
+                      children: [
+                        Text(switchText),
+                        buildQuickMode(),
+                      ],
+                    )
+                  ],
+                ),
+                visible: widget.gicEditControl.control.type ==
+                        ControlViewModelType.Button ||
+                    widget.gicEditControl.control.type ==
+                        ControlViewModelType.QuickButton),
+            preview(constraints)
+          ],
+        );
+      }),
     );
   }
 
