@@ -1,18 +1,22 @@
 import 'dart:io';
 
-import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
-import 'package:path/path.dart' as path;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
+import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/imageDialog.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class DesignTab extends BaseTab {
   DesignTab({Key key, gicEditControl, translation, screenId})
-      : super(key: key, gicEditControl: gicEditControl, translation: translation, screenId: screenId);
+      : super(
+            key: key,
+            gicEditControl: gicEditControl,
+            translation: translation,
+            screenId: screenId);
 
   @override
   DesignTabState createState() => DesignTabState();
@@ -39,35 +43,38 @@ class DesignTabState extends BaseTabState {
     }
 
     return Container(
-      child: Column(
-        children: [
-          Text(widget.translation.text(ScreenEditorText.designTabHeader),
-              style: Theme.of(context).textTheme.headline5),
-          Text(detailsText),
-          Visibility(
-              visible: widget.gicEditControl.control.type !=
-                  ControlViewModelType.Image,
-              child: Column(children: [
-                _imageToggle(),
-                _imageButton(0),
-                _imageButton(1),
-              ])),
-          Visibility(
-              visible: widget.gicEditControl.control.type !=
-                      ControlViewModelType.Image &&
-                  widget.gicEditControl.control.design ==
-                      ControlDesignType.UpDownGradient,
-              child: Column(children: [
-                _colorButton(0),
-                _colorButton(1),
-              ])),
-          Visibility(
-              visible: widget.gicEditControl.control.type !=
-                  ControlViewModelType.Text,
-              child: Column(children: [_importButton()])),
-          preview(),
-        ],
-      ),
+      child: LayoutBuilder(
+          builder: (BuildContext ctx, BoxConstraints constraints) {
+        return Column(
+          children: [
+            Text(widget.translation.text(ScreenEditorText.designTabHeader),
+                style: Theme.of(context).textTheme.headline5),
+            Text(detailsText),
+            Visibility(
+                visible: widget.gicEditControl.control.type !=
+                    ControlViewModelType.Image,
+                child: Column(children: [
+                  _imageToggle(),
+                  _imageButton(0),
+                  _imageButton(1),
+                ])),
+            Visibility(
+                visible: widget.gicEditControl.control.type !=
+                        ControlViewModelType.Image &&
+                    widget.gicEditControl.control.design ==
+                        ControlDesignType.UpDownGradient,
+                child: Column(children: [
+                  _colorButton(0),
+                  _colorButton(1),
+                ])),
+            Visibility(
+                visible: widget.gicEditControl.control.type !=
+                    ControlViewModelType.Text,
+                child: Column(children: [_importButton()])),
+            preview(constraints)
+          ],
+        );
+      }),
     );
   }
 

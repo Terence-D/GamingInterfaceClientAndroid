@@ -17,7 +17,7 @@ abstract class BaseTabState extends State<BaseTab> {
   double pixelRatio = 1;
 
   @protected
-  Widget preview() {
+  Widget preview([BoxConstraints constraints]) {
     return Column(
       children: [
         Padding(
@@ -27,6 +27,7 @@ abstract class BaseTabState extends State<BaseTab> {
         ),
         FittedBox(
           child: GicControl(
+            constraints: constraints,
             pixelRatio: pixelRatio,
             control: widget.gicEditControl.control,
             networkModel: null,

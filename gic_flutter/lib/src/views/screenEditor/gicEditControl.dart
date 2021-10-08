@@ -17,7 +17,11 @@ class GicEditControl extends BaseGicControl {
       @required this.controlIndex,
       @required this.onSelected,
       @required pixelRatio})
-      : super(key: key, control: control, pixelRatio: pixelRatio);
+      : super(
+            key: key,
+            control: control,
+            pixelRatio: pixelRatio,
+            constraints: null);
 
   @override
   State<StatefulWidget> createState() {
@@ -68,14 +72,14 @@ class GicEditControlState extends BaseGicControlState {
   void onScaleUpdate(ScaleEvent event) {
     setState(() {
       if (event.focalPoint.dx < 0) {
-        control.width = _originalWidth / event.scale;
+        control.width = (_originalWidth / event.scale).roundToDouble();
       } else {
-        control.width = _originalWidth * event.scale;
+        control.width = (_originalWidth * event.scale).roundToDouble();
       }
       if (event.focalPoint.dy < 0) {
-        control.height = _originalHeight / event.scale;
+        control.height = (_originalHeight / event.scale).roundToDouble();
       } else {
-        control.height = _originalHeight * event.scale;
+        control.height = (_originalHeight * event.scale).roundToDouble();
       }
     });
   }
@@ -87,8 +91,10 @@ class GicEditControlState extends BaseGicControlState {
 
   void onMoveUpdate(MoveEvent event) {
     setState(() {
-      control.left = (event.position.dx * pixelRatio) - (control.width / 2);
-      control.top = (event.position.dy * pixelRatio) - (control.height / 2);
+      control.left = ((event.position.dx * pixelRatio) - (control.width / 2))
+          .roundToDouble();
+      control.top = ((event.position.dy * pixelRatio) - (control.height / 2))
+          .roundToDouble();
     });
   }
 

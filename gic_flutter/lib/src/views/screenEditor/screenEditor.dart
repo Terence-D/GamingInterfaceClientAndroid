@@ -224,6 +224,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   void _handleDoubleTap() {
     SharedPreferences.getInstance()
         .then((value) => value.setBool("$screenId$prefHelpKey", false));
+    _firstVisit = false;
     setState(() {
       selectedVisible = false;
       showPopupDialog(SettingsDialog.display(context, this));

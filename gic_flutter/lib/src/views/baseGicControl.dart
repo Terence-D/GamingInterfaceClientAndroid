@@ -8,8 +8,13 @@ import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 abstract class BaseGicControl extends StatefulWidget {
   final ControlViewModel control;
   final double pixelRatio;
+  final BoxConstraints constraints;
 
-  BaseGicControl({Key key, @required this.control, @required this.pixelRatio})
+  BaseGicControl(
+      {Key key,
+      @required this.control,
+      @required this.pixelRatio,
+      @required this.constraints})
       : super(key: key);
 }
 
@@ -21,6 +26,8 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
   BoxDecoration unpressed;
   BoxDecoration pressed;
   BoxDecoration active;
+
+  bool preview;
 
   BaseGicControlState({@required this.control, @required this.pixelRatio});
 
@@ -48,17 +55,30 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     return buildControl();
   }
 
-  Widget buildControlContainer() {
+  Widget buildControlContainer([BoxConstraints constraints]) {
+    //figure out if we are only viewing a preview, and if so we may need to
+    //shrink it down
+    double widthToUse = control.width;
+    double heightToUse = control.height;
+    if (constraints != null) {
+      //unncessary
+      // if (widthToUse > constraints.maxWidth) {
+      //   // widthToUse = constraints.maxWidth;
+      // }
+      if (heightToUse > constraints.maxHeight) {
+        heightToUse = constraints.maxHeight;
+      }
+    }
     Widget toReturn;
     switch (control.type) {
       case ControlViewModelType.Text:
-        toReturn = _gicText();
+        toReturn = _gicText(widthToUse);
         break;
       case ControlViewModelType.Image:
-        toReturn = _gicImage();
+        toReturn = _gicImage(widthToUse, heightToUse);
         break;
       default:
-        toReturn = _gicButton();
+        toReturn = _gicButton(widthToUse, heightToUse);
         break;
     }
     return StatefulBuilder(
@@ -146,10 +166,10 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     active = status;
   }
 
-  Widget _gicButton() {
+  Widget _gicButton(double width, double height) {
     return Container(
-      width: control.width / pixelRatio,
-      height: control.height / pixelRatio,
+      width: width / pixelRatio,
+      height: height / pixelRatio,
       decoration: active,
       child: Center(
           child: Text(control.text,
@@ -158,11 +178,11 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     );
   }
 
-  Widget _gicImage() {
+  Widget _gicImage(double width, double height) {
     if (control.images.isEmpty) {
       return Container(
-          width: control.width / pixelRatio,
-          height: control.height / pixelRatio,
+          width: width / pixelRatio,
+          height: height / pixelRatio,
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage("assets/images/icons/app_icon.png"),
@@ -176,9 +196,9 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     }
   }
 
-  Widget _gicText() {
+  Widget _gicText(double width) {
     return Container(
-        width: control.width / pixelRatio,
+        width: width / pixelRatio,
         child:
             Text(control.text, style: getTextStyle(control.font, pixelRatio)));
   }

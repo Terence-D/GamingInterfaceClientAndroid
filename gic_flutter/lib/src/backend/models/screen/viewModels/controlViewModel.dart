@@ -37,7 +37,7 @@ class ControlViewModel {
 
   List<Command> commands = [];
 
-  String text = "-";
+  String text = "text";
   Font font = Font.empty();
 
   double left = 0;
