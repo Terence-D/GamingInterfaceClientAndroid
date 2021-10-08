@@ -1,11 +1,7 @@
-import 'dart:io';
-
-import 'package:filesystem_picker/filesystem_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
@@ -492,27 +488,11 @@ class ScreenList extends StatelessWidget {
   }
 
   Future<void> _export(BuildContext context, int id) async {
-    const platform = MethodChannel(Channel.channelUtil);
-    String externalPath;
-    try {
-      externalPath =
-          await platform.invokeMethod(Channel.actionGetDownloadFolder);
-    } on PlatformException catch (_) {
-      externalPath = "";
-    }
+    String result = await FilePicker.platform.getDirectoryPath();
 
-    if (await Permission.storage.request().isGranted) {
-      Directory externalDirectory = Directory(externalPath);
-      String exportPath = await FilesystemPicker.open(
-        title: _parent.translation.text(LauncherText.recommendResize),
-        context: context,
-        rootDirectory: externalDirectory,
-        fsType: FilesystemType.folder,
-        pickText: _parent.translation.text(LauncherText.recommendResize),
-      );
-
-      if (exportPath != null && exportPath.isNotEmpty) {
-        await _parent.launcherBloc.export(exportPath, id);
+    if (result != null) {
+      if (await Permission.storage.request().isGranted) {
+        await _parent.launcherBloc.export(result, id);
         await Fluttertoast.showToast(
           msg: _translations.text(LauncherText.exportComplete),
         );

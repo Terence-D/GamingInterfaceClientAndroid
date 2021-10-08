@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gesture_x_detector/gesture_x_detector.dart';
 import 'package:gic_flutter/src/views/baseGicControl.dart';
 
 typedef void SelectedWidgetCallback(int selectedControlIndex);
@@ -7,7 +8,6 @@ typedef void DragControl(
 
 class GicEditControl extends BaseGicControl {
   final SelectedWidgetCallback onSelected;
-  final DragControl onDrag;
 
   final int controlIndex;
 
@@ -16,7 +16,6 @@ class GicEditControl extends BaseGicControl {
       @required control,
       @required this.controlIndex,
       @required this.onSelected,
-      @required this.onDrag,
       @required pixelRatio})
       : super(key: key, control: control, pixelRatio: pixelRatio);
 
@@ -26,37 +25,71 @@ class GicEditControl extends BaseGicControl {
         control: control,
         controlIndex: controlIndex,
         onSelected: onSelected,
-        onDrag: onDrag,
         pixelRatio: pixelRatio);
   }
 }
 
 class GicEditControlState extends BaseGicControlState {
   final SelectedWidgetCallback onSelected;
-  final DragControl onDrag;
-
   final int controlIndex;
+
+  double _originalWidth;
+  double _originalHeight;
 
   GicEditControlState(
       {@required control,
       @required this.controlIndex,
       @required this.onSelected,
-      @required this.onDrag,
       @required pixelRatio})
-      : super(control: control, pixelRatio: pixelRatio);
+      : super(control: control, pixelRatio: pixelRatio) {
+    _originalWidth = control.width;
+    _originalHeight = control.height;
+  }
 
-  GestureDetector buildControl() {
-    return GestureDetector(
-        onTapDown: (TapDownDetails details) => null,
-        onDoubleTap: onTap,
-        onPanUpdate: (tapInfo) {
-          setState(() {
-            // control.left += tapInfo.delta.dx;
-            // control.top += tapInfo.delta.dy;
-            onDrag(tapInfo.delta.dx, tapInfo.delta.dy, controlIndex);
-          });
-        },
-        child: buildControlContainer());
+  Widget buildControl() {
+    return Positioned(
+      top: control.top / pixelRatio,
+      left: control.left / pixelRatio,
+      child: XGestureDetector(
+          longPressTimeConsider: 200,
+          onLongPress: onLongPress,
+          onMoveUpdate: onMoveUpdate,
+          onScaleUpdate: onScaleUpdate,
+          onScaleEnd: onScaleEnd,
+          bypassTapEventOnDoubleTap: false,
+          child: buildControlContainer()),
+    );
+  }
+
+  void onLongPress(event) {
+    onSelected(controlIndex);
+  }
+
+  void onScaleUpdate(ScaleEvent event) {
+    setState(() {
+      if (event.focalPoint.dx < 0) {
+        control.width = _originalWidth / event.scale;
+      } else {
+        control.width = _originalWidth * event.scale;
+      }
+      if (event.focalPoint.dy < 0) {
+        control.height = _originalHeight / event.scale;
+      } else {
+        control.height = _originalHeight * event.scale;
+      }
+    });
+  }
+
+  void onScaleEnd() {
+    _originalHeight = control.height;
+    _originalWidth = control.width;
+  }
+
+  void onMoveUpdate(MoveEvent event) {
+    setState(() {
+      control.left = (event.position.dx * pixelRatio) - (control.width / 2);
+      control.top = (event.position.dy * pixelRatio) - (control.height / 2);
+    });
   }
 
   sendCommand(String commandUrl, int commandIndex) {
