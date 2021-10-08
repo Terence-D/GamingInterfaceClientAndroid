@@ -481,10 +481,17 @@ class ScreenList extends StatelessWidget {
   }
 
   void _deleteScreen(int index) async {
-    await _parent.launcherBloc.deleteScreen(_screens[index].id);
-    await Fluttertoast.showToast(
-      msg: _translations.text(LauncherText.deleteComplete),
-    );
+    int deleteResponse =
+        await _parent.launcherBloc.deleteScreen(_screens[index].id);
+    if (deleteResponse >= 0) {
+      await Fluttertoast.showToast(
+        msg: _translations.text(LauncherText.deleteComplete),
+      );
+    } else {
+      await Fluttertoast.showToast(
+        msg: _translations.text(LauncherText.deleteError),
+      );
+    }
   }
 
   Future<void> _export(BuildContext context, int id) async {
