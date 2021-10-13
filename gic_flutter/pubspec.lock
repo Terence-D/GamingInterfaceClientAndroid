@@ -269,9 +269,9 @@ packages:
   gesture_x_detector:
     dependency: "direct main"
     description:
-      name: gesture_x_detector
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../xgesture_flutter"
+      relative: true
+    source: path
     version: "1.0.0"
   get_it:
     dependency: "direct main"

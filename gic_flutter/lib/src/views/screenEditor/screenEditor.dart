@@ -100,13 +100,17 @@ class ScreenEditorState extends State<ScreenEditor> {
       });
       if (_firstVisit) {
         widgets.add(Center(
-            child: Padding(
-          padding: const EdgeInsets.all(32.0),
-          child: Text(
-            translation.text(ScreenEditorText.helpMessage),
-            style: TextStyle(color: Colors.white, fontSize: 24),
-          ),
-        )));
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: Colors.black45,
+              ),
+              child: Text(
+                translation.text(ScreenEditorText.helpMessage),
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
+            )));
       }
     }
 
