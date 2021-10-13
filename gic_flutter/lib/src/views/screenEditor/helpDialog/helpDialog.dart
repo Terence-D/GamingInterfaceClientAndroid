@@ -41,25 +41,12 @@ class _HelpDialogState extends State<HelpDialog> {
               appBar: AppBar(
                 title:
                     Text(translation.text(ScreenEditorText.helpDialogTitle)),
-                actions: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.only(right: 20.0),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context, true);
-                        },
-                        child: Icon(
-                          Icons.delete,
-                          size: 26.0,
-                        ),
-                      )),
-                ],
                 bottom: TabBar(
                   tabs: _tabs,
                 ),
               ),
               body: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: TabBarView(
                   children: _tabContents,
                 ),
@@ -77,12 +64,20 @@ class _HelpDialogState extends State<HelpDialog> {
       title: translation.text(ScreenEditorText.helpEditHeader),
       details: translation.text(ScreenEditorText.helpEditDetails),
     ));
-
     _tabs.add(movingTab());
-
+    _tabContents.add(SimpleTextTab(
+      title: translation.text(ScreenEditorText.helpMoveHeader),
+      details: translation.text(ScreenEditorText.helpMoveDetails),
+    ));
     _tabs.add(sizingTab());
-
+    _tabContents.add(SimpleTextTab(
+      title: translation.text(ScreenEditorText.helpSizeHeader),
+      details: translation.text(ScreenEditorText.helpSizeDetails),
+    ));
     _tabs.add(quitTab());
-
+    _tabContents.add(SimpleTextTab(
+      title: translation.text(ScreenEditorText.helpQuitHeader),
+      details: translation.text(ScreenEditorText.helpQuitDetails),
+    ));
   }
 }

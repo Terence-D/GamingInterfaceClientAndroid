@@ -91,10 +91,9 @@ class SettingsDialog {
         DialogButton(
           icon: Icons.help,
           color: Colors.amber,
-          text: translation.text(ScreenEditorText.help),
+          text: translation.text(ScreenEditorText.helpDialogTitle),
           onPressed: () {
             screenEditorState.tapHelp();
-            Navigator.pop(context, true);
           },
         ),
       ],

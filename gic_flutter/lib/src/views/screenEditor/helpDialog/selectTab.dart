@@ -21,7 +21,11 @@ class _SimpleTextTabState extends State<SimpleTextTab> {
           children: [
             Text(widget.title,
                 style: Theme.of(context).textTheme.headline5),
-            Text(widget.details)
+            Divider(
+              height: 10,
+              thickness: 2,
+            ),
+            Text(widget.details, textScaleFactor: 1.2,)
           ],
         );
       }),

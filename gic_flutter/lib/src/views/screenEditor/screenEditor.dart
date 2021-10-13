@@ -148,8 +148,8 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   //user tapped help in the settings menu
-  void tapHelp() {
-    showDialog(
+  tapHelp() async {
+    await showDialog(
         context: context,
         builder: (BuildContext context) {
       return HelpDialog(
