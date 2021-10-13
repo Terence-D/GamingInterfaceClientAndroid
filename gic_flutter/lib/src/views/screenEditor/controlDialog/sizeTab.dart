@@ -21,27 +21,29 @@ class SizeTabState extends BaseTabState {
   @override
   Widget build(BuildContext context) {
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    return Container(
-      child: LayoutBuilder(
-          builder: (BuildContext ctx, BoxConstraints constraints) {
-        return Column(
-          children: [
-            Text(widget.translation.text(ScreenEditorText.sizeTabHeader),
-                style: Theme.of(context).textTheme.headline5),
-            Text(widget.translation.text(ScreenEditorText.sizeTabDetails)),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _size(dimensions.left),
-                _size(dimensions.top),
-                _size(dimensions.width),
-                _size(dimensions.height),
-              ],
-            ),
-            preview(constraints)
-          ],
-        );
-      }),
+    return SingleChildScrollView(
+      child: Container(
+        child: LayoutBuilder(
+            builder: (BuildContext ctx, BoxConstraints constraints) {
+          return Column(
+            children: [
+              Text(widget.translation.text(ScreenEditorText.sizeTabHeader),
+                  style: Theme.of(context).textTheme.headline5),
+              Text(widget.translation.text(ScreenEditorText.sizeTabDetails)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _size(dimensions.left),
+                  _size(dimensions.top),
+                  _size(dimensions.width),
+                  _size(dimensions.height),
+                ],
+              ),
+              preview(constraints)
+            ],
+          );
+        }),
+      ),
     );
   }
 

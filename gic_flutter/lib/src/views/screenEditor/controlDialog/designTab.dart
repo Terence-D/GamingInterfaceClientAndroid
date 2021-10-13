@@ -42,39 +42,41 @@ class DesignTabState extends BaseTabState {
           widget.translation.text(ScreenEditorText.designTabImageDetails);
     }
 
-    return Container(
-      child: LayoutBuilder(
-          builder: (BuildContext ctx, BoxConstraints constraints) {
-        return Column(
-          children: [
-            Text(widget.translation.text(ScreenEditorText.designTabHeader),
-                style: Theme.of(context).textTheme.headline5),
-            Text(detailsText),
-            Visibility(
-                visible: widget.gicEditControl.control.type !=
-                    ControlViewModelType.Image,
-                child: Column(children: [
-                  _imageToggle(),
-                  _imageButton(0),
-                  _imageButton(1),
-                ])),
-            Visibility(
-                visible: widget.gicEditControl.control.type !=
-                        ControlViewModelType.Image &&
-                    widget.gicEditControl.control.design ==
-                        ControlDesignType.UpDownGradient,
-                child: Column(children: [
-                  _colorButton(0),
-                  _colorButton(1),
-                ])),
-            Visibility(
-                visible: widget.gicEditControl.control.type !=
-                    ControlViewModelType.Text,
-                child: Column(children: [_importButton()])),
-            preview(constraints)
-          ],
-        );
-      }),
+    return SingleChildScrollView(
+      child: Container(
+        child: LayoutBuilder(
+            builder: (BuildContext ctx, BoxConstraints constraints) {
+          return Column(
+            children: [
+              Text(widget.translation.text(ScreenEditorText.designTabHeader),
+                  style: Theme.of(context).textTheme.headline5),
+              Text(detailsText),
+              Visibility(
+                  visible: widget.gicEditControl.control.type !=
+                      ControlViewModelType.Image,
+                  child: Column(children: [
+                    _imageToggle(),
+                    _imageButton(0),
+                    _imageButton(1),
+                  ])),
+              Visibility(
+                  visible: widget.gicEditControl.control.type !=
+                          ControlViewModelType.Image &&
+                      widget.gicEditControl.control.design ==
+                          ControlDesignType.UpDownGradient,
+                  child: Column(children: [
+                    _colorButton(0),
+                    _colorButton(1),
+                  ])),
+              Visibility(
+                  visible: widget.gicEditControl.control.type !=
+                      ControlViewModelType.Text,
+                  child: Column(children: [_importButton()])),
+              preview(constraints)
+            ],
+          );
+        }),
+      ),
     );
   }
 
