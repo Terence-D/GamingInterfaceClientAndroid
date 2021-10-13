@@ -10,6 +10,7 @@ import 'package:gic_flutter/src/views/screenEditor/controlDialog/controlDialog.d
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'helpDialog/helpDialog.dart';
 import 'settingsDialog/settingsDialog.dart';
 
 class ScreenEditor extends StatefulWidget {
@@ -144,6 +145,17 @@ class ScreenEditorState extends State<ScreenEditor> {
   void tapSave() {
     _service.defaultControls.saveDefaults(screenId);
     _service.activeScreenViewModel.save();
+  }
+
+  //user tapped help in the settings menu
+  void tapHelp() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+      return HelpDialog(
+          translation: translation,
+          );
+    });
   }
 
   //add the chosen control

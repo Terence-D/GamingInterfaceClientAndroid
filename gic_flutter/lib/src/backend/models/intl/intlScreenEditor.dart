@@ -51,7 +51,11 @@ enum ScreenEditorText {
   widgetDeleted,
   undo,
   previewHeader,
-  helpMessage
+  help,
+  helpMessage,
+  helpDialogTitle,
+  helpEditHeader,
+  helpEditDetails,
 }
 
 class IntlScreenEditor {
@@ -121,7 +125,11 @@ class IntlScreenEditor {
       ScreenEditorText.widgetDeleted: "Control Removed",
       ScreenEditorText.undo: "Undo",
       ScreenEditorText.previewHeader: "Preview",
-      ScreenEditorText.helpMessage: "To get started, Double Tap on a Control or on the Screen to start!  You can also use the Back button (or gesture) to exit without saving.  You can move controls around by dragging or in the double tap menu."
+      ScreenEditorText.helpMessage: "To get started, Double Tap on a Control or on the Screen to start!  You can also use the Back button (or gesture) to exit without saving.  You can move controls around by dragging or in the double tap menu.",
+      ScreenEditorText.helpDialogTitle: "Help",
+      ScreenEditorText.helpEditHeader:"Edit",
+      ScreenEditorText.helpEditDetails:"To modify a control, press and hold your finger down on it until a menu appears",
+      ScreenEditorText.help: "Help"
     }
   };
 }

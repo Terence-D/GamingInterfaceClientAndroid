@@ -81,7 +81,7 @@ class IntlLauncher {
 
   static Map<String, Map<LauncherText, String>> _localizedStrings = {
     'en': {
-      LauncherText.toolbarTitle: 'Graphical Interface Client',
+      LauncherText.toolbarTitle: 'GiC',
       LauncherText.errorPassword:
           'Invalid password, it must be at least 6 digits long',
       LauncherText.errorPort: 'Invalid Port Number',
