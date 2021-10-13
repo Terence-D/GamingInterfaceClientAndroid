@@ -88,8 +88,8 @@ class LauncherBloc {
   ///
   /// @param exportPath directory we are exporting to
   /// @param id Id of the screen we want to export
-  /// @return 0 on success, non 0 on error
-  Future<int> export(String exportPath, int id) async {
+  /// @return complete path of file
+  Future<String> export(String exportPath, int id) async {
     return await _repository.export(exportPath, id);
   }
 

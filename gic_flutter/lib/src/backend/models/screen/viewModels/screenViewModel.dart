@@ -137,12 +137,19 @@ class ScreenViewModel {
   }
 
   /// Export the screen to the chosen path
-  Future<int> export(String exportPath) async {
+  Future<String> export(String exportPath) async {
     final Directory appFolder = await getApplicationDocumentsDirectory();
     final String screenPath = path.join(
         appFolder.path, ScreenService.screenFolder, screenId.toString());
-    return CompressedFileService.compressFolder(
-        screenPath, exportPath, "${screenId.toString()}_$name");
+    String fileName = "${screenId.toString()}_$name";
+    int result = await CompressedFileService.compressFolder(
+        screenPath, exportPath, fileName);
+
+    if (result != 0)
+      return null;
+    else {
+      return path.join(exportPath, fileName);
+    }
   }
 
   /// LEGACY CODE BELOW

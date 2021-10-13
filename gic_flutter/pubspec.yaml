@@ -31,8 +31,8 @@ dependencies:
   archive: ^3.1.5
   device_info: ^2.0.2
   equatable: ^2.0.3
-  file_picker: ^3.0.1
-  filesystem_picker: ^2.0.0
+  share_plus: ^3.0.4
+  file_picker: ^4.1.4
   flutter_colorpicker: ^0.6.0
   flutter_email_sender: ^5.0.2
   flutter_linkify: ^5.0.2

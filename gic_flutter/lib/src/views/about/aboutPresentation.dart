@@ -126,11 +126,6 @@ class AboutPresentation implements BasePresentation {
       Intl.of(context).about(AboutText.showcaseviewText),
       Intl.of(context).about(AboutText.showcaseviewUrl),
     ) );
-    libraries.add( ViewSection(
-      Intl.of(context).about(AboutText.fileSystemPickerTitle),
-      Intl.of(context).about(AboutText.fileSystemPickerText),
-      Intl.of(context).about(AboutText.fileSystemPickerUrl),
-    ) );
 
     return libraries;
   }

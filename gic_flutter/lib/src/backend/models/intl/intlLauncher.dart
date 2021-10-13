@@ -128,7 +128,7 @@ class IntlLauncher {
       LauncherText.menuIntro: 'Show Intro',
       LauncherText.menuTheme: 'Change Theme',
       LauncherText.menuImport: 'Import',
-      LauncherText.exportComplete: 'Export completed',
+      LauncherText.exportComplete: 'Screen saved to ',
       LauncherText.importComplete: 'Import completed',
       LauncherText.nameUpdated: 'Name Updated',
       LauncherText.loading: 'Locating Server, Please Wait',

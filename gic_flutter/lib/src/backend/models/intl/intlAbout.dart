@@ -53,9 +53,6 @@ enum AboutText {
   showcaseviewTitle,
   showcaseviewText,
   showcaseviewUrl,
-  fileSystemPickerTitle,
-  fileSystemPickerText,
-  fileSystemPickerUrl,
 }
 
 class IntlAbout {
@@ -119,9 +116,6 @@ class IntlAbout {
       AboutText.showcaseviewTitle: 'showcaseview by developer@simform.com',
       AboutText.showcaseviewText: 'Licensed under the BSD license',
       AboutText.showcaseviewUrl: 'https://github.com/simformsolutions/flutter_showcaseview/blob/master/LICENSE',
-      AboutText.fileSystemPickerTitle: 'filesystem_picker by chentsov@gmail.com',
-      AboutText.fileSystemPickerText: 'Licensed under the BSD license',
-      AboutText.fileSystemPickerUrl: 'https://github.com/andyduke/filesystem_picker/blob/master/LICENSE',
     }
   };
 }

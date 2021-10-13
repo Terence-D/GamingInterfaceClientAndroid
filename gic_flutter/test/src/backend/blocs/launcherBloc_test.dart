@@ -89,12 +89,12 @@ void main() {
   test('exporting a screen will return an integer', () async {
     //Assign
     LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);
-    when(mockedRepo.export("path", 1)).thenAnswer((_) async => 1);
+    when(mockedRepo.export("path", 1)).thenAnswer((_) async => "1");
 
     //Act
-    int rv = await toTest.export("path", 1);
+    String rv = await toTest.export("path", 1);
 
     //Assert
-    expect (rv, 1);
+    expect (rv, "1");
   });
 }

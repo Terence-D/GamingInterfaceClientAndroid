@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -11,8 +13,10 @@ import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'launcher.dart';
@@ -495,14 +499,22 @@ class ScreenList extends StatelessWidget {
   }
 
   Future<void> _export(BuildContext context, int id) async {
-    String result = await FilePicker.platform.getDirectoryPath();
+    String path;
 
-    if (result != null) {
+    if (Platform.isIOS) {
+      Directory iosPath = await getApplicationDocumentsDirectory();
+      path = iosPath.path;
+    } else {
+      Directory exportDirectory = await getApplicationDocumentsDirectory();
+      path = exportDirectory.path;
+    }
+
+
+    if (path != null) {
       if (await Permission.storage.request().isGranted) {
-        await _parent.launcherBloc.export(result, id);
-        await Fluttertoast.showToast(
-          msg: _translations.text(LauncherText.exportComplete),
-        );
+        String result = await _parent.launcherBloc.export(path, id);
+        if (result != null)
+          await Share.shareFiles(["$result.zip"]);
       }
     }
   }
