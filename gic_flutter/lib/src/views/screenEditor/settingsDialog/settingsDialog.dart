@@ -81,11 +81,19 @@ class SettingsDialog {
         ),
         DialogButton(
           icon: Icons.save,
-          color: Colors.deepPurple,
+          color: Colors.tealAccent,
           text: translation.text(ScreenEditorText.save),
           onPressed: () {
             screenEditorState.tapSave();
             Navigator.pop(context, true);
+          },
+        ),
+        DialogButton(
+          icon: Icons.help,
+          color: Colors.amber,
+          text: translation.text(ScreenEditorText.helpDialogTitle),
+          onPressed: () {
+            screenEditorState.tapHelp();
           },
         ),
       ],

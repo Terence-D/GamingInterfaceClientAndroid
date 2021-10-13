@@ -51,7 +51,16 @@ enum ScreenEditorText {
   widgetDeleted,
   undo,
   previewHeader,
-  helpMessage
+  helpMessage,
+  helpDialogTitle,
+  helpEditHeader,
+  helpEditDetails,
+  helpMoveHeader,
+  helpMoveDetails,
+  helpSizeHeader,
+  helpSizeDetails,
+  helpQuitHeader,
+  helpQuitDetails,
 }
 
 class IntlScreenEditor {
@@ -117,11 +126,20 @@ class IntlScreenEditor {
       ScreenEditorText.designTabPickColor: "Choose a color",
       ScreenEditorText.designTabColorBased: "Use Colors",
       ScreenEditorText.designTabImageBased: "Use Images",
-      ScreenEditorText.controlDialogTitle: "Control",
+      ScreenEditorText.controlDialogTitle: "Editor",
       ScreenEditorText.widgetDeleted: "Control Removed",
       ScreenEditorText.undo: "Undo",
       ScreenEditorText.previewHeader: "Preview",
-      ScreenEditorText.helpMessage: "To get started, Double Tap on a Control or on the Screen to start!  You can also use the Back button (or gesture) to exit without saving.  You can move controls around by dragging or in the double tap menu."
+      ScreenEditorText.helpMessage: "To get started, Double Tap on a Control or on the Screen to start!  You can also use the Back button (or gesture) to exit without saving.  You can move controls around by dragging or in the double tap menu.",
+      ScreenEditorText.helpDialogTitle: "Help",
+      ScreenEditorText.helpEditHeader:"Editing",
+      ScreenEditorText.helpEditDetails:"To Edit a Control (Button, Toggle, Image, or Text), press and hold your finger on top of the Control you wish to modify until a menu appears.  Editing a Control by this method allows you to modify look, size, and (if a button or switch) the commands you can send to your computer.  It allows extremely fine control of its position on the screen and size, more so than using some of the other methods.  Tap on one of the other icons at the top to view more tips, or the Back arrow to exit.",
+      ScreenEditorText.helpMoveHeader:"Moving",
+      ScreenEditorText.helpMoveDetails:"You can move a Control by holding your finger down and dragging it to where you want it to.  Although less precise than using the Edit option (previous help tip), it allows a quick way to adjust your screen quickly.  You can also use the Grid option in the previous menu to make it easier to line Controls up with each other.",
+      ScreenEditorText.helpSizeHeader:"Rescaling",
+      ScreenEditorText.helpSizeDetails: "You can also quickly adjust the scale of the Control by using your fingers to Pinch to Zoom.  This will probably be tweaked as its fairly difficult to use, but is another alternative to the more precise editing in the Edit Control view mentioned earlier ReYou can Size a Control by holding your finger down and dragging it to where you want it to.  Although less precise than using the Edit option (previous help tip), it allows a quick way to adjust your screen quickly.  You can also use the Grid option in the previous menu to make it easier to line Controls up with each other.",
+      ScreenEditorText.helpQuitHeader:"Quit",
+      ScreenEditorText.helpQuitDetails:"Exiting the Screen editor can be done the same way as any other full screen app on your device.  If buttons are visible, you can press the Back button, or swipe from one of the edges of the screen.",
     }
   };
 }

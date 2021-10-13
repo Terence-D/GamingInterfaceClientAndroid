@@ -22,67 +22,69 @@ class TextTabState extends BaseTabState {
   @override
   Widget build(BuildContext context) {
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    return Container(
-      child: LayoutBuilder(
-          builder: (BuildContext ctx, BoxConstraints constraints) {
-        return Column(
-          children: [
-            Text(widget.translation.text(ScreenEditorText.textTabHeader),
-                style: Theme.of(context).textTheme.headline5),
-            Text(widget.translation
-                .text(ScreenEditorText.textTabPrimaryDetails)),
-            _buildText(),
-            Visibility(
-              child: Text(widget.translation
-                  .text(ScreenEditorText.textTabPrimaryToggleDetails)),
-              visible: widget.gicEditControl.control.type ==
-                  ControlViewModelType.Toggle,
-            ),
-            Visibility(
-              child: _buildText(),
-              visible: widget.gicEditControl.control.type ==
-                  ControlViewModelType.Toggle,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  child: Text(widget.translation
-                      .text(ScreenEditorText.textTabFontColor)),
-                  onPressed: () {
-                    _pickColor();
-                  },
-                ),
-                ElevatedButton(
-                  child: Text(
-                      widget.translation.text(ScreenEditorText.textTabFont)),
-                  onPressed: () {
-                    _pickFont(context);
-                  },
-                ),
-              ],
-            ),
-            Text(widget.translation.text(ScreenEditorText.textTabFontSize)),
-            Row(
-              children: [
-                Slider(
-                  min: 8,
-                  max: 512,
-                  value: widget.gicEditControl.control.font.size,
-                  onChanged: (value) {
-                    setState(() {
-                      widget.gicEditControl.control.font.size =
-                          value.roundToDouble();
-                    });
-                  },
-                ),
-                Flexible(child: _size())
-              ],
-            ),
-            preview(constraints)
-          ],
-        );
-      }),
+    return SingleChildScrollView(
+      child: Container(
+        child: LayoutBuilder(
+            builder: (BuildContext ctx, BoxConstraints constraints) {
+          return Column(
+            children: [
+              Text(widget.translation.text(ScreenEditorText.textTabHeader),
+                  style: Theme.of(context).textTheme.headline5),
+              Text(widget.translation
+                  .text(ScreenEditorText.textTabPrimaryDetails)),
+              _buildText(),
+              Visibility(
+                child: Text(widget.translation
+                    .text(ScreenEditorText.textTabPrimaryToggleDetails)),
+                visible: widget.gicEditControl.control.type ==
+                    ControlViewModelType.Toggle,
+              ),
+              Visibility(
+                child: _buildText(),
+                visible: widget.gicEditControl.control.type ==
+                    ControlViewModelType.Toggle,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    child: Text(widget.translation
+                        .text(ScreenEditorText.textTabFontColor)),
+                    onPressed: () {
+                      _pickColor();
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text(
+                        widget.translation.text(ScreenEditorText.textTabFont)),
+                    onPressed: () {
+                      _pickFont(context);
+                    },
+                  ),
+                ],
+              ),
+              Text(widget.translation.text(ScreenEditorText.textTabFontSize)),
+              Row(
+                children: [
+                  Slider(
+                    min: 8,
+                    max: 512,
+                    value: widget.gicEditControl.control.font.size,
+                    onChanged: (value) {
+                      setState(() {
+                        widget.gicEditControl.control.font.size =
+                            value.roundToDouble();
+                      });
+                    },
+                  ),
+                  Flexible(child: _size())
+                ],
+              ),
+              preview(constraints)
+            ],
+          );
+        }),
+      ),
     );
   }
 
