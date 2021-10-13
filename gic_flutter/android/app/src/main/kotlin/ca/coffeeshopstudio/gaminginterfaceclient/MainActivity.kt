@@ -1,12 +1,12 @@
 package ca.coffeeshopstudio.gaminginterfaceclient
 
 import android.content.Intent
-import android.os.Bundle
+import androidx.annotation.NonNull
 import ca.coffeeshopstudio.gaminginterfaceclient.views.DonateActivity
-import io.flutter.app.FlutterActivity
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugins.GeneratedPluginRegistrant
-
+import io.flutter.plugin.common.MethodChannel;
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.plugins.GeneratedPluginRegistrant;
 
 class MainActivity: FlutterActivity() {
 
@@ -19,15 +19,9 @@ class MainActivity: FlutterActivity() {
 
   private lateinit var _result: MethodChannel.Result
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    GeneratedPluginRegistrant.registerWith(this)
-
-    buildActivityChannel()
-  }
-
-  private fun buildActivityChannel() {
-    MethodChannel(flutterView, channelView).setMethodCallHandler { call, result ->
+  override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+    GeneratedPluginRegistrant.registerWith(flutterEngine)
+    MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channelView).setMethodCallHandler { call, result ->
       _result = result
       when (call.method) {
         actionDonate -> {

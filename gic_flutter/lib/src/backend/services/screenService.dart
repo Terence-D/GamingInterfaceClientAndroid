@@ -154,16 +154,17 @@ class ScreenService {
   /// Takes a compressed or json file and import it and any resources into GIC
   Future<int> import(String file) async {
     //get our various folders ready
+
     int rv = -1; //fail by default
     if (file.endsWith("zip")) {
       Directory tempFolder = await getTemporaryDirectory();
       String importPath = path.join(tempFolder.path, "screenImports");
 
       //extract compressed file
-      CompressedFileService.extract(file, importPath);
+      String id = CompressedFileService.extract(file, importPath);
 
       //get a screen object based on the JSON extracted
-      String importFile = path.join(importPath, "data.json");
+      String importFile = path.join(importPath, id, "data.json");
       File jsonFile = File(importFile);
       rv = _importScreen(jsonToImport: jsonFile.readAsStringSync());
 

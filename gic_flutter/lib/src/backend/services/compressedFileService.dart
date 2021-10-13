@@ -6,8 +6,9 @@ import 'package:path/path.dart' as path;
 
 class CompressedFileService {
   /// Extracts the supplied compressed file path to the supplied path
-  /// 0 on success, sub zero on fail
-  static int extract(String file, String tempPath) {
+  /// screen id saved on success, empty string on fail
+  static String extract(String file, String tempPath) {
+    String fileId = "";
     try {
       final File compressedFile = File(file);
       // Read the Zip file from disk.
@@ -24,19 +25,19 @@ class CompressedFileService {
             ..createSync(recursive: true)
             ..writeAsBytesSync(data);
         }
+        fileId = path.split(filename)[0];
       }
-      return 0;
     } on Exception catch (e) {
       log(e.toString());
-      return -1;
     }
+    return fileId;
   }
 
   /// Creates a compressed file
   /// folderToCompress is the folder containing the files we want compressed
   /// destinationFolder is the destination folder
   /// exportFile is the file we are creating
-  /// Returns a File of the created folder, or null on error
+  /// Returns 0 on success, -1 on error
   static Future<int> compressFolder(String folderToCompress, String destinationFolder, String exportFile) async {
     //add the zip extension if required
     try {

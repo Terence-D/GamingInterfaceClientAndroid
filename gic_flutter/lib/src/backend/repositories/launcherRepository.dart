@@ -76,7 +76,7 @@ class LauncherRepository {
   }
 
   /// Exports the screen with matching id to the export path
-  Future<int> export(String exportPath, int id) async {
+  Future<String> export(String exportPath, int id) async {
     _screenService.setActiveScreen(id);
     return _screenService.activeScreenViewModel.export(exportPath);
   }
