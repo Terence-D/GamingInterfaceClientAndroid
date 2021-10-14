@@ -63,8 +63,7 @@ class LauncherState extends State<Launcher> {
 
   @override
   void initState() {
-    final Stream purchaseUpdated =
-        InAppPurchase.instance.purchaseStream;
+    final Stream purchaseUpdated = InAppPurchase.instance.purchaseStream;
     _subscription = purchaseUpdated.listen((purchaseDetailsList) {
       _listenToPurchaseUpdated(purchaseDetailsList);
     }, onDone: () {
@@ -331,20 +330,15 @@ class LauncherState extends State<Launcher> {
             purchaseDetails.status == PurchaseStatus.restored) {
           //bool valid = await _verifyPurchase(purchaseDetails);
           // if (valid) {
-          _deliverProduct(purchaseDetails);
+          launcherBloc.setDonation(purchaseDetails.productID, true);
           // } else {
           //   _handleInvalidPurchase(purchaseDetails);
           // }
         }
         if (purchaseDetails.pendingCompletePurchase) {
-          await InAppPurchase.instance
-              .completePurchase(purchaseDetails);
+          await InAppPurchase.instance.completePurchase(purchaseDetails);
         }
       }
     });
-  }
-
-  void _deliverProduct(PurchaseDetails purchaseDetails) {
-    launcherBloc.setDonation(purchaseDetails.productID, true);
   }
 }
