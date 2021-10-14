@@ -6,6 +6,7 @@ import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel
 import 'package:gic_flutter/src/backend/repositories/screenRepository.dart';
 import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LauncherRepository {
@@ -63,6 +64,10 @@ class LauncherRepository {
   /// Toggles dark mode based on newValue
   void setDarkMode(bool newValue) {
     _prefs.setBool(_prefNightMode, newValue);
+  }
+
+  void setDonation(String id, bool newValue) {
+    _prefs.setBool(id, newValue);
   }
 
   /// Remove the matching screen
@@ -194,6 +199,7 @@ class LauncherRepository {
     viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
 
     //donation settings
+    //await InAppPurchase.instance.restorePurchases();
     if (_prefs.containsKey(_prefDonate)) {
       viewModel.donate = _prefs.getBool(_prefDonate);
     } else {

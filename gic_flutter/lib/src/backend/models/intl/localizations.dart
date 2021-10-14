@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
+import 'package:gic_flutter/src/backend/models/intl/intlDonate.dart';
 
 import 'intlAbout.dart';
 
@@ -33,6 +34,9 @@ class Intl {
 
   String about(AboutText resource) {
     return IntlAbout.localizedStrings[locale.languageCode][resource];
+  }
+  String donate(DonateText resource) {
+    return IntlDonate.localizedStrings[locale.languageCode][resource];
   }
 
   static Map<String, Map<String, String>> _localized = {

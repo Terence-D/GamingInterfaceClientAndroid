@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,9 +12,11 @@ import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:gic_flutter/src/flavor.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/views/about/aboutView.dart';
+import 'package:gic_flutter/src/views/donate/donateView.dart';
 import 'package:gic_flutter/src/views/intro/introView.dart';
 import 'package:gic_flutter/src/views/menuOption.dart';
 import 'package:gic_flutter/src/views/newScreenWizard/newScreenWizard.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -55,8 +59,20 @@ class LauncherState extends State<Launcher> {
 
   BuildContext showcaseContext;
 
+  StreamSubscription<List<PurchaseDetails>> _subscription;
+
   @override
   void initState() {
+    final Stream purchaseUpdated =
+        InAppPurchase.instance.purchaseStream;
+    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    }, onDone: () {
+      _subscription.cancel();
+    }, onError: (error) {
+      // handle error here.
+    });
+
     super.initState();
     translation = IntlLauncher(context);
     passwordController.addListener(_passwordListener);
@@ -203,7 +219,8 @@ class LauncherState extends State<Launcher> {
   //action to take when picking from the menu
   void _menuSelectAction(MenuOption choice) {
     if (choice.title == translation.text(LauncherText.menuDonate)) {
-      _getNewActivity(Channel.actionViewDonate);
+      _showUi(DonateView());
+      //_getNewActivity(Channel.actionViewDonate);
     } else if (choice.title == translation.text(LauncherText.menuAbout)) {
       _showUi(AboutView());
     } else if (choice.title == translation.text(LauncherText.menuIntro)) {
@@ -301,5 +318,33 @@ class LauncherState extends State<Launcher> {
       }
       newScreenId = -1;
     }
+  }
+
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        // _showPendingUI();
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          // _handleError(purchaseDetails.error!);
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored) {
+          //bool valid = await _verifyPurchase(purchaseDetails);
+          // if (valid) {
+          _deliverProduct(purchaseDetails);
+          // } else {
+          //   _handleInvalidPurchase(purchaseDetails);
+          // }
+        }
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchase.instance
+              .completePurchase(purchaseDetails);
+        }
+      }
+    });
+  }
+
+  void _deliverProduct(PurchaseDetails purchaseDetails) {
+    launcherBloc.setDonation(purchaseDetails.productID, true);
   }
 }

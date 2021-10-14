@@ -31,7 +31,6 @@ dependencies:
   archive: ^3.1.5
   device_info: ^2.0.2
   equatable: ^2.0.3
-  share_plus: ^3.0.4
   file_picker: ^4.1.4
   flutter_colorpicker: ^0.6.0
   flutter_email_sender: ^5.0.2
@@ -39,6 +38,7 @@ dependencies:
   fluttertoast: ^8.0.8
   get_it: ^7.2.0
   http: ^0.13.4
+  in_app_purchase: ^1.0.9
   introduction_screen: ^2.1.0
   package_info: ^2.0.2
   path_provider: ^2.0.5
@@ -47,6 +47,7 @@ dependencies:
   rxdart: ^0.27.2
   scrollable_positioned_list: ^0.1.10
   #nullable scrollable_positioned_list: ^0.2.0-nullsafety.0
+  share_plus: ^3.0.4
   shared_preferences: '>=0.5.7+3 <2.0.0'
   #nullable shared_preferences: ^2.0.6
   showcaseview: ^1.1.1

@@ -61,10 +61,6 @@ android {
     productFlavors {
  
         gplay {
-            dependencies {
-                implementation 'com.android.billingclient:billing:2.0.3'
-            }
-
         }
  
         other {
