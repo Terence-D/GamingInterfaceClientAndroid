@@ -10,8 +10,12 @@ class DonateVM implements ViewModel {
   String title;
   String note;
   String button;
-  String details;
   String thankyou;
   String request;
+  String tryingToConnect;
+  String notConnected;
+  String unableToPurchase;
+  String searching;
+  String donationOptions;
+  String restorePurchases;
 }
-

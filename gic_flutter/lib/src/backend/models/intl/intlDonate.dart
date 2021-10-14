@@ -2,26 +2,36 @@ enum DonateText {
   toolbarTitle,
   intro,
   title,
-  request,
   details,
   note,
   thankyou,
-  button
+  refresh,
+  button,
+  tryingToConnect,
+  notConnected,
+  unableToPurchase,
+  searching,
+  donationOptions,
+  restorePurchase
 }
 
 class IntlDonate {
   static Map<String, Map<DonateText, String>> localizedStrings = {
     'en': {
-      DonateText.toolbarTitle: 'About',
-      DonateText.intro: 'Version: ',
-      DonateText.title: 'mailto:support@coffeeshopstudio.ca?subject=GIC',
-      DonateText.request: 'https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki',
-
-      DonateText.details: 'Legal',
-      DonateText.note: 'GIC Client (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2020 Terence Doerksen',
-      DonateText.thankyou: 'http://www.apache.org/licenses/LICENSE-2.0',
-
-      DonateText.button: 'Server',
+      DonateText.toolbarTitle: 'Donation',
+      DonateText.title: 'Support Me',
+      DonateText.intro:
+          'GIC on android will remain free and open source, and you can find more details at the link below! However, if you like the work that I\'ve done and would like to support continued development and features, you can send me a donation using one of the options below! As a small way of saying thank you, you will also see a icon on the main screen showing off your support!',
+      DonateText.thankyou: 'Thank you - Terence',
+      DonateText.button: 'More Information on GIC',
+      DonateText.refresh: 'Refresh Purchases',
+      DonateText.tryingToConnect: 'Trying to connect...',
+      DonateText.notConnected: 'Not connected',
+      DonateText.unableToPurchase:
+          'Unable to complete purchase.  Please try later, or contact the Developer.',
+      DonateText.searching: 'Searching...',
+      DonateText.donationOptions: 'Donation Options',
+      DonateText.restorePurchase: 'Restore purchases'
     }
   };
 }

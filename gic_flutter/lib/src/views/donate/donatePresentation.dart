@@ -18,11 +18,18 @@ class DonatePresentation implements BasePresentation {
     _viewModel.toolbarTitle = Intl.of(context).donate(DonateText.toolbarTitle);
     _viewModel.intro = Intl.of(context).donate(DonateText.intro);
     _viewModel.title = Intl.of(context).donate(DonateText.title);
-    _viewModel.request = Intl.of(context).donate(DonateText.request);
-    _viewModel.details = Intl.of(context).donate(DonateText.details);
-    _viewModel.note = Intl.of(context).donate(DonateText.note);
     _viewModel.thankyou = Intl.of(context).donate(DonateText.thankyou);
     _viewModel.button = Intl.of(context).donate(DonateText.button);
+    _viewModel.donationOptions =
+        Intl.of(context).donate(DonateText.donationOptions);
+    _viewModel.tryingToConnect =
+        Intl.of(context).donate(DonateText.tryingToConnect);
+    _viewModel.notConnected = Intl.of(context).donate(DonateText.notConnected);
+    _viewModel.unableToPurchase =
+        Intl.of(context).donate(DonateText.unableToPurchase);
+    _viewModel.searching = Intl.of(context).donate(DonateText.searching);
+    _viewModel.restorePurchases =
+        Intl.of(context).donate(DonateText.restorePurchase);
 
     _contract.onLoadComplete(_viewModel);
   }

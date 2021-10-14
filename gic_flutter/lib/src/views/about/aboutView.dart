@@ -34,7 +34,6 @@ class AboutViewState extends BaseState<AboutView> {
 
   @override
   Widget build(BuildContext context) {
-
     String title = " ";
     if (viewModel != null && viewModel.toolbarTitle != null) {
       title = viewModel.toolbarTitle;
@@ -47,9 +46,11 @@ class AboutViewState extends BaseState<AboutView> {
         body: SingleChildScrollView(
           child: Container(
             margin: EdgeInsets.all(dim.activityMargin),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                header(viewModel.appName, Theme.of(context).textTheme.headline4),
+                header(
+                    viewModel.appName, Theme.of(context).textTheme.headline4),
                 Text(viewModel.versionText),
                 link(viewModel.url),
                 section(viewModel.server, centered: true),
@@ -60,12 +61,11 @@ class AboutViewState extends BaseState<AboutView> {
             ),
           ),
         ),
-        floatingActionButton: FloatingActionButton (
-          onPressed: () {
-            _sendEmail(viewModel.emailTo);
-          },
-          child: Icon(Icons.email)
-        )); //
+        floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              _sendEmail(viewModel.emailTo);
+            },
+            child: Icon(Icons.email))); //
   }
 
   void _sendEmail(email) async {
@@ -80,15 +80,16 @@ class AboutViewState extends BaseState<AboutView> {
     if (sections != null) {
       List<Widget> widgets = <Widget>[];
       TextStyle textStyle = Theme.of(context).textTheme.subtitle1;
-      sections.forEach((s) => widgets.add(section(s, optionalHeaderStyle: textStyle)));
+      sections.forEach(
+          (s) => widgets.add(section(s, optionalHeaderStyle: textStyle)));
 
-      return Column(crossAxisAlignment: CrossAxisAlignment.start,
-          children: widgets,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: widgets,
       );
     }
     return Column();
   }
-
 
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

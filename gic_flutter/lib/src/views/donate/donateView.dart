@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/viewModel.dart';
-import 'package:gic_flutter/src/theme/dimensions.dart' as dim;
 import 'package:gic_flutter/src/views/donate/donateVM.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../basePage.dart';
 import 'donatePresentation.dart';
@@ -34,7 +33,6 @@ class DonateViewState extends BaseState<DonateView> {
   List<String> _notFoundIds = [];
   List<ProductDetails> _products = [];
   List<PurchaseDetails> _purchases = [];
-  List<String> _consumables = [];
   bool _isAvailable = false;
   bool _purchasePending = false;
   bool _loading = true;
@@ -43,6 +41,7 @@ class DonateViewState extends BaseState<DonateView> {
   @override
   void initState() {
     presentation = DonatePresentation(this);
+    _initStoreInfo();
     super.initState();
   }
 
@@ -66,12 +65,13 @@ class DonateViewState extends BaseState<DonateView> {
 
   @override
   Widget build(BuildContext context) {
-
     List<Widget> stack = [];
+
     if (_queryProductError == null) {
       stack.add(
         ListView(
           children: [
+            _buildHeaderTile(),
             _buildConnectionCheckTile(),
             _buildProductList(),
             _buildRestoreButton(),
@@ -99,41 +99,15 @@ class DonateViewState extends BaseState<DonateView> {
       );
     }
 
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('IAP Example'),
-        ),
-        body: Stack(
-          children: stack,
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        title: Text(viewModel.title),
       ),
-    );
-
-    // String title = " ";
-    // if (viewModel != null && viewModel.toolbarTitle != null) {
-    //   title = viewModel.toolbarTitle;
-    // }
-    // return Scaffold(
-    //     appBar: AppBar(
-    //       automaticallyImplyLeading: true,
-    //       title: Text(title),
-    //     ),
-    //     body: SingleChildScrollView(
-    //       child: Container(
-    //         margin: EdgeInsets.all(dim.activityMargin),
-    //         child: Column(crossAxisAlignment: CrossAxisAlignment.center,
-    //           children: <Widget>[
-    //             header(viewModel.title, Theme.of(context).textTheme.headline4),
-    //             Text(viewModel.intro),
-    //             // TextButton(onPressed: _openWikiPage, child: _onClickWiki),
-    //             // TextButton(onPressed: _openWikiPage, child: _onClickWiki),
-    //             // TextButton(onPressed: _openWikiPage, child: _onClickWiki),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    // );
+      body: Stack(
+        children: stack,
+      ),
+    ); //
   }
 
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -156,7 +130,6 @@ class DonateViewState extends BaseState<DonateView> {
         _products = [];
         _purchases = [];
         _notFoundIds = [];
-        _consumables = [];
         _purchasePending = false;
         _loading = false;
       });
@@ -170,7 +143,7 @@ class DonateViewState extends BaseState<DonateView> {
     // }
 
     ProductDetailsResponse productDetailResponse =
-    await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
+        await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
     if (productDetailResponse.error != null) {
       setState(() {
         _queryProductError = productDetailResponse.error.message;
@@ -178,7 +151,6 @@ class DonateViewState extends BaseState<DonateView> {
         _products = productDetailResponse.productDetails;
         _purchases = [];
         _notFoundIds = productDetailResponse.notFoundIDs;
-        _consumables = [];
         _purchasePending = false;
         _loading = false;
       });
@@ -192,35 +164,56 @@ class DonateViewState extends BaseState<DonateView> {
         _products = productDetailResponse.productDetails;
         _purchases = [];
         _notFoundIds = productDetailResponse.notFoundIDs;
-        _consumables = [];
         _purchasePending = false;
         _loading = false;
       });
       return;
     }
+
+    setState(() {
+      _isAvailable = isAvailable;
+      _products = productDetailResponse.productDetails;
+      _notFoundIds = productDetailResponse.notFoundIDs;
+      _purchasePending = false;
+      _loading = false;
+    });
+  }
+
+  Card _buildHeaderTile() {
+    final List<Widget> children = [];
+    children.addAll([
+      Text(viewModel.intro),
+      Divider(),
+      Text(viewModel.thankyou),
+      Divider(),
+      ElevatedButton(
+          onPressed: () async {
+            const url =
+                "https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki";
+            if (await canLaunch(url))
+              await launch(url);
+            else
+              // can't launch url, there is some error
+              throw "Could not launch $url";
+          },
+          child: Text(viewModel.button))
+    ]);
+    return Card(child: Column(children: children));
   }
 
   Card _buildConnectionCheckTile() {
     if (_loading) {
-      return Card(child: ListTile(title: const Text('Trying to connect...')));
+      return Card(child: ListTile(title: Text(viewModel.tryingToConnect)));
     }
-    final Widget storeHeader = ListTile(
-      leading: Icon(_isAvailable ? Icons.check : Icons.block,
-          color: _isAvailable ? Colors.green : ThemeData.light().errorColor),
-      title: Text(
-          'The store is ' + (_isAvailable ? 'available' : 'unavailable') + '.'),
-    );
-    final List<Widget> children = <Widget>[storeHeader];
+    final List<Widget> children = <Widget>[];
 
     if (!_isAvailable) {
       children.addAll([
         Divider(),
         ListTile(
-          title: Text('Not connected',
-              style: TextStyle(color: ThemeData.light().errorColor)),
-          subtitle: const Text(
-              'Unable to connect to the payments processor. Has this app been configured correctly? See the example README for instructions.'),
-        ),
+            title: Text(viewModel.notConnected,
+                style: TextStyle(color: ThemeData.light().errorColor)),
+            subtitle: Text(viewModel.unableToPurchase))
       ]);
     }
     return Card(child: Column(children: children));
@@ -231,23 +224,24 @@ class DonateViewState extends BaseState<DonateView> {
       return Card(
           child: (ListTile(
               leading: CircularProgressIndicator(),
-              title: Text('Fetching products...'))));
+              title: Text(viewModel.searching))));
     }
     if (!_isAvailable) {
       return Card();
     }
-    final ListTile productHeader = ListTile(title: Text('Products for Sale'));
+    final ListTile productHeader =
+        ListTile(title: Text(viewModel.donationOptions));
     List<ListTile> productList = <ListTile>[];
 
     Map<String, PurchaseDetails> purchases =
-    Map.fromEntries(_purchases.map((PurchaseDetails purchase) {
+        Map.fromEntries(_purchases.map((PurchaseDetails purchase) {
       if (purchase.pendingCompletePurchase) {
         _inAppPurchase.completePurchase(purchase);
       }
       return MapEntry<String, PurchaseDetails>(purchase.productID, purchase);
     }));
     productList.addAll(_products.map(
-          (ProductDetails productDetails) {
+      (ProductDetails productDetails) {
         PurchaseDetails previousPurchase = purchases[productDetails.id];
         return ListTile(
             title: Text(
@@ -263,7 +257,8 @@ class DonateViewState extends BaseState<DonateView> {
                 primary: Colors.white,
               ),
               onPressed: () {
-                final PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails);
+                final PurchaseParam purchaseParam =
+                    PurchaseParam(productDetails: productDetails);
                 _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
               },
             ));
@@ -272,7 +267,7 @@ class DonateViewState extends BaseState<DonateView> {
 
     return Card(
         child:
-        Column(children: <Widget>[productHeader, Divider()] + productList));
+            Column(children: <Widget>[productHeader, Divider()] + productList));
   }
 
   Widget _buildRestoreButton() {
@@ -287,7 +282,7 @@ class DonateViewState extends BaseState<DonateView> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           TextButton(
-            child: Text('Restore purchases'),
+            child: Text(viewModel.restorePurchases),
             style: TextButton.styleFrom(
               backgroundColor: Theme.of(context).primaryColor,
               primary: Colors.white,
@@ -351,4 +346,5 @@ class DonateViewState extends BaseState<DonateView> {
         }
       }
     });
-  }}
+  }
+}
