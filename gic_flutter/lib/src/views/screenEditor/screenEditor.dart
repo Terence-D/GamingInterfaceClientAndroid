@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fullscreen/fullscreen.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
@@ -55,7 +56,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   @override
   void initState() {
     super.initState();
-
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     _buildService().then((value) {
       setState(() {});
     });
@@ -79,9 +80,16 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    // Exit full screen
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // FullScreen.enterFullScreen(FullScreenMode.EMERSIVE_STICKY);
     translation = IntlScreenEditor(context);
-    SystemChrome.setEnabledSystemUIOverlays([]);
     if (!_loaded) return Scaffold();
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
     int n = 0;

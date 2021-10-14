@@ -277,16 +277,15 @@ class DonateViewState extends BaseState<DonateView> {
 
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          TextButton(
+          Text(
+            viewModel.restoreHelp
+          ),
+          Padding(padding: const EdgeInsets.all(4.0)),
+          ElevatedButton(
             child: Text(viewModel.restorePurchases),
-            style: TextButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-              primary: Colors.white,
-            ),
             onPressed: () => _inAppPurchase.restorePurchases(),
           ),
         ],

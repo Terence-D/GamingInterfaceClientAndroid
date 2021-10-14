@@ -18,4 +18,5 @@ class DonateVM implements ViewModel {
   String searching;
   String donationOptions;
   String restorePurchases;
+  String restoreHelp;
 }
