@@ -46,6 +46,11 @@ class LauncherBloc {
     _repository.setDarkMode(isDarkMode);
   }
 
+  /// Sets the purchase value
+  void setDonation(String id, bool newValue) {
+    _repository.setDonation(id, newValue);
+  }
+
   /// closes the stream
   void dispose() {
     _modelFetcher.close();
