@@ -42,13 +42,15 @@ class GicButtonState extends BaseGicControlState {
       : super(control: control, pixelRatio: pixelRatio);
 
   Future<void> sendCommand(String commandUrl, int commandIndex) async {
-    NetworkResponse response = await NetworkService.sendCommand(
-        networkModel, commandUrl, control.commands[commandIndex]);
-    if (response == NetworkResponse.Error) {
-      await Fluttertoast.showToast(
-        msg: "error",
-        toastLength: Toast.LENGTH_SHORT,
-      );
+    if (networkModel != null) {
+      NetworkResponse response = await NetworkService.sendCommand(
+          networkModel, commandUrl, control.commands[commandIndex]);
+      if (response == NetworkResponse.Error) {
+        await Fluttertoast.showToast(
+          msg: "error",
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      }
     }
   }
 
