@@ -38,9 +38,10 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
   @override
   Widget build(BuildContext context) {
     bool isPressed = false;
-    if (active == pressed) {
+    if (active == pressed && active != null) {
+      print ("pressed");
       isPressed = true;
-    }
+    } else print ("unpressed");
     if (control.type == ControlViewModelType.Button ||
         control.type == ControlViewModelType.QuickButton ||
         control.type == ControlViewModelType.Toggle) {
