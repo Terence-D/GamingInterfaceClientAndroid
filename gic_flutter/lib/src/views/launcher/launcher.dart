@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/blocs/launcherBloc.dart';
-import 'package:gic_flutter/src/backend/models/channel.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/services/cryptoService.dart';
@@ -13,6 +12,7 @@ import 'package:gic_flutter/src/flavor.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/views/about/aboutView.dart';
 import 'package:gic_flutter/src/views/donate/donateView.dart';
+import 'package:gic_flutter/src/views/feedback/feedbackView.dart';
 import 'package:gic_flutter/src/views/intro/introView.dart';
 import 'package:gic_flutter/src/views/menuOption.dart';
 import 'package:gic_flutter/src/views/newScreenWizard/newScreenWizard.dart';
@@ -91,7 +91,6 @@ class LauncherState extends State<Launcher> {
 
   @override
   Widget build(BuildContext context) {
-    // FullScreen.exitFullScreen();
     return ShowCaseWidget(builder: Builder(builder: (context) {
       showcaseContext = context;
       return Scaffold(
@@ -192,6 +191,9 @@ class LauncherState extends State<Launcher> {
       MenuOption(
           title: translation.text(LauncherText.menuAbout),
           icon: Icons.info_outline),
+      MenuOption(
+          title: translation.text(LauncherText.menuFeedback),
+          icon: Icons.email),
     ];
 
     BuildEnvironment.init(flavor: BuildFlavor.gplay);
@@ -223,6 +225,8 @@ class LauncherState extends State<Launcher> {
       //_getNewActivity(Channel.actionViewDonate);
     } else if (choice.title == translation.text(LauncherText.menuAbout)) {
       _showUi(AboutView());
+    } else if (choice.title == translation.text(LauncherText.menuFeedback)) {
+      _showUi(FeedbackView());
     } else if (choice.title == translation.text(LauncherText.menuIntro)) {
       _showUi(IntroView());
     } else if (choice.title == translation.text(LauncherText.menuImport)) {
@@ -239,16 +243,6 @@ class LauncherState extends State<Launcher> {
       }
     } else {
       debugPrint("not found");
-    }
-  }
-
-  /// legacy native code calling
-  Future<void> _getNewActivity(String activity) async {
-    MethodChannel platform = MethodChannel(Channel.channelView);
-    try {
-      await platform.invokeMethod(activity);
-    } on PlatformException catch (e) {
-      print(e.message);
     }
   }
 
