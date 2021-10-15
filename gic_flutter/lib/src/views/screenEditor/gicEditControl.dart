@@ -8,11 +8,12 @@ typedef void DragControl(
 
 class GicEditControl extends BaseGicControl {
   final SelectedWidgetCallback onSelected;
-
   final int controlIndex;
+  final int gridSize;
 
   GicEditControl(
       {Key key,
+      this.gridSize,
       @required control,
       @required this.controlIndex,
       @required this.onSelected,
@@ -26,6 +27,7 @@ class GicEditControl extends BaseGicControl {
   @override
   State<StatefulWidget> createState() {
     return GicEditControlState(
+        gridSize: gridSize,
         control: control,
         controlIndex: controlIndex,
         onSelected: onSelected,
@@ -36,12 +38,14 @@ class GicEditControl extends BaseGicControl {
 class GicEditControlState extends BaseGicControlState {
   final SelectedWidgetCallback onSelected;
   final int controlIndex;
+  final int gridSize;
 
   double _originalWidth;
   double _originalHeight;
 
   GicEditControlState(
-      {@required control,
+      {this.gridSize,
+      @required control,
       @required this.controlIndex,
       @required this.onSelected,
       @required pixelRatio})
@@ -91,10 +95,10 @@ class GicEditControlState extends BaseGicControlState {
 
   void onMoveUpdate(MoveEvent event) {
     setState(() {
-      control.left = ((event.position.dx * pixelRatio) - (control.width / 2))
-          .roundToDouble();
-      control.top = ((event.position.dy * pixelRatio) - (control.height / 2))
-          .roundToDouble();
+      double adjustedX = _getGridPosition(startPosition: event.position.dx, size: control.width);
+      double adjustedY = _getGridPosition(startPosition: event.position.dy, size: control.height);
+      control.left = adjustedX;
+      control.top = adjustedY;
     });
   }
 
@@ -105,4 +109,21 @@ class GicEditControlState extends BaseGicControlState {
       });
     }
   }
+
+  /// Determines where to place something, based on the currently set grid value
+  /// startPosition - the raw position, either X or Y based
+  /// size - size of the control, on the same axis as startPosition.  -1 ignores
+  double _getGridPosition({double startPosition, double size = -1}) {
+    double rawPos = startPosition * pixelRatio;
+    if (size > -1) {
+      rawPos = rawPos - (size / 2);
+    }
+    int adjustedSize = gridSize;
+    if (gridSize < 1) {
+      adjustedSize = 1;
+    }
+    int gridPos = (rawPos.round() / adjustedSize).round();
+    return gridPos * adjustedSize.toDouble();
+  }
+
 }

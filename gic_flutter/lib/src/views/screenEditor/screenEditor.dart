@@ -95,6 +95,7 @@ class ScreenEditorState extends State<ScreenEditor> {
     if (_service.activeScreenViewModel != null) {
       _service.activeScreenViewModel.controls.forEach((element) {
         widgets.add(GicEditControl(
+          gridSize: gridSize,
           pixelRatio: pixelRatio,
           control: element,
           controlIndex: n,
@@ -263,6 +264,7 @@ class ScreenEditorState extends State<ScreenEditor> {
               translation: translation,
               screenId: _service.activeScreenViewModel.screenId,
               gicEditControl: GicEditControl(
+                gridSize: gridSize,
                 pixelRatio: pixelRatio,
                 control: _service
                     .activeScreenViewModel.controls[selectedControlIndex],
