@@ -30,7 +30,7 @@ class DonatePresentation implements BasePresentation {
     _viewModel.searching = Intl.of(context).donate(DonateText.searching);
     _viewModel.restorePurchases =
         Intl.of(context).donate(DonateText.restorePurchase);
-
+    _viewModel.restoreHelp = Intl.of(context).donate(DonateText.restoreHelp);
     _contract.onLoadComplete(_viewModel);
   }
 }

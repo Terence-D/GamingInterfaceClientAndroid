@@ -188,7 +188,8 @@ class DesignTabState extends BaseTabState {
           return ImageDialog();
         }).then((value) {
       setState(() {
-        widget.gicEditControl.control.images[index] = value;
+        if (value != null)
+          widget.gicEditControl.control.images[index] = value;
       });
     });
   }

@@ -12,7 +12,8 @@ enum DonateText {
   unableToPurchase,
   searching,
   donationOptions,
-  restorePurchase
+  restorePurchase,
+  restoreHelp
 }
 
 class IntlDonate {
@@ -31,7 +32,8 @@ class IntlDonate {
           'Unable to complete purchase.  Please try later, or contact the Developer.',
       DonateText.searching: 'Searching...',
       DonateText.donationOptions: 'Donation Options',
-      DonateText.restorePurchase: 'Restore purchases'
+      DonateText.restorePurchase: 'Restore purchases',
+      DonateText.restoreHelp: "If you already purchased but do not see the icons, press this button, then reload the application"
     }
   };
 }

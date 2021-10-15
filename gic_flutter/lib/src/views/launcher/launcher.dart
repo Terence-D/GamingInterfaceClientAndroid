@@ -91,6 +91,7 @@ class LauncherState extends State<Launcher> {
 
   @override
   Widget build(BuildContext context) {
+    // FullScreen.exitFullScreen();
     return ShowCaseWidget(builder: Builder(builder: (context) {
       showcaseContext = context;
       return Scaffold(

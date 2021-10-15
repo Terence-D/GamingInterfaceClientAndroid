@@ -71,11 +71,9 @@ class _BackgroundDialogState extends State<BackgroundDialog> {
   }
 
   void _pickedColor(Color color) {
-    setState(() {
-      screenViewModel.backgroundColor = color;
-      screenViewModel.backgroundPath = null;
-      Navigator.pop(context);
-    });
+    screenViewModel.backgroundColor = color.withAlpha(255);
+    screenViewModel.backgroundPath = null;
+    Navigator.pop(context);
   }
 
   void _pickBackgroundColor() {

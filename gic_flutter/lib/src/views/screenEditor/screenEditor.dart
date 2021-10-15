@@ -55,7 +55,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   @override
   void initState() {
     super.initState();
-
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     _buildService().then((value) {
       setState(() {});
     });
@@ -79,9 +79,15 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    // Exit full screen
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  }
+
+  @override
   Widget build(BuildContext context) {
     translation = IntlScreenEditor(context);
-    SystemChrome.setEnabledSystemUIOverlays([]);
     if (!_loaded) return Scaffold();
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
     int n = 0;
@@ -89,6 +95,7 @@ class ScreenEditorState extends State<ScreenEditor> {
     if (_service.activeScreenViewModel != null) {
       _service.activeScreenViewModel.controls.forEach((element) {
         widgets.add(GicEditControl(
+          gridSize: gridSize,
           pixelRatio: pixelRatio,
           control: element,
           controlIndex: n,
@@ -223,7 +230,7 @@ class ScreenEditorState extends State<ScreenEditor> {
         context: context,
         builder: (BuildContext context) {
           return dialog;
-        });
+        }).then((_)=>setState((){}));
   }
 
   void showBackgroundDialog() {
@@ -257,6 +264,7 @@ class ScreenEditorState extends State<ScreenEditor> {
               translation: translation,
               screenId: _service.activeScreenViewModel.screenId,
               gicEditControl: GicEditControl(
+                gridSize: gridSize,
                 pixelRatio: pixelRatio,
                 control: _service
                     .activeScreenViewModel.controls[selectedControlIndex],
