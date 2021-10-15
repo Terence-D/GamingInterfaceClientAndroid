@@ -44,6 +44,7 @@ enum LauncherText {
   menuTheme,
   menuIntro,
   menuAbout,
+  menuFeedback,
   menuDonate,
   menuImport,
 
@@ -124,6 +125,7 @@ class IntlLauncher {
       LauncherText.deleteConfirmTitle: 'Confirm Delete',
       LauncherText.deleteComplete: 'Screen removed',
       LauncherText.menuAbout: 'About',
+      LauncherText.menuFeedback: 'Feedback',
       LauncherText.menuDonate: 'Donate',
       LauncherText.menuIntro: 'Show Intro',
       LauncherText.menuTheme: 'Change Theme',

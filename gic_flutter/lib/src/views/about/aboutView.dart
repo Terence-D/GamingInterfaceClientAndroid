@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/viewModel.dart';
 import 'package:gic_flutter/src/backend/models/viewSection.dart';
 import 'package:gic_flutter/src/theme/dimensions.dart' as dim;
-import 'package:url_launcher/url_launcher.dart';
 
 import '../basePage.dart';
 import 'aboutPresentation.dart';
@@ -39,41 +38,28 @@ class AboutViewState extends BaseState<AboutView> {
       title = viewModel.toolbarTitle;
     }
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-          title: Text(title),
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            margin: EdgeInsets.all(dim.activityMargin),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                header(
-                    viewModel.appName, Theme.of(context).textTheme.headline4),
-                Text(viewModel.versionText),
-                link(viewModel.url),
-                section(viewModel.server, centered: true),
-                section(viewModel.legal, centered: true),
-                header(viewModel.libraryTitle),
-                _libraries(viewModel.libraries),
-              ],
-            ),
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        title: Text(title),
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.all(dim.activityMargin),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              header(viewModel.appName, Theme.of(context).textTheme.headline4),
+              Text(viewModel.versionText),
+              link(viewModel.url),
+              section(viewModel.server, centered: true),
+              section(viewModel.legal, centered: true),
+              header(viewModel.libraryTitle),
+              _libraries(viewModel.libraries),
+            ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              _sendEmail(viewModel.emailTo);
-            },
-            child: Icon(Icons.email))); //
-  }
-
-  void _sendEmail(email) async {
-    if (await canLaunch(email)) {
-      await launch(email);
-    } else {
-      throw 'Could not launch $link';
-    }
+      ),
+    );
   }
 
   Widget _libraries(List<ViewSection> sections) {
