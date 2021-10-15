@@ -17,7 +17,8 @@ class FeedbackView extends BasePage {
 
 class FeedbackViewState extends BaseState<FeedbackView> {
   FeedbackVM viewModel = FeedbackVM();
-  String feedback = "";
+  String _feedback = "";
+  List<bool> _isSelected = [false, false, false];
 
   @override
   void initState() {
@@ -50,23 +51,60 @@ class FeedbackViewState extends BaseState<FeedbackView> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Text(viewModel.details),
-                Text(viewModel.updown),
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: _pickSatisfaction(" :)"),
-                        icon: Icon(Icons.sentiment_satisfied)),
-                    IconButton(
-                        onPressed: _pickSatisfaction(" :|"),
-                        icon: Icon(Icons.sentiment_neutral)),
-                    IconButton(
-                        onPressed: _pickSatisfaction(" :("),
-                        icon: Icon(Icons.sentiment_dissatisfied)),
-                  ],
+                ElevatedButton(
+                  child: Text(viewModel.githubIssues),
+                  onPressed: () async {
+                  String url =
+                      viewModel.githubIssuesUrl;
+                  if (await canLaunch(url))
+                    await launch(url);
+                  else
+                    // can't launch url, there is some error
+                    throw "Could not launch $url";
+                },),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0,32,0,0),
+                  child: header(viewModel.satisfaction),
                 ),
-                IconButton(
-                    onPressed: _sendEmail(viewModel.emailTo),
-                    icon: Icon(Icons.email))
+                Text(viewModel.updown),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(32.0, 0, 32.0, 0),
+                  child: ToggleButtons(
+                    children: <Widget>[
+                      Icon(Icons.sentiment_satisfied, size: 64),
+                      Icon(Icons.sentiment_neutral, size: 64),
+                      Icon(Icons.sentiment_dissatisfied, size: 64),
+                    ],
+                    onPressed: (int index) {
+                      setState(() {
+                        for (int buttonIndex = 0; buttonIndex < _isSelected.length; buttonIndex++) {
+                          if (buttonIndex == index) {
+                            _isSelected[buttonIndex] = true;
+                          } else {
+                            _isSelected[buttonIndex] = false;
+                          }
+                        }
+                        _pickSatisfaction();
+                      });
+                    },
+                    isSelected: _isSelected,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: ElevatedButton(
+                      // onPressed: ,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(viewModel.email),
+                          Padding(padding: const EdgeInsets.all(8.0)),
+                          Icon(Icons.email),
+                        ],
+                      ), onPressed: () {
+                    _sendEmail(viewModel.emailTo);
+                  },),
+                )
               ],
             ),
           ),
@@ -75,14 +113,19 @@ class FeedbackViewState extends BaseState<FeedbackView> {
 
   _sendEmail(email) async {
     if (await canLaunch(email)) {
-      await launch("$email$feedback");
+      await launch("$email$_feedback");
     } else {
       throw 'Could not launch $link';
     }
   }
 
-  _pickSatisfaction(String satisfaction) {
-    feedback = satisfaction;
+  _pickSatisfaction() {
+    if (_isSelected[0])
+      _feedback = " :)";
+    else     if (_isSelected[1])
+      _feedback = " :|";
+    else
+      _feedback = " :(";
   }
 
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

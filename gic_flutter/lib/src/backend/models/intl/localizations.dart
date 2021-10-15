@@ -42,7 +42,7 @@ class Intl {
   }
 
   String feedback(FeedbackText resource) {
-    return IntlDonate.localizedStrings[locale.languageCode][resource];
+    return IntlFeedback.localizedStrings[locale.languageCode][resource];
   }
 
   static Map<String, Map<String, String>> _localized = {

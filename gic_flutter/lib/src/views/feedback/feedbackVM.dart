@@ -8,4 +8,7 @@ class FeedbackVM implements ViewModel {
   String updown;
   String email;
   String emailTo;
+  String satisfaction;
+  String githubIssues;
+  String githubIssuesUrl;
 }

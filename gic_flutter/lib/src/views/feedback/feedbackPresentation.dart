@@ -21,6 +21,9 @@ class FeedbackPresentation implements BasePresentation {
     _viewModel.updown = Intl.of(context).feedback(FeedbackText.updown);
     _viewModel.email = Intl.of(context).feedback(FeedbackText.email);
     _viewModel.emailTo = Intl.of(context).feedback(FeedbackText.emailTo);
+    _viewModel.satisfaction = Intl.of(context).feedback(FeedbackText.satisfaction);
+    _viewModel.githubIssues = Intl.of(context).feedback(FeedbackText.githubIssues);
+    _viewModel.githubIssuesUrl = Intl.of(context).feedback(FeedbackText.githubIssuesUrl);
 
     _contract.onLoadComplete(_viewModel);
   }
