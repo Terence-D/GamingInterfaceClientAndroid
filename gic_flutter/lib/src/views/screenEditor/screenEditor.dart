@@ -230,7 +230,7 @@ class ScreenEditorState extends State<ScreenEditor> {
         context: context,
         builder: (BuildContext context) {
           return dialog;
-        });
+        }).then((_)=>setState((){}));
   }
 
   void showBackgroundDialog() {
