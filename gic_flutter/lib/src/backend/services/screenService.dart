@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/screen.dart';
@@ -163,9 +164,17 @@ class ScreenService {
       //extract compressed file
       String id = CompressedFileService.extract(file, importPath);
 
-      //get a screen object based on the JSON extracted
       String importFile = path.join(importPath, id, "data.json");
       File jsonFile = File(importFile);
+
+      //get a screen object based on the JSON extracted
+      String jsonString = jsonFile.readAsStringSync();
+      //build the new screen from the incoming json
+      ScreenViewModel screen = ScreenViewModel.fromJson(json.decode(jsonString));
+      Directory files = Directory(importPath);
+      //now take the extracted image files, and add them to the app with possibly new names
+      _saveImageFiles(screen, path.join(importPath, id), files);
+
       rv = _importScreen(jsonToImport: jsonFile.readAsStringSync());
 
       //finally, clean up the cache
@@ -175,6 +184,156 @@ class ScreenService {
       String json = await rootBundle.loadString(file);
       rv = _importScreen(jsonToImport: json);
     }
+    return rv;
+  }
+
+  /// Here we copy the image files stored in cache and move them inside the files
+  /// directory, then delete the cached file
+  /// For each file we copy it from the cache to the files directory
+  /// If we find any other files with that name, we'll search for a new id
+  /// then update the screen with that new id
+  _saveImageFiles(ScreenViewModel screen, String importLocation, Directory fileSource) {
+
+    Directory cache = Directory(importLocation);
+
+    //keep track of id's we already modified and their new id
+    final Map<int, int> foundButtonIds = Map<int, int>();
+    final Map<int, int> foundSwitchIds = Map<int, int>();
+
+    //we need to check against these filename types:
+    //screenId_background.png
+    //screenId_control_i.png
+    //button_i.png
+    //switch_i.png
+
+    List allFiles = cache.listSync();
+    allFiles.forEach((element) {
+      //ensure it's a file first
+      if (element is File) {
+
+        //check if it's a background image or control, if so it's a simple
+        //change, just change the start of the filename to the new screen id
+        if (path
+            .basenameWithoutExtension(element.path)
+            .contains("_background")) {
+          _renameBackground(element, screen, fileSource);
+        }
+        if (path
+            .basenameWithoutExtension(element.path)
+            .contains("_control_")) {
+          _renameImage(element, screen, fileSource);
+        }
+        // check if it's a button or switch, if so:
+        // 1) check foundIds to see if we updated it already
+        // 2) if found, just update the path and carry on
+        // 3) if not, find the next unique id
+        // 4) change it to that ID
+        // 5) add it to the found id's
+        // , if so it's a simple
+        //change, just change the start of the filename to the new screen id
+        if (element.path.contains("button_")) {
+          _renameControl(element, foundButtonIds, screen, fileSource, "button_");
+        } else if (element.path.contains("switch_")) {
+          _renameControl(element, foundSwitchIds, screen, fileSource, "switch_");
+        }
+      }
+    });
+  }
+
+  void _renameControl(File element, Map<int, int> foundIds, ScreenViewModel screen,
+      Directory fileSource, String searchParam) {
+    String fileName = path.basenameWithoutExtension(element.path);
+    int separatorPosition = fileName.indexOf("_");
+    int oldId = int.tryParse(fileName.substring(separatorPosition + 1));
+    if (oldId != null) {
+      //check if we've seen this before
+      if (foundIds.containsKey(oldId)) {
+        String newFilename =
+            "${fileName.substring(0, separatorPosition + 1)}_${foundIds[oldId]}";
+        //found before, so just update references
+        screen.controls.forEach((control) {
+          control.images.forEach((imageFilename) {
+            if (imageFilename.contains("${searchParam}_$oldId")) {
+              imageFilename = path.join(fileSource.path, "$newFilename.png");
+            }
+          });
+        });
+      } else {
+        //we haven't seen this id before
+        int originalId = oldId; //back it up for later
+        //we'll look through and search until we find a no match
+        String newFilename =
+            "${fileName.substring(0, separatorPosition + 1)}$oldId";
+        String searchFor = path.join(fileSource.path, "$newFilename.png");
+        List<FileSystemEntity> dirList = fileSource.listSync();
+        for (int i = 0; i < dirList.length; i++) {
+          newFilename = "${fileName.substring(0, separatorPosition + 1)}$oldId";
+          searchFor = path.join(fileSource.path, "$newFilename.png");
+          if (dirList[i].path == searchFor) {
+            oldId++;
+            i = -1;
+          }
+        }
+
+        newFilename = "${fileName.substring(0, separatorPosition + 1)}$oldId";
+
+        //found a new id, update file and references
+        newFilename = path.join(fileSource.path, "$newFilename.png");
+
+        screen.controls.forEach((control) {
+          control.images.forEach((imageFilename) {
+            if (imageFilename.contains("${searchParam}_$oldId")) {
+              imageFilename = newFilename;
+            }
+          });
+        });
+        element.copy(newFilename);
+        foundIds[originalId] = oldId;
+      }
+    }
+  }
+
+  void _renameImage(File element, ScreenViewModel screen, Directory files) {
+    String newFilename =
+    path.join(files.path, "${_findElementToRename(element, files)}.png");
+    screen.controls.forEach((control) {
+      control.images.forEach((imageFilename) {
+        if (imageFilename.contains(path.basename(element.path))) {
+          imageFilename = newFilename;
+        }
+      });
+    });
+    element.copy(newFilename);
+  }
+
+  void _renameBackground(File element, ScreenViewModel screen, Directory files) {
+    String newFilename = _findElementToRename(element, files);
+    screen.backgroundPath = path.join(files.path, "$newFilename.png");
+    element.copy(screen.backgroundPath);
+  }
+
+  //common code for renaming background / image
+  String _findElementToRename(element, files) {
+    //find first instance of a _
+    String fileName = path.basenameWithoutExtension(element.path);
+    int separatorPosition = fileName.indexOf("_");
+    //before that, we should have our screen id (int)
+    int oldId = int.tryParse(fileName.substring(0, separatorPosition));
+    if (oldId != null) {
+      String newFilename = "$oldId${fileName.substring(separatorPosition)}";
+      //we'll look through and search until we find a no match
+      String searchParam = path.join(files.path, "$newFilename.png");
+      List<FileSystemEntity> dirList = files.listSync();
+      for (int i = 0; i < dirList.length; i++) {
+        newFilename = "$oldId${fileName.substring(separatorPosition)}";
+        searchParam = path.join(files.path, "$newFilename.png");
+        if (dirList[i].path == searchParam) {
+          oldId++;
+          i = -1;
+        }
+      }
+    }
+    String rv = "$oldId${fileName.substring(separatorPosition)}";
     return rv;
   }
 
