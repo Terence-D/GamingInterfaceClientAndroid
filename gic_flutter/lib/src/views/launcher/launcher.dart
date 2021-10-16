@@ -137,8 +137,9 @@ class LauncherState extends State<Launcher> {
 
   Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
     _viewModel = snapshot.data;
-    CryptoService.decrypt(_viewModel.password)
-        .then((value) => passwordController.text = value);
+    if (_viewModel.password.length != 0)
+      CryptoService.decrypt(_viewModel.password)
+          .then((value) => passwordController.text = value);
     portController.text = _viewModel.port;
     addressController.text = _viewModel.address;
     passwordController.selection = TextSelection.fromPosition(

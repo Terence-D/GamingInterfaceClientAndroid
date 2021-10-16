@@ -13,39 +13,34 @@ class ServerLogin extends StatefulWidget {
   final Orientation _orientation;
   final LauncherState _parent;
 
-  const ServerLogin(this._parent, this._viewModel, this._translations, this._orientation);
+  const ServerLogin(
+      this._parent, this._viewModel, this._translations, this._orientation);
 
   @override
-  State<StatefulWidget> createState() => _ServerLoginState(_parent, _viewModel, _translations, _orientation);
+  State<StatefulWidget> createState() =>
+      _ServerLoginState(_parent, _viewModel, _translations, _orientation);
 }
 
 class _ServerLoginState extends State<ServerLogin> {
-
   final LauncherModel _viewModel;
   final IntlLauncher _translations;
   final Orientation _orientation;
   final LauncherState _parent;
 
   _ServerLoginState(
-      this._parent,
-      this._viewModel,
-      this._translations,
-      this._orientation);
+      this._parent, this._viewModel, this._translations, this._orientation);
 
   @override
   Widget build(BuildContext context) {
     if (_orientation == Orientation.portrait) {
-      return SingleChildScrollView(child:
-            Column(
+      return SingleChildScrollView(
+          child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children:_serverInput(context))
-
-      );
+              children: _serverInput(context)));
     } else {
       return Expanded(
-        child: SingleChildScrollView(
-        child: Column(children: _serverInput(context)))
-      );
+          child: SingleChildScrollView(
+              child: Column(children: _serverInput(context))));
     }
   }
 
@@ -57,24 +52,29 @@ class _ServerLoginState extends State<ServerLogin> {
       _passwordTextWidget(),
       Padding(
         padding: EdgeInsets.all(dim.activityMargin),
-        child: Text(
-            _translations.text(LauncherText.passwordWarning)),
+        child: Text(_translations.text(LauncherText.passwordWarning)),
       ),
     ];
   }
 
   Widget _passwordTextWidget() {
-    return Showcase(
-        key: _parent.passwordKey,
-        title: _translations.text(LauncherText.password),
-        description: _translations.text(LauncherText.helpPassword),
-        child: TextFormField(
-              controller: _parent.passwordController,
-              obscureText: true,
-              decoration: InputDecoration(hintText: _translations.text(LauncherText.password)),
-            )
-
+    return TextFormField(
+      controller: _parent.passwordController,
+      obscureText: true,
+      decoration:
+          InputDecoration(hintText: _translations.text(LauncherText.password)),
     );
+
+    // return Showcase(
+    //     key: _parent.passwordKey,
+    //     title: _translations.text(LauncherText.password),
+    //     description: _translations.text(LauncherText.helpPassword),
+    //     child: TextFormField(
+    //       controller: _parent.passwordController,
+    //       obscureText: true,
+    //       decoration: InputDecoration(
+    //           hintText: _translations.text(LauncherText.password)),
+    //     ));
   }
 
   Widget _portTextWidget() {
@@ -84,9 +84,9 @@ class _ServerLoginState extends State<ServerLogin> {
         description: _translations.text(LauncherText.helpPort),
         child: TextFormField(
           controller: _parent.portController,
-          decoration: InputDecoration(hintText: _translations.text(LauncherText.port)),
-        )
-    );
+          decoration:
+              InputDecoration(hintText: _translations.text(LauncherText.port)),
+        ));
   }
 
   Widget _addressTextWidget() {
@@ -99,9 +99,9 @@ class _ServerLoginState extends State<ServerLogin> {
             BlacklistingTextInputFormatter(RegExp('[\\ ]')),
           ],
           controller: _parent.addressController,
-          decoration: InputDecoration(hintText: _translations.text(LauncherText.address)),
-        )
-    );
+          decoration: InputDecoration(
+              hintText: _translations.text(LauncherText.address)),
+        ));
   }
 
   Row bannerRow(BuildContext context) {
