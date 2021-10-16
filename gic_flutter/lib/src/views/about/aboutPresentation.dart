@@ -61,11 +61,6 @@ class AboutPresentation implements BasePresentation {
       Intl.of(context).about(AboutText.cryptoUrl),
     ));
     libraries.add(ViewSection(
-      Intl.of(context).about(AboutText.colorTitle),
-      Intl.of(context).about(AboutText.colorText),
-      Intl.of(context).about(AboutText.colorUrl),
-    ));
-    libraries.add(ViewSection(
       Intl.of(context).about(AboutText.flutterDevTitle),
       Intl.of(context).about(AboutText.flutterDevText),
       Intl.of(context).about(AboutText.flutterDevUrl),
