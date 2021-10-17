@@ -178,7 +178,7 @@ class ScreenService {
       ScreenViewModel newScreen = ScreenViewModel.fromJson(
           json.decode(newScreenJson.readAsStringSync()));
       newScreen.screenId = newId;
-      await newScreen.save(jsonOnly: true);
+      await newScreen.save();
       //reload now and set our active screen to the new one
       await loadScreens();
       setActiveScreen(newId);

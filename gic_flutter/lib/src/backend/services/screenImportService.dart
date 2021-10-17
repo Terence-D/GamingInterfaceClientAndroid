@@ -28,7 +28,7 @@ class ScreenImportService {
     ScreenViewModel importedScreen =
         _importScreenJson(jsonToImport: json, newScreenId: newId);
 
-    await importedScreen.save(jsonOnly: true);
+    await importedScreen.save();
 
     return importedScreen;
   }
@@ -51,8 +51,8 @@ class ScreenImportService {
     String json = await File(pathOfJson).readAsString();
     ScreenViewModel importedScreen =
         _importScreenJson(jsonToImport: json, newScreenId: newId);
-    File screenFile = await importedScreen.save(
-        jsonOnly: true); //save once to generate the folder structure
+    File screenFile = await importedScreen
+        .save(); //save once to generate the folder structure
 
     //now just... copy everything inside?
     Directory extractedFileLocation = Directory(extractedContents);
@@ -86,7 +86,7 @@ class ScreenImportService {
     });
 
     //re save the json file
-    await importedScreen.save(jsonOnly: true);
+    await importedScreen.save();
 
     //cleanup
     Directory(importPath).deleteSync(recursive: true);

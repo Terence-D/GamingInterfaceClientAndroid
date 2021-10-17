@@ -59,7 +59,7 @@ class _BackgroundDialogState extends State<BackgroundDialog> {
     if (result != null) {
       PlatformFile file = result.files.first;
       Directory dest = await getApplicationDocumentsDirectory();
-      String filename = path.basename(file.path);
+      String filename = "background${path.extension(file.path)}";
       String destPath = path.join(
           dest.path, "screens", screenViewModel.screenId.toString(), filename);
       File newFile = File(file.path).copySync(destPath);
