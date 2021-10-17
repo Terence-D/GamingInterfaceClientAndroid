@@ -78,56 +78,23 @@ class ScreenViewModel {
     return newModel;
   }
 
-  /// Save the control to the applications documents directory
+  /// Save the screen to the applications documents directory
   /// NSData / AppData / etc depending on OS
   /// If importPath isn't null, it will use it as the source location for the resource files.  If it is null
   /// If jsonOnly is set, it will speedup the process by only saving the json changes
   /// It'll use the builtin ScreenService.backgroundImagePath
   /// Returns either the file we wrote, or null on error
-  Future<File> save(
-      {bool jsonOnly = false, String backgroundImageLocation = ""}) async {
+  Future<File> save() async {
     if (screenId < 0) return null;
 
     try {
       final Directory appFolder = await getApplicationDocumentsDirectory();
       final String screenPath = path.join(
           appFolder.path, ScreenService.screenFolder, screenId.toString());
-      final Directory screenFolder = Directory(screenPath);
-      if (!jsonOnly) {
-        //create folder if doesn't exist
-        if (!screenFolder.existsSync()) {
-          screenFolder.createSync(recursive: true);
-        }
-
-        //copy in resources
-        String pathToUse = appFolder.path;
-        if (backgroundImageLocation.isNotEmpty) {
-          pathToUse = backgroundImageLocation;
-        }
-        if (backgroundPath != null && backgroundPath.isNotEmpty) {
-          String originalBackgroundImagePath = path.join(
-              pathToUse, ScreenService.backgroundImageFolder, backgroundPath);
-          File backgroundFile = File(originalBackgroundImagePath);
-          String newBackgroundImageFile = path.join(screenPath, backgroundPath);
-          await backgroundFile.copy(newBackgroundImageFile);
-        }
-        if (controls != null) {
-          controls.forEach((control) {
-            control.images.forEach((image) {
-              File imageFile = File(image);
-              //if the path is an absolute path, copy them in to the local path
-              if (imageFile.isAbsolute) {
-                imageFile.copy(path.join(screenPath, path.basename(imageFile.path)));
-                image = path.join(screenPath, path.basename(imageFile.path));
-              }
-            });
-          });
-        }
-      }
-
       //save the json file
       String screenJsonFile = path.join(screenPath, "data.json");
       final File file = File(screenJsonFile);
+      file.createSync(recursive: true);
       final String output = json.encode(toJson());
       File toWrite = await file.writeAsString(output);
       return toWrite;

@@ -6,7 +6,6 @@ import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel
 import 'package:gic_flutter/src/backend/repositories/screenRepository.dart';
 import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LauncherRepository {
@@ -56,7 +55,7 @@ class LauncherRepository {
     _screenService.screenViewModels.forEach((screen) {
       if (screen.screenId == id) {
         screen.name = newName;
-        screen.save(jsonOnly: true);
+        screen.save();
       }
     });
   }
@@ -162,7 +161,7 @@ class LauncherRepository {
       control.top = control.top * adjustY;
       control.height = (control.height * adjustY);
     });
-    await _screenService.activeScreenViewModel.save(jsonOnly: true);
+    await _screenService.activeScreenViewModel.save();
     return _screenService.activeScreenViewModel.screenId;
   }
 

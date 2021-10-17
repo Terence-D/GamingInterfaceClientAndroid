@@ -13,9 +13,6 @@ enum AboutText {
   cryptoTitle,
   cryptoText,
   cryptoUrl,
-  colorTitle,
-  colorText,
-  colorUrl,
   flutterDevTitle,
   flutterDevText,
   flutterDevUrl,
@@ -63,11 +60,11 @@ class IntlAbout {
           'https://github.com/Terence-D/GamingInterfaceClientAndroid/wiki',
       AboutText.legalTitle: 'Legal',
       AboutText.legalText:
-          'GIC Client (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2020 Terence Doerksen',
+          'GIC (this software) and the GIC Server are open source products and combined are used to act as a remote control style device for your PC.  Copyright 2020 Terence Doerksen',
       AboutText.legalUrl: 'http://www.apache.org/licenses/LICENSE-2.0',
       AboutText.serverTitle: 'Server',
       AboutText.serverText:
-          'To use this you need to run GIC Server (also Open Source) on your Windows computer where the game resides.  Please visit the link below for further information',
+          'To use this you need to run GIC Server (also Open Source) on your computer where the game resides.  Please visit the link below for further information',
       AboutText.serverUrl:
           'https://github.com/Terence-D/GamingInterfaceCommandServer',
       AboutText.libraryTitle: '3rd Party Libraries',
@@ -75,9 +72,6 @@ class IntlAbout {
       AboutText.cryptoText: 'Licensed under the MIT License.',
       AboutText.cryptoUrl:
           'https://github.com/mataprasad/Cross-platform-AES-encryption-128bit/blob/master/LICENSE',
-      AboutText.colorTitle: 'Color Picker',
-      AboutText.colorText: 'Licensed under the Apache 2.0 license.',
-      AboutText.colorUrl: 'https://android-arsenal.com/details/1/1693',
       AboutText.flutterDevTitle: 'Flutter Packages',
       AboutText.flutterDevText:
           'shared_preferences, device_info, package_info, url_launcher, path_provider developed by the Flutter Dev team and licensed under the BSD license',

@@ -264,10 +264,10 @@ class ScreenRepository {
 
   /// Here we copy the image files stored in cache and move them inside the files
   /// directory, then delete the cached file
+  /// For each file we copy it from the cache to the files directory
+  /// If we find any other files with that name, we'll search for a new id
+  /// then update the screen with that new id
   _saveImageFiles(Screen screen, String importLocation, Directory files) {
-    // For each file we copy it from the cache to the files directory
-    // If we find any other files with that name, we'll search for a new id
-    // then update the screen with that new id
 
     Directory cache = Directory(importLocation);
 

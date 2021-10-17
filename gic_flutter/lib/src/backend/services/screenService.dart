@@ -5,11 +5,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
-import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
-import 'package:gic_flutter/src/backend/services/compressedFileService.dart';
+import 'package:gic_flutter/src/backend/services/screenImportService.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -63,18 +61,6 @@ class ScreenService {
     return rv;
   }
 
-  // void addControl(Offset localPosition, BuildContext context) {
-  //     pixelRatio = MediaQuery.of(context).devicePixelRatio;
-  //     final double statusBarHeight = MediaQuery.of(context).padding.top;
-  //     final double x = gridSize * (localPosition.dx / gridSize) + statusBarHeight;
-  //     final double y = gridSize * (localPosition.dy / gridSize);
-  //
-  //     ControlViewModel toAdd = ControlViewModel.fromModel(defaultControls.defaultButton);
-  //     toAdd.left = x;
-  //     toAdd.top = y;
-  //     screen.controls.add(toAdd);
-  // }
-
   /// Load in all screens
   /// Returns true on success, false on any failure
   Future<bool> loadScreens() async {
@@ -117,7 +103,6 @@ class ScreenService {
     newScreenVM.name = _findUniqueName();
     screenViewModels.add(newScreenVM);
     activeScreenViewModel = screenViewModels.last;
-
   }
 
   /// Delete the screen with the associated id
@@ -153,29 +138,17 @@ class ScreenService {
 
   /// Takes a compressed or json file and import it and any resources into GIC
   Future<int> import(String file) async {
-    //get our various folders ready
-
-    int rv = -1; //fail by default
+    ScreenImportService sis = ScreenImportService();
+    await sis.init();
     if (file.endsWith("zip")) {
-      Directory tempFolder = await getTemporaryDirectory();
-      String importPath = path.join(tempFolder.path, "screenImports");
-
-      //extract compressed file
-      String id = CompressedFileService.extract(file, importPath);
-
-      //get a screen object based on the JSON extracted
-      String importFile = path.join(importPath, id, "data.json");
-      File jsonFile = File(importFile);
-      rv = _importScreen(jsonToImport: jsonFile.readAsStringSync());
-
-      //finally, clean up the cache
-      Directory(importPath).deleteSync(recursive: true);
-    } else if (file.endsWith("json")) {
-      //simple import, this should be an absolute path to asset folder
-      String json = await rootBundle.loadString(file);
-      rv = _importScreen(jsonToImport: json);
+      await sis.importZip(file);
+    } else {
+      await sis.importJson(file);
     }
-    return rv;
+
+    await loadScreens();
+
+    return 0;
   }
 
   /// This will duplicate the screen with matching ID
@@ -205,7 +178,7 @@ class ScreenService {
       ScreenViewModel newScreen = ScreenViewModel.fromJson(
           json.decode(newScreenJson.readAsStringSync()));
       newScreen.screenId = newId;
-      await newScreen.save(jsonOnly: true);
+      await newScreen.save();
       //reload now and set our active screen to the new one
       await loadScreens();
       setActiveScreen(newId);
@@ -217,32 +190,6 @@ class ScreenService {
     return true;
   }
 
-  /// This will save a screen object
-  int _importScreen({String jsonToImport, String backgroundPath = ""}) {
-    Map rawJson = json.decode(jsonToImport);
-    ScreenViewModel screenToImport;
-    if (rawJson.containsKey("version")) {
-      //get a screen object based on the JSON extracted
-      screenToImport = ScreenViewModel.fromJson(json.decode(jsonToImport));
-    } else {
-      //legacy
-      // get a screen object based on the JSON extracted
-      Map controlMap = jsonDecode(jsonToImport);
-      //build the new screen from the incoming json
-      Screen legacy = Screen.fromJson(controlMap);
-      screenToImport = ScreenViewModel.fromLegacyModel(legacy);
-    }
-    //now we need to get a new ID and Name, as the existing one is probably taken
-    screenToImport.screenId =
-        _findUniqueId(startingId: screenToImport.screenId);
-    screenToImport.name = _findUniqueName(baseName: screenToImport.name);
-
-    //save the json file and add it to our list
-    screenToImport.save(backgroundImageLocation: backgroundPath);
-    screenViewModels.add(screenToImport);
-    return screenToImport.screenId;
-  }
-
   /// Here we assign a new screen a unique name
   /// baseName: name we want to use
   /// foundCount: how many instances of this name we found
@@ -250,7 +197,8 @@ class ScreenService {
     screenViewModels.forEach((screen) {
       if (screen.name == baseName) {
         foundCount++;
-        return _findUniqueName(baseName: "baseName${foundCount}", foundCount: foundCount);
+        return _findUniqueName(
+            baseName: "baseName${foundCount}", foundCount: foundCount);
       }
       return "$baseName $foundCount";
     });
