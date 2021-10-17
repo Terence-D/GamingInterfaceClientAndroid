@@ -5,12 +5,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
-import 'package:gic_flutter/src/backend/models/screen/screen.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
-import 'package:gic_flutter/src/backend/services/compressedFileService.dart';
+import 'package:gic_flutter/src/backend/services/screenImportService.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,18 +61,6 @@ class ScreenService {
     return rv;
   }
 
-  // void addControl(Offset localPosition, BuildContext context) {
-  //     pixelRatio = MediaQuery.of(context).devicePixelRatio;
-  //     final double statusBarHeight = MediaQuery.of(context).padding.top;
-  //     final double x = gridSize * (localPosition.dx / gridSize) + statusBarHeight;
-  //     final double y = gridSize * (localPosition.dy / gridSize);
-  //
-  //     ControlViewModel toAdd = ControlViewModel.fromModel(defaultControls.defaultButton);
-  //     toAdd.left = x;
-  //     toAdd.top = y;
-  //     screen.controls.add(toAdd);
-  // }
-
   /// Load in all screens
   /// Returns true on success, false on any failure
   Future<bool> loadScreens() async {
@@ -118,7 +103,6 @@ class ScreenService {
     newScreenVM.name = _findUniqueName();
     screenViewModels.add(newScreenVM);
     activeScreenViewModel = screenViewModels.last;
-
   }
 
   /// Delete the screen with the associated id
@@ -154,187 +138,17 @@ class ScreenService {
 
   /// Takes a compressed or json file and import it and any resources into GIC
   Future<int> import(String file) async {
-    //get our various folders ready
-
-    int rv = -1; //fail by default
+    ScreenImportService sis = ScreenImportService();
+    await sis.init();
     if (file.endsWith("zip")) {
-      Directory tempFolder = await getTemporaryDirectory();
-      String importPath = path.join(tempFolder.path, "screenImports");
-
-      //extract compressed file
-      String id = CompressedFileService.extract(file, importPath);
-
-      String importFile = path.join(importPath, id, "data.json");
-      File jsonFile = File(importFile);
-
-      //get a screen object based on the JSON extracted
-      String jsonString = jsonFile.readAsStringSync();
-      //build the new screen from the incoming json
-      ScreenViewModel screen = ScreenViewModel.fromJson(json.decode(jsonString));
-      Directory files = Directory(importPath);
-      //now take the extracted image files, and add them to the app with possibly new names
-      _saveImageFiles(screen, path.join(importPath, id), files);
-
-      rv = _importScreen(jsonToImport: jsonFile.readAsStringSync());
-
-      //finally, clean up the cache
-      Directory(importPath).deleteSync(recursive: true);
-    } else if (file.endsWith("json")) {
-      //simple import, this should be an absolute path to asset folder
-      String json = await rootBundle.loadString(file);
-      rv = _importScreen(jsonToImport: json);
+      await sis.importZip(file);
+    } else {
+      await sis.importJson(file);
     }
-    return rv;
-  }
 
-  /// Here we copy the image files stored in cache and move them inside the files
-  /// directory, then delete the cached file
-  /// For each file we copy it from the cache to the files directory
-  /// If we find any other files with that name, we'll search for a new id
-  /// then update the screen with that new id
-  _saveImageFiles(ScreenViewModel screen, String importLocation, Directory fileSource) {
+    await loadScreens();
 
-    Directory cache = Directory(importLocation);
-
-    //keep track of id's we already modified and their new id
-    final Map<int, int> foundButtonIds = Map<int, int>();
-    final Map<int, int> foundSwitchIds = Map<int, int>();
-
-    //we need to check against these filename types:
-    //screenId_background.png
-    //screenId_control_i.png
-    //button_i.png
-    //switch_i.png
-
-    List allFiles = cache.listSync();
-    allFiles.forEach((element) {
-      //ensure it's a file first
-      if (element is File) {
-
-        //check if it's a background image or control, if so it's a simple
-        //change, just change the start of the filename to the new screen id
-        if (path
-            .basenameWithoutExtension(element.path)
-            .contains("_background")) {
-          _renameBackground(element, screen, fileSource);
-        }
-        if (path
-            .basenameWithoutExtension(element.path)
-            .contains("_control_")) {
-          _renameImage(element, screen, fileSource);
-        }
-        // check if it's a button or switch, if so:
-        // 1) check foundIds to see if we updated it already
-        // 2) if found, just update the path and carry on
-        // 3) if not, find the next unique id
-        // 4) change it to that ID
-        // 5) add it to the found id's
-        // , if so it's a simple
-        //change, just change the start of the filename to the new screen id
-        if (element.path.contains("button_")) {
-          _renameControl(element, foundButtonIds, screen, fileSource, "button_");
-        } else if (element.path.contains("switch_")) {
-          _renameControl(element, foundSwitchIds, screen, fileSource, "switch_");
-        }
-      }
-    });
-  }
-
-  void _renameControl(File element, Map<int, int> foundIds, ScreenViewModel screen,
-      Directory fileSource, String searchParam) {
-    String fileName = path.basenameWithoutExtension(element.path);
-    int separatorPosition = fileName.indexOf("_");
-    int oldId = int.tryParse(fileName.substring(separatorPosition + 1));
-    if (oldId != null) {
-      //check if we've seen this before
-      if (foundIds.containsKey(oldId)) {
-        String newFilename =
-            "${fileName.substring(0, separatorPosition + 1)}_${foundIds[oldId]}";
-        //found before, so just update references
-        screen.controls.forEach((control) {
-          control.images.forEach((imageFilename) {
-            if (imageFilename.contains("${searchParam}_$oldId")) {
-              imageFilename = path.join(fileSource.path, "$newFilename.png");
-            }
-          });
-        });
-      } else {
-        //we haven't seen this id before
-        int originalId = oldId; //back it up for later
-        //we'll look through and search until we find a no match
-        String newFilename =
-            "${fileName.substring(0, separatorPosition + 1)}$oldId";
-        String searchFor = path.join(fileSource.path, "$newFilename.png");
-        List<FileSystemEntity> dirList = fileSource.listSync();
-        for (int i = 0; i < dirList.length; i++) {
-          newFilename = "${fileName.substring(0, separatorPosition + 1)}$oldId";
-          searchFor = path.join(fileSource.path, "$newFilename.png");
-          if (dirList[i].path == searchFor) {
-            oldId++;
-            i = -1;
-          }
-        }
-
-        newFilename = "${fileName.substring(0, separatorPosition + 1)}$oldId";
-
-        //found a new id, update file and references
-        newFilename = path.join(fileSource.path, "$newFilename.png");
-
-        screen.controls.forEach((control) {
-          control.images.forEach((imageFilename) {
-            if (imageFilename.contains("${searchParam}_$oldId")) {
-              imageFilename = newFilename;
-            }
-          });
-        });
-        element.copy(newFilename);
-        foundIds[originalId] = oldId;
-      }
-    }
-  }
-
-  void _renameImage(File element, ScreenViewModel screen, Directory files) {
-    String newFilename =
-    path.join(files.path, "${_findElementToRename(element, files)}.png");
-    screen.controls.forEach((control) {
-      control.images.forEach((imageFilename) {
-        if (imageFilename.contains(path.basename(element.path))) {
-          imageFilename = newFilename;
-        }
-      });
-    });
-    element.copy(newFilename);
-  }
-
-  void _renameBackground(File element, ScreenViewModel screen, Directory files) {
-    String newFilename = _findElementToRename(element, files);
-    screen.backgroundPath = path.join(files.path, "$newFilename.png");
-    element.copy(screen.backgroundPath);
-  }
-
-  //common code for renaming background / image
-  String _findElementToRename(element, files) {
-    //find first instance of a _
-    String fileName = path.basenameWithoutExtension(element.path);
-    int separatorPosition = fileName.indexOf("_");
-    //before that, we should have our screen id (int)
-    int oldId = int.tryParse(fileName.substring(0, separatorPosition));
-    if (oldId != null) {
-      String newFilename = "$oldId${fileName.substring(separatorPosition)}";
-      //we'll look through and search until we find a no match
-      String searchParam = path.join(files.path, "$newFilename.png");
-      List<FileSystemEntity> dirList = files.listSync();
-      for (int i = 0; i < dirList.length; i++) {
-        newFilename = "$oldId${fileName.substring(separatorPosition)}";
-        searchParam = path.join(files.path, "$newFilename.png");
-        if (dirList[i].path == searchParam) {
-          oldId++;
-          i = -1;
-        }
-      }
-    }
-    String rv = "$oldId${fileName.substring(separatorPosition)}";
-    return rv;
+    return 0;
   }
 
   /// This will duplicate the screen with matching ID
@@ -376,32 +190,6 @@ class ScreenService {
     return true;
   }
 
-  /// This will save a screen object
-  int _importScreen({String jsonToImport, String backgroundPath = ""}) {
-    Map rawJson = json.decode(jsonToImport);
-    ScreenViewModel screenToImport;
-    if (rawJson.containsKey("version")) {
-      //get a screen object based on the JSON extracted
-      screenToImport = ScreenViewModel.fromJson(json.decode(jsonToImport));
-    } else {
-      //legacy
-      // get a screen object based on the JSON extracted
-      Map controlMap = jsonDecode(jsonToImport);
-      //build the new screen from the incoming json
-      Screen legacy = Screen.fromJson(controlMap);
-      screenToImport = ScreenViewModel.fromLegacyModel(legacy);
-    }
-    //now we need to get a new ID and Name, as the existing one is probably taken
-    screenToImport.screenId =
-        _findUniqueId(startingId: screenToImport.screenId);
-    screenToImport.name = _findUniqueName(baseName: screenToImport.name);
-
-    //save the json file and add it to our list
-    screenToImport.save(backgroundImageLocation: backgroundPath);
-    screenViewModels.add(screenToImport);
-    return screenToImport.screenId;
-  }
-
   /// Here we assign a new screen a unique name
   /// baseName: name we want to use
   /// foundCount: how many instances of this name we found
@@ -409,7 +197,8 @@ class ScreenService {
     screenViewModels.forEach((screen) {
       if (screen.name == baseName) {
         foundCount++;
-        return _findUniqueName(baseName: "baseName${foundCount}", foundCount: foundCount);
+        return _findUniqueName(
+            baseName: "baseName${foundCount}", foundCount: foundCount);
       }
       return "$baseName $foundCount";
     });

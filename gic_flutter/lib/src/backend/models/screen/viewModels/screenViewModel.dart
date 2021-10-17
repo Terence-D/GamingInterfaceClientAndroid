@@ -78,7 +78,7 @@ class ScreenViewModel {
     return newModel;
   }
 
-  /// Save the control to the applications documents directory
+  /// Save the screen to the applications documents directory
   /// NSData / AppData / etc depending on OS
   /// If importPath isn't null, it will use it as the source location for the resource files.  If it is null
   /// If jsonOnly is set, it will speedup the process by only saving the json changes
@@ -117,7 +117,8 @@ class ScreenViewModel {
               File imageFile = File(image);
               //if the path is an absolute path, copy them in to the local path
               if (imageFile.isAbsolute) {
-                imageFile.copy(path.join(screenPath, path.basename(imageFile.path)));
+                imageFile
+                    .copy(path.join(screenPath, path.basename(imageFile.path)));
                 image = path.join(screenPath, path.basename(imageFile.path));
               }
             });
@@ -128,6 +129,7 @@ class ScreenViewModel {
       //save the json file
       String screenJsonFile = path.join(screenPath, "data.json");
       final File file = File(screenJsonFile);
+      file.createSync(recursive: true);
       final String output = json.encode(toJson());
       File toWrite = await file.writeAsString(output);
       return toWrite;
