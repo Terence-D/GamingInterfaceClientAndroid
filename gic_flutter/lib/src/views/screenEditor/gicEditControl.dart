@@ -9,7 +9,7 @@ typedef void DragControl(
 class GicEditControl extends BaseGicControl {
   final SelectedWidgetCallback onSelected;
   final int controlIndex;
-  final int gridSize;
+  final GridSize gridSize;
 
   GicEditControl(
       {Key key,
@@ -38,7 +38,7 @@ class GicEditControl extends BaseGicControl {
 class GicEditControlState extends BaseGicControlState {
   final SelectedWidgetCallback onSelected;
   final int controlIndex;
-  final int gridSize;
+  final GridSize gridSize;
 
   double _originalWidth;
   double _originalHeight;
@@ -118,12 +118,24 @@ class GicEditControlState extends BaseGicControlState {
     if (size > -1) {
       rawPos = rawPos - (size / 2);
     }
-    int adjustedSize = gridSize;
-    if (gridSize < 1) {
+    int adjustedSize = gridSize.value;
+    if (gridSize.value < 1) {
       adjustedSize = 1;
     }
     int gridPos = (rawPos.round() / adjustedSize).round();
     return gridPos * adjustedSize.toDouble();
   }
 
+}
+
+class GridSize {
+  int _value = 0;
+
+  int get value {
+    return _value;
+  }
+
+  void set value(int newValue) {
+    _value = newValue;
+  }
 }

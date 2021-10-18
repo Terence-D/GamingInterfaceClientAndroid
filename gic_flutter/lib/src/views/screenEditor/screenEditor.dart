@@ -27,7 +27,7 @@ class ScreenEditor extends StatefulWidget {
 class ScreenEditorState extends State<ScreenEditor> {
   IntlScreenEditor translation;
   int controlId = -1;
-  int gridSize;
+  GridSize gridSize = GridSize();
   ScreenService _service;
   final double highlightBorder = 2.0;
   final double minSize = 16.0;
@@ -69,9 +69,9 @@ class ScreenEditorState extends State<ScreenEditor> {
 
     //retrieve our settings for grid
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    gridSize = 64; //default size
+    gridSize.value = 64; //default size
     if (prefs.containsKey(prefKeyGridSize)) {
-      gridSize = prefs.getInt(prefKeyGridSize);
+      gridSize.value = prefs.getInt(prefKeyGridSize);
     }
     if (prefs.containsKey("$screenId$prefHelpKey")) {
       _firstVisit = prefs.getBool("$screenId$prefHelpKey");
@@ -202,7 +202,7 @@ class ScreenEditorState extends State<ScreenEditor> {
 
   void gridChangeListener(double newValue) {
     setState(() {
-      gridSize = newValue.toInt();
+      gridSize.value = newValue.toInt();
     });
     SharedPreferences.getInstance().then((prefs) {
       prefs.setInt(prefKeyGridSize, newValue.toInt());
@@ -217,8 +217,8 @@ class ScreenEditorState extends State<ScreenEditor> {
     if (size > -1) {
       rawPos = rawPos - (size / 2);
     }
-    int adjustedSize = gridSize;
-    if (gridSize < 1) {
+    int adjustedSize = gridSize.value;
+    if (gridSize.value < 1) {
       adjustedSize = 1;
     }
     int gridPos = (rawPos.round() / adjustedSize).round();

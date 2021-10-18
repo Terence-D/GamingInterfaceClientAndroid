@@ -68,7 +68,7 @@ class SettingsDialog {
           icon: Icons.grid_on,
           color: Colors.grey,
           text: translation.text(ScreenEditorText.setGrid),
-          originalValue: screenEditorState.gridSize,
+          originalValue: screenEditorState.gridSize.value,
           onChanged: (double newValue) {
             screenEditorState.gridChangeListener(newValue);
           },
