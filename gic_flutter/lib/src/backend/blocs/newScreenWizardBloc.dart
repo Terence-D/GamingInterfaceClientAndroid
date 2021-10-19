@@ -23,7 +23,7 @@ class NewScreenWizardBloc {
 
     //set up the defaults based on the model
     _screenService.activeScreenViewModel.name = model.screenName;
-    _screenService.activeScreenViewModel.backgroundColor = Colors.black;
+    _screenService.activeScreenViewModel.backgroundColor = Colors.black54;
     await _buildControls(model);
 
     //save it
