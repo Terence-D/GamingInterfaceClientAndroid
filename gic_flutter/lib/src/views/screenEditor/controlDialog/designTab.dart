@@ -217,11 +217,13 @@ class DesignTabState extends BaseTabState {
       if (widget.gicEditControl.control.type == ControlViewModelType.Image) {
         newFile = await _getDestinationName(
             result, "${widget.screenId.toString()}_control_");
-        if (widget.gicEditControl.control.images.isEmpty) {
-          widget.gicEditControl.control.images.add(newFile.path);
-        } else {
-          widget.gicEditControl.control.images[0] = newFile.path;
-        }
+        setState(()  {
+          if (widget.gicEditControl.control.images.isEmpty) {
+            widget.gicEditControl.control.images.add(newFile.path);
+          } else {
+            widget.gicEditControl.control.images[0] = newFile.path;
+          }
+        });
       } else {
         newFile = await _getDestinationName(result, "button_");
       }

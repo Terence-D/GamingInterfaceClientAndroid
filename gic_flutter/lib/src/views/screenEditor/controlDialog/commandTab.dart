@@ -137,13 +137,13 @@ class CommandTabState extends BaseTabState {
   //this drop down provides a list of all supported commands
   //the index determines if we are doing this for the primary or secondary controls
   DropdownButton<String> buildCommandDropDown(int commandIndex) {
-    if (commandIndex >= widget.gicEditControl.control.commands.length) {
-      commandIndex = 0;
-    }
-    var val;
     if (widget.gicEditControl.control.commands.isEmpty) {
       widget.gicEditControl.control.commands.add(Command());
     }
+    while (commandIndex >=widget.gicEditControl.control.commands.length) {
+      widget.gicEditControl.control.commands.add(Command());
+    }
+    var val;
     val = _commandList
         .map[widget.gicEditControl.control.commands[commandIndex].key];
     return DropdownButton<String>(
