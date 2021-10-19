@@ -111,6 +111,7 @@ class ScreenEditorState extends State<ScreenEditor> {
             child: Container(
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueAccent),
                 shape: BoxShape.rectangle,
                 color: Colors.black45,
               ),
