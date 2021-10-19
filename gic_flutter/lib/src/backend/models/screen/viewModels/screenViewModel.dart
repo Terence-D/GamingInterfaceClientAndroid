@@ -16,7 +16,7 @@ class ScreenViewModel {
   String name = "";
   List<ControlViewModel> controls = [];
   int newControlId = -1;
-  Color backgroundColor = Color(1);
+  Color backgroundColor = Colors.black54;
   String backgroundPath = "";
 
   ScreenViewModel.empty() {

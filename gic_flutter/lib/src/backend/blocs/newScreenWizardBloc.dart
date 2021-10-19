@@ -23,7 +23,7 @@ class NewScreenWizardBloc {
 
     //set up the defaults based on the model
     _screenService.activeScreenViewModel.name = model.screenName;
-    _screenService.activeScreenViewModel.backgroundColor = Colors.black;
+    _screenService.activeScreenViewModel.backgroundColor = Colors.black54;
     await _buildControls(model);
 
     //save it
@@ -45,6 +45,10 @@ class NewScreenWizardBloc {
         (_margins * model.verticalControlCount) -
         (_margins * 2);
     double controlHeight = (workableHeight / model.verticalControlCount);
+
+    //lets limit the ugly, and hard code a height limit to be 20% max of the screen
+    if (controlHeight > (workableHeight * .2))
+      controlHeight = workableHeight * .2;
 
     //build the control in a grid fashion, horizontally x vertically
     int i = 0; //tracks which control we're on
@@ -81,29 +85,16 @@ class NewScreenWizardBloc {
     ControlViewModel defaultControl =
         _screenService.defaultControls.defaultButton;
 
+    control.text = element.text;
     if (element.isSwitch) {
       //special conditions apply
       control.type = ControlViewModelType.Toggle;
       defaultControl = _screenService.defaultControls.defaultToggle;
-      control.images.add("default_switch_primary");
-      control.images.add("default_switch_secondary");
+      control.images.add("toggle_off");
+      control.images.add("toggle_on");
       //shrink the switch to make room for text
-      control.height = (controlHeight / 2);
-      control.top = control.top + control.height;
-      control.text = "";
-      //add a text control below it
-      ControlViewModel textControl = ControlViewModel();
-      textControl = _screenService.defaultControls.defaultText;
-      textControl.type = ControlViewModelType.Text;
-      textControl.text = element.text;
-      textControl.left = control.left;
-      textControl.height = control.height;
-      textControl.width = control.width;
-      textControl.top = control.top - control.height + _margins;
-      _screenService.activeScreenViewModel.controls.add(textControl);
     } else {
       control.type = ControlViewModelType.Button;
-      control.text = element.text;
       control.images.add("button_black");
       control.images.add("button_black2");
     }
