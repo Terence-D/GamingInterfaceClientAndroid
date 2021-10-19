@@ -43,7 +43,6 @@ class ScreenEditorState extends State<ScreenEditor> {
   double selectedTop = 0;
   double selectedWidth = 0;
   double selectedHeight = 0;
-  bool selectedVisible = false;
 
   bool _firstVisit = true;
   bool _loaded = false;
@@ -90,21 +89,23 @@ class ScreenEditorState extends State<ScreenEditor> {
     translation = IntlScreenEditor(context);
     if (!_loaded) return Scaffold();
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    int n = 0;
+
     List<Widget> widgets = [];
     if (_service.activeScreenViewModel != null) {
-      _service.activeScreenViewModel.controls.forEach((element) {
+
+      for(int i=0; i < _service.activeScreenViewModel.controls.length; i++) {
         widgets.add(GicEditControl(
           gridSize: gridSize,
           pixelRatio: pixelRatio,
-          control: element,
-          controlIndex: n,
-          onSelected: (int id) {
-            _onSelected(id);
+          control: _service.activeScreenViewModel.controls[i],
+          controlIndex: i,
+          onSelected: (int i) {
+            _onSelected(i);
           },
-        ));
-        n++;
-      });
+        )
+        );
+      }
+
       if (_firstVisit) {
         widgets.add(Center(
             child: Container(
@@ -136,7 +137,8 @@ class ScreenEditorState extends State<ScreenEditor> {
     } else {
       screen = Container(
           color: _service.activeScreenViewModel.backgroundColor,
-          child: Stack(children: widgets));
+          child: Stack(children: widgets,
+          key: Key(_service.activeScreenViewModel.controls.length.toString())));
     }
 
     void rebuild(Element el) {
@@ -249,13 +251,11 @@ class ScreenEditorState extends State<ScreenEditor> {
         .then((value) => value.setBool("$screenId$prefHelpKey", false));
     _firstVisit = false;
     setState(() {
-      selectedVisible = false;
       showPopupDialog(SettingsDialog.display(context, this));
     });
   }
 
   Future<void> _onSelected(int selectedControlIndex) async {
-    controlId = selectedControlIndex;
     bool deleteWidget = false;
     deleteWidget = await showDialog(
         context: context,
@@ -274,10 +274,7 @@ class ScreenEditorState extends State<ScreenEditor> {
         });
     setState(() {
       if (deleteWidget != null && deleteWidget) {
-        selectedVisible = false;
-        deletedWidget =
-            _service.activeScreenViewModel.controls[selectedControlIndex];
-        _service.activeScreenViewModel.controls.removeAt(selectedControlIndex);
+        deletedWidget = _service.activeScreenViewModel.controls.removeAt(selectedControlIndex);
         _showDeleteToast();
       }
     });
