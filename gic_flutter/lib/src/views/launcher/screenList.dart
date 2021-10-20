@@ -467,9 +467,10 @@ class ScreenList extends StatelessWidget {
 
   _startGame(
       BuildContext context, int screenId, NetworkModel networkModel) async {
+
     _parent.launcherBloc.saveConnectionSettings(networkModel);
 
-    ScreenViewModel screen = _parent.launcherBloc.loadScreen(screenId);
+    ScreenViewModel screen = await _parent.launcherBloc.loadScreen(screenId);
 
     await Navigator.push(
         context,
