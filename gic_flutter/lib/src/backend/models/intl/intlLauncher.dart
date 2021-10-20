@@ -6,6 +6,7 @@ enum LauncherText {
 
   errorPort,
   errorPassword,
+  errorUnauthorized,
   errorServerInvalid,
   errorServerError,
   errorFirewall,
@@ -84,7 +85,9 @@ class IntlLauncher {
     'en': {
       LauncherText.toolbarTitle: 'GiC',
       LauncherText.errorPassword:
-          'Invalid password, it must be at least 6 digits long',
+      'Invalid password, it must be at least 6 digits long',
+      LauncherText.errorUnauthorized:
+      'Unauthorized Response from Server, validate your password matches the servers',
       LauncherText.errorPort: 'Invalid Port Number',
       LauncherText.errorServerInvalid: 'Invalid Server Address',
       LauncherText.errorServerError: 'Server Error: ',

@@ -13,7 +13,7 @@ class GicControl extends BaseGicControl {
       @required control,
       @required this.networkModel,
       @required pixelRatio,
-      @required this.constraints})
+      this.constraints})
       : super(
             key: key,
             control: control,
@@ -47,7 +47,12 @@ class GicButtonState extends BaseGicControlState {
           networkModel, commandUrl, control.commands[commandIndex]);
       if (response == NetworkResponse.Error) {
         await Fluttertoast.showToast(
-          msg: "error",
+          msg: "Error Connecting to Server",
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      } else if (response == NetworkResponse.Unauthorized) {
+        await Fluttertoast.showToast(
+          msg: "Unauthorized, check that the passwords match",
           toastLength: Toast.LENGTH_SHORT,
         );
       }
