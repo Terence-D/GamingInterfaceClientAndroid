@@ -126,11 +126,13 @@ class ScreenEditorState extends State<ScreenEditor> {
     Container screen;
     if (_service.activeScreenViewModel.backgroundPath != null &&
         _service.activeScreenViewModel.backgroundPath.isNotEmpty) {
+      FileImage fi = FileImage(
+          File(_service.activeScreenViewModel.backgroundPath)
+      );
       screen = Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: FileImage(
-                  File(_service.activeScreenViewModel.backgroundPath)),
+              image:fi,
               fit: BoxFit.fill,
             ),
           ),

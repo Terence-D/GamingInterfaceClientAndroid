@@ -166,7 +166,8 @@ class LauncherRepository {
   }
 
   /// sets us to use the currently active screen
-  ScreenViewModel setActiveScreen(int screenId) {
+  Future<ScreenViewModel> setActiveScreen(int screenId) async {
+    await _screenService.loadScreens();
     _screenService.setActiveScreen(screenId);
     return _screenService.activeScreenViewModel;
   }

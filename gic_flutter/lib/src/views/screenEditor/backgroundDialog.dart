@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -59,12 +60,13 @@ class _BackgroundDialogState extends State<BackgroundDialog> {
     if (result != null) {
       PlatformFile file = result.files.first;
       Directory dest = await getApplicationDocumentsDirectory();
-      String filename = "background${path.extension(file.path)}";
       String destPath = path.join(
-          dest.path, "screens", screenViewModel.screenId.toString(), filename);
+          dest.path, "screens", screenViewModel.screenId.toString(), path.basename(file.path));
+      File(screenViewModel.backgroundPath).deleteSync();
       File newFile = File(file.path).copySync(destPath);
       setState(() {
         screenViewModel.backgroundPath = newFile.path;
+
         Navigator.pop(context, true);
       });
     }

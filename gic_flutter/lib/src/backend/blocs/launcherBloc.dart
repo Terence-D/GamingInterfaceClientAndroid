@@ -113,7 +113,7 @@ class LauncherBloc {
     await fetchAllPreferences();
   }
 
-  ScreenViewModel loadScreen(int screenId) {
-    return _repository.setActiveScreen(screenId);
+  Future<ScreenViewModel> loadScreen(int screenId) async {
+    return await _repository.setActiveScreen(screenId);
   }
 }

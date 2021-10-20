@@ -135,11 +135,10 @@ class LauncherState extends State<Launcher> {
     ];
   }
 
-  Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
+  _buildControllers(AsyncSnapshot<LauncherModel> snapshot) {
     _viewModel = snapshot.data;
     if (_viewModel.password.length != 0)
-      CryptoService.decrypt(_viewModel.password)
-          .then((value) => passwordController.text = value);
+      passwordController.text = CryptoService.decrypt(_viewModel.password);
     portController.text = _viewModel.port;
     addressController.text = _viewModel.address;
     passwordController.selection = TextSelection.fromPosition(
@@ -148,7 +147,10 @@ class LauncherState extends State<Launcher> {
         TextPosition(offset: portController.text.length));
     addressController.selection = TextSelection.fromPosition(
         TextPosition(offset: addressController.text.length));
+  }
 
+  Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
+    _buildControllers(snapshot);
     Orientation orientation = MediaQuery.of(context).orientation;
     var widgets;
     if (orientation == Orientation.portrait) {
@@ -271,8 +273,8 @@ class LauncherState extends State<Launcher> {
     ]);
   }
 
-  void _passwordListener() {
-    _viewModel.password = passwordController.text;
+  void _passwordListener() async {
+    _viewModel.password = await CryptoService.encrypt(passwordController.text);
   }
 
   void _addressListener() {

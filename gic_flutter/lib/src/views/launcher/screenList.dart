@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,6 +8,7 @@ import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
@@ -430,7 +430,7 @@ class ScreenList extends StatelessWidget {
 
   Future _validateSettings(
       NetworkModel networkModel, BuildContext context, int screenId) async {
-    if (networkModel.password == null || networkModel.password.length < 6) {
+    if (networkModel.password == null || CryptoService.decrypt(networkModel.password).length < 6) {
       _showMessage(_translations.text(LauncherText.errorPassword));
       return;
     }
@@ -459,14 +459,18 @@ class ScreenList extends StatelessWidget {
       case NetworkResponse.Error:
         _showMessage("${_translations.text(LauncherText.errorServerError)}");
         break;
+      case NetworkResponse.Unauthorized:
+        _showMessage("${_translations.text(LauncherText.errorUnauthorized)}");
+        break;
     }
   }
 
   _startGame(
       BuildContext context, int screenId, NetworkModel networkModel) async {
+
     _parent.launcherBloc.saveConnectionSettings(networkModel);
 
-    ScreenViewModel screen = _parent.launcherBloc.loadScreen(screenId);
+    ScreenViewModel screen = await _parent.launcherBloc.loadScreen(screenId);
 
     await Navigator.push(
         context,

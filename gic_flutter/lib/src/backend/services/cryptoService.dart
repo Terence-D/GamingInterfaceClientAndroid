@@ -12,7 +12,7 @@ class CryptoService {
   static final int size = 32;
   static const Mode = 'CBC';
 
-  static Future<String> encrypt(String toEncrypt) async {
+  static String encrypt(String toEncrypt) {
     Uint8List derivedKey = _buildKey();
     KeyParameter keyParam = KeyParameter(derivedKey);
     BlockCipher aes = AESFastEngine();
@@ -29,7 +29,7 @@ class CryptoService {
     return base64.encode(cipherBytes);
   }
 
-  static Future<String> decrypt(String toDecrypt) async {
+  static String decrypt(String toDecrypt) {
     Uint8List derivedKey = _buildKey();
     KeyParameter keyParam = KeyParameter(derivedKey);
     BlockCipher aes = AESFastEngine();

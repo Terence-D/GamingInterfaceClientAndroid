@@ -24,6 +24,9 @@ class ScreenView extends StatelessWidget {
     }
 
     if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
+      imageCache.clear();
+      imageCache.clearLiveImages();
+
       return Scaffold(
         body: Container(
           decoration: BoxDecoration(
@@ -36,9 +39,11 @@ class ScreenView extends StatelessWidget {
         ),
       );
     } else {
-      return Material(
-        color: screen.backgroundColor,
-        child: Stack(children: widgets),
+      return Scaffold(
+        body: Container(
+          color: screen.backgroundColor,
+          child: Stack(children: widgets),
+        ),
       );
     }
   }

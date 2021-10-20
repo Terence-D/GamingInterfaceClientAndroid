@@ -14,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ScreenService {
   //sub folders where we store resources
-  static String backgroundImageFolder = "backgrounds";
   static String controlImageFolder = "controls";
   static String screenFolder = "screens";
 
