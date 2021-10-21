@@ -43,17 +43,21 @@ class NetworkService {
 
   static Future<NetworkResponse> checkVersion(NetworkModel networkModel) async {
     Uri url  = Uri.http("${networkModel.address}:${networkModel.port}", "api/version");
-    Response response = await http.post(url);
+    try {
+      Response response = await http.post(url);
 
-    if (response != null && response.statusCode == 200) {
-      // If the server did return a 200 OK response then parse the JSON.
-      VersionResponse versionResponse =VersionResponse.fromJson(jsonDecode(response.body));
-      if (versionResponse.version == serverApiVersion) {
-        return NetworkResponse.Ok;
-      } else {
-        return NetworkResponse.OutOfDate;
-      }
-    } else
+      if (response != null && response.statusCode == 200) {
+        // If the server did return a 200 OK response then parse the JSON.
+        VersionResponse versionResponse =VersionResponse.fromJson(jsonDecode(response.body));
+        if (versionResponse.version == serverApiVersion) {
+          return NetworkResponse.Ok;
+        } else {
+          return NetworkResponse.OutOfDate;
+        }
+      } else
+        return NetworkResponse.Error;
+    } catch (exception) {
       return NetworkResponse.Error;
+    }
   }
 }

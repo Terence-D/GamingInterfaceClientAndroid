@@ -154,30 +154,41 @@ class ScreenService {
   Future<bool> duplicateScreen(int originalScreenId) async {
     //build the path to the original screen
     try {
-      Directory appSupportPath = await getApplicationSupportDirectory();
+      final Directory appFolder = await getApplicationDocumentsDirectory();
       String originalPath = path.join(
-          appSupportPath.path, screenFolder, originalScreenId.toString());
+          appFolder.path, screenFolder, originalScreenId.toString());
       Directory originalDirectory = Directory(originalPath);
 
       //get a new folder path
       int newId = _findUniqueId();
       String newPath =
-          path.join(appSupportPath.path, screenFolder, newId.toString());
+          path.join(appFolder.path, screenFolder, newId.toString());
+      await Directory(newPath).createSync(recursive: true);
       Directory newDirectory = Directory(newPath);
-      newDirectory.createSync();
 
       //copy the files over
       await originalDirectory.list().forEach((element) {
         File originalFile = File(element.path);
-        originalFile.copySync(newPath);
+        originalFile.copySync(path.join(newPath, path.basename(element.path)));
       });
 
       //now we need to update the json with its new id
       File newScreenJson = File(path.join(newPath, "data.json"));
       ScreenViewModel newScreen = ScreenViewModel.fromJson(
           json.decode(newScreenJson.readAsStringSync()));
+
+      if (newScreen.backgroundPath.contains(originalPath))
+        newScreen.backgroundPath.replaceAll(originalPath, newPath);
+      for (int i=0; i < newScreen.controls.length; i++) {
+        for (int n=0; n < newScreen.controls[i].images.length; n++) {
+          if (newScreen.controls[i].images[n].contains(originalPath))
+            newScreen.controls[i].images[n].replaceAll(originalPath, newPath);
+        }
+      }
       newScreen.screenId = newId;
+
       await newScreen.save();
+
       //reload now and set our active screen to the new one
       await loadScreens();
       setActiveScreen(newId);
