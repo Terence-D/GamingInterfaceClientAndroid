@@ -109,6 +109,20 @@ class ScreenViewModel {
     final String screenPath = path.join(
         appFolder.path, ScreenService.screenFolder, screenId.toString());
     String fileName = "${screenId.toString()}_$name";
+
+    //we need to copy in all images stored in the files folder that this screen uses, and update their links to local
+    Directory imageFilesDir = await getApplicationSupportDirectory();
+
+    for (int i=0; i < controls.length; i++) {
+      for (int n = 0; n < controls[i].images.length; n++) {
+        if (controls[i].images[n].contains(imageFilesDir.path)) {
+          File oldPath = File (controls[i].images[n]);
+          String newPath = path.join(screenPath, path.basename(oldPath.path));
+          oldPath.copySync(newPath);
+          controls[i].images[n] = newPath;
+        }
+      }
+    }
     int result = await CompressedFileService.compressFolder(
         screenPath, exportPath, fileName);
 
