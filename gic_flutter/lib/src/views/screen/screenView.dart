@@ -1,15 +1,44 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 
 import 'gicControl.dart';
 
-class ScreenView extends StatelessWidget {
+
+/// Wrapper for stateful functionality to provide onInit calls in our stateless
+/// screenview widget
+class ScreenViewStatefulWrapper extends StatefulWidget {
   final ScreenViewModel screen;
+  final NetworkModel networkModel;
+  const ScreenViewStatefulWrapper({@required this.screen, @required this.networkModel});
+  @override
+  _StatefulWrapperState createState() => _StatefulWrapperState(this.screen, this.networkModel);
+}
+class _StatefulWrapperState extends State<ScreenViewStatefulWrapper> {
+  final ScreenViewModel screen;
+  final NetworkModel networkModel;
+
+  _StatefulWrapperState(this.screen, this.networkModel);
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return ScreenView(screen: screen, networkModel: networkModel);
+  }
+}
+
+
+class ScreenView extends StatelessWidget {
   final List<Widget> widgets = [];
+  final ScreenViewModel screen;
   final NetworkModel networkModel;
 
   ScreenView({Key key, @required this.screen, @required this.networkModel});

@@ -91,23 +91,31 @@ class LauncherState extends State<Launcher> {
 
   @override
   Widget build(BuildContext context) {
-    return ShowCaseWidget(builder: Builder(builder: (context) {
-      showcaseContext = context;
-      return Scaffold(
-          appBar: _launcherAppBar(),
-          body: StreamBuilder(
-            stream: launcherBloc.preferences,
-            builder: (context, AsyncSnapshot<dynamic> snapshot) {
-              if (snapshot.hasData) {
-                return _buildViews(snapshot);
-              } else if (snapshot.hasError) {
-                return Text(snapshot.error.toString());
-              }
-              return Center(child: CircularProgressIndicator());
-            },
-          ),
-          floatingActionButton: _fab(context));
-    }));
+    return GestureDetector(
+      onTap: (){
+        FocusScopeNode currentFocus = FocusScope.of(context);
+        if (!currentFocus.hasPrimaryFocus) {
+          currentFocus.unfocus();
+        }
+      },
+      child: ShowCaseWidget(builder: Builder(builder: (context) {
+        showcaseContext = context;
+        return Scaffold(
+            appBar: _launcherAppBar(),
+            body: StreamBuilder(
+              stream: launcherBloc.preferences,
+              builder: (context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.hasData) {
+                  return _buildViews(snapshot);
+                } else if (snapshot.hasError) {
+                  return Text(snapshot.error.toString());
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+            floatingActionButton: _fab(context));
+      })),
+    );
   }
 
   Widget _fab(BuildContext context) {

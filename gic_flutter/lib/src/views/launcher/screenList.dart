@@ -94,8 +94,8 @@ class ScreenList extends StatelessWidget {
     );
   }
 
-  Widget _innerDeleteButton(BuildContext context, int index) {
-    return IconButton(
+  Widget _deleteButton(BuildContext context, int index) {
+    IconButton deleteButton = IconButton(
       color: Theme.of(context).errorColor,
       icon: Icon(Icons.delete_forever),
       tooltip: _translations.text(LauncherText.buttonDelete),
@@ -104,83 +104,74 @@ class ScreenList extends StatelessWidget {
         _confirmDeleteDialog(index, _screens[index].name, context);
       },
     );
-  }
 
-  Widget _deleteButton(BuildContext context, int index) {
     if (index == 0) {
       return Showcase(
           key: _parent.deleteKey,
           title: _translations.text(LauncherText.buttonDelete),
           description: _translations.text(LauncherText.helpDelete),
-          child: _innerDeleteButton(context, index));
+          child: deleteButton);
     } else {
-      return _innerDeleteButton(context, index);
+      return deleteButton;
     }
   }
 
-  Widget _innerShareButton(int index, BuildContext context) {
-    return IconButton(
+  Widget _shareButton(int index, BuildContext context) {
+    IconButton shareButton = IconButton(
       icon: Icon(Icons.share),
       tooltip: _translations.text(LauncherText.buttonExport),
       onPressed: () {
         _export(context, _screens[index].id);
       },
     );
-  }
-
-  Widget _shareButton(int index, BuildContext context) {
     if (index == 0) {
       return Showcase(
           key: _parent.shareKey,
           title: _translations.text(LauncherText.buttonExport),
           description: _translations.text(LauncherText.helpExport),
-          child: _innerShareButton(index, context));
+          child: shareButton);
     } else {
-      return _innerShareButton(index, context);
+      return shareButton;
     }
   }
 
   Widget _editButton(int index, BuildContext context) {
-    if (index == 0) {
-      return Showcase(
-          key: _parent.editKey,
-          title: _translations.text(LauncherText.buttonEdit),
-          description: _translations.text(LauncherText.helpEdit),
-          child: _innerEditButton(index, context));
-    } else {
-      return _innerEditButton(index, context);
-    }
-  }
-
-  IconButton _innerEditButton(int index, BuildContext context) {
-    return IconButton(
+    IconButton editButton = IconButton(
       icon: Icon(Icons.edit),
       tooltip: _translations.text(LauncherText.buttonEdit),
       onPressed: () {
         _editScreen(index, context);
       },
     );
-  }
 
-  Widget _startButton(int index, BuildContext context) {
     if (index == 0) {
       return Showcase(
-          key: _parent.startKey,
-          title: _translations.text(LauncherText.start),
-          description: _translations.text(LauncherText.helpStart),
-          child: _innerStartButton(index, context));
+          key: _parent.editKey,
+          title: _translations.text(LauncherText.buttonEdit),
+          description: _translations.text(LauncherText.helpEdit),
+          child: editButton);
     } else {
-      return _innerStartButton(index, context);
+      return editButton;
     }
   }
 
-  AccentButton _innerStartButton(int index, BuildContext context) {
-    return AccentButton(
+  Widget _startButton(int index, BuildContext context) {
+    AccentButton startButton = AccentButton(
       child: Text(_translations.text(LauncherText.start)),
       onPressed: () {
         _validateScreen(index, context);
       },
     );
+
+    if (index == 0) {
+      return Showcase(
+          key: _parent.startKey,
+          title: _translations.text(LauncherText.start),
+          description: _translations.text(LauncherText.helpStart),
+          child: startButton);
+    } else {
+      return startButton;
+    }
   }
 
   Future<void> _confirmDeleteDialog(
@@ -475,8 +466,7 @@ class ScreenList extends StatelessWidget {
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                ScreenView(screen: screen, networkModel: networkModel)));
+            builder: (context) => ScreenViewStatefulWrapper(screen: screen, networkModel: networkModel)));
   }
 
   void _updateScreen(int index) {

@@ -20,7 +20,7 @@ class NetworkService {
     headers['Content-Type'] = 'application/json; charset=UTF-8';
     headers["Authorization"] = 'Basic $basicAuth';
 
-    String body = json.encode(keystroke); //.toJson();
+    String body = json.encode(keystroke);
     NetworkResponse response = await http
         .post(
             Uri.http("${networkModel.address}:${networkModel.port}",
@@ -44,10 +44,16 @@ class NetworkService {
   static Future<NetworkResponse> checkVersion(NetworkModel networkModel) async {
     Uri url  = Uri.http("${networkModel.address}:${networkModel.port}", "api/version");
     try {
-      Response response = await http.post(url);
+      Map<String, String> headers = Map();
+      String basicAuth =
+      base64Encode(Latin1Codec().encode('gic:${networkModel.password}'));
+      headers["Authorization"] = 'Basic $basicAuth';
+      Response response = await http.post(url, headers: headers);
 
-      if (response != null && response.statusCode == 200) {
+      if (response != null && response.statusCode < 500) {
         // If the server did return a 200 OK response then parse the JSON.
+        if (response.statusCode == 401)
+          return NetworkResponse.Unauthorized;
         VersionResponse versionResponse =VersionResponse.fromJson(jsonDecode(response.body));
         if (versionResponse.version == serverApiVersion) {
           return NetworkResponse.Ok;
