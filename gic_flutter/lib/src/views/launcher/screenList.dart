@@ -475,8 +475,7 @@ class ScreenList extends StatelessWidget {
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                ScreenView(screen: screen, networkModel: networkModel)));
+            builder: (context) => ScreenViewStatefulWrapper(screen: screen, networkModel: networkModel)));
   }
 
   void _updateScreen(int index) {

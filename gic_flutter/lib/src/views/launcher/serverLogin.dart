@@ -58,23 +58,16 @@ class _ServerLoginState extends State<ServerLogin> {
   }
 
   Widget _passwordTextWidget() {
-    return TextFormField(
+    return Showcase(
+        key: _parent.passwordKey,
+        title: _translations.text(LauncherText.password),
+        description: _translations.text(LauncherText.helpPassword),
+        child:TextFormField(
       controller: _parent.passwordController,
       obscureText: true,
       decoration:
           InputDecoration(hintText: _translations.text(LauncherText.password)),
-    );
-
-    // return Showcase(
-    //     key: _parent.passwordKey,
-    //     title: _translations.text(LauncherText.password),
-    //     description: _translations.text(LauncherText.helpPassword),
-    //     child: TextFormField(
-    //       controller: _parent.passwordController,
-    //       obscureText: true,
-    //       decoration: InputDecoration(
-    //           hintText: _translations.text(LauncherText.password)),
-    //     ));
+    ));
   }
 
   Widget _portTextWidget() {
