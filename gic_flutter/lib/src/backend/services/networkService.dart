@@ -10,7 +10,7 @@ import 'package:http/http.dart';
 enum NetworkResponse { Ok, OutOfDate, Error, Unauthorized }
 
 class NetworkService {
-  static final String serverApiVersion = "2.1.0.0";
+  static final String serverApiVersion = "2.1.0.1";
 
   static Future<NetworkResponse> sendCommand(
       NetworkModel networkModel, String command, Command keystroke) async {
