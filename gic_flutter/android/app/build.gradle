@@ -34,7 +34,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     flavorDimensions "version"
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -44,14 +44,10 @@ android {
         disable 'InvalidPackage'
     }
 
-    dataBinding {
-        enabled = true
-    }
-
     defaultConfig {
         applicationId "ca.coffeeshopstudio.gaminginterfaceclient"
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -94,9 +90,4 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.core:core-ktx:1.1.0'
-    implementation 'androidx.collection:collection-ktx:1.1.0'
-    implementation 'androidx.multidex:multidex:2.0.1'
 }
