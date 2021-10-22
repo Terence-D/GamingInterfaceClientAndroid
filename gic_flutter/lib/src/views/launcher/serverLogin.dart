@@ -89,7 +89,7 @@ class _ServerLoginState extends State<ServerLogin> {
         description: _translations.text(LauncherText.helpIpAddress),
         child: TextFormField(
           inputFormatters: [
-            BlacklistingTextInputFormatter(RegExp('[\\ ]')),
+            FilteringTextInputFormatter.deny(RegExp('[\\ ]')),
           ],
           controller: _parent.addressController,
           decoration: InputDecoration(
