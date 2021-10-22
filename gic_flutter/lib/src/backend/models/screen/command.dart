@@ -22,13 +22,31 @@ class Command {
   };
 
   factory Command.fromJson(Map<String, dynamic> json) {
-    if (json['modifier'] == null) {
+    if (json['modifier'] == null && json['Modifier'] == null) {
       json['modifier'] = [];
     }
-    var jsonMods = json['modifier'];
-    List<String> mods = List<String>.from(jsonMods);
-    String jsonKey = json['key'];
-    int jsonActivator = json['activatorType'];
+
+    //handle both case possibilities
+    var jsonMods;
+    List<String> mods = [];
+    if (json.containsKey('modifier'))
+      jsonMods = json['modifier'];
+    else if (json.containsKey('Modifier'))
+      jsonMods = json['Modifier'];
+    if (jsonMods != null)
+      mods = List<String>.from(jsonMods);
+
+    String jsonKey = "";
+    if (json.containsKey('key'))
+      jsonMods = json['key'];
+    else if (json.containsKey('Key'))
+      jsonMods = json['Key'];
+
+    int jsonActivator=0;
+    if (json.containsKey('activatorType'))
+      jsonMods = json['activatorType'];
+    else if (json.containsKey('ActivatorType'))
+      jsonMods = json['ActivatorType'];
 
     return Command(
       key: jsonKey,

@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/screenImportService.dart';
+import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -79,15 +80,21 @@ class ScreenService {
 
         Stream stream = screenDirectory.list();
         await stream.forEach((element) {
-          File file = File(path.join(element.path, "data.json"));
-          screenViewModels.add(
-              ScreenViewModel.fromJson(json.decode(file.readAsStringSync())));
+          try {
+            File file = File(path.join(element.path, "data.json"));
+            ScreenViewModel svm = ScreenViewModel.fromJson(
+                json.decode(file.readAsStringSync()));
+            screenViewModels.add(svm);
+          } catch (error) {
+            print (error);
+          }
         }).catchError((error, stackTrace) {
-          throw (error);
+          print (error);
         }).whenComplete(() => activeScreenViewModel = screenViewModels.first);
       }
       return true;
     } catch (e) {
+      print (e);
       // If encountering an error, return false.
       return false;
     }

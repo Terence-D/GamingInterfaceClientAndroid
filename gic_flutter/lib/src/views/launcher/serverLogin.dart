@@ -47,6 +47,7 @@ class _ServerLoginState extends State<ServerLogin> {
   List<Widget> _serverInput(BuildContext context) {
     return <Widget>[
       bannerRow(context),
+      betaRow(context),
       _addressTextWidget(),
       _portTextWidget(),
       _passwordTextWidget(),
@@ -89,7 +90,7 @@ class _ServerLoginState extends State<ServerLogin> {
         description: _translations.text(LauncherText.helpIpAddress),
         child: TextFormField(
           inputFormatters: [
-            BlacklistingTextInputFormatter(RegExp('[\\ ]')),
+            FilteringTextInputFormatter.deny(RegExp('[\\ ]')),
           ],
           controller: _parent.addressController,
           decoration: InputDecoration(
@@ -116,5 +117,17 @@ class _ServerLoginState extends State<ServerLogin> {
         ),
       ),
     ]);
+  }
+
+  Widget betaRow(BuildContext context) {
+    return ExpansionTile(
+      title: Text(
+          "BETA WARNINGS"),
+      children:<Widget> [
+        ListTile(
+          title: Text("On Android 12 you may see an erroneous message stating that GIC is using the clipboard. This is caused by the framework Flutter GIC is built with.  Flutter will be fixing it in a future release.  I am NOT reading from the clipboard.")
+        )
+      ]);
+
   }
 }
