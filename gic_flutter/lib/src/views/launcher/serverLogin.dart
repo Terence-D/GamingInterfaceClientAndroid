@@ -47,6 +47,7 @@ class _ServerLoginState extends State<ServerLogin> {
   List<Widget> _serverInput(BuildContext context) {
     return <Widget>[
       bannerRow(context),
+      betaRow(context),
       _addressTextWidget(),
       _portTextWidget(),
       _passwordTextWidget(),
@@ -116,5 +117,10 @@ class _ServerLoginState extends State<ServerLogin> {
         ),
       ),
     ]);
+  }
+
+  Widget betaRow(BuildContext context) {
+    return Text(
+        "BETA BUILD - on Android 12, you will see an erroneous message stating that GIC is pasting data from the clip board.  This is caused by Flutter, the framework this application is built with.  It is already marked as fixed for a future release of Flutter, and until then this will remain in beta or until I find a work around.  I am NOT reading from the clipboard.");
   }
 }
