@@ -120,7 +120,14 @@ class _ServerLoginState extends State<ServerLogin> {
   }
 
   Widget betaRow(BuildContext context) {
-    return Text(
-        "BETA BUILD - on Android 12, you will see an erroneous message stating that GIC is pasting data from the clip board.  This is caused by Flutter, the framework this application is built with.  It is already marked as fixed for a future release of Flutter, and until then this will remain in beta or until I find a work around.  I am NOT reading from the clipboard.");
+    return ExpansionTile(
+      title: Text(
+          "BETA WARNINGS"),
+      children:<Widget> [
+        ListTile(
+          title: Text("On Android 12 you may see an erroneous message stating that GIC is using the clipboard. This is caused by the framework Flutter GIC is built with.  Flutter will be fixing it in a future release.  I am NOT reading from the clipboard.")
+        )
+      ]);
+
   }
 }
