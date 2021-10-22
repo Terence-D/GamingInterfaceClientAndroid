@@ -1,0 +1,1 @@
+double activityMargin = 16;

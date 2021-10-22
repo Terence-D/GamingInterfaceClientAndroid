@@ -1,1 +1,387 @@
-{"screenId":0,"name":"Elite 5","controls":[{"command":{"activatorType":1,"key":"INSERT","modifiers":[]},"text":"","left":128.0,"width":320,"top":1536.0,"height":127,"fontColor":-1,"primaryColor":-1,"secondaryColor":-1,"fontSize":36,"viewType":3,"primaryImageResource":2,"secondaryImageResource":3,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":1,"key":"INSERT","modifiers":[]},"stage":2,"fontName":"","fontType":0},{"command":{"activatorType":0,"key":"A","modifiers":[]},"text":"Hard Points","left":480.0,"width":320,"top":1152.0,"height":108,"fontColor":-32768,"primaryColor":-1,"secondaryColor":-1,"fontSize":95,"viewType":1,"primaryImageResource":2131165282,"secondaryImageResource":2131165283,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":0,"key":"a","modifiers":[]},"stage":0,"fontName":"ShareTech-Regular","fontType":0},{"command":{"activatorType":0,"key":"A","modifiers":[]},"text":"Lights","left":480.0,"width":320,"top":1536.0,"height":108,"fontColor":-256,"primaryColor":-1,"secondaryColor":-1,"fontSize":95,"viewType":1,"primaryImageResource":2131165282,"secondaryImageResource":2131165283,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":0,"key":"a","modifiers":[]},"stage":0,"fontName":"ShareTech-Regular","fontType":0},{"command":{"activatorType":1,"key":"1","modifiers":[]},"text":"External","left":64.0,"width":423,"top":320.0,"height":232,"fontColor":-16777216,"primaryColor":-1,"secondaryColor":-1,"fontSize":94,"viewType":0,"primaryImageResource":12,"secondaryImageResource":13,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":0,"key":"a","modifiers":[]},"stage":0,"fontName":"ShareTech-Regular","fontType":0},{"command":{"activatorType":0,"key":"4","modifiers":[]},"text":"Systems","left":576.0,"width":423,"top":640.0,"height":232,"fontColor":-16777216,"primaryColor":-1,"secondaryColor":-1,"fontSize":57,"viewType":0,"primaryImageResource":12,"secondaryImageResource":13,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":0,"key":"a","modifiers":[]},"stage":0,"fontName":"ShareTech-Regular","fontType":0},{"command":{"activatorType":1,"key":"L","modifiers":[]},"text":"","left":128.0,"width":320,"top":960.0,"height":127,"fontColor":-1,"primaryColor":-1,"secondaryColor":-1,"fontSize":36,"viewType":3,"primaryImageResource":2,"secondaryImageResource":3,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":1,"key":"L","modifiers":[]},"stage":0,"fontName":"","fontType":0},{"command":{"activatorType":1,"key":"J","modifiers":[]},"text":"","left":128.0,"width":320,"top":1344.0,"height":127,"fontColor":-1,"primaryColor":-1,"secondaryColor":-1,"fontSize":36,"viewType":3,"primaryImageResource":2,"secondaryImageResource":3,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":1,"key":"J","modifiers":[]},"stage":2,"fontName":"","fontType":0},{"command":{"activatorType":0,"key":"A","modifiers":[]},"text":"FSD","left":480.0,"width":320,"top":1376.0,"height":108,"fontColor":-8388353,"primaryColor":-1,"secondaryColor":-1,"fontSize":95,"viewType":1,"primaryImageResource":2131165282,"secondaryImageResource":2131165283,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":0,"key":"a","modifiers":[]},"stage":0,"fontName":"ShareTech-Regular","fontType":0},{"command":{"activatorType":1,"key":"U","modifiers":[]},"text":"","left":128.0,"width":320,"top":1152.0,"height":127,"fontColor":-1,"primaryColor":-1,"secondaryColor":-1,"fontSize":36,"viewType":3,"primaryImageResource":2,"secondaryImageResource":3,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":1,"key":"U","modifiers":[]},"stage":2,"fontName":"","fontType":0},{"command":{"activatorType":0,"key":"A","modifiers":[]},"text":"Landing Gear","left":475.0,"width":427,"top":974.0,"height":178,"fontColor":-12517632,"primaryColor":-1,"secondaryColor":-1,"fontSize":79,"viewType":1,"primaryImageResource":2131165282,"secondaryImageResource":2131165283,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":0,"key":"a","modifiers":[]},"stage":0,"fontName":"ShareTech-Regular","fontType":0},{"command":{"activatorType":0,"key":"a","modifiers":[]},"text":"Panels","left":384.0,"width":320,"top":128.0,"height":108,"fontColor":-16640,"primaryColor":-1,"secondaryColor":-1,"fontSize":95,"viewType":1,"primaryImageResource":2131230826,"secondaryImageResource":2131230829,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":0,"key":"a","modifiers":[]},"stage":0,"fontName":"ShareTech-Regular","fontType":0},{"command":{"activatorType":1,"key":"3","modifiers":[]},"text":"Roles","left":64.0,"width":423,"top":640.0,"height":232,"fontColor":-16777216,"primaryColor":-1,"secondaryColor":-1,"fontSize":57,"viewType":0,"primaryImageResource":12,"secondaryImageResource":13,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":0,"key":"a","modifiers":[]},"stage":0,"fontName":"ShareTech-Regular","fontType":0},{"command":{"activatorType":1,"key":"2","modifiers":[]},"text":"Comms","left":576.0,"width":423,"top":320.0,"height":232,"fontColor":-16777216,"primaryColor":-1,"secondaryColor":-1,"fontSize":72,"viewType":0,"primaryImageResource":12,"secondaryImageResource":13,"primaryImage":"","secondaryImage":"","commandSecondary":{"activatorType":0,"key":"a","modifiers":[]},"stage":0,"fontName":"ShareTech-Regular","fontType":0}],"backgroundColor":-13092808,"backgroundPath":"","newControlId":0,"backgroundFile":""}
+{
+  "screenId": 0,
+  "name": "Elite 5",
+  "controls": [
+    {
+      "command": {
+        "activatorType": 1,
+        "key": "INSERT",
+        "modifiers": []
+      },
+      "text": "",
+      "left": 128.0,
+      "width": 320.0,
+      "top": 1536.0,
+      "height": 127.0,
+      "fontColor": -1,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 36,
+      "viewType": 3,
+      "primaryImageResource": 2,
+      "secondaryImageResource": 3,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 1,
+        "key": "INSERT",
+        "modifiers": []
+      },
+      "stage": 2,
+      "fontName": "",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 0,
+        "key": "A",
+        "modifiers": []
+      },
+      "text": "Hard Points",
+      "left": 480.0,
+      "width": 320.0,
+      "top": 1152.0,
+      "height": 108.0,
+      "fontColor": -32768,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 95,
+      "viewType": 1,
+      "primaryImageResource": 2131165282,
+      "secondaryImageResource": 2131165283,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "ShareTech-Regular",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 0,
+        "key": "A",
+        "modifiers": []
+      },
+      "text": "Lights",
+      "left": 480.0,
+      "width": 320.0,
+      "top": 1536.0,
+      "height": 108.0,
+      "fontColor": -256,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 95,
+      "viewType": 1,
+      "primaryImageResource": 2131165282,
+      "secondaryImageResource": 2131165283,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "ShareTech-Regular",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 1,
+        "key": "1",
+        "modifiers": []
+      },
+      "text": "External",
+      "left": 64.0,
+      "width": 423.0,
+      "top": 320.0,
+      "height": 232.0,
+      "fontColor": -16777216,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 94,
+      "viewType": 0,
+      "primaryImageResource": 12,
+      "secondaryImageResource": 13,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "ShareTech-Regular",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 0,
+        "key": "4",
+        "modifiers": []
+      },
+      "text": "Systems",
+      "left": 576.0,
+      "width": 423.0,
+      "top": 640.0,
+      "height": 232.0,
+      "fontColor": -16777216,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 57,
+      "viewType": 0,
+      "primaryImageResource": 12,
+      "secondaryImageResource": 13,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "ShareTech-Regular",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 1,
+        "key": "L",
+        "modifiers": []
+      },
+      "text": "",
+      "left": 128.0,
+      "width": 320.0,
+      "top": 960.0,
+      "height": 127.0,
+      "fontColor": -1,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 36,
+      "viewType": 3,
+      "primaryImageResource": 2,
+      "secondaryImageResource": 3,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 1,
+        "key": "L",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 1,
+        "key": "J",
+        "modifiers": []
+      },
+      "text": "",
+      "left": 128.0,
+      "width": 320.0,
+      "top": 1344.0,
+      "height": 127.0,
+      "fontColor": -1,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 36,
+      "viewType": 3,
+      "primaryImageResource": 2,
+      "secondaryImageResource": 3,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 1,
+        "key": "J",
+        "modifiers": []
+      },
+      "stage": 2,
+      "fontName": "",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 0,
+        "key": "A",
+        "modifiers": []
+      },
+      "text": "FSD",
+      "left": 480.0,
+      "width": 320.0,
+      "top": 1376.0,
+      "height": 108.0,
+      "fontColor": -8388353,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 95,
+      "viewType": 1,
+      "primaryImageResource": 2131165282,
+      "secondaryImageResource": 2131165283,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "ShareTech-Regular",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 1,
+        "key": "U",
+        "modifiers": []
+      },
+      "text": "",
+      "left": 128.0,
+      "width": 320.0,
+      "top": 1152.0,
+      "height": 127.0,
+      "fontColor": -1,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 36,
+      "viewType": 3,
+      "primaryImageResource": 2,
+      "secondaryImageResource": 3,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 1,
+        "key": "U",
+        "modifiers": []
+      },
+      "stage": 2,
+      "fontName": "",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 0,
+        "key": "A",
+        "modifiers": []
+      },
+      "text": "Landing Gear",
+      "left": 475.0,
+      "width": 427.0,
+      "top": 974.0,
+      "height": 178.0,
+      "fontColor": -12517632,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 79,
+      "viewType": 1,
+      "primaryImageResource": 2131165282,
+      "secondaryImageResource": 2131165283,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "ShareTech-Regular",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "text": "Panels",
+      "left": 384.0,
+      "width": 320.0,
+      "top": 128.0,
+      "height": 108.0,
+      "fontColor": -16640,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 95,
+      "viewType": 1,
+      "primaryImageResource": 2131230826,
+      "secondaryImageResource": 2131230829,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "ShareTech-Regular",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 1,
+        "key": "3",
+        "modifiers": []
+      },
+      "text": "Roles",
+      "left": 64.0,
+      "width": 423.0,
+      "top": 640.0,
+      "height": 232.0,
+      "fontColor": -16777216,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 57,
+      "viewType": 0,
+      "primaryImageResource": 12,
+      "secondaryImageResource": 13,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "ShareTech-Regular",
+      "fontType": 0
+    },
+    {
+      "command": {
+        "activatorType": 1,
+        "key": "2",
+        "modifiers": []
+      },
+      "text": "Comms",
+      "left": 576.0,
+      "width": 423.0,
+      "top": 320.0,
+      "height": 232.0,
+      "fontColor": -16777216,
+      "primaryColor": -1,
+      "secondaryColor": -1,
+      "fontSize": 72,
+      "viewType": 0,
+      "primaryImageResource": 12,
+      "secondaryImageResource": 13,
+      "primaryImage": "",
+      "secondaryImage": "",
+      "commandSecondary": {
+        "activatorType": 0,
+        "key": "a",
+        "modifiers": []
+      },
+      "stage": 0,
+      "fontName": "ShareTech-Regular",
+      "fontType": 0
+    }
+  ],
+  "backgroundColor": -13092808,
+  "backgroundPath": "",
+  "newControlId": 0,
+  "backgroundFile": ""
+}
