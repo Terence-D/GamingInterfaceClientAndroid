@@ -16,19 +16,19 @@ class Command {
 
   Map<String, dynamic> toJson() =>
   {
-    'ActivatorType': activatorType,
-    'Key': key,
-    'Modifier': modifiers
+    'activatorType': activatorType,
+    'key': key,
+    'modifier': modifiers
   };
 
   factory Command.fromJson(Map<String, dynamic> json) {
-    if (json['Modifier'] == null) {
-      json['Modifier'] = [];
+    if (json['modifier'] == null) {
+      json['modifier'] = [];
     }
-    var jsonMods = json['Modifier'];
+    var jsonMods = json['modifier'];
     List<String> mods = List<String>.from(jsonMods);
-    String jsonKey = json['Key'];
-    int jsonActivator = json['ActivatorType'];
+    String jsonKey = json['key'];
+    int jsonActivator = json['activatorType'];
 
     return Command(
       key: jsonKey,
