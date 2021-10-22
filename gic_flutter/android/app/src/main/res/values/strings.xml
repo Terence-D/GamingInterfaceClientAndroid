@@ -2,4 +2,253 @@
     <string name="app_name">Gaming Interface Client</string>
 
     <string name="title_activity_game_interface">Game Interface</string>
+    <string name="hint_url">Address</string>
+    <string name="hint_port">Port Number</string>
+    <string name="hint_password">Password</string>
+    <string name="button_start">Start</string>
+
+    <string name="title_activity_edit">Edit Activity</string>
+    <string name="button_edit">Edit</string>
+    <string name="fragment_edit_button_save">Save</string>
+    <string name="fragment_edit_button_delete">Delete</string>
+    <string name="fragment_edit_text_text">Button Text</string>
+    <string name="fragment_edit_text_left_shift">Shift</string>
+    <string name="fragment_edit_text_left_ctrl">Ctrl</string>
+    <string name="fragment_edit_text_left_alt">Alt</string>
+    <string name="fragment_edit_text_right_shift">RShift</string>
+    <string name="fragment_edit_text_right_ctrl">RCtrl</string>
+    <string name="fragment_edit_text_right_alt">RAlt</string>
+
+    <string name="activity_edit_button_save">Save</string>
+    <string name="title_fragment_edit">Edit</string>
+    <string name="main_warning">Warning - do NOT use an existing password that you use ANYWHERE else!</string>
+    <string name="edit_help_message">To start adding controls, double tap on the screen.  Tap on a control to reselect it</string>
+    <string name="edit_fragment">Select a Key:</string>
+    <string name="edit_activity_edit_mode">Edit Mode</string>
+    <string name="edit_activity_drag_mode">Drag and Drop mode</string>
+    <string name="edit_activity_detail_edit_mode">Detail Edit mode</string>
+    <string name="edit_activity_saved">Saved Successfully!</string>
+    <string name="activity_main_about">About</string>
+    <string name="main_activity_warning"> </string>
+    <string name="main_activity_server_link">https://github.com/Terence-D/GameInputCommandServer</string>
+
+    <string name="activity_main_help_button">Help (Website)</string>
+    <string name="edit_activity_settings">Settings</string>
+    <string name="color_picker_title">Color Picker</string>
+    <string name="edit_fragment_font_color">Font Color</string>
+    <string name="edit_fragment_button_color_1">Primary Color</string>
+    <string name="edit_fragment_button_color_2">Secondary Color</string>
+    <string name="password_invalid">Please enter a password of at least 6 characters</string>
+    <string name="port_invalid">Invalid Port number</string>
+    <string name="address_invalid">Please enter a valid address pointing to your computer running GIC Server</string>
+
+    <string name="default_control_text">New</string>
+    <string name="edit_fragment_settings_image">Image</string>
+    <string name="edit_fragment_settings_color_1">Color</string>
+    <string name="edit_fragment_settings_color_2">Secondary Color</string>
+    <string name="control_type_button">Button</string>
+    <string name="control_type_text">Text</string>
+    <string name="control_type_image">Image</string>
+    <string name="edit_fragment_image_delete">Delete</string>
+    <string name="edit_fragment_image">Image</string>
+    <string name="edit_fragment_image_title">Image Editor</string>
+    <string name="fragment_edit_control_switch_button_graphic">Button Graphics</string>
+    <string name="fragment_edit_control_switch_button_type">Quick Mode</string>
+    <string name="image_grid_title">Choose Image</string>
+    <string name="item_grid_text">Import</string>
+    <string name="item_grid_text_image">Image</string>
+    <string name="item_text_import">Import</string>
+    <string name="item_text_default">Default</string>
+    <string name="fragment_edit_button_normal">Normal</string>
+    <string name="fragment_edit_button_pressed">Pressed</string>
+    <string name="fragment_edit_font_typeface">Font</string>
+    <string name="fragment_toggle_on">Toggle On Command</string>
+    <string name="fragment_toggle_off">Toggle Off Command</string>
+    <string name="fragment_toggle_text">Switch Text</string>
+    <string name="control_type_switch">Switch</string>
+    <string name="fragment_edit_toggle_off">Off</string>
+    <string name="fragment_edit_toggle_on">On</string>
+    <string name="activity_main_server_upgrade_title">Server Mismatch</string>
+    <string name="activity_main_server_upgrade_text">The GIC Server appears to be out of date - please upgrade to the latest version by clicking on the \"Website\" link on the server.  If you did not yet install the server, click the Help link below,</string>
+    <string name="title_activity_screen_manager">Screen Manager</string>
+    <string name="activity_screens_new">New</string>
+    <string name="activity_screens_update">Update</string>
+    <string name="activity_screens_import">Import</string>
+    <string name="activity_screens_export">Export</string>
+    <string name="activity_screens_delete">Delete</string>
+    <string name="loading">Please Wait…</string>
+    <string name="connecting">Connecting…</string>
+    <string name="need_permission">This action requires you to enable write access.  After accepting, you will need to click on the button again to begin the Import/Export.</string>
+    <string name="export_complete">Export Complete!</string>
+    <string name="zip_successful">File successfully exported/</string>
+    <string name="activity_main_screen_manager">Screen Manager</string>
+    <string name="cannot_delete_last_item">Cannot remove last screen!</string>
+    <string name="activity_screens_confirm_delete"><![CDATA[Are you sure you wish to PERMANENTLY delete <b>%1$s</b>?]]></string>
+    <string name="import_successful">Import Successful</string>
+    <string name="invalid_zip">Invalid Zip File!</string>
+    <string name="menu_help">Help</string>
+    <string name="menu_toggle_theme">Toggle Theme</string>
+    <string name="title_activity_main">GIC</string>
+    <string name="title_activity_intro">IntroActivity</string>
+
+    <string name="slideIntroTitle">Welcome!</string>
+    <string name="slideIntroDesc">Thank you for installing GIC - the open source Game Interface Client.  Ahead are just a few tips to help you get started.  This will only be shown once - tap on the bottom right corner arrow to begin.</string>
+    <string name="slideServerTitle">Server</string>
+    <string name="slideServerDesc">GIC requires software on the computer your communicating with.  The link is in inside the "About" view from the main screen.  Alternatively clicking this button will open your email app with the link to the server inside.</string>
+    <string name="slideAboutTitle">About</string>
+    <string name="slideAboutDesc">GIC allows you to create fully customizable interfaces (screens) to send commands to an app on your computer.  Useful for complex sim type games, but GIC can be used for any app or game that you like.  You can also share your screens with others!</string>
+    <string name="slideLetsGoTitle">Questions?</string>
+    <string name="slideLetsGoDesc">I\'ve added Help sections to each part of this app - click the \'?\' at the top right corner of the app for help!  Thank you for using GIC!</string>
+    <string name="slideSendLink">Send Link</string>
+    <string name="slideScreenTitle">Screen Starter</string>
+    <string name="slideScreenDesc">If you like you can pick one (or more!) of the screens I\'ve built below as a starting point, or you can skip this step and build your own.!</string>
+    <string name="aboutServer">Server</string>
+    <string name="edit_fragment_settings_title">Settings</string>
+    <string name="edit_fragment_title">Edit</string>
+    <string name="edit_fragment_settings_grid_title">Grid Size</string>
+    <string name="edit_text_left">Left</string>
+    <string name="edit_text_top">Top</string>
+    <string name="edit_text_width">Width</string>
+    <string name="edit_text_height">Height</string>
+    <string name="edit_text_font_size">Font Size</string>
+    <string name="slideScreenImportButton">Import</string>
+    <string name="slideScreenSuccess">Screens Imported!</string>
+    <string name="menu_show_intro">Show Intro</string>
+    <string name="help_menu_icon_title">Help is a Tap Away</string>
+    <string name="help_menu_icon_desc">Tapping this icon will explain whats on your devices screen and is available through most of the application</string>
+    <string name="help_address_title">Server Address</string>
+    <string name="help_address_desc">Type the IP Address of the computer running the server.  This can be found  in Windows 10 by going into Settings, then Network and Internet, and usually starts with \"192\"</string>
+    <string name="help_port_title">Network Port</string>
+    <string name="help_port_desc">This has to match on the server end - by default its 8091</string>
+    <string name="help_password_title">Password</string>
+    <string name="help_password_desc">This has to match on the server as well, and is used to provide some security</string>
+    <string name="help_spinner_title">Screen List</string>
+    <string name="help_spinner_desc">This will let you select different screens you have created to use</string>
+    <string name="help_screenmanager_title">Screen Manager</string>
+    <string name="help_screenmanager_desc">Tapping on this will open up the Screen Manager where you can create, edit, delete, and import/export other screens</string>
+    <string name="help_start_title">Start</string>
+    <string name="help_start_desc">Tapping this will connect to the server and let you start with the screen you\'ve selected</string>
+    <string name="help_addNew_desc">Tap here to add a another screen to the app</string>
+    <string name="help_addNew_title">Add New</string>
+    <string name="help_importScreen_title">Import Screen</string>
+    <string name="help_importScreen_desc">Import an existing screen that you or someone else created</string>
+    <string name="help_nameEditor_title">Name Editor</string>
+    <string name="help_nameEditor_desc">Edit the name of the screen here - don\'t forget to tap Update to save!</string>
+    <string name="help_update_title">Update Name</string>
+    <string name="help_update_desc">After typing in a new name, tap this to Save your changes</string>
+    <string name="help_edit_title">Screen Editor</string>
+    <string name="help_edit_desc">Tap here to Customzie your Screen!</string>
+    <string name="help_export_title">Export</string>
+    <string name="help_export_desc">This will export your screen and allow you to share with others.  The exported file is called \'GIC-(name of screen).ZIP\' and is saved on your device inside the Downloads folder</string>
+    <string name="help_delete_title">Delete Screen</string>
+    <string name="help_delete_desc">Tap this to delete the current screen - this cannot be undone!!!</string>
+    <string name="help_edit_main"><![CDATA[
+        <strong>Add Control</strong><br/>
+        To add a button, text, image, etc double tap on the screen roughly where you want the control to go.  A list will appear, tap on the type of control you want to add!<br/><br/>
+        <strong>Control Options</strong><br/>
+        Tap on the control to select it, and once selected tap to open its Options view.  Each Options view has a <strong>Help</strong> button you can tap for further details.<br/><br/>
+        <strong>Edit Mode</strong><br/>
+        Allows you to choose between Drag and drop mode to place the control where you want, vs Detail Edit mode where you can resize the control.<br/><br/>
+        <strong>Drag and Drop</strong><br/>
+        In Drag and Drop mode, hold your finger down on a control and drag it to where you want to place it.  You can adjust (or disable) the snap-to-grid feature in Settings (see below)<br/><br/>
+        <strong>Adjust Size</strong><br/>
+        When in Detail mode, tap on a control to display 3 scrollbars.  The vertical one on the left will let you adjust the height.  The top horizontal will allow you to adjust the width.  The bottom (if applicable) will let you adjust the text size for buttons and switches.<br/><br/>
+        <strong>Settings</strong><br/>
+        Here you can choose an image for the background of your screen, or pick a color (default is a dark grey)  You can also adjust the Snap-to-grid sizing here.<br/><br/>
+        <strong>Save</strong><br/>
+        Tapping this will save all your changes!
+    ]]></string>
+    <string name="help_edit_text"><![CDATA[
+        <strong>Text</strong><br/>
+        At the top you can change what text to show, by default its "New"<br/><br/>
+        <strong>Font Color</strong><br/>
+        Here you can change the color of the text<br/><br/>
+        <strong>Font</strong><br/>
+        A small selection of different fonts, due to limitations of Android if there is a font you want to use, please contact me.<br/><br/>
+        <strong>Font Size</strong><br/>
+        Allows you to specify the exact size of the text you want.<br/><br/>
+        <strong>Left / Top</strong><br/>
+        Allows you to specify the exact position of the control.<br/><br/>
+        <strong>Width / Height</strong><br/>
+        Allows you to specify the display area size of the control.<br/><br/>
+        <strong>Save</strong><br/>
+        Saves the above options you chose.<br/><br/>
+        <strong>Delete</strong><br/>
+        Deletes the control - this can\'t be undone!<br/><br/>
+    ]]></string>
+    <string name="help_edit_button"><![CDATA[
+        <strong>Text</strong><br/>
+        At the top you can change what text to show, by default its "New"<br/><br/>
+        <strong>Select a Key</strong><br/>
+        You can select a keyboard command to send to the computer, and choose to include the Shift, Ctrl, or Alt key on your keyboard.  This will be sent when you tap on the button.<br/><br/>
+        <strong>Font Color</strong><br/>
+        Here you can change the color of the text<br/><br/>
+        <strong>Font</strong><br/>
+        A small selection of different fonts, due to limitations of Android if there is a font you want to use, please contact me.<br/><br/>
+        <strong>Font Size</strong><br/>
+        Allows you to specify the exact size of the text you want.<br/><br/>
+        <strong>Button Graphics</strong><br/>
+        By default you can pick an image to show when the button normally, and when it\'s pressed down.  Turning this off lets you use a color gradient instead.<br/><br/>
+        <strong>Quick Mode</strong><br/>
+        By default, a button will stay pressed down as long as you hold it.  In some games that use the same button as a quick toggle and press to hold, it may not work as a quick toggle.  Enable this to set it to Quick Mode which will send a command quick as soon as you press it, regardless of how long you hold it down.<br/><br/>
+        <strong>Normal</strong><br/>
+        When in Button Graphics mode, tap this to choose an image for the button when it\'s not being pressed down.  There are several built in graphics, and you can also Import your own.<br/><br/>
+        <strong>Pressed</strong><br/>
+        When in Button Graphics mode, tap this to choose an image for the button when it\'s not being pressed down.  There are several built in graphics, and you can also Import your own.<br/><br/>
+        <strong>Primary Color</strong><br/>
+        When Button Graphics mode is turned off, tap this to choose the primary button color.  When pressed the colors are inverted.<br/><br/>
+        <strong>Secondary Color</strong><br/>
+        When Button Graphics mode is turned off, tap this to choose the secondary button color.  When pressed the colors are inverted.<br/><br/>
+        <strong>Left / Top</strong><br/>
+        Allows you to specify the exact position of the control.<br/><br/>
+        <strong>Width / Height</strong><br/>
+        Allows you to specify the display area size of the control.<br/><br/>
+        <strong>Save</strong><br/>
+        Saves the above options you chose.<br/><br/>
+        <strong>Delete</strong><br/>
+        Deletes the control - this can\'t be undone!<br/><br/>
+    ]]></string>
+    <string name="help_edit_toggle"><![CDATA[
+        <strong>Text</strong><br/>
+        At the top you can change what text to show, by default its "New"<br/><br/>
+        <strong>Toggle on Command</strong><br/>
+        You can select a keyboard command to send to the computer when you turn the switch "on", and you can include the Shift, Ctrl, or Alt key on your keyboard.  This will be sent when you tap on the button when it\'s currently set to "Off".<br/><br/>
+        <strong>Toggle off Command</strong><br/>
+        You can select a keyboard command to send to the computer when you turn the switch "off", and you can include the Shift, Ctrl, or Alt key on your keyboard.  This will be sent when you tap on the button when it\'s currently set to "On".<br/><br/>
+        <strong>Font Color</strong><br/>
+        Here you can change the color of the text<br/><br/>
+        <strong>Font</strong><br/>
+        A small selection of different fonts, due to limitations of Android if there is a font you want to use, please contact me.<br/><br/>
+        <strong>Font Size</strong><br/>
+        Allows you to specify the exact size of the text you want.<br/><br/>
+        <strong>Off</strong><br/>
+        Tap this to choose an image for the Off position of the switch.  There are several built in graphics, and you can also Import your own.<br/><br/>
+        <strong>On</strong><br/>
+        Tap this to choose an image for the On position of the switch.  There are several built in graphics, and you can also Import your own.<br/><br/>
+        <strong>Left / Top</strong><br/>
+        Allows you to specify the exact position of the control.<br/><br/>
+        <strong>Width / Height</strong><br/>
+        Allows you to specify the display area size of the control.<br/><br/>
+        <strong>Save</strong><br/>
+        Saves the above options you chose.<br/><br/>
+        <strong>Delete</strong><br/>
+        Deletes the control - this can\'t be undone!<br/><br/>
+    ]]></string>
+    <string name="help_edit_image"><![CDATA[
+        <strong>Image</strong><br/>
+        This will let you choose an image you have stored on your device to display.<br/><br/>
+        <strong>Left / Top</strong><br/>
+        Allows you to specify the exact position of the control.<br/><br/>
+        <strong>Width / Height</strong><br/>
+        Allows you to specify the display area size of the control.<br/><br/>
+        <strong>Save</strong><br/>
+        Saves the above options you chose.<br/><br/>
+        <strong>Delete</strong><br/>
+        Deletes the control - this can\'t be undone!<br/><br/>
+    ]]></string>
+    <string name="help_dialog_title">Help</string>
+    <string name="edit_help">Help</string>
+    <string name="slideJellybeanTitle">Old Android Version</string>
+    <string name="slideJellybeanDesc">You are running an older version of Android.  Certain functions are disabled (such as import/export) for now.  This may change if I can find the time to work around the limitations.</string>
+    <string name="android_too_old">Your version of android is too old to support this</string>
 </resources>
