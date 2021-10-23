@@ -38,15 +38,15 @@ class Command {
 
     String jsonKey = "";
     if (json.containsKey('key'))
-      jsonMods = json['key'];
+      jsonKey = json['key'];
     else if (json.containsKey('Key'))
-      jsonMods = json['Key'];
+      jsonKey = json['Key'];
 
     int jsonActivator=0;
     if (json.containsKey('activatorType'))
-      jsonMods = json['activatorType'];
+      jsonActivator = json['activatorType'];
     else if (json.containsKey('ActivatorType'))
-      jsonMods = json['ActivatorType'];
+      jsonActivator = json['ActivatorType'];
 
     return Command(
       key: jsonKey,
