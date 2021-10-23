@@ -44,7 +44,7 @@ class ScreenViewModel {
     name = json['name'];
     controls = convertJsonToControl(json, 'controls');
     newControlId = json['newControlId'];
-    backgroundColor = Color(json['backgroundColor']);
+    backgroundColor = Color(json['backgroundColor']).withAlpha(255);
     backgroundPath = json['backgroundPath'];
   }
 
