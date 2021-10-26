@@ -207,6 +207,7 @@ class DesignTabState extends BaseTabState {
   }
 
   Future<void> _importImage() async {
+    await FilePicker.platform.clearTemporaryFiles();
     FilePickerResult result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'png', 'gif'],
