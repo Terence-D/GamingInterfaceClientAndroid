@@ -53,11 +53,15 @@ class _BackgroundDialogState extends State<BackgroundDialog> {
   }
 
   void _pickBackgroundImage() async {
+    await FilePicker.platform.clearTemporaryFiles();
     FilePickerResult result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'png', 'gif'],
     );
     if (result != null) {
+      imageCache.clear();
+      imageCache.clearLiveImages();
+
       PlatformFile file = result.files.first;
       Directory dest = await getApplicationDocumentsDirectory();
       String destPath = path.join(

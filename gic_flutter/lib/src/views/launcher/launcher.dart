@@ -294,6 +294,7 @@ class LauncherState extends State<Launcher> {
   }
 
   Future<void> _import() async {
+    await FilePicker.platform.clearTemporaryFiles();
     FilePickerResult result = await FilePicker.platform.pickFiles();
 
     if (result != null) {

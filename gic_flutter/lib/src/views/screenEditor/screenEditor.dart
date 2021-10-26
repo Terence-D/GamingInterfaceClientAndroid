@@ -130,6 +130,7 @@ class ScreenEditorState extends State<ScreenEditor> {
           File(_service.activeScreenViewModel.backgroundPath)
       );
       screen = Container(
+          key: UniqueKey(),
           decoration: BoxDecoration(
             image: DecorationImage(
               image:fi,
