@@ -33,17 +33,6 @@ class TextTabState extends BaseTabState {
               Text(widget.translation
                   .text(ScreenEditorText.textTabPrimaryDetails)),
               _buildText(),
-              Visibility(
-                child: Text(widget.translation
-                    .text(ScreenEditorText.textTabPrimaryToggleDetails)),
-                visible: widget.gicEditControl.control.type ==
-                    ControlViewModelType.Toggle,
-              ),
-              Visibility(
-                child: _buildText(),
-                visible: widget.gicEditControl.control.type ==
-                    ControlViewModelType.Toggle,
-              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
