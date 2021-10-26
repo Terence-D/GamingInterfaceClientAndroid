@@ -136,7 +136,8 @@ class ScreenEditorState extends State<ScreenEditor> {
               fit: BoxFit.fill,
             ),
           ),
-          child: Container(child: Stack(children: widgets)));
+          child: Container(child: Stack(children: widgets),
+              key: Key(_service.activeScreenViewModel.controls.length.toString())));
     } else {
       screen = Container(
           color: _service.activeScreenViewModel.backgroundColor,
@@ -278,7 +279,9 @@ class ScreenEditorState extends State<ScreenEditor> {
     setState(() {
       if (result != null)
         if (result == controlResult.delete) {
-        deletedWidget = _service.activeScreenViewModel.controls.removeAt(selectedControlIndex);
+          setState(() {
+            deletedWidget = _service.activeScreenViewModel.controls.removeAt(selectedControlIndex);
+          });
         _showDeleteToast();
       } else if (result == controlResult.save) {
           switch (_service
