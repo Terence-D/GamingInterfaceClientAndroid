@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
@@ -119,15 +122,45 @@ class _ServerLoginState extends State<ServerLogin> {
     ]);
   }
 
-  Widget betaRow(BuildContext context) {
-    return ExpansionTile(
-      title: Text(
-          "BETA WARNINGS"),
-      children:<Widget> [
-        ListTile(
-          title: Text("On Android 12 you may see an erroneous message stating that GIC is using the clipboard. This is caused by the framework Flutter GIC is built with.  Flutter will be fixing it in a future release.  I am NOT reading from the clipboard.")
-        )
-      ]);
 
+
+  Widget betaRow(BuildContext context) {
+    return
+      FutureBuilder(
+          future: _checkVersion(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.data > 30)
+                return _warning();
+            }
+            return SizedBox.shrink();
+          });
+  }
+
+  Widget _warning() {
+    return ExpansionTile(
+        title: Row(
+          children: [
+            Icon(Icons.notification_important, color: Theme.of(context).primaryColor),
+            Text(
+                "IMPORTANT INFORMATION"),
+          ],
+        ),
+        children:<Widget> [
+          ListTile(
+              title: Text("On Android 12 you may see an erroneous message stating that GIC is using the clipboard. This is caused by the framework Flutter GIC is built with.  Flutter will be fixing it in a future release.  I am NOT reading from the clipboard.")
+          )
+        ]);
+  }
+
+
+
+  Future<int> _checkVersion() async {
+    if (Platform.isAndroid) {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.version.sdkInt;
+    } else
+      return -1;
   }
 }
