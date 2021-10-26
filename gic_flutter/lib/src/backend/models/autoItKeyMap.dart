@@ -16,7 +16,7 @@ class AutoItKeyMap {
       map[number.toString()] = number.toString();
     }
     for (int number = 0; number <= 9; number++) {
-      map["NUMPAD $number"] = "Numpad $number";
+      map["NUMPAD$number"] = "Numpad $number";
     }
     map["NUMPADMULT"] = "Numpad *";
     map["NUMPADADD"] = "Numpad +";
