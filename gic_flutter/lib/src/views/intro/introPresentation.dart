@@ -125,10 +125,11 @@ class IntroPresentation {
     //import each selected screen
     ScreenService screenService = ScreenService();
     await screenService.loadScreens();
-    await screenList.forEach((screen) async {
-      String assetFile = path.join("assets", "screens", "${screen.title}-$device.json");
+
+    for (int i=0; i < screenList.length; i++) {
+      String assetFile = path.join("assets", "screens", "${screenList[i].title}-$device.json");
       await screenService.import(assetFile);
-    });
+    }
 
     await Fluttertoast.showToast(
       msg: Intl.of(context).onboardImportSuccess,

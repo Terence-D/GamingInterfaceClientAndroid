@@ -76,7 +76,7 @@ class LauncherRepository {
 
   /// Imports a screen based on supplied file value
   Future<int> import(String file) async {
-    return _screenService.import(file);
+    return await _screenService.import(file);
   }
 
   /// Exports the screen with matching id to the export path
