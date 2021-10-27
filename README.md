@@ -1,6 +1,9 @@
 [![Codemagic build status](https://api.codemagic.io/apps/5df31599c3cc4f70a402350d/61664c48757c4f7155967b65/status_badge.svg)](https://codemagic.io/apps/5df31599c3cc4f70a402350d/61664c48757c4f7155967b65/latest_build)
 # Gaming Interface Client (Android)
+
 Android client for the Gaming Interface Client
+
+**Download Android Files Here https://github.com/Terence-D/GamingInterfaceClientAndroid/releases**
 
 This is part of a  two app system that allows the use of a remote device (Tablet or Phone) to provide input into a PC game or application.  This software is the Android Client and runs on your Tablet or Phone.  It talks to the GICServer - https://github.com/Terence-D/GameInputCommandServer For example if you play a space simulator, you can add custom buttons for Comms, Warp Drive, Power control, etc and have it accessible at your fingertips without remembering complex keystrokes.
 
@@ -17,14 +20,5 @@ Check the Wiki here https://github.com/Terence-D/GamingInterfaceClientAndroid/wi
 ## Help
 Help with testing or donations is always appreciated, donation links are on the right hand side!
 
-## Roadmap
-Here's a rough roadmap of where I'm planning on taking this app.  Nothing is written in stone, this is subject to change:
-* 4.6:  Initial iOS release.  Rebuild the Main view and Screen Manager View into one, fully Flutter based.  Remove old screens from Java
-* 4.7:  New sample screens for Flight Sims, Trucking, and Mech.  Update Existing ones with fixes
-* 4.7: Streamline GPlay, Amazon, and FOSS version (upload to F-Droid?)
-* 4.8: Add automatic server detection (no more manual IP address entry required)
-* 4.9: Convert "In Game" screen view to Flutter
-* 5.0: Convert Editor to Flutter, remove all legacy code including donation screen
-* 5.1: Rewrite screen editing completely if not already done in 5.0
-* 5.2: Support new server features such as allow screen editing on the server
-* 5.3: Add Theme Support (may push back to 5.x) 
+## New Planned Features
+iOS and more! https://github.com/Terence-D/GamingInterfaceClientAndroid/labels/enhancement
