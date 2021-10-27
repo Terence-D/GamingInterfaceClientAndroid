@@ -53,16 +53,20 @@ class _BackgroundDialogState extends State<BackgroundDialog> {
   }
 
   void _pickBackgroundImage() async {
+    await FilePicker.platform.clearTemporaryFiles();
     FilePickerResult result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'png', 'gif'],
     );
     if (result != null) {
+      imageCache.clear();
+      imageCache.clearLiveImages();
+
       PlatformFile file = result.files.first;
       Directory dest = await getApplicationDocumentsDirectory();
       String destPath = path.join(
           dest.path, "screens", screenViewModel.screenId.toString(), path.basename(file.path));
-      if (File(screenViewModel.backgroundPath).existsSync())
+      if (screenViewModel.backgroundPath != null && File(screenViewModel.backgroundPath).existsSync())
         File(screenViewModel.backgroundPath).deleteSync();
       File newFile = File(file.path).copySync(destPath);
       setState(() {

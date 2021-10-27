@@ -1,4 +1,4 @@
-[![Codemagic build status](https://api.codemagic.io/apps/5df31599c3cc4f70a402350d/5e16391de77e70001412d567/status_badge.svg)](https://codemagic.io/apps/5df31599c3cc4f70a402350d/5e16391de77e70001412d567/latest_build)
+[![Codemagic build status](https://api.codemagic.io/apps/5df31599c3cc4f70a402350d/61664c48757c4f7155967b65/status_badge.svg)](https://codemagic.io/apps/5df31599c3cc4f70a402350d/61664c48757c4f7155967b65/latest_build)
 # Gaming Interface Client (Android)
 Android client for the Gaming Interface Client
 

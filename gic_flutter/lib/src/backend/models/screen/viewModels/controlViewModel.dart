@@ -72,12 +72,12 @@ class ControlViewModel {
     clone.version = version;
     clone.type = type;
     clone.design = design;
-    clone.commands = List.from(commands);
+    clone.commands = <Command>[];
     clone.text = text;
     clone.font = font.clone();
-    clone.left = left;
+    clone.left = 0;
     clone.width = width;
-    clone.top = top;
+    clone.top = 0;
     clone.height = height;
     clone.colors = List.from(colors);
     clone.images = List.from(images);

@@ -130,13 +130,15 @@ class ScreenEditorState extends State<ScreenEditor> {
           File(_service.activeScreenViewModel.backgroundPath)
       );
       screen = Container(
+          key: UniqueKey(),
           decoration: BoxDecoration(
             image: DecorationImage(
               image:fi,
               fit: BoxFit.fill,
             ),
           ),
-          child: Container(child: Stack(children: widgets)));
+          child: Container(child: Stack(children: widgets),
+              key: Key(_service.activeScreenViewModel.controls.length.toString())));
     } else {
       screen = Container(
           color: _service.activeScreenViewModel.backgroundColor,
@@ -259,8 +261,8 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   Future<void> _onSelected(int selectedControlIndex) async {
-    bool deleteWidget = false;
-    deleteWidget = await showDialog(
+    controlResult result = controlResult.save;
+    result = await showDialog(
         context: context,
         builder: (BuildContext context) {
           return ControlDialog(
@@ -276,10 +278,35 @@ class ScreenEditorState extends State<ScreenEditor> {
               ));
         });
     setState(() {
-      if (deleteWidget != null && deleteWidget) {
-        deletedWidget = _service.activeScreenViewModel.controls.removeAt(selectedControlIndex);
+      if (result != null)
+        if (result == controlResult.delete) {
+          setState(() {
+            deletedWidget = _service.activeScreenViewModel.controls.removeAt(selectedControlIndex);
+          });
         _showDeleteToast();
-      }
+      } else if (result == controlResult.save) {
+          switch (_service
+              .activeScreenViewModel.controls[selectedControlIndex].type) {
+            case ControlViewModelType.Button:
+              _service.defaultControls.defaultButton = _service
+                  .activeScreenViewModel.controls[selectedControlIndex].clone();
+              break;
+            case ControlViewModelType.Text:
+              _service.defaultControls.defaultText = _service
+                  .activeScreenViewModel.controls[selectedControlIndex].clone();
+              break;
+            case ControlViewModelType.Image:
+              break;
+            case ControlViewModelType.Toggle:
+              _service.defaultControls.defaultToggle = _service
+                  .activeScreenViewModel.controls[selectedControlIndex].clone();
+              break;
+            case ControlViewModelType.QuickButton:
+              _service.defaultControls.defaultButton = _service
+                  .activeScreenViewModel.controls[selectedControlIndex].clone();
+              break;
+          }
+        }
     });
   }
 

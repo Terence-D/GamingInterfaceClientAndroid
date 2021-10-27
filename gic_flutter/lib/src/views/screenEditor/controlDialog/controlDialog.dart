@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
+import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/commandTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/designTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/sizeTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/textTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
+enum controlResult {save,delete}
+
 class ControlDialog extends StatefulWidget {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
   final int screenId;
+  final ScreenService screenService;
 
-  ControlDialog({Key key, this.gicEditControl, this.translation, this.screenId})
+  ControlDialog({Key key, this.gicEditControl, this.translation, this.screenId, this.screenService})
       : super(key: key);
 
   @override
@@ -48,6 +52,17 @@ class _ControlDialogState extends State<ControlDialog> {
             length: _tabs.length,
             child: Scaffold(
               appBar: AppBar(
+                leading: Builder(
+                  builder: (BuildContext context) {
+                    return IconButton(
+                      icon: const Icon(Icons.save),
+                      onPressed: () {
+                        Navigator.pop(context, controlResult.save);
+                      },
+                      tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+                    );
+                  },
+                ),
                 title:
                     Text(translation.text(ScreenEditorText.controlDialogTitle)),
                 actions: <Widget>[
@@ -55,7 +70,7 @@ class _ControlDialogState extends State<ControlDialog> {
                       padding: EdgeInsets.only(right: 20.0),
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.pop(context, true);
+                          Navigator.pop(context, controlResult.delete);
                         },
                         child: Icon(
                           Icons.delete,

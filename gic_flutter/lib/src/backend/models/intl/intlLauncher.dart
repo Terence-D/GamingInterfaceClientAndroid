@@ -147,7 +147,7 @@ class IntlLauncher {
       LauncherText.saveToFolderPickText: 'Save file to this folder',
       LauncherText.resizeScreen: 'Resize Screen',
       LauncherText.resizeScreenText:
-          'This appears to be made for a larger device - would you like to adjust the screen to fit your devices dimensions?    Note this will create a new screen with the new dimensions and launch that.',
+          'FEATURE IN TESTING - This appears to be made for a larger device - would you like to adjust the screen to fit your devices dimensions?    Note this will create a new screen with the new dimensions and launch that.',
       LauncherText.ok: 'ok',
       LauncherText.upgradeServer: 'Upgrade Server'
     }
