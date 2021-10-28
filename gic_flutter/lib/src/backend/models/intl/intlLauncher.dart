@@ -69,7 +69,13 @@ enum LauncherText {
   saveToFolderPickText,
   resizeScreen,
   resizeScreenText,
-  upgradeServer
+  upgradeServer,
+
+  serverError,
+  serverErrorDetails,
+  sendTips,
+  sendDownload,
+  linkToTips
 }
 
 class IntlLauncher {
@@ -148,8 +154,12 @@ class IntlLauncher {
       LauncherText.resizeScreen: 'Resize Screen',
       LauncherText.resizeScreenText:
           'FEATURE IN TESTING - This appears to be made for a larger device - would you like to adjust the screen to fit your devices dimensions?    Note this will create a new screen with the new dimensions and launch that.',
-      LauncherText.ok: 'ok',
-      LauncherText.upgradeServer: 'Upgrade Server'
+      LauncherText.ok: 'Ok',
+      LauncherText.upgradeServer: 'Upgrade Server',
+      LauncherText.serverError: 'Server Error',
+      LauncherText.serverErrorDetails: 'Unable to connect to the PC.  If you haven\'t already, download the software for your PC first by visiting https://github.com/Terence-D/GamingInterfaceCommandServer/releases.  Alternatively you can click the Send Download button below, and it will allow you to email the link to yourself, which you can open on your PC.  If you already have the server running, you can click on the link below to view some troubleshooting tips',
+      LauncherText.sendDownload: 'Email GIC Server Link',
+      LauncherText.sendTips: 'View Tips',
     }
   };
 }

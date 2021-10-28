@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
@@ -18,6 +19,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'launcher.dart';
 
@@ -78,6 +80,7 @@ class ScreenList extends StatelessWidget {
   }
 
   Container screenButtons(int index, BuildContext context) {
+    Widget startNetwork;
     return Container(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -269,32 +272,7 @@ class ScreenList extends StatelessWidget {
         context,
         MaterialPageRoute(
             builder: (context) => ScreenEditor(screenId: screenId)));
-
-    // MethodChannel platform = new MethodChannel(Channel.channelView);
-    // try {
-    //   await platform.invokeMethod(Channel.actionViewEdit, {"selectedScreenId": _screens[selectedScreenIndex].id});
-    // } on PlatformException catch (e) {
-    //   print(e.message);
-    // }
   }
-
-  // _showLoaderDialog(BuildContext context) {
-  //   AlertDialog alert = AlertDialog(
-  //     content: Row(
-  //       children: [
-  //         CircularProgressIndicator(),
-  //         Container(margin: EdgeInsets.only(left: 7), child: Text(_translations.text(LauncherText.loading))),
-  //       ],
-  //     ),
-  //   );
-  //   showDialog(
-  //     barrierDismissible: false,
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return alert;
-  //     },
-  //   );
-  // }
 
   _showResizeDialog(BuildContext context, String optionalText,
       NetworkModel networkModel, int screenId) {
@@ -448,7 +426,7 @@ class ScreenList extends StatelessWidget {
         _showUpgradeDialog(context);
         break;
       case NetworkResponse.Error:
-        _showMessage("${_translations.text(LauncherText.errorServerError)}");
+        _showServerErrorDialog(context);
         break;
       case NetworkResponse.Unauthorized:
         _showMessage("${_translations.text(LauncherText.errorUnauthorized)}");
@@ -511,5 +489,55 @@ class ScreenList extends StatelessWidget {
           await Share.shareFiles(["$result.zip"]);
       }
     }
+  }
+
+  void _showServerErrorDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text(_parent.translation.text(LauncherText.ok)),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget downloadButton = ElevatedButton(
+        onPressed: () async {
+          Email email = Email(
+            body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
+            subject: Intl.of(context).onboardEmailSubject,
+          );
+          await FlutterEmailSender.send(email);
+        },
+        child: Text(_parent.translation.text(LauncherText.sendDownload),
+            style: TextStyle(color: Colors.white)));
+    Widget tipsButton = ElevatedButton(
+        onPressed: () async {
+          String url = "https://github.com/Terence-D/GamingInterfaceCommandServer/wiki#Notes";
+          if (await canLaunch(url)) {
+            await launch(url);
+          } else {
+            throw 'Could not launch $url';
+          }
+        },
+        child: Text(_parent.translation.text(LauncherText.sendTips))
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text(_parent.translation.text(LauncherText.serverError)),
+      content: Text(_translations.text(LauncherText.serverErrorDetails)),
+      actions: [
+        cancelButton,
+        downloadButton,
+        tipsButton
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
