@@ -30,6 +30,7 @@ class DesignTab extends BaseTab {
 class DesignTabState extends BaseTabState {
   String switchText;
   final List<TextEditingController> textControllers = [];
+  Orientation orientation;
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class DesignTabState extends BaseTabState {
 
   @override
   Widget build(BuildContext context) {
+    orientation = MediaQuery.of(context).orientation;
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
     String detailsText =
         widget.translation.text(ScreenEditorText.designTabDetails);
@@ -300,7 +302,6 @@ class DesignTabState extends BaseTabState {
             ControlViewModelType.Text)
         buttons.add(_importButton());
 
-    Orientation orientation = MediaQuery.of(context).orientation;
     if (orientation == Orientation.portrait) {
       return Column(children:buttons, mainAxisAlignment: MainAxisAlignment.spaceEvenly);
     } else {
