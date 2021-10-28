@@ -75,7 +75,8 @@ enum LauncherText {
   serverErrorDetails,
   sendTips,
   sendDownload,
-  linkToTips
+  linkToTips,
+  connecting
 }
 
 class IntlLauncher {
@@ -160,6 +161,7 @@ class IntlLauncher {
       LauncherText.serverErrorDetails: 'Unable to connect to the PC.  If you haven\'t already, download the software for your PC first by visiting https://github.com/Terence-D/GamingInterfaceCommandServer/releases.  Alternatively you can click the Send Download button below, and it will allow you to email the link to yourself, which you can open on your PC.  If you already have the server running, you can click on the link below to view some troubleshooting tips',
       LauncherText.sendDownload: 'Email GIC Server Link',
       LauncherText.sendTips: 'View Tips',
+      LauncherText.connecting: "Connecting..."
     }
   };
 }
