@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/fonts.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
@@ -8,9 +9,16 @@ import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
 class TextTab extends BaseTab {
   final IntlScreenEditor translation;
+  final ControlDefaults defaultControls;
   final GicEditControl gicEditControl;
 
-  TextTab({Key key, this.gicEditControl, this.translation}) : super(key: key);
+  TextTab({Key key, this.gicEditControl, this.translation, screenId, this.defaultControls})
+      : super(
+      key: key,
+      defaultControls: defaultControls,
+      gicEditControl: gicEditControl,
+      translation: translation,
+      screenId: screenId);
 
   @override
   TextTabState createState() => TextTabState();
@@ -32,7 +40,19 @@ class TextTabState extends BaseTabState {
                   style: Theme.of(context).textTheme.headline5),
               Text(widget.translation
                   .text(ScreenEditorText.textTabPrimaryDetails)),
-              _buildText(),
+              Row(
+                children: [
+                  Flexible(child: _buildText()),
+                  ElevatedButton(
+                      onPressed: () {
+                        _applyDefault();
+                      },
+                      child:
+                      Text(widget.translation
+                          .text(ScreenEditorText.applyDefaults)))
+
+                ],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -52,7 +72,8 @@ class TextTabState extends BaseTabState {
                   ),
                 ],
               ),
-              Text(widget.translation.text(ScreenEditorText.textTabFontSize)),
+              Text(widget.translation.text(ScreenEditorText.textTabFontSize),
+                  style: Theme.of(context).textTheme.headline5),
               Row(
                 children: [
                   Expanded(
@@ -166,4 +187,33 @@ class TextTabState extends BaseTabState {
       controller: controller,
     );
   }
+
+  _applyDefault() {
+    switch (widget.gicEditControl.control.type) {
+      case ControlViewModelType.Button:
+        setState(() {
+          widget.gicEditControl.control.design = widget.defaultControls.defaultButton.design;
+          widget.gicEditControl.control.images.clear();
+          for (int i=0; i < widget.defaultControls.defaultButton.images.length; i++)
+            widget.gicEditControl.control.images.add(widget.defaultControls.defaultButton.images[i]);
+          widget.gicEditControl.control.colors.clear();
+          for (int i=0; i < widget.defaultControls.defaultButton.colors.length; i++)
+            widget.gicEditControl.control.colors.add(widget.defaultControls.defaultButton.colors[i]);
+        });
+        break;
+      case ControlViewModelType.Text:
+      // TODO: Handle this case.
+        break;
+      case ControlViewModelType.Image:
+      // TODO: Handle this case.
+        break;
+      case ControlViewModelType.Toggle:
+      // TODO: Handle this case.
+        break;
+      case ControlViewModelType.QuickButton:
+      // TODO: Handle this case.
+        break;
+    }
+  }
+
 }
