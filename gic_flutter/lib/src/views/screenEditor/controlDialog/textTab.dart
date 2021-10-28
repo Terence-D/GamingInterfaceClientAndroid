@@ -112,7 +112,7 @@ class TextTabState extends BaseTabState {
   TextField _size() {
     TextEditingController controller = TextEditingController();
     textControllers.add(controller);
-    controller.text = widget.gicEditControl.control.font.size.toString();
+    controller.text = widget.gicEditControl.control.font.size.toInt().toString();
     controller.addListener(() {
       widget.gicEditControl.control.font.size = double.parse(controller.text);
     });
