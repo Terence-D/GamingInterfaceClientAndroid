@@ -258,6 +258,7 @@ class DesignTabState extends BaseTabState {
   _applyDefault() {
     switch (widget.gicEditControl.control.type) {
       case ControlViewModelType.Button:
+      case ControlViewModelType.QuickButton:
         setState(() {
           widget.gicEditControl.control.design = widget.defaultControls.defaultButton.design;
           widget.gicEditControl.control.images.clear();
@@ -268,17 +269,19 @@ class DesignTabState extends BaseTabState {
             widget.gicEditControl.control.colors.add(widget.defaultControls.defaultButton.colors[i]);
         });
         break;
-      case ControlViewModelType.Text:
-        // TODO: Handle this case.
-        break;
-      case ControlViewModelType.Image:
-        // TODO: Handle this case.
-        break;
       case ControlViewModelType.Toggle:
-        // TODO: Handle this case.
+        setState(() {
+          widget.gicEditControl.control.design = widget.defaultControls.defaultToggle.design;
+          widget.gicEditControl.control.images.clear();
+          for (int i=0; i < widget.defaultControls.defaultToggle.images.length; i++)
+            widget.gicEditControl.control.images.add(widget.defaultControls.defaultToggle.images[i]);
+          widget.gicEditControl.control.colors.clear();
+          for (int i=0; i < widget.defaultControls.defaultToggle.colors.length; i++)
+            widget.gicEditControl.control.colors.add(widget.defaultControls.defaultToggle.colors[i]);
+        });
         break;
-      case ControlViewModelType.QuickButton:
-        // TODO: Handle this case.
+      case ControlViewModelType.Text:
+      case ControlViewModelType.Image:
         break;
     }
   }

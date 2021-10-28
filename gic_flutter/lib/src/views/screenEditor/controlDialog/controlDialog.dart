@@ -100,6 +100,7 @@ class _ControlDialogState extends State<ControlDialog> {
       case ControlViewModelType.Text:
         _tabs.add(textTab());
         _tabContents.add(TextTab(
+            defaultControls: widget.screenService.defaultControls,
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
       case ControlViewModelType.Image:
@@ -127,6 +128,7 @@ class _ControlDialogState extends State<ControlDialog> {
         ));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
+            defaultControls: widget.screenService.defaultControls,
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
       case ControlViewModelType.Toggle:
@@ -144,12 +146,14 @@ class _ControlDialogState extends State<ControlDialog> {
         ));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
+            defaultControls: widget.screenService.defaultControls,
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
     }
     //everyone gets sizing
     _tabs.add(sizingTab());
     _tabContents.add(SizeTab(
+        defaultControls: widget.screenService.defaultControls,
         gicEditControl: widget.gicEditControl, translation: translation));
   }
 }

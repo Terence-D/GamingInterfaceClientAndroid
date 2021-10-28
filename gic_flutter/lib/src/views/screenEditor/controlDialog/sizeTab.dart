@@ -187,27 +187,29 @@ class SizeTabState extends BaseTabState {
   _applyDefault() {
     switch (widget.gicEditControl.control.type) {
       case ControlViewModelType.Button:
+      case ControlViewModelType.QuickButton:
         setState(() {
-          widget.gicEditControl.control.design = widget.defaultControls.defaultButton.design;
-          widget.gicEditControl.control.images.clear();
-          for (int i=0; i < widget.defaultControls.defaultButton.images.length; i++)
-            widget.gicEditControl.control.images.add(widget.defaultControls.defaultButton.images[i]);
-          widget.gicEditControl.control.colors.clear();
-          for (int i=0; i < widget.defaultControls.defaultButton.colors.length; i++)
-            widget.gicEditControl.control.colors.add(widget.defaultControls.defaultButton.colors[i]);
+          widget.gicEditControl.control.width = widget.defaultControls.defaultButton.width;
+          widget.gicEditControl.control.height = widget.defaultControls.defaultButton.height;
         });
         break;
       case ControlViewModelType.Text:
-      // TODO: Handle this case.
-        break;
-      case ControlViewModelType.Image:
-      // TODO: Handle this case.
+        setState(() {
+          widget.gicEditControl.control.width = widget.defaultControls.defaultText.width;
+          widget.gicEditControl.control.height = widget.defaultControls.defaultText.height;
+        });
         break;
       case ControlViewModelType.Toggle:
-      // TODO: Handle this case.
+        setState(() {
+          widget.gicEditControl.control.width = widget.defaultControls.defaultToggle.width;
+          widget.gicEditControl.control.height = widget.defaultControls.defaultToggle.height;
+        });
         break;
-      case ControlViewModelType.QuickButton:
-      // TODO: Handle this case.
+      case ControlViewModelType.Image:
+        setState(() {
+          widget.gicEditControl.control.width = widget.defaultControls.defaultImage.width;
+          widget.gicEditControl.control.height = widget.defaultControls.defaultImage.height;
+        });
         break;
     }
   }
