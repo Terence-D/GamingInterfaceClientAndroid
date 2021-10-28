@@ -55,18 +55,23 @@ class TextTabState extends BaseTabState {
               Text(widget.translation.text(ScreenEditorText.textTabFontSize)),
               Row(
                 children: [
-                  Slider(
-                    min: 8,
-                    max: 512,
-                    value: widget.gicEditControl.control.font.size,
-                    onChanged: (value) {
-                      setState(() {
-                        widget.gicEditControl.control.font.size =
-                            value.roundToDouble();
-                      });
-                    },
+                  Expanded(
+                    flex: 4,
+                    child: Slider(
+                      min: 8,
+                      max: 512,
+                      value: widget.gicEditControl.control.font.size,
+                      onChanged: (value) {
+                        setState(() {
+                          widget.gicEditControl.control.font.size =
+                              value.roundToDouble();
+                        });
+                      },
+                    ),
                   ),
-                  Flexible(child: _size())
+                  Expanded(
+                      flex: 1,
+                      child: _size())
                 ],
               ),
               preview(constraints)

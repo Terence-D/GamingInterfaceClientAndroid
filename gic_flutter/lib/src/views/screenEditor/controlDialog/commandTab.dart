@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/command.dart';
+import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
+import 'package:gic_flutter/src/backend/models/screen/gicControl.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
@@ -10,9 +12,14 @@ class CommandTab extends BaseTab {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
   final bool isButton;
+  final int screenId;
 
-  CommandTab({Key key, this.gicEditControl, this.translation, this.isButton})
-      : super(key: key);
+  CommandTab({Key key, this.screenId, this.gicEditControl, this.translation, this.isButton})
+      : super(
+      key: key,
+      gicEditControl: gicEditControl,
+      translation: translation,
+      screenId: screenId);
 
   @override
   CommandTabState createState() => CommandTabState();

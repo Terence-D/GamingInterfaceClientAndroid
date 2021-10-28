@@ -105,6 +105,7 @@ class _ControlDialogState extends State<ControlDialog> {
       case ControlViewModelType.Image:
         _tabs.add(designTab());
         _tabContents.add(DesignTab(
+          defaultControls: widget.screenService.defaultControls,
           gicEditControl: widget.gicEditControl,
           translation: translation,
           screenId: widget.screenId,
@@ -119,6 +120,7 @@ class _ControlDialogState extends State<ControlDialog> {
             isButton: true));
         _tabs.add(designTab());
         _tabContents.add(DesignTab(
+          defaultControls: widget.screenService.defaultControls,
           gicEditControl: widget.gicEditControl,
           translation: translation,
           screenId: widget.screenId,
@@ -135,6 +137,7 @@ class _ControlDialogState extends State<ControlDialog> {
             isButton: true));
         _tabs.add(designTab());
         _tabContents.add(DesignTab(
+          defaultControls: widget.screenService.defaultControls,
           gicEditControl: widget.gicEditControl,
           translation: translation,
           screenId: widget.screenId,
