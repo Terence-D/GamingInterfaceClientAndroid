@@ -132,7 +132,6 @@ class LauncherState extends State<Launcher> {
   }
 
   List<Widget> _widgets(snapshot, orientation) {
-    print (snapshot.data.screens.length);
     return <Widget>[
       ServerLogin(this, snapshot.data, translation, orientation, snapshot.data.screens.length),
       ScreenList(

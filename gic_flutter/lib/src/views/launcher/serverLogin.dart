@@ -36,7 +36,6 @@ class _ServerLoginState extends State<ServerLogin> {
 
   @override
   Widget build(BuildContext context) {
-    print (widget._length);
     if (_orientation == Orientation.portrait) {
       return SingleChildScrollView(
           child: Column(
@@ -138,12 +137,12 @@ class _ServerLoginState extends State<ServerLogin> {
                       children: [
                         Icon(Icons.notification_important, color: Theme.of(context).primaryColor),
                         Text(
-                            "IMPORTANT INFORMATION"),
+                            _translations.text(LauncherText.warningTitle)),
                       ],
                     ),
                     children:<Widget> [
                       ListTile(
-                          title: Text("On Android 12 you may see an erroneous message stating that GIC is using the clipboard. This is caused by the framework Flutter GIC is built with.  Flutter will be fixing it in a future release.  I am NOT reading from the clipboard.")
+                          title: Text(_translations.text(LauncherText.warningText))
                       )
                     ]);
             }
@@ -159,12 +158,12 @@ class _ServerLoginState extends State<ServerLogin> {
             children: [
               Icon(Icons.notification_important, color: Theme.of(context).primaryColor),
               Text(
-                  "Notice"),
+                  _translations.text(LauncherText.emptyWarningTitle)),
             ],
           ),
           children:<Widget> [
             ListTile(
-                title: Text("It appears you only have the default, empty screen loaded.  If you want to start with one of my pre-built screens, go into the menu and choose Show Intro.  If you want to use a previously designed screen, choose Import from the menu.  Tap on the ? at the top for further help.")
+                title: Text( _translations.text(LauncherText.emptyWarningText))
             )
           ]);
     else

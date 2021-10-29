@@ -76,7 +76,12 @@ enum LauncherText {
   sendTips,
   sendDownload,
   linkToTips,
-  connecting
+  connecting,
+
+  warningTitle,
+  warningText,
+  emptyWarningTitle,
+  emptyWarningText
 }
 
 class IntlLauncher {
@@ -161,7 +166,11 @@ class IntlLauncher {
       LauncherText.serverErrorDetails: 'Unable to connect to the PC.  If you haven\'t already, download the software for your PC first by visiting https://github.com/Terence-D/GamingInterfaceCommandServer/releases.  Alternatively you can click the Send Download button below, and it will allow you to email the link to yourself, which you can open on your PC.  If you already have the server running, you can click on the link below to view some troubleshooting tips',
       LauncherText.sendDownload: 'Email GIC Server Link',
       LauncherText.sendTips: 'View Tips',
-      LauncherText.connecting: "Connecting..."
+      LauncherText.connecting: "Connecting...",
+      LauncherText.warningTitle: "IMPORTANT INFORMATION",
+      LauncherText.warningText: "On Android 12 you may see an erroneous message stating that GIC is using the clipboard. This is caused by the framework Flutter GIC is built with.  Flutter will be fixing it in a future release.  I am NOT reading from the clipboard.",
+      LauncherText.emptyWarningTitle: "Notice",
+      LauncherText.emptyWarningText: "It appears you only have the default, empty screen loaded.  If you want to start with one of my pre-built screens, go into the menu and choose Show Intro.  If you want to use a previously designed screen, choose Import from the menu.  Tap on the ? at the top for further help."
     }
   };
 }
