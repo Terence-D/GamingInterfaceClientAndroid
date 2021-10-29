@@ -15,9 +15,10 @@ class ServerLogin extends StatefulWidget {
   final IntlLauncher _translations;
   final Orientation _orientation;
   final LauncherState _parent;
+  final int _length;
 
   const ServerLogin(
-      this._parent, this._viewModel, this._translations, this._orientation);
+      this._parent, this._viewModel, this._translations, this._orientation, this._length);
 
   @override
   State<StatefulWidget> createState() =>
@@ -35,6 +36,7 @@ class _ServerLoginState extends State<ServerLogin> {
 
   @override
   Widget build(BuildContext context) {
+    print (widget._length);
     if (_orientation == Orientation.portrait) {
       return SingleChildScrollView(
           child: Column(
@@ -50,7 +52,8 @@ class _ServerLoginState extends State<ServerLogin> {
   List<Widget> _serverInput(BuildContext context) {
     return <Widget>[
       bannerRow(context),
-      betaRow(context),
+      _warning(),
+      _noScreenWarning(),
       _addressTextWidget(),
       _portTextWidget(),
       _passwordTextWidget(),
@@ -123,37 +126,50 @@ class _ServerLoginState extends State<ServerLogin> {
   }
 
 
-
-  Widget betaRow(BuildContext context) {
+  Widget _warning() {
     return
       FutureBuilder(
           future: _checkVersion(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               if (snapshot.data > 30)
-                return _warning();
+                return ExpansionTile(
+                    title: Row(
+                      children: [
+                        Icon(Icons.notification_important, color: Theme.of(context).primaryColor),
+                        Text(
+                            "IMPORTANT INFORMATION"),
+                      ],
+                    ),
+                    children:<Widget> [
+                      ListTile(
+                          title: Text("On Android 12 you may see an erroneous message stating that GIC is using the clipboard. This is caused by the framework Flutter GIC is built with.  Flutter will be fixing it in a future release.  I am NOT reading from the clipboard.")
+                      )
+                    ]);
             }
             return SizedBox.shrink();
           });
   }
 
-  Widget _warning() {
-    return ExpansionTile(
-        title: Row(
-          children: [
-            Icon(Icons.notification_important, color: Theme.of(context).primaryColor),
-            Text(
-                "IMPORTANT INFORMATION"),
-          ],
-        ),
-        children:<Widget> [
-          ListTile(
-              title: Text("On Android 12 you may see an erroneous message stating that GIC is using the clipboard. This is caused by the framework Flutter GIC is built with.  Flutter will be fixing it in a future release.  I am NOT reading from the clipboard.")
-          )
-        ]);
+  Widget _noScreenWarning() {
+    if (widget._length == 1 && _viewModel.screens[0].name == "New Screen 0")
+      return ExpansionTile(
+          initiallyExpanded: true,
+          title: Row(
+            children: [
+              Icon(Icons.notification_important, color: Theme.of(context).primaryColor),
+              Text(
+                  "Notice"),
+            ],
+          ),
+          children:<Widget> [
+            ListTile(
+                title: Text("It appears you only have the default, empty screen loaded.  If you want to start with one of my pre-built screens, go into the menu and choose Show Intro.  If you want to use a previously designed screen, choose Import from the menu.  Tap on the ? at the top for further help.")
+            )
+          ]);
+    else
+      return SizedBox.shrink();
   }
-
-
 
   Future<int> _checkVersion() async {
     if (Platform.isAndroid) {

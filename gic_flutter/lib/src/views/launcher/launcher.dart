@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -133,8 +132,9 @@ class LauncherState extends State<Launcher> {
   }
 
   List<Widget> _widgets(snapshot, orientation) {
+    print (snapshot.data.screens.length);
     return <Widget>[
-      ServerLogin(this, snapshot.data, translation, orientation),
+      ServerLogin(this, snapshot.data, translation, orientation, snapshot.data.screens.length),
       ScreenList(
         this,
         snapshot.data.screens,
@@ -262,8 +262,12 @@ class LauncherState extends State<Launcher> {
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ui)); // ManageView()) // AboutView())
+            builder: (context) => ui)).then((value) {
+    }); // ManageView()) // AboutView())
     await launcherBloc.fetchAllPreferences();
+    setState(() {
+
+    });
   }
 
   void _showHelp() {
