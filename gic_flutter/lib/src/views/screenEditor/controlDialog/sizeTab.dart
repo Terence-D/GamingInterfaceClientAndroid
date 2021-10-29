@@ -92,7 +92,7 @@ class SizeTabState extends BaseTabState {
         icon = Icon(Icons.west, size: 26.0);
         slider = Slider(
           min: 8,
-          max: 1024,
+          max: 4000,
           value: widget.gicEditControl.control.left,
           onChanged: (value) {
             setState(() {
@@ -113,7 +113,7 @@ class SizeTabState extends BaseTabState {
         icon = Icon(Icons.north, size: 26.0);
         slider = Slider(
           min: 8,
-          max: 1024,
+          max: 4000,
           value: widget.gicEditControl.control.top,
           onChanged: (value) {
             setState(() {
