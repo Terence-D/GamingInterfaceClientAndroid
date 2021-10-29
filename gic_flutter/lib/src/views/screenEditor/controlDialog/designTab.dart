@@ -58,13 +58,13 @@ class DesignTabState extends BaseTabState {
               Text(widget.translation.text(ScreenEditorText.designTabHeader),
                   style: Theme.of(context).textTheme.headline5),
               Text(detailsText),
-              Visibility(
-                  visible: widget.gicEditControl.control.type !=
-                      ControlViewModelType.Image,
-                  child: Column(children: [
-                    _imageToggleAndDefault(),
-                    _designButtons(),
-                  ])),
+              Column(children: [
+                Visibility(
+                    visible: widget.gicEditControl.control.type !=
+                        ControlViewModelType.Image,
+                    child: _imageToggleAndDefault()),
+                _designButtons(),
+              ]),
               preview(constraints)
             ],
           );
@@ -290,14 +290,17 @@ class DesignTabState extends BaseTabState {
 
   _designButtons() {
     List<Widget> buttons = [];
-    if (widget.gicEditControl.control.design == ControlDesignType.Image) {
-      buttons.add(_imageButton(0));
-      buttons.add(_imageButton(1));
-    } else {
-      buttons.add(_colorButton(0));
-      buttons.add(_colorButton(1));
-    }
 
+    if (widget.gicEditControl.control.type !=
+        ControlViewModelType.Image){
+      if (widget.gicEditControl.control.design == ControlDesignType.Image) {
+        buttons.add(_imageButton(0));
+        buttons.add(_imageButton(1));
+      } else {
+        buttons.add(_colorButton(0));
+        buttons.add(_colorButton(1));
+      }
+    }
     if ( widget.gicEditControl.control.type !=
             ControlViewModelType.Text)
         buttons.add(_importButton());

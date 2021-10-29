@@ -74,7 +74,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
 
   Container _controlCard(int index, BuildContext context) {
     return Container(
-        height: 160,
+        height: 180,
         width: double.maxFinite,
         child: Card(
           elevation: 5,
@@ -110,34 +110,51 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
                 ],
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Switch(
-                    value: widget.state.viewModel.controls[index].isSwitch,
-                    onChanged: (bool value) {
-                    _updateState(index, isSwitch: value);  }
-                    ),
-                  Text(controlTypeText[index]),
-
-                  Switch(
-                      value: widget.state.viewModel.controls[index].ctrl,
-                      onChanged: (bool value) {
-                        _updateState(index, ctrl: value);  }
+                  Column(
+                    children: [
+                      Switch(
+                        value: widget.state.viewModel.controls[index].isSwitch,
+                        onChanged: (bool value) {
+                        _updateState(index, isSwitch: value);  }
+                        ),
+                      Text(controlTypeText[index]),
+                    ],
                   ),
-                  Text(widget.state.translation.text(NewScreenWizardText.ctrl)),
 
-                  Switch(
-                      value: widget.state.viewModel.controls[index].alt,
-                      onChanged: (bool value) {
-                        _updateState(index, alt: value);  }
+                  Column(
+                    children: [
+                      Switch(
+                          value: widget.state.viewModel.controls[index].ctrl,
+                          onChanged: (bool value) {
+                            _updateState(index, ctrl: value);  }
+                      ),
+                      Text(widget.state.translation.text(NewScreenWizardText.ctrl)),
+                    ],
                   ),
-                  Text(widget.state.translation.text(NewScreenWizardText.alt)),
 
-                  Switch(
-                      value: widget.state.viewModel.controls[index].shift,
-                      onChanged: (bool value) {
-                        _updateState(index, shift: value);  }
+                  Column(
+                    children: [
+                      Switch(
+                          value: widget.state.viewModel.controls[index].alt,
+                          onChanged: (bool value) {
+                            _updateState(index, alt: value);  }
+                      ),
+                      Text(widget.state.translation.text(NewScreenWizardText.alt)),
+                    ],
                   ),
-                  Text(widget.state.translation.text(NewScreenWizardText.shift)),
+
+                  Column(
+                    children: [
+                      Switch(
+                          value: widget.state.viewModel.controls[index].shift,
+                          onChanged: (bool value) {
+                            _updateState(index, shift: value);  }
+                      ),
+                      Text(widget.state.translation.text(NewScreenWizardText.shift)),
+                    ],
+                  ),
                 ],
               ),
             ],
