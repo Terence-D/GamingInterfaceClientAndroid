@@ -61,6 +61,7 @@ enum ScreenEditorText {
   helpSizeDetails,
   helpQuitHeader,
   helpQuitDetails,
+  applyDefaults
 }
 
 class IntlScreenEditor {
@@ -140,6 +141,7 @@ class IntlScreenEditor {
       ScreenEditorText.helpSizeDetails: "You can also quickly adjust the scale of the Control by using your fingers to Pinch to Zoom.  This will probably be tweaked as its fairly difficult to use, but is another alternative to the more precise editing in the Edit Control view mentioned earlier ReYou can Size a Control by holding your finger down and dragging it to where you want it to.  Although less precise than using the Edit option (previous help tip), it allows a quick way to adjust your screen quickly.  You can also use the Grid option in the previous menu to make it easier to line Controls up with each other.",
       ScreenEditorText.helpQuitHeader:"Quit",
       ScreenEditorText.helpQuitDetails:"Exiting the Screen editor can be done the same way as any other full screen app on your device.  If buttons are visible, you can press the Back button, or swipe from one of the edges of the screen.",
+      ScreenEditorText.applyDefaults:"Apply Defaults",
     }
   };
 }

@@ -100,11 +100,13 @@ class _ControlDialogState extends State<ControlDialog> {
       case ControlViewModelType.Text:
         _tabs.add(textTab());
         _tabContents.add(TextTab(
+            defaultControls: widget.screenService.defaultControls,
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
       case ControlViewModelType.Image:
         _tabs.add(designTab());
         _tabContents.add(DesignTab(
+          defaultControls: widget.screenService.defaultControls,
           gicEditControl: widget.gicEditControl,
           translation: translation,
           screenId: widget.screenId,
@@ -119,12 +121,14 @@ class _ControlDialogState extends State<ControlDialog> {
             isButton: true));
         _tabs.add(designTab());
         _tabContents.add(DesignTab(
+          defaultControls: widget.screenService.defaultControls,
           gicEditControl: widget.gicEditControl,
           translation: translation,
           screenId: widget.screenId,
         ));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
+            defaultControls: widget.screenService.defaultControls,
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
       case ControlViewModelType.Toggle:
@@ -135,18 +139,21 @@ class _ControlDialogState extends State<ControlDialog> {
             isButton: true));
         _tabs.add(designTab());
         _tabContents.add(DesignTab(
+          defaultControls: widget.screenService.defaultControls,
           gicEditControl: widget.gicEditControl,
           translation: translation,
           screenId: widget.screenId,
         ));
         _tabs.add(textTab());
         _tabContents.add(TextTab(
+            defaultControls: widget.screenService.defaultControls,
             gicEditControl: widget.gicEditControl, translation: translation));
         break;
     }
     //everyone gets sizing
     _tabs.add(sizingTab());
     _tabContents.add(SizeTab(
+        defaultControls: widget.screenService.defaultControls,
         gicEditControl: widget.gicEditControl, translation: translation));
   }
 }

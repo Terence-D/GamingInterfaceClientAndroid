@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/command.dart';
+import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
+import 'package:gic_flutter/src/backend/models/screen/gicControl.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
@@ -10,9 +12,14 @@ class CommandTab extends BaseTab {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
   final bool isButton;
+  final int screenId;
 
-  CommandTab({Key key, this.gicEditControl, this.translation, this.isButton})
-      : super(key: key);
+  CommandTab({Key key, this.screenId, this.gicEditControl, this.translation, this.isButton})
+      : super(
+      key: key,
+      gicEditControl: gicEditControl,
+      translation: translation,
+      screenId: screenId);
 
   @override
   CommandTabState createState() => CommandTabState();
@@ -23,6 +30,7 @@ class CommandTabState extends BaseTabState {
   final AutoItKeyMap _commandList = AutoItKeyMap();
   final List<String> _dropDownItems = [];
   String switchText;
+  Orientation orientation;
 
   @override
   void initState() {
@@ -42,6 +50,7 @@ class CommandTabState extends BaseTabState {
 
   @override
   Widget build(BuildContext context) {
+    orientation = MediaQuery.of(context).orientation;
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
     return SingleChildScrollView(
       child: Container(
@@ -63,8 +72,7 @@ class CommandTabState extends BaseTabState {
                 visible: widget.gicEditControl.control.type !=
                     ControlViewModelType.Toggle,
               ),
-              buildCommandDropDown(0),
-              Row(children: modifierCheckboxes(0)),
+              _buildCommandWidgets(0),
               const Divider(
                 height: 40,
                 thickness: 5,
@@ -76,25 +84,13 @@ class CommandTabState extends BaseTabState {
                     children: [
                       Text(widget.translation
                           .text(ScreenEditorText.commandTabSecondaryDetails)),
-                      buildCommandDropDown(1),
-                      Row(children: modifierCheckboxes(1))
+                      _buildCommandWidgets(1),
                     ],
                   ),
                   visible: widget.gicEditControl.control.type ==
                       ControlViewModelType.Toggle),
               Visibility(
-                  child: Column(
-                    children: [
-                      Text(widget.translation
-                          .text(ScreenEditorText.commandTabQuickModeDetails)),
-                      Row(
-                        children: [
-                          Text(switchText),
-                          buildQuickMode(),
-                        ],
-                      )
-                    ],
-                  ),
+                  child: _quickCommandDetails(),
                   visible: widget.gicEditControl.control.type ==
                           ControlViewModelType.Button ||
                       widget.gicEditControl.control.type ==
@@ -206,5 +202,57 @@ class CommandTabState extends BaseTabState {
             }
           });
         });
+  }
+
+  Widget _buildCommandWidgets(int index) {
+    if (orientation == Orientation.portrait) {
+      return Column(
+        children: [
+          buildCommandDropDown(index),
+          Row(children: modifierCheckboxes(index)),
+        ],
+      );
+    } else {
+      List<Widget> modifiers = [];
+      modifiers.add (Flexible(child: buildCommandDropDown(index)));
+      modifiers.addAll(modifierCheckboxes(index));
+      return Row (children: modifiers);
+    }
+  }
+
+  Widget _quickCommandDetails() {
+    if (orientation == Orientation.portrait) {
+      return Column(
+        children: [
+          Text(widget.translation
+              .text(ScreenEditorText.commandTabQuickModeDetails)),
+          Row(
+            children: [
+              Text(switchText),
+              buildQuickMode(),
+            ],
+          )
+        ],
+      );
+    }   else {
+      return Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Text(widget.translation
+                .text(ScreenEditorText.commandTabQuickModeDetails)),
+          ),
+          Expanded(
+            flex: 1,
+            child: Column(
+              children: [
+                Text(switchText),
+                buildQuickMode(),
+              ],
+            ),
+          )
+        ],
+      );
+    }
   }
 }

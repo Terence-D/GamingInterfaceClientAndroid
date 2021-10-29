@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/views/screen/gicControl.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
@@ -7,8 +8,9 @@ abstract class BaseTab extends StatefulWidget {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
   final int screenId;
+  final ControlDefaults defaultControls;
 
-  BaseTab({Key key, this.gicEditControl, this.translation, this.screenId})
+  BaseTab({Key key, this.gicEditControl, this.translation, this.screenId, this.defaultControls})
       : super(key: key);
 }
 
