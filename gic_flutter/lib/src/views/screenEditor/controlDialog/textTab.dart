@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/fonts.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
@@ -8,9 +9,16 @@ import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 
 class TextTab extends BaseTab {
   final IntlScreenEditor translation;
+  final ControlDefaults defaultControls;
   final GicEditControl gicEditControl;
 
-  TextTab({Key key, this.gicEditControl, this.translation}) : super(key: key);
+  TextTab({Key key, this.gicEditControl, this.translation, screenId, this.defaultControls})
+      : super(
+      key: key,
+      defaultControls: defaultControls,
+      gicEditControl: gicEditControl,
+      translation: translation,
+      screenId: screenId);
 
   @override
   TextTabState createState() => TextTabState();
@@ -32,7 +40,19 @@ class TextTabState extends BaseTabState {
                   style: Theme.of(context).textTheme.headline5),
               Text(widget.translation
                   .text(ScreenEditorText.textTabPrimaryDetails)),
-              _buildText(),
+              Row(
+                children: [
+                  Flexible(child: _buildText()),
+                  ElevatedButton(
+                      onPressed: () {
+                        _applyDefault();
+                      },
+                      child:
+                      Text(widget.translation
+                          .text(ScreenEditorText.applyDefaults)))
+
+                ],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -52,21 +72,27 @@ class TextTabState extends BaseTabState {
                   ),
                 ],
               ),
-              Text(widget.translation.text(ScreenEditorText.textTabFontSize)),
+              Text(widget.translation.text(ScreenEditorText.textTabFontSize),
+                  style: Theme.of(context).textTheme.headline5),
               Row(
                 children: [
-                  Slider(
-                    min: 8,
-                    max: 512,
-                    value: widget.gicEditControl.control.font.size,
-                    onChanged: (value) {
-                      setState(() {
-                        widget.gicEditControl.control.font.size =
-                            value.roundToDouble();
-                      });
-                    },
+                  Expanded(
+                    flex: 4,
+                    child: Slider(
+                      min: 8,
+                      max: 512,
+                      value: widget.gicEditControl.control.font.size,
+                      onChanged: (value) {
+                        setState(() {
+                          widget.gicEditControl.control.font.size =
+                              value.roundToDouble();
+                        });
+                      },
+                    ),
                   ),
-                  Flexible(child: _size())
+                  Expanded(
+                      flex: 1,
+                      child: _size())
                 ],
               ),
               preview(constraints)
@@ -86,7 +112,7 @@ class TextTabState extends BaseTabState {
   TextField _size() {
     TextEditingController controller = TextEditingController();
     textControllers.add(controller);
-    controller.text = widget.gicEditControl.control.font.size.toString();
+    controller.text = widget.gicEditControl.control.font.size.toInt().toString();
     controller.addListener(() {
       widget.gicEditControl.control.font.size = double.parse(controller.text);
     });
@@ -161,4 +187,34 @@ class TextTabState extends BaseTabState {
       controller: controller,
     );
   }
+
+  _applyDefault() {
+    switch (widget.gicEditControl.control.type) {
+      case ControlViewModelType.Button:
+      case ControlViewModelType.QuickButton:
+        setState(() {
+          widget.gicEditControl.control.font.color = widget.defaultControls.defaultButton.font.color;
+          widget.gicEditControl.control.font.family = widget.defaultControls.defaultButton.font.family;
+          widget.gicEditControl.control.font.size = widget.defaultControls.defaultButton.font.size;
+        });
+        break;
+      case ControlViewModelType.Text:
+        setState(() {
+          widget.gicEditControl.control.font.color = widget.defaultControls.defaultText.font.color;
+          widget.gicEditControl.control.font.family = widget.defaultControls.defaultText.font.family;
+          widget.gicEditControl.control.font.size = widget.defaultControls.defaultText.font.size;
+        });
+        break;
+      case ControlViewModelType.Toggle:
+        setState(() {
+          widget.gicEditControl.control.font.color = widget.defaultControls.defaultToggle.font.color;
+          widget.gicEditControl.control.font.family = widget.defaultControls.defaultToggle.font.family;
+          widget.gicEditControl.control.font.size = widget.defaultControls.defaultToggle.font.size;
+        });
+        break;
+      case ControlViewModelType.Image:
+        break;
+    }
+  }
+
 }

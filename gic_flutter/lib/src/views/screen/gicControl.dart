@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/baseGicControl.dart';
+import 'package:gic_flutter/src/views/screen/screenView.dart';
 
 class GicControl extends BaseGicControl {
   final NetworkModel networkModel;
   final BoxConstraints constraints;
+  final ScreenView screenView;
 
   GicControl(
-      {Key key,
-      @required control,
-      @required this.networkModel,
-      @required pixelRatio,
-      this.constraints})
+      {
+        Key key,
+        @required control,
+        @required this.networkModel,
+        @required pixelRatio,
+        @required this.screenView,
+        this.constraints
+      })
       : super(
             key: key,
             control: control,
@@ -41,22 +47,9 @@ class GicButtonState extends BaseGicControlState {
       @required this.constraints})
       : super(control: control, pixelRatio: pixelRatio);
 
-  Future<void> sendCommand(String commandUrl, int commandIndex) async {
-    if (networkModel != null) {
-      NetworkResponse response = await NetworkService.sendCommand(
-          networkModel, commandUrl, control.commands[commandIndex]);
-      if (response == NetworkResponse.Error) {
-        await Fluttertoast.showToast(
-          msg: "Error Connecting to Server",
-          toastLength: Toast.LENGTH_SHORT,
-        );
-      } else if (response == NetworkResponse.Unauthorized) {
-        await Fluttertoast.showToast(
-          msg: "Unauthorized, check that the passwords match",
-          toastLength: Toast.LENGTH_SHORT,
-        );
-      }
-    }
+  void sendCommand(String commandUrl, int commandIndex, bool provideFeedback) {
+    if ((widget as GicControl).screenView != null)
+      (widget as GicControl).screenView.sendCommand(control, commandUrl, commandIndex, provideFeedback).ignore();
   }
 
   GestureDetector buildControl() {

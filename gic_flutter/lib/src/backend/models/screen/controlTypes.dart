@@ -41,7 +41,11 @@ class ControlTypes {
         "switch_off",
         "switch_on",
         "toggle_off",
-        "toggle_on"
+        "toggle_on",
+        "lever_off",
+        "lever_on",
+        "button_toggle_off",
+        "button_toggle_on"
     ];
 
 }

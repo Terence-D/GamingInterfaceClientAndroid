@@ -268,6 +268,7 @@ class ScreenEditorState extends State<ScreenEditor> {
           return ControlDialog(
               translation: translation,
               screenId: _service.activeScreenViewModel.screenId,
+              screenService: _service,
               gicEditControl: GicEditControl(
                 gridSize: gridSize,
                 pixelRatio: pixelRatio,

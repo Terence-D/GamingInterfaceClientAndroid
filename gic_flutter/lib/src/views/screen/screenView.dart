@@ -1,28 +1,28 @@
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gic_flutter/src/backend/models/networkModel.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
-import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
+import 'package:gic_flutter/src/backend/services/networkService.dart';
+import 'package:gic_flutter/src/views/screen/screenVM.dart';
 
 import 'gicControl.dart';
-
 
 /// Wrapper for stateful functionality to provide onInit calls in our stateless
 /// screenview widget
 class ScreenViewStatefulWrapper extends StatefulWidget {
-  final ScreenViewModel screen;
-  final NetworkModel networkModel;
-  const ScreenViewStatefulWrapper({@required this.screen, @required this.networkModel});
+  final ScreenVM viewModel;
+
+  const ScreenViewStatefulWrapper({@required this.viewModel});
   @override
-  _StatefulWrapperState createState() => _StatefulWrapperState(this.screen, this.networkModel);
+  _StatefulWrapperState createState() => _StatefulWrapperState(this.viewModel);
 }
 class _StatefulWrapperState extends State<ScreenViewStatefulWrapper> {
-  final ScreenViewModel screen;
-  final NetworkModel networkModel;
+  final ScreenVM viewModel;
 
-  _StatefulWrapperState(this.screen, this.networkModel);
+  _StatefulWrapperState(this.viewModel);
 
   @override
   void initState() {
@@ -31,28 +31,27 @@ class _StatefulWrapperState extends State<ScreenViewStatefulWrapper> {
   }
   @override
   Widget build(BuildContext context) {
-    return ScreenView(screen: screen, networkModel: networkModel);
+    return ScreenView(screenVM: viewModel);
   }
 }
-
-
 class ScreenView extends StatelessWidget {
   final List<Widget> widgets = [];
-  final ScreenViewModel screen;
-  final NetworkModel networkModel;
+  final ScreenVM screenVM;
+  final AudioCache player = new AudioCache();
+  final alarmAudioPath = "audio/flick.wav";
 
-  ScreenView({Key key, @required this.screen, @required this.networkModel});
+  ScreenView({Key key, @required this.screenVM});
 
   @override
   Widget build(BuildContext context) {
     double pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    if (screen != null) {
-      screen.controls.forEach((element) {
+    if (screenVM.screen != null) {
+      screenVM.screen.controls.forEach((element) {
         widgets.add(_buildGicControl(element, pixelRatio));
       });
     }
 
-    if (screen.backgroundPath != null && screen.backgroundPath.isNotEmpty) {
+    if (screenVM.screen.backgroundPath != null && screenVM.screen.backgroundPath.isNotEmpty) {
       imageCache.clear();
       imageCache.clearLiveImages();
 
@@ -60,7 +59,7 @@ class ScreenView extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: FileImage(File(screen.backgroundPath)),
+              image: FileImage(File(screenVM.screen.backgroundPath)),
               fit: BoxFit.fill,
             ),
           ),
@@ -70,7 +69,7 @@ class ScreenView extends StatelessWidget {
     } else {
       return Scaffold(
         body: Container(
-          color: screen.backgroundColor,
+          color: screenVM.screen.backgroundColor,
           child: Stack(children: widgets),
         ),
       );
@@ -83,8 +82,42 @@ class ScreenView extends StatelessWidget {
         top: element.top / pixelRatio,
         child: GicControl(
             control: element,
-            networkModel: networkModel,
+            networkModel: screenVM.networkModel,
+            screenView: this,
             pixelRatio: pixelRatio));
   }
 
+  Future<void> sendCommand(ControlViewModel control, String commandUrl, int commandIndex, bool provideFeedback) async {
+    if (provideFeedback) {
+      playSound();
+      vibration();
+    }
+    if (screenVM.networkModel != null) {
+      NetworkResponse response = await NetworkService.sendCommand(
+          screenVM.networkModel, commandUrl, control.commands[commandIndex]);
+      if (response == NetworkResponse.Error) {
+        await Fluttertoast.showToast(
+          msg: "Error Connecting to Server",
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      } else if (response == NetworkResponse.Unauthorized) {
+        await Fluttertoast.showToast(
+          msg: "Unauthorized, check that the passwords match",
+          toastLength: Toast.LENGTH_SHORT,
+        );
+      }
+    }
+  }
+
+  void playSound() {
+    if (screenVM.playSound) {
+      player.play(alarmAudioPath);
+    }
+  }
+
+  void vibration() {
+    if (screenVM.vibration) {
+      HapticFeedback.lightImpact().ignore();
+    }
+  }
 }

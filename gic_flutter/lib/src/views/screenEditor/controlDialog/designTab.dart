@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
+import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/colorPickerDialog.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
@@ -11,9 +12,13 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class DesignTab extends BaseTab {
-  DesignTab({Key key, gicEditControl, translation, screenId})
+  final ControlDefaults defaultControls;
+  final IntlScreenEditor translation;
+
+  DesignTab({Key key, gicEditControl, this.translation, screenId, this.defaultControls})
       : super(
             key: key,
+            defaultControls: defaultControls,
             gicEditControl: gicEditControl,
             translation: translation,
             screenId: screenId);
@@ -25,6 +30,7 @@ class DesignTab extends BaseTab {
 class DesignTabState extends BaseTabState {
   String switchText;
   final List<TextEditingController> textControllers = [];
+  Orientation orientation;
 
   @override
   void initState() {
@@ -34,6 +40,7 @@ class DesignTabState extends BaseTabState {
 
   @override
   Widget build(BuildContext context) {
+    orientation = MediaQuery.of(context).orientation;
     pixelRatio = MediaQuery.of(context).devicePixelRatio;
     String detailsText =
         widget.translation.text(ScreenEditorText.designTabDetails);
@@ -51,27 +58,13 @@ class DesignTabState extends BaseTabState {
               Text(widget.translation.text(ScreenEditorText.designTabHeader),
                   style: Theme.of(context).textTheme.headline5),
               Text(detailsText),
-              Visibility(
-                  visible: widget.gicEditControl.control.type !=
-                      ControlViewModelType.Image,
-                  child: Column(children: [
-                    _imageToggle(),
-                    _imageButton(0),
-                    _imageButton(1),
-                  ])),
-              Visibility(
-                  visible: widget.gicEditControl.control.type !=
-                          ControlViewModelType.Image &&
-                      widget.gicEditControl.control.design ==
-                          ControlDesignType.UpDownGradient,
-                  child: Column(children: [
-                    _colorButton(0),
-                    _colorButton(1),
-                  ])),
-              Visibility(
-                  visible: widget.gicEditControl.control.type !=
-                      ControlViewModelType.Text,
-                  child: Column(children: [_importButton()])),
+              Column(children: [
+                Visibility(
+                    visible: widget.gicEditControl.control.type !=
+                        ControlViewModelType.Image,
+                    child: _imageToggleAndDefault()),
+                _designButtons(),
+              ]),
               preview(constraints)
             ],
           );
@@ -86,32 +79,50 @@ class DesignTabState extends BaseTabState {
     super.dispose();
   }
 
-  Widget _imageToggle() {
+  Widget _imageToggleAndDefault() {
+    if (widget.gicEditControl.control.design == ControlDesignType.UpDownGradient) {
+      switchText = widget.translation.text(ScreenEditorText.designTabColorBased);
+    } else {
+      switchText =
+          widget.translation.text(ScreenEditorText.designTabImageBased);
+    }
     return Column(
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text(switchText),
-            Switch(
-              value: (widget.gicEditControl.control.design ==
-                  ControlDesignType.Image),
-              onChanged: (value) {
-                setState(() {
-                  if (widget.gicEditControl.control.design ==
-                      ControlDesignType.Image) {
-                    widget.gicEditControl.control.design =
-                        ControlDesignType.UpDownGradient;
-                    switchText = widget.translation
-                        .text(ScreenEditorText.designTabColorBased);
-                  } else {
-                    widget.gicEditControl.control.design =
-                        ControlDesignType.Image;
-                    switchText = widget.translation
-                        .text(ScreenEditorText.designTabImageBased);
-                  }
-                });
-              },
+            Row(
+              children: [
+                Text(switchText),
+                Switch(
+                  value: (widget.gicEditControl.control.design ==
+                      ControlDesignType.Image),
+                  onChanged: (value) {
+                    setState(() {
+                      if (widget.gicEditControl.control.design ==
+                          ControlDesignType.Image) {
+                        widget.gicEditControl.control.design =
+                            ControlDesignType.UpDownGradient;
+                        switchText = widget.translation
+                            .text(ScreenEditorText.designTabColorBased);
+                      } else {
+                        widget.gicEditControl.control.design =
+                            ControlDesignType.Image;
+                        switchText = widget.translation
+                            .text(ScreenEditorText.designTabImageBased);
+                      }
+                    });
+                  },
+                ),
+              ],
             ),
+            ElevatedButton(
+                onPressed: () {
+                  _applyDefault();
+                },
+                child:
+                Text(widget.translation
+                    .text(ScreenEditorText.applyDefaults)))
           ],
         ),
       ],
@@ -195,15 +206,12 @@ class DesignTabState extends BaseTabState {
   }
 
   Widget _importButton() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ElevatedButton(
-          onPressed: () {
-            _importImage();
-          },
-          child:
-              Text(widget.translation.text(ScreenEditorText.designTabImport))),
-    );
+    return ElevatedButton(
+        onPressed: () {
+          _importImage();
+        },
+        child:
+            Text(widget.translation.text(ScreenEditorText.designTabImport)));
   }
 
   Future<void> _importImage() async {
@@ -247,5 +255,60 @@ class DesignTabState extends BaseTabState {
       }
     }
     return newFile;
+  }
+
+  _applyDefault() {
+    switch (widget.gicEditControl.control.type) {
+      case ControlViewModelType.Button:
+      case ControlViewModelType.QuickButton:
+        setState(() {
+          widget.gicEditControl.control.design = widget.defaultControls.defaultButton.design;
+          widget.gicEditControl.control.images.clear();
+          for (int i=0; i < widget.defaultControls.defaultButton.images.length; i++)
+            widget.gicEditControl.control.images.add(widget.defaultControls.defaultButton.images[i]);
+          widget.gicEditControl.control.colors.clear();
+          for (int i=0; i < widget.defaultControls.defaultButton.colors.length; i++)
+            widget.gicEditControl.control.colors.add(widget.defaultControls.defaultButton.colors[i]);
+        });
+        break;
+      case ControlViewModelType.Toggle:
+        setState(() {
+          widget.gicEditControl.control.design = widget.defaultControls.defaultToggle.design;
+          widget.gicEditControl.control.images.clear();
+          for (int i=0; i < widget.defaultControls.defaultToggle.images.length; i++)
+            widget.gicEditControl.control.images.add(widget.defaultControls.defaultToggle.images[i]);
+          widget.gicEditControl.control.colors.clear();
+          for (int i=0; i < widget.defaultControls.defaultToggle.colors.length; i++)
+            widget.gicEditControl.control.colors.add(widget.defaultControls.defaultToggle.colors[i]);
+        });
+        break;
+      case ControlViewModelType.Text:
+      case ControlViewModelType.Image:
+        break;
+    }
+  }
+
+  _designButtons() {
+    List<Widget> buttons = [];
+
+    if (widget.gicEditControl.control.type !=
+        ControlViewModelType.Image){
+      if (widget.gicEditControl.control.design == ControlDesignType.Image) {
+        buttons.add(_imageButton(0));
+        buttons.add(_imageButton(1));
+      } else {
+        buttons.add(_colorButton(0));
+        buttons.add(_colorButton(1));
+      }
+    }
+    if ( widget.gicEditControl.control.type !=
+            ControlViewModelType.Text)
+        buttons.add(_importButton());
+
+    if (orientation == Orientation.portrait) {
+      return Column(children:buttons, mainAxisAlignment: MainAxisAlignment.spaceEvenly);
+    } else {
+      return Row(children:buttons, mainAxisAlignment: MainAxisAlignment.spaceEvenly);
+    }
   }
 }

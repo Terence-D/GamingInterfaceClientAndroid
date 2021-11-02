@@ -48,7 +48,7 @@ class NetworkService {
       String basicAuth =
       base64Encode(Latin1Codec().encode('gic:${networkModel.password}'));
       headers["Authorization"] = 'Basic $basicAuth';
-      Response response = await http.post(url, headers: headers);
+      Response response = await http.post(url, headers: headers).timeout(const Duration(seconds: 5));
 
       if (response != null && response.statusCode < 500) {
         // If the server did return a 200 OK response then parse the JSON.

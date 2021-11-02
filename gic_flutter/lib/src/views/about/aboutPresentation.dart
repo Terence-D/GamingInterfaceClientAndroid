@@ -56,6 +56,11 @@ class AboutPresentation implements BasePresentation {
     List<ViewSection> libraries = <ViewSection>[];
 
     libraries.add(ViewSection(
+      Intl.of(context).about(AboutText.oxoTitle),
+      Intl.of(context).about(AboutText.oxoText),
+      Intl.of(context).about(AboutText.oxoUrl),
+    ));
+    libraries.add(ViewSection(
       Intl.of(context).about(AboutText.cryptoTitle),
       Intl.of(context).about(AboutText.cryptoText),
       Intl.of(context).about(AboutText.cryptoUrl),

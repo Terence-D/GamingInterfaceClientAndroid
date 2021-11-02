@@ -11,6 +11,7 @@ import 'package:rxdart/rxdart.dart';
 class LauncherBloc {
   LauncherRepository _repository;
   PublishSubject _modelFetcher;
+  LauncherModel itemModel;
 
   LauncherBloc() {
     this._repository = LauncherRepository();
@@ -26,7 +27,7 @@ class LauncherBloc {
 
    /// Loads the preferences from the repository, and adds to the sink
   Future<void> fetchAllPreferences() async {
-    LauncherModel itemModel = await _repository.fetch();
+    itemModel = await _repository.fetch();
     _modelFetcher.sink.add(itemModel);
   }
 
@@ -37,13 +38,6 @@ class LauncherBloc {
   /// @param password Secret for securing the connection to the GIC server
   void saveConnectionSettings(NetworkModel networkModel) {
     _repository.saveMainSettings(networkModel);
-  }
-
-  /// Sets the theme to be light or dark
-  ///
-  /// @param isDarkMode if true, makes it dark.  if false, sets it to light mode
-  void setTheme(bool isDarkMode) {
-    _repository.setDarkMode(isDarkMode);
   }
 
   /// Sets the purchase value
@@ -104,6 +98,14 @@ class LauncherBloc {
 
   List getDimensions(BuildContext context) {
     return _repository.buildDimensions(context);
+  }
+
+  bool getSound() {
+    return itemModel.sound;
+  }
+
+  bool getVibration() {
+    return itemModel.vibration;
   }
 
   /// and resizes the screen to fit the devices dimensions

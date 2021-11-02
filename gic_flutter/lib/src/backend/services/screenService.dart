@@ -184,7 +184,7 @@ class ScreenService {
       ScreenViewModel newScreen = ScreenViewModel.fromJson(
           json.decode(newScreenJson.readAsStringSync()));
 
-      if (newScreen.backgroundPath.contains(originalPath))
+      if (newScreen.backgroundPath != null && newScreen.backgroundPath.contains(originalPath))
         newScreen.backgroundPath.replaceAll(originalPath, newPath);
       for (int i=0; i < newScreen.controls.length; i++) {
         for (int n=0; n < newScreen.controls[i].images.length; n++) {
