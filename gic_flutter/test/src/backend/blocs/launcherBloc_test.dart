@@ -28,17 +28,6 @@ void main() {
 
   });
 
-  test('setting theme calls the matching repo method', () async {
-    //Assign
-    LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);
-
-    //Act
-    toTest.setTheme(true);
-
-    //Assert
-    verify(mockedRepo.setDarkMode(true)).called(1);
-  });
-
   test('updating the name calls the matching repo method', () async {
     //Assign
     LauncherBloc toTest = LauncherBloc.withMocks(mockedRepo);

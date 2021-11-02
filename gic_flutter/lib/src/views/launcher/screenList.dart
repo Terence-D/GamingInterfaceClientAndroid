@@ -11,6 +11,7 @@ import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel
 import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/accentButton.dart';
+import 'package:gic_flutter/src/views/screen/screenVM.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
 import 'package:path_provider/path_provider.dart';
@@ -477,10 +478,11 @@ class _ScreenListState extends State<ScreenList> {
 
     ScreenViewModel screen = await widget._parent.launcherBloc.loadScreen(screenId);
 
+    ScreenVM viewModel = ScreenVM(screen, networkModel, widget._parent.launcherBloc.getSound(), widget._parent.launcherBloc.getVibration());
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ScreenViewStatefulWrapper(screen: screen, networkModel: networkModel)));
+            builder: (context) => ScreenViewStatefulWrapper(viewModel: viewModel)));
   }
 
   void _updateScreen(int index) {

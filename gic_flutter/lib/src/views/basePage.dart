@@ -46,7 +46,10 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
       Column(
           crossAxisAlignment: align,
           children: <Widget>[
-            header(model.title, optionalHeaderStyle),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 12, 0, 2),
+              child: header(model.title, optionalHeaderStyle),
+            ),
             Text(model.text),
             link(model.url)]
       );

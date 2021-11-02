@@ -13,6 +13,8 @@ class LauncherRepository {
   ScreenService _screenService = ScreenService();
 
   static const String _prefNightMode = "nightMode";
+  static const String _prefVibration = "vibration";
+  static const String _prefSound = "sound";
   static const String _prefPassword = "password";
   static const String _prefPort = "port";
   static const String _prefAddress = "address";
@@ -63,6 +65,16 @@ class LauncherRepository {
   /// Toggles dark mode based on newValue
   void setDarkMode(bool newValue) {
     _prefs.setBool(_prefNightMode, newValue);
+  }
+
+  /// Toggles dark mode based on newValue
+  void setSound(bool newValue) {
+    _prefs.setBool(_prefSound, newValue);
+  }
+
+  /// Toggles dark mode based on newValue
+  void setVibration(bool newValue) {
+    _prefs.setBool(_prefVibration, newValue);
   }
 
   void setDonation(String id, bool newValue) {
@@ -195,6 +207,8 @@ class LauncherRepository {
 
     //get generic info
     viewModel.darkMode = _prefs.getBool(_prefNightMode) ?? true;
+    viewModel.sound = _prefs.getBool(_prefSound) ?? false;
+    viewModel.vibration = _prefs.getBool(_prefVibration) ?? false;
     viewModel.port = _prefs.getString(_prefPort) ?? "8091";
     viewModel.address = _prefs.getString(_prefAddress) ?? "192.168.x.x";
 

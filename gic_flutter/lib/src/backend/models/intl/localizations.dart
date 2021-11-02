@@ -6,6 +6,7 @@ import 'package:gic_flutter/src/backend/models/intl/intlDonate.dart';
 
 import 'intlAbout.dart';
 import 'intlFeedback.dart';
+import 'intlOptions.dart';
 
 class IntlDelegate extends LocalizationsDelegate<Intl> {
   const IntlDelegate();
@@ -35,6 +36,10 @@ class Intl {
 
   String about(AboutText resource) {
     return IntlAbout.localizedStrings[locale.languageCode][resource];
+  }
+
+  String options(OptionsText resource) {
+    return IntlOptions.localizedStrings[locale.languageCode][resource];
   }
 
   String donate(DonateText resource) {

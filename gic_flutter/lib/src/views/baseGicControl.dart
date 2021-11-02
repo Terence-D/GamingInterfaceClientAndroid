@@ -31,7 +31,7 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
 
   BaseGicControlState({@required this.control, @required this.pixelRatio});
 
-  sendCommand(String commandUrl, int commandIndex);
+  sendCommand(String commandUrl, int commandIndex, bool provideFeedback);
 
   Widget buildControl();
 
@@ -101,7 +101,7 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
           break;
         case ControlViewModelType.Text:
         case ControlViewModelType.Image:
-          sendCommand(null, -1);
+          sendCommand(null, -1, true);
           break;
       }
     });
@@ -121,7 +121,7 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
           break;
         case ControlViewModelType.Text:
         case ControlViewModelType.Image:
-          sendCommand(null, -1);
+          sendCommand(null, -1, false);
           break;
       }
     });
@@ -155,14 +155,14 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     if (control.commands.isNotEmpty) {
       control.commands[commandIndex].activatorType = activatorType;
     }
-    sendCommand(commandType, commandIndex);
+    sendCommand(commandType, commandIndex, activatorType == Command.KEY_DOWN ? true : false);
   }
 
   void _buttonTap(String commandUrl, int activatorType, BoxDecoration status) {
     if (control.commands.isNotEmpty) {
       control.commands[0].activatorType = activatorType;
     }
-    sendCommand(commandUrl, 0);
+    sendCommand(commandUrl, 0, activatorType == Command.KEY_DOWN ? true : false);
     active = status;
   }
 
