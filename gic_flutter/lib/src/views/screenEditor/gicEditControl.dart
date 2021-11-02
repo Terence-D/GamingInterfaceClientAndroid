@@ -102,7 +102,7 @@ class GicEditControlState extends BaseGicControlState {
     });
   }
 
-  sendCommand(String commandUrl, int commandIndex) {
+  sendCommand(String commandUrl, int commandIndex, bool provideFeedback) {
     if (onSelected != null) {
       setState(() {
         onSelected(controlIndex);
