@@ -1,7 +1,10 @@
+/// TODO this should be renamed
 class LauncherModel {
   String toolbarTitle = "";
   bool firstRun = false;
   bool darkMode = true;
+  bool sound = false;
+  bool vibration = false;
   String address = "";
   String password = "";
   String port = "";

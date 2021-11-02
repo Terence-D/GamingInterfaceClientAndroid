@@ -8,13 +8,13 @@ import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:gic_flutter/src/flavor.dart';
-import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/views/about/aboutView.dart';
 import 'package:gic_flutter/src/views/donate/donateView.dart';
 import 'package:gic_flutter/src/views/feedback/feedbackView.dart';
 import 'package:gic_flutter/src/views/intro/introView.dart';
 import 'package:gic_flutter/src/views/menuOption.dart';
 import 'package:gic_flutter/src/views/newScreenWizard/newScreenWizard.dart';
+import 'package:gic_flutter/src/views/options/optionsView.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -193,7 +193,7 @@ class LauncherState extends State<Launcher> {
           title: translation.text(LauncherText.menuImport),
           icon: Icons.import_export),
       MenuOption(
-          title: translation.text(LauncherText.menuTheme),
+          title: translation.text(LauncherText.menuOptions),
           icon: Icons.color_lens),
       MenuOption(
           title: translation.text(LauncherText.menuIntro),
@@ -241,16 +241,8 @@ class LauncherState extends State<Launcher> {
       _showUi(IntroView());
     } else if (choice.title == translation.text(LauncherText.menuImport)) {
       _import();
-    } else if (choice.title == translation.text(LauncherText.menuTheme)) {
-      if (_viewModel.darkMode) {
-        CustomTheme.instanceOf(context).changeTheme(ThemeKeys.LIGHT);
-        launcherBloc.setTheme(false);
-        _viewModel.darkMode = false;
-      } else {
-        CustomTheme.instanceOf(context).changeTheme(ThemeKeys.DARK);
-        launcherBloc.setTheme(true);
-        _viewModel.darkMode = true;
-      }
+    } else if (choice.title == translation.text(LauncherText.menuOptions)) {
+      _showUi(OptionsView());
     } else {
       debugPrint("not found");
     }

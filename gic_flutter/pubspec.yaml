@@ -28,6 +28,7 @@ dependencies:
   cupertino_icons: ^1.0.3
 
   archive: ^3.1.5
+  audioplayers: ^0.20.1
   device_info: ^2.0.2
   equatable: ^2.0.3
   file_picker: ^4.1.5
@@ -77,6 +78,7 @@ flutter:
     - assets/screens/
     - assets/images/icons/
     - assets/images/controls/
+    - assets/audio/flick.wav
 
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg

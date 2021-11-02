@@ -42,7 +42,7 @@ enum LauncherText {
   helpUpdate,
   helpImport,
 
-  menuTheme,
+  menuOptions,
   menuIntro,
   menuAbout,
   menuFeedback,
@@ -143,7 +143,7 @@ class IntlLauncher {
       LauncherText.menuFeedback: 'Feedback',
       LauncherText.menuDonate: 'Donate',
       LauncherText.menuIntro: 'Show Intro',
-      LauncherText.menuTheme: 'Change Theme',
+      LauncherText.menuOptions: 'Options',
       LauncherText.menuImport: 'Import',
       LauncherText.exportComplete: 'Screen saved to ',
       LauncherText.importComplete: 'Import completed',

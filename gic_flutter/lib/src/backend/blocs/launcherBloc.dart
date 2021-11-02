@@ -39,13 +39,6 @@ class LauncherBloc {
     _repository.saveMainSettings(networkModel);
   }
 
-  /// Sets the theme to be light or dark
-  ///
-  /// @param isDarkMode if true, makes it dark.  if false, sets it to light mode
-  void setTheme(bool isDarkMode) {
-    _repository.setDarkMode(isDarkMode);
-  }
-
   /// Sets the purchase value
   void setDonation(String id, bool newValue) {
     _repository.setDonation(id, newValue);
