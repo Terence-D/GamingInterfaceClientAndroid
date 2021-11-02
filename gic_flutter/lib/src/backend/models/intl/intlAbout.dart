@@ -49,6 +49,9 @@ enum AboutText {
   showcaseviewTitle,
   showcaseviewText,
   showcaseviewUrl,
+  oxoTitle,
+  oxoText,
+  oxoUrl
 }
 
 class IntlAbout {
@@ -67,7 +70,7 @@ class IntlAbout {
           'To use this you need to run GIC Server (also Open Source) on your computer where the game resides.  Please visit the link below for further information',
       AboutText.serverUrl:
           'https://github.com/Terence-D/GamingInterfaceCommandServer',
-      AboutText.libraryTitle: '3rd Party Libraries',
+      AboutText.libraryTitle: '3rd Party',
       AboutText.cryptoTitle: 'Encryption library by Mataprasad',
       AboutText.cryptoText: 'Licensed under the MIT License.',
       AboutText.cryptoUrl:
@@ -126,6 +129,9 @@ class IntlAbout {
       AboutText.showcaseviewText: 'Licensed under the BSD license',
       AboutText.showcaseviewUrl:
           'https://github.com/simformsolutions/flutter_showcaseview/blob/master/LICENSE',
+      AboutText.oxoTitle: 'Lever and Button-Toggles',
+      AboutText.oxoText: 'Images by Oxo, thank you!',
+      AboutText.oxoUrl: 'On Discord @ Oxo#3515'
     }
   };
 }
