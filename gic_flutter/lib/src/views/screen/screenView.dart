@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/screen/screenVM.dart';
+import 'package:keep_screen_on/keep_screen_on.dart';
 
 import 'gicControl.dart';
 
@@ -19,6 +20,7 @@ class ScreenViewStatefulWrapper extends StatefulWidget {
   @override
   _StatefulWrapperState createState() => _StatefulWrapperState(this.viewModel);
 }
+
 class _StatefulWrapperState extends State<ScreenViewStatefulWrapper> {
   final ScreenVM viewModel;
 
@@ -29,11 +31,19 @@ class _StatefulWrapperState extends State<ScreenViewStatefulWrapper> {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
+
   @override
   Widget build(BuildContext context) {
     return ScreenView(screenVM: viewModel);
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    KeepScreenOn.turnOff();
+  }
 }
+
 class ScreenView extends StatelessWidget {
   final List<Widget> widgets = [];
   final ScreenVM screenVM;
@@ -50,8 +60,12 @@ class ScreenView extends StatelessWidget {
         widgets.add(_buildGicControl(element, pixelRatio));
       });
     }
+    if (screenVM.keepScreenOn) {
+      KeepScreenOn.turnOn();
+    }
 
-    if (screenVM.screen.backgroundPath != null && screenVM.screen.backgroundPath.isNotEmpty) {
+    if (screenVM.screen.backgroundPath != null &&
+        screenVM.screen.backgroundPath.isNotEmpty) {
       imageCache.clear();
       imageCache.clearLiveImages();
 
@@ -87,7 +101,8 @@ class ScreenView extends StatelessWidget {
             pixelRatio: pixelRatio));
   }
 
-  Future<void> sendCommand(ControlViewModel control, String commandUrl, int commandIndex, bool provideFeedback) async {
+  Future<void> sendCommand(ControlViewModel control, String commandUrl,
+      int commandIndex, bool provideFeedback) async {
     if (provideFeedback) {
       playSound();
       vibration();
