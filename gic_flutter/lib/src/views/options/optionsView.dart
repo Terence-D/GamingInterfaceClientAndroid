@@ -93,7 +93,25 @@ class OptionsViewState extends BaseState<OptionsView> {
             ),
             onTap: () {
               setState(() {
-                _setVibration(!_viewModel.sound);
+                _setVibration(!_viewModel.vibration);
+              });
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListTile(
+            title: Text(_viewModel.keepScreenOnTitle),
+            subtitle: Text(_viewModel.keepScreenOnText),
+            trailing: Checkbox(
+              value: _viewModel.keepScreenOn,
+              onChanged: (val) {
+                _setScreenOn(val);
+              },
+            ),
+            onTap: () {
+              setState(() {
+                _setScreenOn(!_viewModel.keepScreenOn);
               });
             },
           ),
@@ -124,6 +142,13 @@ class OptionsViewState extends BaseState<OptionsView> {
 
   void _setVibration(bool val) {
     (presentation as OptionsPresentation).setVibration(val);
+    if (val) {
+      HapticFeedback.lightImpact();
+    }
+  }
+
+  void _setScreenOn(bool val) {
+    (presentation as OptionsPresentation).setScreenOn(val);
     if (val) {
       HapticFeedback.lightImpact();
     }

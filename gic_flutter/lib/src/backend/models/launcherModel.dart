@@ -5,6 +5,7 @@ class LauncherModel {
   bool darkMode = true;
   bool sound = false;
   bool vibration = false;
+  bool keepScreenOn = false;
   String address = "";
   String password = "";
   String port = "";
