@@ -18,14 +18,14 @@ class LauncherBloc {
     this._modelFetcher = PublishSubject<LauncherModel>();
   }
 
-  LauncherBloc.withMocks (repository) {
+  LauncherBloc.withMocks(repository) {
     _repository = repository;
     this._modelFetcher = PublishSubject<LauncherModel>();
   }
 
   Stream<LauncherModel> get preferences => _modelFetcher.stream;
 
-   /// Loads the preferences from the repository, and adds to the sink
+  /// Loads the preferences from the repository, and adds to the sink
   Future<void> fetchAllPreferences() async {
     itemModel = await _repository.fetch();
     _modelFetcher.sink.add(itemModel);
@@ -107,6 +107,8 @@ class LauncherBloc {
   bool getVibration() {
     return itemModel.vibration;
   }
+
+  bool getKeepScreenOn() => itemModel.keepScreenOn;
 
   /// and resizes the screen to fit the devices dimensions
   /// saved as a new screen

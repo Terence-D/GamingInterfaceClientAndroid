@@ -11,7 +11,7 @@ description: Gaming Interface Client
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 5.2.0+26029884
+version: 5.2.1+26029884
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -40,6 +40,7 @@ dependencies:
   http: ^0.13.4
   in_app_purchase: ^1.0.9
   introduction_screen: ^2.1.0
+  keep_screen_on: ^2.0.0
   package_info: ^2.0.2
   path_provider: ^2.0.5
   permission_handler: ^8.2.5

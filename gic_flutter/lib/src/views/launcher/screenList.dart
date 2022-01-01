@@ -61,16 +61,18 @@ class _ScreenListState extends State<ScreenList> {
       _screenNameController.add(tec);
     }
 
-    return _loadingState ? Center(child: CircularProgressIndicator()) : Expanded(
-      child: ScrollablePositionedList.builder(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 48),
-          itemCount: _screenNameController.length,
-          itemScrollController: widget._parent.itemScrollController,
-          itemPositionsListener: widget._parent.itemPositionsListener,
-          itemBuilder: (context, index) {
-            return screenCard(index, context);
-          }),
-    ); //
+    return _loadingState
+        ? Center(child: CircularProgressIndicator())
+        : Expanded(
+            child: ScrollablePositionedList.builder(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 48),
+                itemCount: _screenNameController.length,
+                itemScrollController: widget._parent.itemScrollController,
+                itemPositionsListener: widget._parent.itemPositionsListener,
+                itemBuilder: (context, index) {
+                  return screenCard(index, context);
+                }),
+          ); //
   }
 
   Container screenCard(int index, BuildContext context) {
@@ -193,11 +195,13 @@ class _ScreenListState extends State<ScreenList> {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(widget._translations.text(LauncherText.deleteConfirmTitle)),
+          title:
+              Text(widget._translations.text(LauncherText.deleteConfirmTitle)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text(widget._translations.text(LauncherText.deleteConfirm) + name),
+                Text(widget._translations.text(LauncherText.deleteConfirm) +
+                    name),
               ],
             ),
           ),
@@ -304,7 +308,8 @@ class _ScreenListState extends State<ScreenList> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text(widget._parent.translation.text(LauncherText.resizeScreen)),
-      content: Text(widget._parent.translation.text(LauncherText.resizeScreenText)),
+      content:
+          Text(widget._parent.translation.text(LauncherText.resizeScreenText)),
       actions: [
         continueButton,
         resizeButton,
@@ -361,7 +366,8 @@ class _ScreenListState extends State<ScreenList> {
   Future<bool> _checkScreenDimensions(
       int screenId, NetworkModel networkModel, BuildContext context) async {
     List deviceInfo = widget._parent.launcherBloc.getDimensions(context);
-    List screenInfo = await widget._parent.launcherBloc.checkScreenSize(screenId);
+    List screenInfo =
+        await widget._parent.launcherBloc.checkScreenSize(screenId);
 
     bool rotate = false;
     if (deviceInfo[0] != screenInfo[0]) {
@@ -387,7 +393,8 @@ class _ScreenListState extends State<ScreenList> {
           screenId);
       return true;
     } else if (rotate) {
-      _showMessage(widget._parent.translation.text(LauncherText.recommendResize));
+      _showMessage(
+          widget._parent.translation.text(LauncherText.recommendResize));
     }
     return false;
   }
@@ -396,8 +403,10 @@ class _ScreenListState extends State<ScreenList> {
     int screenId = widget._screens[screenIndex].id;
 
     NetworkModel networkModel = NetworkModel();
-    await networkModel.init(widget._parent.passwordController.text,
-        widget._parent.addressController.text, widget._parent.portController.text);
+    await networkModel.init(
+        widget._parent.passwordController.text,
+        widget._parent.addressController.text,
+        widget._parent.portController.text);
 
     if (await _checkScreenDimensions(screenId, networkModel, context)) {
       return;
@@ -408,7 +417,8 @@ class _ScreenListState extends State<ScreenList> {
 
   Future _validateSettings(
       NetworkModel networkModel, BuildContext context, int screenId) async {
-    if (networkModel.password == null || CryptoService.decrypt(networkModel.password).length < 6) {
+    if (networkModel.password == null ||
+        CryptoService.decrypt(networkModel.password).length < 6) {
       _showMessage(widget._translations.text(LauncherText.errorPassword));
       return;
     }
@@ -424,11 +434,11 @@ class _ScreenListState extends State<ScreenList> {
     //check network version now
     Future<NetworkResponse> response =
         NetworkService.checkVersion(networkModel);
-    _showLoadingDialog(context, _keyLoader);//invoking login
+    _showLoadingDialog(context, _keyLoader); //invoking login
 
     NetworkResponse test = await response;
 
-    Navigator.of(_keyLoader.currentContext,rootNavigator: true).pop();
+    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
     switch (test) {
       case NetworkResponse.Ok:
         _startGame(context, screenId, networkModel);
@@ -440,49 +450,54 @@ class _ScreenListState extends State<ScreenList> {
         _showServerErrorDialog(context);
         break;
       case NetworkResponse.Unauthorized:
-        _showMessage("${widget._translations.text(LauncherText.errorUnauthorized)}");
+        _showMessage(
+            "${widget._translations.text(LauncherText.errorUnauthorized)}");
         break;
     }
     setState(() {
       _loadingState = false;
     });
-
   }
 
-  _showLoadingDialog(
-      BuildContext context, GlobalKey key) async {
+  _showLoadingDialog(BuildContext context, GlobalKey key) async {
     return showDialog<void>(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
           return new WillPopScope(
               onWillPop: () async => false,
-              child: SimpleDialog(
-                  key: key,
-                  children: <Widget>[
-                    Center(
-                      child: Column(children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 10,),
-                        Text(widget._translations.text(LauncherText.connecting))
-                      ]),
-                    )
-                  ]));
+              child: SimpleDialog(key: key, children: <Widget>[
+                Center(
+                  child: Column(children: [
+                    CircularProgressIndicator(),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(widget._translations.text(LauncherText.connecting))
+                  ]),
+                )
+              ]));
         });
   }
 
   _startGame(
       BuildContext context, int screenId, NetworkModel networkModel) async {
-
     widget._parent.launcherBloc.saveConnectionSettings(networkModel);
 
-    ScreenViewModel screen = await widget._parent.launcherBloc.loadScreen(screenId);
+    ScreenViewModel screen =
+        await widget._parent.launcherBloc.loadScreen(screenId);
 
-    ScreenVM viewModel = ScreenVM(screen, networkModel, widget._parent.launcherBloc.getSound(), widget._parent.launcherBloc.getVibration());
+    ScreenVM viewModel = ScreenVM(
+        screen,
+        networkModel,
+        widget._parent.launcherBloc.getSound(),
+        widget._parent.launcherBloc.getVibration(),
+        widget._parent.launcherBloc.getKeepScreenOn());
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ScreenViewStatefulWrapper(viewModel: viewModel)));
+            builder: (context) =>
+                ScreenViewStatefulWrapper(viewModel: viewModel)));
   }
 
   void _updateScreen(int index) {
@@ -495,8 +510,8 @@ class _ScreenListState extends State<ScreenList> {
   }
 
   void _deleteScreen(int index) async {
-    int deleteResponse =
-        await widget._parent.launcherBloc.deleteScreen(widget._screens[index].id);
+    int deleteResponse = await widget._parent.launcherBloc
+        .deleteScreen(widget._screens[index].id);
     if (deleteResponse >= 0) {
       await Fluttertoast.showToast(
         msg: widget._translations.text(LauncherText.deleteComplete),
@@ -519,12 +534,10 @@ class _ScreenListState extends State<ScreenList> {
       path = exportDirectory.path;
     }
 
-
     if (path != null) {
       if (await Permission.storage.request().isGranted) {
         String result = await widget._parent.launcherBloc.export(path, id);
-        if (result != null)
-          await Share.shareFiles(["$result.zip"]);
+        if (result != null) await Share.shareFiles(["$result.zip"]);
       }
     }
   }
@@ -540,7 +553,8 @@ class _ScreenListState extends State<ScreenList> {
     Widget downloadButton = ElevatedButton(
         onPressed: () async {
           Email email = Email(
-            body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
+            body:
+                "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
             subject: Intl.of(context).onboardEmailSubject,
           );
           await FlutterEmailSender.send(email);
@@ -549,25 +563,21 @@ class _ScreenListState extends State<ScreenList> {
             style: TextStyle(color: Colors.white)));
     Widget tipsButton = ElevatedButton(
         onPressed: () async {
-          String url = "https://github.com/Terence-D/GamingInterfaceCommandServer/wiki#Notes";
+          String url =
+              "https://github.com/Terence-D/GamingInterfaceCommandServer/wiki#Notes";
           if (await canLaunch(url)) {
             await launch(url);
           } else {
             throw 'Could not launch $url';
           }
         },
-        child: Text(widget._parent.translation.text(LauncherText.sendTips))
-    );
+        child: Text(widget._parent.translation.text(LauncherText.sendTips)));
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text(widget._parent.translation.text(LauncherText.serverError)),
       content: Text(widget._translations.text(LauncherText.serverErrorDetails)),
-      actions: [
-        cancelButton,
-        downloadButton,
-        tipsButton
-      ],
+      actions: [cancelButton, downloadButton, tipsButton],
     );
 
     // show the dialog
