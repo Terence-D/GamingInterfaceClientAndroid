@@ -357,6 +357,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.3.0"
+  keep_screen_on:
+    dependency: "direct main"
+    description:
+      name: keep_screen_on
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  keep_screen_on_platform_interface:
+    dependency: transitive
+    description:
+      name: keep_screen_on_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0+1"
   linkify:
     dependency: transitive
     description:
