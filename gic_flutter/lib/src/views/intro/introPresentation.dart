@@ -1,7 +1,7 @@
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:path/path.dart' as path;
 
-import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -57,7 +57,8 @@ class IntroPresentation {
         title: Intl.of(context).onboardServerTitle,
         body: Intl.of(context).onboardServerDesc,
         image: Icon(Icons.important_devices, size: 175.0, color: primaryColor),
-        footer: RaisedButton(
+        footer: ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
           onPressed: () async {
             Email email = Email(
               body: "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
@@ -66,7 +67,6 @@ class IntroPresentation {
             await FlutterEmailSender.send(email);
           },
           child: Text(Intl.of(context).onboardSendLink, style: TextStyle(color: Colors.white)),
-          color: primaryColor,
         ),
       ),
       PageViewModel(
@@ -83,7 +83,8 @@ class IntroPresentation {
               ),
               Text(Intl.of(context).onboardScreenList),
               ScreenListWidget(_screens),
-              RaisedButton(
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: primaryColor),
                 onPressed: () {
                   List<ScreenItem> screens = <ScreenItem>[];
                   _screens.forEach((screen) {
@@ -94,7 +95,6 @@ class IntroPresentation {
                   _importScreen(device, screens, context);
                 },
                 child: Text(Intl.of(context).onboardImport, style: TextStyle(color: Colors.white)),
-                color: primaryColor,
               )
             ],
           ),

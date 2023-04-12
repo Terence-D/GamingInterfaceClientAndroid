@@ -53,7 +53,7 @@ class IntroViewState extends State<IntroView> implements IntroViewContract  {
               onDone: () => _onIntroEnd(context),
         //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
         showSkipButton: true,
-        skipFlex: 0,
+        skipOrBackFlex: 0,
         nextFlex: 0,
         skip: Text(Intl.of(context).onboardSkip),
         next: const Icon(Icons.arrow_forward),

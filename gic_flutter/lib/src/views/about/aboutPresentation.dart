@@ -3,7 +3,7 @@ import 'package:gic_flutter/src/backend/models/intl/intlAbout.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/backend/models/viewSection.dart';
 import 'package:gic_flutter/src/views/basePage.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'aboutVM.dart';
 

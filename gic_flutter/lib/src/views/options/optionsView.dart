@@ -1,5 +1,4 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/viewModel.dart';
@@ -134,9 +133,9 @@ class OptionsViewState extends BaseState<OptionsView> {
   void _setSound(bool val) {
     (presentation as OptionsPresentation).setSound(val);
     if (val) {
-      AudioCache player = new AudioCache();
+      AudioPlayer player = new AudioPlayer();
       const alarmAudioPath = "audio/flick.wav";
-      player.play(alarmAudioPath);
+      player.play(AssetSource(alarmAudioPath));
     }
   }
 

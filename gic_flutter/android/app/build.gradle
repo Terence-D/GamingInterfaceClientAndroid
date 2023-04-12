@@ -34,7 +34,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     flavorDimensions "version"
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -48,7 +48,7 @@ android {
     defaultConfig {
         applicationId "ca.coffeeshopstudio.gaminginterfaceclient"
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true

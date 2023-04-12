@@ -10,14 +10,13 @@ class AccentButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return RaisedButton(
+    return ElevatedButton(
       onPressed: onPressed,
       child: child,
-      textColor: theme.accentTextTheme.button.color,
-//      highlightColor: Color(0xffF44336),
-//      color: Color(0xffF44336),
-      highlightColor: theme.accentColor,
-      color: theme.accentColor,
+      style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary,
+      ),
+//      textColor: theme.accentTextTheme.button.color,
+//      highlightColor: theme.accentColor,
     );
   }
 }

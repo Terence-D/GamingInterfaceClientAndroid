@@ -123,7 +123,7 @@ class LauncherState extends State<Launcher> {
         key: _fabKey,
         title: translation.text(LauncherText.buttonNew),
         description: translation.text(LauncherText.helpNew),
-        shapeBorder: CircleBorder(),
+        targetShapeBorder: CircleBorder(),
         child: FloatingActionButton.extended(
             onPressed: () {
               _newScreen();

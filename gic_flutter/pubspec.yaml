@@ -11,7 +11,7 @@ description: Gaming Interface Client
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 5.2.1+26029884
+version: 5.3.0+26029884
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -28,30 +28,30 @@ dependencies:
   cupertino_icons: ^1.0.3
 
   archive: ^3.1.5
-  audioplayers: ^0.20.1
-  device_info: ^2.0.2
+  audioplayers: ^4.0.1
+  device_info_plus: ^8.2.0
   equatable: ^2.0.3
-  file_picker: ^4.1.5
-  flutter_colorpicker: ^0.6.0
+  file_picker: ^5.2.8
+  flutter_colorpicker: ^1.0.3
   flutter_email_sender: ^5.0.2
   flutter_linkify: ^5.0.2
   fluttertoast: ^8.0.8
   get_it: ^7.2.0
   http: ^0.13.4
-  in_app_purchase: ^1.0.9
-  introduction_screen: ^2.1.0
+  in_app_purchase: ^3.1.5
+  introduction_screen: ^3.1.7
   keep_screen_on: ^2.0.0
-  package_info: ^2.0.2
+  package_info_plus: ^3.1.0
   path_provider: ^2.0.5
-  permission_handler: ^8.2.5
+  permission_handler: ^10.2.0
   pointycastle: ^3.0.1
   rxdart: ^0.27.2
-  scrollable_positioned_list: ^0.2.2
+  scrollable_positioned_list: ^0.3.5
   #nullable scrollable_positioned_list: ^0.2.0-nullsafety.0
-  share_plus: ^3.0.4
+  share_plus: ^6.3.2
   shared_preferences: ^2.0.8  #'>=0.5.7+3 <2.0.0'
   #nullable shared_preferences: ^2.0.6
-  showcaseview: ^1.1.1
+  showcaseview: ^2.0.3
   url_launcher: ^6.0.3
   gesture_x_detector:
     path: ../xgesture_flutter

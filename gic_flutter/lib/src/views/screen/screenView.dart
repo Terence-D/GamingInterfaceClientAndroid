@@ -47,7 +47,7 @@ class _StatefulWrapperState extends State<ScreenViewStatefulWrapper> {
 class ScreenView extends StatelessWidget {
   final List<Widget> widgets = [];
   final ScreenVM screenVM;
-  final AudioCache player = new AudioCache();
+  final AudioPlayer player = new AudioPlayer();
   final alarmAudioPath = "audio/flick.wav";
 
   ScreenView({Key key, @required this.screenVM});
@@ -126,7 +126,7 @@ class ScreenView extends StatelessWidget {
 
   void playSound() {
     if (screenVM.playSound) {
-      player.play(alarmAudioPath);
+      player.play(AssetSource(alarmAudioPath));
     }
   }
 
