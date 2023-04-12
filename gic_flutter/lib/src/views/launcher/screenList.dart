@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
@@ -272,10 +271,8 @@ class _ScreenListState extends State<ScreenList> {
   }
 
   void _showMessage(String text) {
-    Fluttertoast.showToast(
-      msg: text,
-      toastLength: Toast.LENGTH_SHORT,
-    );
+    var snackBar = SnackBar(content: Text(text));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   _editScreen(int selectedScreenIndex, BuildContext context) async {
@@ -504,22 +501,19 @@ class _ScreenListState extends State<ScreenList> {
     widget._parent.launcherBloc.updateScreenName(
         widget._screens[index].id, _screenNameController[index].text);
     widget._screens[index].name = _screenNameController[index].text;
-    Fluttertoast.showToast(
-      msg: widget._translations.text(LauncherText.nameUpdated),
-    );
+    var snackBar = SnackBar(content: Text(widget._translations.text(LauncherText.nameUpdated)));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   void _deleteScreen(int index) async {
     int deleteResponse = await widget._parent.launcherBloc
         .deleteScreen(widget._screens[index].id);
     if (deleteResponse >= 0) {
-      await Fluttertoast.showToast(
-        msg: widget._translations.text(LauncherText.deleteComplete),
-      );
+      var snackBar = SnackBar(content: Text(widget._translations.text(LauncherText.deleteComplete)));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
-      await Fluttertoast.showToast(
-        msg: widget._translations.text(LauncherText.deleteError),
-      );
+      var snackBar = SnackBar(content: Text(widget._translations.text(LauncherText.deleteError)));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 

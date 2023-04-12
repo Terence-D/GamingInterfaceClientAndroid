@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/screen/screenVM.dart';
@@ -101,7 +100,7 @@ class ScreenView extends StatelessWidget {
             pixelRatio: pixelRatio));
   }
 
-  Future<void> sendCommand(ControlViewModel control, String commandUrl,
+  Future<void> sendCommand(ControlViewModel control, String commandUrl, BuildContext context,
       int commandIndex, bool provideFeedback) async {
     if (provideFeedback) {
       playSound();
@@ -111,15 +110,11 @@ class ScreenView extends StatelessWidget {
       NetworkResponse response = await NetworkService.sendCommand(
           screenVM.networkModel, commandUrl, control.commands[commandIndex]);
       if (response == NetworkResponse.Error) {
-        await Fluttertoast.showToast(
-          msg: "Error Connecting to Server",
-          toastLength: Toast.LENGTH_SHORT,
-        );
+        var snackBar = SnackBar(content: Text("Error Connecting to Server"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       } else if (response == NetworkResponse.Unauthorized) {
-        await Fluttertoast.showToast(
-          msg: "Unauthorized, check that the passwords match",
-          toastLength: Toast.LENGTH_SHORT,
-        );
+        var snackBar = SnackBar(content: Text("Unauthorized, check that the passwords match"));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
   }

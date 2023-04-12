@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/blocs/launcherBloc.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
@@ -292,9 +290,8 @@ class LauncherState extends State<Launcher> {
     if (result != null) {
       newScreenId = await launcherBloc.import(result.files.single.path);
       if (newScreenId > 0) {
-        await Fluttertoast.showToast(
-          msg: translation.text(LauncherText.importComplete),
-        );
+        var snackBar = SnackBar(content: Text(translation.text(LauncherText.importComplete)));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }
   }

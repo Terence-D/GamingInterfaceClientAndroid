@@ -4,7 +4,6 @@ import 'package:path/path.dart' as path;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
@@ -131,8 +130,7 @@ class IntroPresentation {
       await screenService.import(assetFile);
     }
 
-    await Fluttertoast.showToast(
-      msg: Intl.of(context).onboardImportSuccess,
-    );
+    var snackBar = SnackBar(content: Text(Intl.of(context).onboardImportSuccess));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

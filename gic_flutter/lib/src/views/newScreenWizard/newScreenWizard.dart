@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/blocs/newScreenWizardBloc.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlNewScreenWizard.dart';
 import 'package:gic_flutter/src/backend/models/newScreenWizardModel.dart';
@@ -105,9 +104,8 @@ class NewScreenWizardState extends State<NewScreenWizard> {
             _save();
           } else {
             if (screenNameTextController.text.isEmpty) {
-              Fluttertoast.showToast(
-                  msg: translation
-                      .text(NewScreenWizardText.errorEnterScreenName));
+              var snackBar = SnackBar(content: Text(translation.text(NewScreenWizardText.errorEnterScreenName)));
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             } else {
               setState(() {
                 currentView++;

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
-import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/baseGicControl.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
 
@@ -49,7 +46,7 @@ class GicButtonState extends BaseGicControlState {
 
   void sendCommand(String commandUrl, int commandIndex, bool provideFeedback) {
     if ((widget as GicControl).screenView != null)
-      (widget as GicControl).screenView.sendCommand(control, commandUrl, commandIndex, provideFeedback).ignore();
+      (widget as GicControl).screenView.sendCommand(control, commandUrl, context, commandIndex, provideFeedback).ignore();
   }
 
   GestureDetector buildControl() {
