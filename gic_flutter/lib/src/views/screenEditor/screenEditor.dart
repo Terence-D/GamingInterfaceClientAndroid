@@ -34,6 +34,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   final int screenId;
   final String prefKeyGridSize = "prefGridSize";
   final String prefHelpKey = "-screenEditorHelp";
+  final String prefAltMode = "altMode";
 
   ControlViewModel deletedWidget;
 
@@ -72,6 +73,9 @@ class ScreenEditorState extends State<ScreenEditor> {
     if (prefs.containsKey(prefKeyGridSize)) {
       gridSize.value = prefs.getInt(prefKeyGridSize);
     }
+    if (prefs.containsKey(prefAltMode)) {
+      _service.altMode = prefs.getBool(prefAltMode);
+    }
     if (prefs.containsKey("$screenId$prefHelpKey")) {
       _firstVisit = prefs.getBool("$screenId$prefHelpKey");
     }
@@ -95,6 +99,7 @@ class ScreenEditorState extends State<ScreenEditor> {
 
       for(int i=0; i < _service.activeScreenViewModel.controls.length; i++) {
         widgets.add(GicEditControl(
+          disableDrag: _service.altMode,
           gridSize: gridSize,
           pixelRatio: pixelRatio,
           control: _service.activeScreenViewModel.controls[i],
@@ -170,9 +175,17 @@ class ScreenEditorState extends State<ScreenEditor> {
     await showDialog(
         context: context,
         builder: (BuildContext context) {
-      return HelpDialog(
-          translation: translation,
+          return HelpDialog(
+            translation: translation,
           );
+        });
+  }
+
+  //user tapped help in the settings menu
+  tapAltMode() async {
+    _service.altMode = !_service.altMode;
+    await SharedPreferences.getInstance().then((prefs) {
+      prefs.setBool(prefAltMode, _service.altMode);
     });
   }
 

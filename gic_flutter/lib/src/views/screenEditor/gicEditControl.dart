@@ -10,10 +10,12 @@ class GicEditControl extends BaseGicControl {
   final SelectedWidgetCallback onSelected;
   final int controlIndex;
   final GridSize gridSize;
+  final bool disableDrag;
 
   GicEditControl(
       {Key key,
       this.gridSize,
+      this.disableDrag,
       @required control,
       @required this.controlIndex,
       @required this.onSelected,
@@ -27,6 +29,7 @@ class GicEditControl extends BaseGicControl {
   @override
   State<StatefulWidget> createState() {
     return GicEditControlState(
+        disableDrag: disableDrag,
         gridSize: gridSize,
         control: control,
         controlIndex: controlIndex,
@@ -38,6 +41,7 @@ class GicEditControl extends BaseGicControl {
 class GicEditControlState extends BaseGicControlState {
   final SelectedWidgetCallback onSelected;
   final int controlIndex;
+  final bool disableDrag;
   final GridSize gridSize;
 
   double _originalWidth;
@@ -45,6 +49,7 @@ class GicEditControlState extends BaseGicControlState {
 
   GicEditControlState(
       {this.gridSize,
+        this.disableDrag,
       @required control,
       @required this.controlIndex,
       @required this.onSelected,
@@ -55,6 +60,16 @@ class GicEditControlState extends BaseGicControlState {
   }
 
   Widget buildControl() {
+    if (disableDrag) {
+      return Positioned(
+        top: control.top / pixelRatio,
+        left: control.left / pixelRatio,
+        child: XGestureDetector(
+          onTap: onLongPress,
+            bypassTapEventOnDoubleTap: false,
+            child: buildControlContainer()),
+      );
+    }
     return Positioned(
       top: control.top / pixelRatio,
       left: control.left / pixelRatio,

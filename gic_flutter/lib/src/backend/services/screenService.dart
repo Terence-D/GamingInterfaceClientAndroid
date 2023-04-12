@@ -18,6 +18,8 @@ class ScreenService {
   static String controlImageFolder = "controls";
   static String screenFolder = "screens";
 
+  bool altMode = false;
+
   //current screen working with
   ScreenViewModel activeScreenViewModel;
 

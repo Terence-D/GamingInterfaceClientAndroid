@@ -96,6 +96,14 @@ class SettingsDialog {
             screenEditorState.tapHelp();
           },
         ),
+        DialogButton(
+          icon: Icons.alt_route,
+          color: Colors.red,
+          text: translation.text(ScreenEditorText.altMode),
+          onPressed: () {
+            screenEditorState.tapAltMode();
+          },
+        ),
       ],
     );
   }
