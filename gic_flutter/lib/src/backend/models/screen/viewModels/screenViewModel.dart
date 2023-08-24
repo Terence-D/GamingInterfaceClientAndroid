@@ -29,13 +29,13 @@ class ScreenViewModel {
   }
 
   ScreenViewModel(
-      {this.version,
-      this.screenId,
-      this.name,
-      this.controls,
-      this.newControlId,
-      this.backgroundColor,
-      this.backgroundPath});
+      {this.version = 2,
+      this.screenId = -1,
+      this.name = "",
+      this.controls = const[],
+      this.newControlId = -1,
+      this.backgroundColor = Colors.black54,
+      this.backgroundPath = ""});
 
   ScreenViewModel.fromJson(Map<String, dynamic> json) {
     version = json['version'];
@@ -83,7 +83,7 @@ class ScreenViewModel {
   /// If jsonOnly is set, it will speedup the process by only saving the json changes
   /// It'll use the builtin ScreenService.backgroundImagePath
   /// Returns either the file we wrote, or null on error
-  Future<File> save() async {
+  Future<File?> save() async {
     if (screenId < 0) return null;
 
     try {
@@ -126,7 +126,7 @@ class ScreenViewModel {
         screenPath, exportPath, fileName);
 
     if (result != 0)
-      return null;
+      return "";
     else {
       return path.join(exportPath, fileName);
     }

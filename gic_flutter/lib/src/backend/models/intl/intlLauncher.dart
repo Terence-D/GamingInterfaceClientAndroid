@@ -90,7 +90,7 @@ class IntlLauncher {
   IntlLauncher(this._context);
 
   String text(LauncherText text) {
-    return _localizedStrings[Intl.of(_context).locale.languageCode][text];
+    return _localizedStrings[Intl.of(_context)?.locale.languageCode]![text]!;
   }
 
   static Map<String, Map<LauncherText, String>> _localizedStrings = {

@@ -2,9 +2,9 @@ class Command {
   static const int KEY_DOWN = 0;
   static const int KEY_UP = 1;
 
-  String key = "A";
-  List<String> modifiers = [];
-  int activatorType = 0; //key down, key up, etc
+  String? key = "A";
+  List<String>? modifiers = [];
+  int? activatorType = 0; //key down, key up, etc
 
   Command.empty();
 

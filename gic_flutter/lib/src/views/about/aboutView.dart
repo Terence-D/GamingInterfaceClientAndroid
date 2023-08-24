@@ -27,7 +27,7 @@ class AboutViewState extends BaseState<AboutView> {
   @override
   void onLoadComplete(ViewModel viewModel) {
     setState(() {
-      this.viewModel = viewModel;
+      this.viewModel = viewModel as AboutVM;
     });
   }
 
@@ -62,10 +62,10 @@ class AboutViewState extends BaseState<AboutView> {
     );
   }
 
-  Widget _libraries(List<ViewSection> sections) {
+  Widget _libraries(List<ViewSection>? sections) {
     if (sections != null) {
       List<Widget> widgets = <Widget>[];
-      TextStyle textStyle = Theme.of(context).textTheme.subtitle1;
+      TextStyle? textStyle = Theme.of(context).textTheme.subtitle1;
       sections.forEach(
           (s) => widgets.add(section(s, optionalHeaderStyle: textStyle)));
 

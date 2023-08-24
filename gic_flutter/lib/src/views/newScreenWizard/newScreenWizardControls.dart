@@ -11,7 +11,7 @@ import 'newScreenWizard.dart';
 class NewScreenWizardControls extends StatefulWidget {
   final NewScreenWizardState state;
 
-  const NewScreenWizardControls (this.state, { Key key }): super(key: key);
+  const NewScreenWizardControls (this.state, { Key? key }): super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -23,18 +23,18 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
   int _itemCount = 0;
   List<_Key> _keyMap = [];
   AutoItKeyMap autoItKeyMap = AutoItKeyMap();
-  List<_Key> selectedKey = [];
-  List<String> controlTypeText;
+  List selectedKey = [];
+  late List<String> controlTypeText;
 
   @override
   void initState() {
     controlTypeText = [];
 
     _itemCount = widget.state.viewModel.horizontalControlCount * widget.state.viewModel.verticalControlCount;
-    selectedKey = List(_itemCount);
+    selectedKey = List.filled(_itemCount, []);
 
-    widget.state.keyNameController = List(_itemCount);
-    widget.state.viewModel.controls = List(_itemCount);
+    widget.state.keyNameController = List.filled(_itemCount, []);
+    widget.state.viewModel.controls = List.filled(_itemCount, []);
 
     //initialize values to be sane
     for (var i = 0; i < _itemCount; i++) {
@@ -102,7 +102,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
                     padding: EdgeInsets.only(left: dim.activityMargin, right: dim.activityMargin),
                     child: DropdownButton<_Key>(
                       hint: Text(widget.state.translation.text(NewScreenWizardText.controlCommand)),
-                      onChanged: (_Key newValue) { _updateState(index, control: newValue); },
+                      onChanged: (_Key? newValue) { _updateState(index, control: newValue!); },
                       value: selectedKey[index],
                       items: _dropdownItems()
                     ),
@@ -163,7 +163,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
     );
   }
 
-  void _updateState(int index, {_Key control, bool isSwitch, bool ctrl, bool alt, bool shift}) {
+  void _updateState(int index, {_Key? control, bool? isSwitch, bool? ctrl, bool? alt, bool? shift}) {
     setState(() {
       if (control != null) {
         selectedKey[index] = control;

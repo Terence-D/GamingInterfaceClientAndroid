@@ -27,17 +27,15 @@ class OptionsViewState extends BaseState<OptionsView> {
   @override
   void onLoadComplete(ViewModel viewModel) {
     setState(() {
-      this._viewModel = viewModel;
+      this._viewModel = viewModel as OptionsVM;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     String title = "";
-    if (_viewModel != null && _viewModel.toolbarTitle != null) {
-      title = _viewModel.toolbarTitle;
-    }
-    return Scaffold(
+    title = _viewModel.toolbarTitle;
+      return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
         title: Text(title),
@@ -51,7 +49,7 @@ class OptionsViewState extends BaseState<OptionsView> {
             trailing: Checkbox(
               value: _viewModel.darkMode,
               onChanged: (val) {
-                _setTheme(val);
+                _setTheme(val!);
               },
             ),
             onTap: () {
@@ -69,7 +67,7 @@ class OptionsViewState extends BaseState<OptionsView> {
             trailing: Checkbox(
               value: _viewModel.sound,
               onChanged: (val) {
-                _setSound(val);
+                _setSound(val!);
               },
             ),
             onTap: () {
@@ -87,7 +85,7 @@ class OptionsViewState extends BaseState<OptionsView> {
             trailing: Checkbox(
               value: _viewModel.vibration,
               onChanged: (val) {
-                _setVibration(val);
+                _setVibration(val!);
               },
             ),
             onTap: () {
@@ -105,7 +103,7 @@ class OptionsViewState extends BaseState<OptionsView> {
             trailing: Checkbox(
               value: _viewModel.keepScreenOn,
               onChanged: (val) {
-                _setScreenOn(val);
+                _setScreenOn(val!);
               },
             ),
             onTap: () {

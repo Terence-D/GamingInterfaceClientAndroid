@@ -9,7 +9,7 @@ import 'package:gic_flutter/src/backend/services/screenService.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LauncherRepository {
-  SharedPreferences _prefs;
+  late SharedPreferences _prefs;
   ScreenService _screenService = ScreenService();
 
   static const String _prefKeepScreen = "keepScreenOn";
@@ -39,15 +39,14 @@ class LauncherRepository {
   /// Save the primary server related settings
   /// Based on the network model
   void saveMainSettings(NetworkModel networkModel) async {
-    if (networkModel.address != null && networkModel.port.isNotEmpty) {
+    if (networkModel.port.isNotEmpty) {
       await _prefs.setString(_prefAddress, networkModel.address);
     }
-    if (networkModel.port != null &&
-        networkModel.port.isNotEmpty &&
+    if (networkModel.port.isNotEmpty &&
         _isNumeric(networkModel.port)) {
       await _prefs.setString(_prefPort, networkModel.port);
     }
-    if (networkModel.password != null && networkModel.password.isNotEmpty) {
+    if (networkModel.password.isNotEmpty) {
       await _prefs.setString(
           _prefPassword, await _encryptPassword(networkModel.password));
     }
@@ -99,7 +98,7 @@ class LauncherRepository {
   /// Exports the screen with matching id to the export path
   Future<String> export(String exportPath, int id) async {
     _screenService.setActiveScreen(id);
-    return _screenService.activeScreenViewModel.export(exportPath);
+    return _screenService.activeScreenViewModel!.export(exportPath);
   }
 
   /// Checks the screen with matching ids dimensions and returns an array with
@@ -112,7 +111,7 @@ class LauncherRepository {
     double furthestRight = 0;
     double furthestBottom = 0;
 
-    _screenService.activeScreenViewModel.controls.forEach((element) {
+    _screenService.activeScreenViewModel!.controls.forEach((element) {
       double rightPos = element.left + element.width;
       double bottomPos = element.top + element.height;
       if (rightPos > furthestRight) furthestRight = rightPos;
@@ -172,18 +171,18 @@ class LauncherRepository {
 
     await _screenService.duplicateScreen(oldId);
 
-    _screenService.activeScreenViewModel.controls.forEach((control) {
+    _screenService.activeScreenViewModel!.controls.forEach((control) {
       control.left = control.left * adjustX;
       control.width = (control.width * adjustX);
       control.top = control.top * adjustY;
       control.height = (control.height * adjustY);
     });
-    await _screenService.activeScreenViewModel.save();
-    return _screenService.activeScreenViewModel.screenId;
+    await _screenService.activeScreenViewModel!.save();
+    return _screenService.activeScreenViewModel!.screenId;
   }
 
   /// sets us to use the currently active screen
-  Future<ScreenViewModel> setActiveScreen(int screenId) async {
+  Future<ScreenViewModel?> setActiveScreen(int screenId) async {
     await _screenService.loadScreens();
     _screenService.setActiveScreen(screenId);
     return _screenService.activeScreenViewModel;
@@ -201,7 +200,7 @@ class LauncherRepository {
       viewModel.screens = [];
       if (_screenService.screenViewModels.isEmpty) {
         await _screenService.createScreen();
-        await _screenService.activeScreenViewModel.save();
+        await _screenService.activeScreenViewModel!.save();
       }
       _screenService.screenViewModels.forEach((element) {
         viewModel.screens.add(ScreenListItem(element.screenId, element.name));
@@ -221,13 +220,13 @@ class LauncherRepository {
     //donation settings
     //await InAppPurchase.instance.restorePurchases();
     if (_prefs.containsKey(_prefDonate)) {
-      viewModel.donate = _prefs.getBool(_prefDonate);
+      viewModel.donate = _prefs.getBool(_prefDonate)!;
     } else {
       viewModel.donate = false;
     }
 
     if (_prefs.containsKey(_prefDonateStar)) {
-      viewModel.donateStar = _prefs.getBool(_prefDonateStar);
+      viewModel.donateStar = _prefs.getBool(_prefDonateStar)!;
     } else {
       viewModel.donateStar = false;
     }
@@ -262,9 +261,6 @@ class LauncherRepository {
   }
 
   bool _isNumeric(String str) {
-    if (str == null) {
-      return false;
-    }
     return double.tryParse(str) != null;
   }
 }

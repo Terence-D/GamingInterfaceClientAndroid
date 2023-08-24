@@ -12,7 +12,13 @@ class Screen {
   //context;
   String name;
 
-  Screen({this.screenId, this.controls, this.backgroundColor, this.backgroundPath, this.newControlId, this.name});
+  Screen({
+    this.screenId = -1,
+    this.controls = const[],
+    this.backgroundColor = 0,
+    this.backgroundPath = "",
+    this.newControlId = -1,
+    this.name = ""});
 
   factory Screen.fromJson(Map<String, dynamic> json) {
     var list = json['controls'] as List;

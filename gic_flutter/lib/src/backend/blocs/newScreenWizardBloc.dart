@@ -22,12 +22,12 @@ class NewScreenWizardBloc {
     await _screenService.initDefaults();
 
     //set up the defaults based on the model
-    _screenService.activeScreenViewModel.name = model.screenName;
-    _screenService.activeScreenViewModel.backgroundColor = Colors.black54;
+    _screenService.activeScreenViewModel!.name = model.screenName;
+    _screenService.activeScreenViewModel!.backgroundColor = Colors.black54;
     await _buildControls(model);
 
     //save it
-    await _screenService.activeScreenViewModel.save();
+    await _screenService.activeScreenViewModel!.save();
   }
 
   /// Here we build all of the controls we will add to the new screen
@@ -59,7 +59,7 @@ class NewScreenWizardBloc {
         //only proceed if the control has valid OR key
         if (element.text == null && element.key == null) return;
 
-        _screenService.activeScreenViewModel.controls
+        _screenService.activeScreenViewModel!.controls
             .add(_buildControl(controlHeight, controlWidth, x, y, element));
         i++;
       }

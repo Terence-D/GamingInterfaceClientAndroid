@@ -15,7 +15,7 @@ class NewScreenWizard extends StatefulWidget {
 }
 
 class NewScreenWizardState extends State<NewScreenWizard> {
-  IntlNewScreenWizard translation;
+  late IntlNewScreenWizard translation;
   NewScreenWizardModel viewModel = NewScreenWizardModel();
 
   //tracks if we are on the general settings view (0)
@@ -30,7 +30,7 @@ class NewScreenWizardState extends State<NewScreenWizard> {
       TextEditingController();
   final TextEditingController screenSecondarySizeTextController =
       TextEditingController();
-  List<TextEditingController> keyNameController = [];
+  List keyNameController = [];
 
   @override
   void initState() {

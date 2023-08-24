@@ -10,16 +10,16 @@ import 'package:gic_flutter/src/theme/dimensions.dart' as dim;
 class OrientationWidget extends StatefulWidget {
   final NewScreenWizardState state;
 
-  const OrientationWidget(this.state, {Key key}) : super(key: key);
+  const OrientationWidget(this.state, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => OrientationState();
 }
 
 class OrientationState extends State<OrientationWidget> {
-  Icon icon;
-  String primaryText;
-  String secondaryText;
+  Icon? icon;
+  String? primaryText;
+  String? secondaryText;
 
   @override
   void initState() {
@@ -65,7 +65,7 @@ class OrientationState extends State<OrientationWidget> {
                           LimitRangeTextInputFormatter(1, 4000)
                         ],
                       ),
-                      Text(primaryText)
+                      Text(primaryText!)
                     ],
                   ),
                 )),
@@ -90,7 +90,7 @@ class OrientationState extends State<OrientationWidget> {
                             LimitRangeTextInputFormatter(1, 4000)
                           ],
                         ),
-                        Text(secondaryText)
+                        Text(secondaryText!)
                       ],
                     ),
                   ),

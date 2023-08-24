@@ -41,8 +41,8 @@ class LauncherState extends State<Launcher> {
   final GlobalKey shareKey = GlobalKey();
   final GlobalKey deleteKey = GlobalKey();
 
-  IntlLauncher translation;
-  LauncherModel _viewModel;
+  late IntlLauncher translation;
+  late LauncherModel _viewModel;
 
   int newScreenId = -1;
 
@@ -55,9 +55,9 @@ class LauncherState extends State<Launcher> {
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
 
-  BuildContext showcaseContext;
+  late BuildContext showcaseContext;
 
-  StreamSubscription<List<PurchaseDetails>> _subscription;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   @override
   void initState() {
@@ -68,7 +68,7 @@ class LauncherState extends State<Launcher> {
       _subscription.cancel();
     }, onError: (error) {
       // handle error here.
-    });
+    }) as StreamSubscription<List<PurchaseDetails>>;
 
     super.initState();
     translation = IntlLauncher(context);
@@ -104,7 +104,7 @@ class LauncherState extends State<Launcher> {
               stream: launcherBloc.preferences,
               builder: (context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.hasData) {
-                  return _buildViews(snapshot);
+                  return _buildViews(snapshot.data);
                 } else if (snapshot.hasError) {
                   return Text(snapshot.error.toString());
                 }
@@ -132,18 +132,18 @@ class LauncherState extends State<Launcher> {
 
   List<Widget> _widgets(snapshot, orientation) {
     return <Widget>[
-      ServerLogin(this, snapshot.data, translation, orientation,
-          snapshot.data.screens.length),
+      ServerLogin(this, snapshot, translation, orientation,
+          snapshot.screens.length),
       ScreenList(
         this,
-        snapshot.data.screens,
+        snapshot.screens,
         translation,
       )
     ];
   }
 
-  _buildControllers(AsyncSnapshot<LauncherModel> snapshot) {
-    _viewModel = snapshot.data;
+  _buildControllers(LauncherModel snapshot) {
+    _viewModel = snapshot;
     if (_viewModel.password.length != 0)
       passwordController.text = CryptoService.decrypt(_viewModel.password);
     portController.text = _viewModel.port;
@@ -156,7 +156,7 @@ class LauncherState extends State<Launcher> {
         TextPosition(offset: addressController.text.length));
   }
 
-  Widget _buildViews(AsyncSnapshot<LauncherModel> snapshot) {
+  Widget _buildViews(LauncherModel snapshot) {
     _buildControllers(snapshot);
     Orientation orientation = MediaQuery.of(context).orientation;
     var widgets;
@@ -209,7 +209,7 @@ class LauncherState extends State<Launcher> {
     BuildEnvironment.init(flavor: BuildFlavor.gplay);
     assert(env != null);
 
-    if (env.flavor == BuildFlavor.gplay) {
+    if (env!.flavor == BuildFlavor.gplay) {
       rv.add(MenuOption(
           title: translation.text(LauncherText.menuDonate),
           icon: Icons.present_to_all));
@@ -285,10 +285,10 @@ class LauncherState extends State<Launcher> {
 
   Future<void> _import() async {
     await FilePicker.platform.clearTemporaryFiles();
-    FilePickerResult result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
-      newScreenId = await launcherBloc.import(result.files.single.path);
+      newScreenId = await launcherBloc.import(result.files.single.path!);
       if (newScreenId > 0) {
         var snackBar = SnackBar(content: Text(translation.text(LauncherText.importComplete)));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);

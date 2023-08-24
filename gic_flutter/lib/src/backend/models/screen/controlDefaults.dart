@@ -22,20 +22,20 @@ class ControlDefaults {
 
   ControlDefaults(this._prefs, int screenId) {
     if (this._prefs.containsKey("v2$screenId$_imageDefaults")) {
-      Map imageControlMap =
-          jsonDecode(_prefs.getString("v2$screenId$_imageDefaults"));
+      Map<String, dynamic> imageControlMap =
+          jsonDecode(_prefs.getString("v2$screenId$_imageDefaults") ?? "");
       defaultImage = ControlViewModel.fromJson(imageControlMap);
 
-      Map buttonControlMap =
-          jsonDecode(_prefs.getString("v2$screenId$_buttonDefaults"));
+      Map<String, dynamic> buttonControlMap =
+          jsonDecode(_prefs.getString("v2$screenId$_buttonDefaults") ?? "");
       defaultButton = ControlViewModel.fromJson(buttonControlMap);
 
-      Map textControlMap =
-          jsonDecode(_prefs.getString("v2$screenId$_textDefaults"));
+      Map<String, dynamic> textControlMap =
+          jsonDecode(_prefs.getString("v2$screenId$_textDefaults") ?? "");
       defaultText = ControlViewModel.fromJson(textControlMap);
 
-      Map toggleControlMap =
-          jsonDecode(_prefs.getString("v2$screenId$_toggleDefaults"));
+      Map<String, dynamic> toggleControlMap =
+          jsonDecode(_prefs.getString("v2$screenId$_toggleDefaults") ?? "");
       defaultToggle = ControlViewModel.fromJson(toggleControlMap);
     } else if (_prefs.containsKey("$screenId$_imageDefaults")) {
       try {
@@ -53,8 +53,7 @@ class ControlDefaults {
     }
 
     //if nothing was loaded in
-    if (defaultImage == null ||
-        defaultImage.type != ControlViewModelType.Image) {
+    if (defaultImage.type != ControlViewModelType.Image) {
       defaultImage.type = ControlViewModelType.Image;
       defaultImage.images = [];
       defaultButton.type = ControlViewModelType.Button;
@@ -80,7 +79,7 @@ class ControlDefaults {
     if (!_prefs.containsKey(preference)) {
       return GicControl.empty();
     } else {
-      Map controlMap = jsonDecode(_prefs.getString(preference));
+      Map<String, dynamic> controlMap = jsonDecode(_prefs.getString(preference) ?? "");
       return GicControl.fromJson(controlMap);
     }
   }

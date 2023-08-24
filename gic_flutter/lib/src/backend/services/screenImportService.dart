@@ -14,7 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'compressedFileService.dart';
 
 class ScreenImportService {
-  String screensDirectory;
+  String screensDirectory = "";
 
   init() async {
     Directory appFolder = await getApplicationDocumentsDirectory();
@@ -51,8 +51,7 @@ class ScreenImportService {
     String json = await File(pathOfJson).readAsString();
     ScreenViewModel importedScreen =
         _importScreenJson(jsonToImport: json, newScreenId: newId);
-    File screenFile = await importedScreen
-        .save(); //save once to generate the folder structure
+    File? screenFile = await importedScreen.save(); //save once to generate the folder structure
 
     //now just... copy everything inside?
     Directory extractedFileLocation = Directory(extractedContents);
@@ -62,27 +61,23 @@ class ScreenImportService {
       if (path.extension(element.path) != ".json") {
         File toCopy = File(element.path);
         String basename = path.basename(toCopy.path);
-        String destination = path.join(screenFile.parent.path, basename);
+        String destination = path.join(screenFile!.parent.path, basename);
         toCopy.copySync(destination);
         //search for any instances that point to this image, and update accordingly
         if (importedScreen.backgroundPath.contains(basename)) {
           importedScreen.backgroundPath = destination;
           // importedScreen.backgroundColor = null;
         }
-        if (importedScreen.controls != null) {
-          for (int i = 0; i < importedScreen.controls.length; i++) {
-            if (importedScreen.controls[i].images != null) {
-              for (int n = 0;
-                  n < importedScreen.controls[i].images.length;
-                  n++) {
-                if (importedScreen.controls[i].images[n].contains(basename)) {
-                  importedScreen.controls[i].images[n] = destination;
-                }
-              }
+        for (int i = 0; i < importedScreen.controls.length; i++) {
+          for (int n = 0;
+              n < importedScreen.controls[i].images.length;
+              n++) {
+            if (importedScreen.controls[i].images[n].contains(basename)) {
+              importedScreen.controls[i].images[n] = destination;
             }
           }
-        }
-      }
+                }
+            }
     });
 
     //re save the json file
@@ -95,7 +90,7 @@ class ScreenImportService {
   }
 
   /// This will create a screen object based on the imported json
-  ScreenViewModel _importScreenJson({String jsonToImport, int newScreenId}) {
+  ScreenViewModel _importScreenJson({String jsonToImport = "", int newScreenId = -1}) {
     Map rawJson = json.decode(jsonToImport);
     ScreenViewModel screenToImport;
     if (rawJson.containsKey("version")) {
@@ -104,7 +99,7 @@ class ScreenImportService {
     } else {
       //legacy
       // get a screen object based on the JSON extracted
-      Map controlMap = jsonDecode(jsonToImport);
+      Map<String, dynamic> controlMap = jsonDecode(jsonToImport);
       //build the new screen from the incoming json
       Screen legacy = Screen.fromJson(controlMap);
       screenToImport = ScreenViewModel.fromLegacyModel(legacy);

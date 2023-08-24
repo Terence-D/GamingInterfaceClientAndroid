@@ -8,7 +8,7 @@ import 'newScreenWizard.dart';
 class LayoutWidget extends StatefulWidget {
   final NewScreenWizardState state;
 
-  const LayoutWidget ( this.state, {Key key  }): super(key: key);
+  const LayoutWidget ( this.state, {Key? key  }): super(key: key);
 
   @override
   State<StatefulWidget> createState() => LayoutState();

@@ -60,7 +60,7 @@ class CryptoService {
     Uint8List cipherBytes = Uint8List(cipherLen)
       ..setRange(0, cipherLen, cipherIvBytes, aes.blockSize);
     Uint8List paddedText = _processBlocks(cipher, cipherBytes);
-    Uint8List textBytes = _unpad(paddedText);
+    Uint8List? textBytes = _unpad(paddedText);
 
     if (textBytes == null) {
       return "";
@@ -70,7 +70,7 @@ class CryptoService {
   }
 
   static Uint8List _buildKey() {
-    if (passphrase == null || passphrase.isEmpty) {
+    if (passphrase.isEmpty) {
       throw ArgumentError('passphrase must not be empty');
     }
 
@@ -95,7 +95,7 @@ class CryptoService {
     return out;
   }
 
-  static Uint8List _unpad(Uint8List src) {
+  static Uint8List? _unpad(Uint8List src) {
     try {
       PKCS7Padding pad = PKCS7Padding();
       pad.init(null);

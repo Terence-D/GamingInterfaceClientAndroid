@@ -25,7 +25,7 @@ import 'launcher.dart';
 class VersionResponse {
   final String version;
 
-  VersionResponse({this.version});
+  VersionResponse({this.version = ""});
 
   factory VersionResponse.fromJson(Map<String, dynamic> json) {
     return VersionResponse(version: json['version']);
@@ -334,11 +334,11 @@ class _ScreenListState extends State<ScreenList> {
           Email email = Email(
             body:
                 "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
-            subject: Intl.of(context).onboardEmailSubject,
+            subject: Intl.of(context)!.onboardEmailSubject,
           );
           await FlutterEmailSender.send(email);
         },
-        child: Text(Intl.of(context).onboardSendLink,
+        child: Text(Intl.of(context)!.onboardSendLink,
             style: TextStyle(color: Colors.white)));
 
     // set up the AlertDialog
@@ -435,7 +435,7 @@ class _ScreenListState extends State<ScreenList> {
 
     NetworkResponse test = await response;
 
-    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     switch (test) {
       case NetworkResponse.Ok:
         _startGame(context, screenId, networkModel);
@@ -481,11 +481,11 @@ class _ScreenListState extends State<ScreenList> {
       BuildContext context, int screenId, NetworkModel networkModel) async {
     widget._parent.launcherBloc.saveConnectionSettings(networkModel);
 
-    ScreenViewModel screen =
+    ScreenViewModel? screen =
         await widget._parent.launcherBloc.loadScreen(screenId);
 
     ScreenVM viewModel = ScreenVM(
-        screen,
+        screen!,
         networkModel,
         widget._parent.launcherBloc.getSound(),
         widget._parent.launcherBloc.getVibration(),
@@ -549,7 +549,7 @@ class _ScreenListState extends State<ScreenList> {
           Email email = Email(
             body:
                 "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
-            subject: Intl.of(context).onboardEmailSubject,
+            subject: Intl.of(context)!.onboardEmailSubject,
           );
           await FlutterEmailSender.send(email);
         },

@@ -15,7 +15,7 @@ import 'gicControl.dart';
 class ScreenViewStatefulWrapper extends StatefulWidget {
   final ScreenVM viewModel;
 
-  const ScreenViewStatefulWrapper({@required this.viewModel});
+  const ScreenViewStatefulWrapper({required this.viewModel});
   @override
   _StatefulWrapperState createState() => _StatefulWrapperState(this.viewModel);
 }
@@ -49,7 +49,7 @@ class ScreenView extends StatelessWidget {
   final AudioPlayer player = new AudioPlayer();
   final alarmAudioPath = "audio/flick.wav";
 
-  ScreenView({Key key, @required this.screenVM});
+  ScreenView({Key? key, required this.screenVM});
 
   @override
   Widget build(BuildContext context) {

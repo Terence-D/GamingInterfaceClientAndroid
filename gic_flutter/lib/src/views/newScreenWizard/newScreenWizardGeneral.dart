@@ -9,7 +9,7 @@ import 'newScreenWizard.dart';
 class NewScreenWizardGeneral extends StatefulWidget {
   final NewScreenWizardState state;
 
-  const NewScreenWizardGeneral (this.state, { Key key }): super(key: key);
+  const NewScreenWizardGeneral (this.state, { Key? key }): super(key: key);
 
   @override
   State<StatefulWidget> createState() {

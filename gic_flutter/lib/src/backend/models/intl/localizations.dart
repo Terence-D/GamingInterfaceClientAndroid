@@ -30,24 +30,24 @@ class Intl {
 
   final Locale locale;
 
-  static Intl of(BuildContext context) {
+  static Intl? of(BuildContext context) {
     return Localizations.of<Intl>(context, Intl);
   }
 
   String about(AboutText resource) {
-    return IntlAbout.localizedStrings[locale.languageCode][resource];
+    return IntlAbout.localizedStrings[locale.languageCode]![resource]!;
   }
 
   String options(OptionsText resource) {
-    return IntlOptions.localizedStrings[locale.languageCode][resource];
+    return IntlOptions.localizedStrings[locale.languageCode]![resource]!;
   }
 
   String donate(DonateText resource) {
-    return IntlDonate.localizedStrings[locale.languageCode][resource];
+    return IntlDonate.localizedStrings[locale.languageCode]![resource]!;
   }
 
   String feedback(FeedbackText resource) {
-    return IntlFeedback.localizedStrings[locale.languageCode][resource];
+    return IntlFeedback.localizedStrings[locale.languageCode]![resource]!;
   }
 
   static Map<String, Map<String, String>> _localized = {
@@ -109,78 +109,78 @@ class Intl {
   //String get menuTheme { return _localized[locale.languageCode]['menuTheme'];}
 
   String get title {
-    return _localized[locale.languageCode]['title'];
+    return _localized[locale.languageCode]!['title']!;
   }
 
   String get onboardSkip {
-    return _localized[locale.languageCode]['onboardSkip'];
+    return _localized[locale.languageCode]!['onboardSkip']!;
   }
 
   String get onboardDone {
-    return _localized[locale.languageCode]['onboardDone'];
+    return _localized[locale.languageCode]!['onboardDone']!;
   }
 
   String get onboardImport {
-    return _localized[locale.languageCode]['onboardImport'];
+    return _localized[locale.languageCode]!['onboardImport']!;
   }
 
   String get onboardIntroTitle {
-    return _localized[locale.languageCode]['onboardIntroTitle'];
+    return _localized[locale.languageCode]!['onboardIntroTitle']!;
   }
 
   String get onboardIntroDesc {
-    return _localized[locale.languageCode]['onboardIntroDesc'];
+    return _localized[locale.languageCode]!['onboardIntroDesc']!;
   }
 
   String get onboardServerTitle {
-    return _localized[locale.languageCode]['onboardServerTitle'];
+    return _localized[locale.languageCode]!['onboardServerTitle']!;
   }
 
   String get onboardServerDesc {
-    return _localized[locale.languageCode]['onboardServerDesc'];
+    return _localized[locale.languageCode]!['onboardServerDesc']!;
   }
 
   String get onboardScreenTitle {
-    return _localized[locale.languageCode]['onboardScreenTitle'];
+    return _localized[locale.languageCode]!['onboardScreenTitle']!;
   }
 
   String get onboardScreenDesc {
-    return _localized[locale.languageCode]['onboardScreenDesc'];
+    return _localized[locale.languageCode]!['onboardScreenDesc']!;
   }
 
   String get onboardScreenList {
-    return _localized[locale.languageCode]['onboardScreenList'];
+    return _localized[locale.languageCode]!['onboardScreenList']!;
   }
 
   String get onboardScreenDevice {
-    return _localized[locale.languageCode]['onboardScreenDevice'];
+    return _localized[locale.languageCode]!['onboardScreenDevice']!;
   }
 
   String get onboardSendLink {
-    return _localized[locale.languageCode]['onboardSendLink'];
+    return _localized[locale.languageCode]!['onboardSendLink']!;
   }
 
   String get onboardEmailSubject {
-    return _localized[locale.languageCode]['onboardEmailSubject'];
+    return _localized[locale.languageCode]!['onboardEmailSubject']!;
   }
 
   String get onboardOldAndroidTitle {
-    return _localized[locale.languageCode]['onboardOldAndroidTitle'];
+    return _localized[locale.languageCode]!['onboardOldAndroidTitle']!;
   }
 
   String get onboardOldAndroidDesc {
-    return _localized[locale.languageCode]['onboardOldAndroidDesc'];
+    return _localized[locale.languageCode]!['onboardOldAndroidDesc']!;
   }
 
   String get onboardSupportTitle {
-    return _localized[locale.languageCode]['onboardSupportTitle'];
+    return _localized[locale.languageCode]!['onboardSupportTitle']!;
   }
 
   String get onboardSupportDesc {
-    return _localized[locale.languageCode]['onboardSupportDesc'];
+    return _localized[locale.languageCode]!['onboardSupportDesc']!;
   }
 
   String get onboardImportSuccess {
-    return _localized[locale.languageCode]['onboardImportSuccess'];
+    return _localized[locale.languageCode]!['onboardImportSuccess']!;
   }
 }

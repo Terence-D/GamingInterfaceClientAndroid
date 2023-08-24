@@ -36,7 +36,7 @@ class IntlNewScreenWizard {
   IntlNewScreenWizard(this ._context);
 
   String text(NewScreenWizardText text) {
-    return _localizedStrings[Intl.of(_context).locale.languageCode][text];
+    return _localizedStrings[Intl.of(_context)?.locale.languageCode]![text]!;
   }
 
   static Map<String, Map<NewScreenWizardText, String>> _localizedStrings = {

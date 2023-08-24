@@ -16,7 +16,7 @@ import 'settingsDialog/settingsDialog.dart';
 class ScreenEditor extends StatefulWidget {
   final int screenId;
 
-  ScreenEditor({Key key, @required this.screenId}) : super(key: key);
+  ScreenEditor({Key? key, required this.screenId}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -25,10 +25,10 @@ class ScreenEditor extends StatefulWidget {
 }
 
 class ScreenEditorState extends State<ScreenEditor> {
-  IntlScreenEditor translation;
+  late IntlScreenEditor translation;
   int controlId = -1;
   GridSize gridSize = GridSize();
-  ScreenService _service;
+  late ScreenService _service;
   final double highlightBorder = 2.0;
   final double minSize = 16.0;
   final int screenId;
@@ -36,9 +36,9 @@ class ScreenEditorState extends State<ScreenEditor> {
   final String prefHelpKey = "-screenEditorHelp";
   final String prefAltMode = "altMode";
 
-  ControlViewModel deletedWidget;
+  late ControlViewModel deletedWidget;
 
-  double pixelRatio;
+  double pixelRatio = 0;
 
   double selectedLeft = 0;
   double selectedTop = 0;
@@ -48,7 +48,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   bool _firstVisit = true;
   bool _loaded = false;
 
-  TapDownDetails _doubleTapDetails;
+  late TapDownDetails _doubleTapDetails;
 
   ScreenEditorState(this.screenId);
 
@@ -71,13 +71,13 @@ class ScreenEditorState extends State<ScreenEditor> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     gridSize.value = 64; //default size
     if (prefs.containsKey(prefKeyGridSize)) {
-      gridSize.value = prefs.getInt(prefKeyGridSize);
+      gridSize.value = prefs.getInt(prefKeyGridSize)!;
     }
     if (prefs.containsKey(prefAltMode)) {
-      _service.altMode = prefs.getBool(prefAltMode);
+      _service.altMode = prefs.getBool(prefAltMode)!;
     }
     if (prefs.containsKey("$screenId$prefHelpKey")) {
-      _firstVisit = prefs.getBool("$screenId$prefHelpKey");
+      _firstVisit = prefs.getBool("$screenId$prefHelpKey")!;
     }
   }
 
@@ -97,12 +97,12 @@ class ScreenEditorState extends State<ScreenEditor> {
     List<Widget> widgets = [];
     if (_service.activeScreenViewModel != null) {
 
-      for(int i=0; i < _service.activeScreenViewModel.controls.length; i++) {
+      for(int i=0; i < _service.activeScreenViewModel!.controls.length; i++) {
         widgets.add(GicEditControl(
           disableDrag: _service.altMode,
           gridSize: gridSize,
           pixelRatio: pixelRatio,
-          control: _service.activeScreenViewModel.controls[i],
+          control: _service.activeScreenViewModel!.controls[i],
           controlIndex: i,
           onSelected: (int i) {
             _onSelected(i);
@@ -129,10 +129,10 @@ class ScreenEditorState extends State<ScreenEditor> {
     }
 
     Container screen;
-    if (_service.activeScreenViewModel.backgroundPath != null &&
-        _service.activeScreenViewModel.backgroundPath.isNotEmpty) {
+    if (_service.activeScreenViewModel!.backgroundPath != null &&
+        _service.activeScreenViewModel!.backgroundPath.isNotEmpty) {
       FileImage fi = FileImage(
-          File(_service.activeScreenViewModel.backgroundPath)
+          File(_service.activeScreenViewModel!.backgroundPath)
       );
       screen = Container(
           key: UniqueKey(),
@@ -143,12 +143,12 @@ class ScreenEditorState extends State<ScreenEditor> {
             ),
           ),
           child: Container(child: Stack(children: widgets),
-              key: Key(_service.activeScreenViewModel.controls.length.toString())));
+              key: Key(_service.activeScreenViewModel!.controls.length.toString())));
     } else {
       screen = Container(
-          color: _service.activeScreenViewModel.backgroundColor,
+          color: _service.activeScreenViewModel!.backgroundColor,
           child: Stack(children: widgets,
-          key: Key(_service.activeScreenViewModel.controls.length.toString())));
+          key: Key(_service.activeScreenViewModel!.controls.length.toString())));
     }
 
     void rebuild(Element el) {
@@ -167,7 +167,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   //user tapped save in the settings menu
   void tapSave() {
     _service.defaultControls.saveDefaults(screenId);
-    _service.activeScreenViewModel.save();
+    _service.activeScreenViewModel!.save();
   }
 
   //user tapped help in the settings menu
@@ -216,7 +216,7 @@ class ScreenEditorState extends State<ScreenEditor> {
         size: newControl.height);
 
     setState(() {
-      _service.activeScreenViewModel.controls.add(newControl);
+      _service.activeScreenViewModel!.controls.add(newControl);
     });
   }
 
@@ -232,8 +232,8 @@ class ScreenEditorState extends State<ScreenEditor> {
   /// Determines where to place something, based on the currently set grid value
   /// startPosition - the raw position, either X or Y based
   /// size - size of the control, on the same axis as startPosition.  -1 ignores
-  double _getGridPosition({double startPosition, double size = -1}) {
-    double rawPos = startPosition * pixelRatio;
+  double _getGridPosition({double? startPosition, double size = -1}) {
+    double rawPos = startPosition! * pixelRatio;
     if (size > -1) {
       rawPos = rawPos - (size / 2);
     }
@@ -280,44 +280,44 @@ class ScreenEditorState extends State<ScreenEditor> {
         builder: (BuildContext context) {
           return ControlDialog(
               translation: translation,
-              screenId: _service.activeScreenViewModel.screenId,
+              screenId: _service.activeScreenViewModel!.screenId,
               screenService: _service,
               gicEditControl: GicEditControl(
                 gridSize: gridSize,
                 pixelRatio: pixelRatio,
                 control: _service
-                    .activeScreenViewModel.controls[selectedControlIndex],
+                    .activeScreenViewModel!.controls[selectedControlIndex],
                 controlIndex: selectedControlIndex,
-                onSelected: null,
+                onSelected: null, disableDrag: false,
               ));
         });
     setState(() {
       if (result != null)
         if (result == controlResult.delete) {
           setState(() {
-            deletedWidget = _service.activeScreenViewModel.controls.removeAt(selectedControlIndex);
+            deletedWidget = _service.activeScreenViewModel!.controls.removeAt(selectedControlIndex);
           });
         _showDeleteToast();
       } else if (result == controlResult.save) {
           switch (_service
-              .activeScreenViewModel.controls[selectedControlIndex].type) {
+              .activeScreenViewModel!.controls[selectedControlIndex].type) {
             case ControlViewModelType.Button:
               _service.defaultControls.defaultButton = _service
-                  .activeScreenViewModel.controls[selectedControlIndex].clone();
+                  .activeScreenViewModel!.controls[selectedControlIndex].clone();
               break;
             case ControlViewModelType.Text:
               _service.defaultControls.defaultText = _service
-                  .activeScreenViewModel.controls[selectedControlIndex].clone();
+                  .activeScreenViewModel!.controls[selectedControlIndex].clone();
               break;
             case ControlViewModelType.Image:
               break;
             case ControlViewModelType.Toggle:
               _service.defaultControls.defaultToggle = _service
-                  .activeScreenViewModel.controls[selectedControlIndex].clone();
+                  .activeScreenViewModel!.controls[selectedControlIndex].clone();
               break;
             case ControlViewModelType.QuickButton:
               _service.defaultControls.defaultButton = _service
-                  .activeScreenViewModel.controls[selectedControlIndex].clone();
+                  .activeScreenViewModel!.controls[selectedControlIndex].clone();
               break;
           }
         }
@@ -331,7 +331,7 @@ class ScreenEditorState extends State<ScreenEditor> {
         label: translation.text(ScreenEditorText.undo),
         onPressed: () {
           setState(() {
-            _service.activeScreenViewModel.controls.add(deletedWidget);
+            _service.activeScreenViewModel!.controls.add(deletedWidget);
           });
         },
       ),

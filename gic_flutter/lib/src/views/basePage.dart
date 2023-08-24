@@ -9,11 +9,11 @@ abstract class BasePresentation {
 }
 
 abstract class BasePage extends StatefulWidget {
-  BasePage({Key key}) : super(key: key);
+  BasePage({Key? key}) : super(key: key);
 }
 
 abstract class BaseState<Page extends BasePage> extends State<Page> with WidgetsBindingObserver {
-  BasePresentation presentation;
+  BasePresentation? presentation;
 
   @override
   void initState() {
@@ -23,7 +23,7 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
 
   @override
   void didChangeDependencies() {
-    presentation.buildVM(context);
+    presentation?.buildVM(context);
     super.didChangeDependencies();
   }
 
@@ -37,7 +37,7 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
     super.dispose();
   }
 
-  Widget section(ViewSection model, {TextStyle optionalHeaderStyle, bool centered = false}) {
+  Widget section(ViewSection model, {TextStyle? optionalHeaderStyle, bool centered = false}) {
     var align = CrossAxisAlignment.start;
     if (centered) {
       align = CrossAxisAlignment.center;
@@ -68,7 +68,7 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
     );
   }
 
-  Widget header(String text, [TextStyle textStyle]) {
+  Widget header(String text, [TextStyle? textStyle]) {
     if (textStyle == null) {
       textStyle = Theme.of(context).textTheme.headline5;
     }

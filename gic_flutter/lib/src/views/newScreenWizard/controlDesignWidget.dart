@@ -9,7 +9,7 @@ import 'newScreenWizard.dart';
 class ControlDesignWidget extends StatefulWidget {
   final NewScreenWizardState state;
 
-  const ControlDesignWidget ( this.state, {Key key  }): super(key: key);
+  const ControlDesignWidget ( this.state, {Key? key  }): super(key: key);
 
   @override
   State<StatefulWidget> createState() => ControlDesignState();
@@ -17,7 +17,7 @@ class ControlDesignWidget extends StatefulWidget {
 }
 
 class ControlDesignState extends State<ControlDesignWidget> {
-  Icon icon;
+  Icon? icon;
 
   @override
   void initState() {

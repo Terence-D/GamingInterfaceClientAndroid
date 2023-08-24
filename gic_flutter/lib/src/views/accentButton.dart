@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class AccentButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final Widget child;
+  final VoidCallback? onPressed;
+  final Widget? child;
 
-  const AccentButton({this.child, this.onPressed, Key key}) : super(key: key);
+  const AccentButton({this.child, this.onPressed, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

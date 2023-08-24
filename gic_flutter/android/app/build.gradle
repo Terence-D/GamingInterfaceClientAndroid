@@ -56,7 +56,6 @@ android {
     }
 
     productFlavors {
- 
         gplay {
         }
  
@@ -72,15 +71,19 @@ android {
             storeFile file(keystoreProperties['storeFile'])
             storePassword keystoreProperties['storePassword']
         }
+        debug {}
     }
 
     buildTypes {
         release {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
             minifyEnabled false
             shrinkResources false
             //useProguard true
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
 }

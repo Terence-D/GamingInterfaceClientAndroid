@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Font {
-  int version;
+  int version = 0;
   Color color = Colors.blue;
   double size = 36;
   String family = "";
@@ -12,7 +12,7 @@ class Font {
     family = "";
   }
 
-  Font({this.color, this.size, this.family});
+  Font({this.color = Colors.blue, this.size = 36, this.family = ""});
 
   Font.fromJson(Map<String, dynamic> json)
       : version = json['version'],

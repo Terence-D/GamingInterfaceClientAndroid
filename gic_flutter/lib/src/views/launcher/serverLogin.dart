@@ -131,7 +131,7 @@ class _ServerLoginState extends State<ServerLogin> {
           future: _checkVersion(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              if (snapshot.data > 30)
+              if (snapshot.data as int > 30)
                 return ExpansionTile(
                     title: Row(
                       children: [

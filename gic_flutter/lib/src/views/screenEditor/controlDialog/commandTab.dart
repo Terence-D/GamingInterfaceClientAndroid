@@ -14,7 +14,7 @@ class CommandTab extends BaseTab {
   final bool isButton;
   final int screenId;
 
-  CommandTab({Key key, this.screenId, this.gicEditControl, this.translation, this.isButton})
+  CommandTab({Key? key, required this.screenId, required this.gicEditControl, required this.translation, required this.isButton})
       : super(
       key: key,
       gicEditControl: gicEditControl,
@@ -29,8 +29,8 @@ class CommandTabState extends BaseTabState {
   final List<TextEditingController> textControllers = [];
   final AutoItKeyMap _commandList = AutoItKeyMap();
   final List<String> _dropDownItems = [];
-  String switchText;
-  Orientation orientation;
+  String? switchText;
+  Orientation? orientation;
 
   @override
   void initState() {
@@ -149,7 +149,7 @@ class CommandTabState extends BaseTabState {
       underline: Container(
         height: 24,
       ),
-      onChanged: (String newValue) {
+      onChanged: (String? newValue) {
         setState(() {
           widget.gicEditControl.control.commands[commandIndex].key =
               _commandList.map.keys.firstWhere(
@@ -189,15 +189,15 @@ class CommandTabState extends BaseTabState {
       commandIndex = 0;
     }
     return Checkbox(
-        value: widget.gicEditControl.control.commands[commandIndex].modifiers
+        value: widget.gicEditControl.control.commands[commandIndex].modifiers!
             .contains(modifier), //do something here
-        onChanged: (bool value) {
+        onChanged: (bool? value) {
           setState(() {
-            if (value) {
-              widget.gicEditControl.control.commands[commandIndex].modifiers
+            if (value!) {
+              widget.gicEditControl.control.commands[commandIndex].modifiers!
                   .add(modifier);
             } else {
-              widget.gicEditControl.control.commands[commandIndex].modifiers
+              widget.gicEditControl.control.commands[commandIndex].modifiers!
                   .remove(modifier);
             }
           });
@@ -228,7 +228,7 @@ class CommandTabState extends BaseTabState {
               .text(ScreenEditorText.commandTabQuickModeDetails)),
           Row(
             children: [
-              Text(switchText),
+              Text(switchText!),
               buildQuickMode(),
             ],
           )
@@ -246,7 +246,7 @@ class CommandTabState extends BaseTabState {
             flex: 1,
             child: Column(
               children: [
-                Text(switchText),
+                Text(switchText!),
                 buildQuickMode(),
               ],
             ),

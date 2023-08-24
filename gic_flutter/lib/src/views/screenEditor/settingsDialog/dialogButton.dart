@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class DialogButton extends StatelessWidget {
   const DialogButton(
-      {Key key, this.icon, this.color, this.text, this.onPressed})
+      {Key? key, required this.icon, required this.color, required this.text, required this.onPressed})
       : super(key: key);
 
   final IconData icon;

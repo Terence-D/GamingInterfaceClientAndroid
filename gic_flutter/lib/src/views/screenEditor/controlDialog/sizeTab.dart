@@ -12,7 +12,7 @@ class SizeTab extends BaseTab {
   final ControlDefaults defaultControls;
   final GicEditControl gicEditControl;
 
-  SizeTab({Key key, this.gicEditControl, this.translation, screenId, this.defaultControls})
+  SizeTab({Key? key, required this.gicEditControl, required this.translation, screenId, required this.defaultControls})
       : super(
       key: key,
       defaultControls: defaultControls,
@@ -189,26 +189,26 @@ class SizeTabState extends BaseTabState {
       case ControlViewModelType.Button:
       case ControlViewModelType.QuickButton:
         setState(() {
-          widget.gicEditControl.control.width = widget.defaultControls.defaultButton.width;
-          widget.gicEditControl.control.height = widget.defaultControls.defaultButton.height;
+          widget.gicEditControl.control.width = widget.defaultControls!.defaultButton.width;
+          widget.gicEditControl.control.height = widget.defaultControls!.defaultButton.height;
         });
         break;
       case ControlViewModelType.Text:
         setState(() {
-          widget.gicEditControl.control.width = widget.defaultControls.defaultText.width;
-          widget.gicEditControl.control.height = widget.defaultControls.defaultText.height;
+          widget.gicEditControl.control.width = widget.defaultControls!.defaultText.width;
+          widget.gicEditControl.control.height = widget.defaultControls!.defaultText.height;
         });
         break;
       case ControlViewModelType.Toggle:
         setState(() {
-          widget.gicEditControl.control.width = widget.defaultControls.defaultToggle.width;
-          widget.gicEditControl.control.height = widget.defaultControls.defaultToggle.height;
+          widget.gicEditControl.control.width = widget.defaultControls!.defaultToggle.width;
+          widget.gicEditControl.control.height = widget.defaultControls!.defaultToggle.height;
         });
         break;
       case ControlViewModelType.Image:
         setState(() {
-          widget.gicEditControl.control.width = widget.defaultControls.defaultImage.width;
-          widget.gicEditControl.control.height = widget.defaultControls.defaultImage.height;
+          widget.gicEditControl.control.width = widget.defaultControls!.defaultImage.width;
+          widget.gicEditControl.control.height = widget.defaultControls!.defaultImage.height;
         });
         break;
     }
