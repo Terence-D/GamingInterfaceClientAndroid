@@ -4,7 +4,7 @@ class Font {
   int version = 0;
   Color color = Colors.blue;
   double size = 36;
-  String family = "";
+  String? family = "";
 
   Font.empty() {
     color = Colors.blue;

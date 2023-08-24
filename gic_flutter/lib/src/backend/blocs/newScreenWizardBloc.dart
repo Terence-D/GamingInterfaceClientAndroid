@@ -59,7 +59,7 @@ class NewScreenWizardBloc {
         //only proceed if the control has valid OR key
         if (element.text == null && element.key == null) return;
 
-        _screenService.activeScreenViewModel!.controls
+        _screenService.activeScreenViewModel!.controls!
             .add(_buildControl(controlHeight, controlWidth, x, y, element));
         i++;
       }

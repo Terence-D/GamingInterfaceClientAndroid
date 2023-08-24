@@ -64,16 +64,16 @@ class ScreenImportService {
         String destination = path.join(screenFile!.parent.path, basename);
         toCopy.copySync(destination);
         //search for any instances that point to this image, and update accordingly
-        if (importedScreen.backgroundPath.contains(basename)) {
+        if (importedScreen.backgroundPath!.contains(basename)) {
           importedScreen.backgroundPath = destination;
           // importedScreen.backgroundColor = null;
         }
-        for (int i = 0; i < importedScreen.controls.length; i++) {
+        for (int i = 0; i < importedScreen.controls!.length; i++) {
           for (int n = 0;
-              n < importedScreen.controls[i].images.length;
+              n < importedScreen.controls![i].images.length;
               n++) {
-            if (importedScreen.controls[i].images[n].contains(basename)) {
-              importedScreen.controls[i].images[n] = destination;
+            if (importedScreen.controls![i].images[n].contains(basename)) {
+              importedScreen.controls![i].images[n] = destination;
             }
           }
                 }

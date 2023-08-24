@@ -83,6 +83,7 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            applicationId "ca.coffeeshopstudio.gaminginterfaceclient.internal"
             signingConfig signingConfigs.debug
         }
     }

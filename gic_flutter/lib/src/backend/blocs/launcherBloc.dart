@@ -5,7 +5,6 @@ import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/repositories/launcherRepository.dart';
-import 'package:gic_flutter/src/views/launcher/launcher.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// LauncherBloc acts as the Presentation layer for the Launcher UI
@@ -55,7 +54,7 @@ class LauncherBloc {
   ///
   /// @param id Id of the screen we want to update the name of
   /// @param newName New name of the screen
-  Future<void> updateScreenName(int id, String newName) async {
+  Future<void> updateScreenName(int? id, String? newName) async {
     await _repository?.updateName(id, newName);
   }
 
@@ -63,7 +62,7 @@ class LauncherBloc {
   ///
   /// @param id The Id of the screen we want to remove
   /// @return The new cache size, or -1 if an error occurs
-  Future<int> deleteScreen(int id) async {
+  Future<int> deleteScreen(int? id) async {
     int? rv = await _repository?.deleteScreen(id);
 
     if (rv! >= 0) {
@@ -89,7 +88,7 @@ class LauncherBloc {
   /// @param exportPath directory we are exporting to
   /// @param id Id of the screen we want to export
   /// @return complete path of file
-  Future<String> export(String exportPath, int id) async {
+  Future<String> export(String? exportPath, int? id) async {
     return await _repository!.export(exportPath, id);
   }
 

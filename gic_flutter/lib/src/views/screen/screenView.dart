@@ -55,7 +55,7 @@ class ScreenView extends StatelessWidget {
   Widget build(BuildContext context) {
     double pixelRatio = MediaQuery.of(context).devicePixelRatio;
     if (screenVM.screen != null) {
-      screenVM.screen.controls.forEach((element) {
+      screenVM.screen.controls!.forEach((element) {
         widgets.add(_buildGicControl(element, pixelRatio));
       });
     }
@@ -64,7 +64,7 @@ class ScreenView extends StatelessWidget {
     }
 
     if (screenVM.screen.backgroundPath != null &&
-        screenVM.screen.backgroundPath.isNotEmpty) {
+        screenVM.screen.backgroundPath!.isNotEmpty) {
       imageCache.clear();
       imageCache.clearLiveImages();
 
@@ -72,7 +72,7 @@ class ScreenView extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: FileImage(File(screenVM.screen.backgroundPath)),
+              image: FileImage(File(screenVM.screen.backgroundPath!)),
               fit: BoxFit.fill,
             ),
           ),
@@ -106,18 +106,16 @@ class ScreenView extends StatelessWidget {
       playSound();
       vibration();
     }
-    if (screenVM.networkModel != null) {
-      NetworkResponse response = await NetworkService.sendCommand(
-          screenVM.networkModel, commandUrl, control.commands[commandIndex]);
-      if (response == NetworkResponse.Error) {
-        var snackBar = SnackBar(content: Text("Error Connecting to Server"));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      } else if (response == NetworkResponse.Unauthorized) {
-        var snackBar = SnackBar(content: Text("Unauthorized, check that the passwords match"));
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
+    NetworkResponse response = await NetworkService.sendCommand(
+        screenVM.networkModel, commandUrl, control.commands[commandIndex]);
+    if (response == NetworkResponse.Error) {
+      var snackBar = SnackBar(content: Text("Error Connecting to Server"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } else if (response == NetworkResponse.Unauthorized) {
+      var snackBar = SnackBar(content: Text("Unauthorized, check that the passwords match"));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-  }
+    }
 
   void playSound() {
     if (screenVM.playSound) {

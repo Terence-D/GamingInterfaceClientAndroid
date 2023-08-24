@@ -56,7 +56,7 @@ class _ScreenListState extends State<ScreenList> {
     _screenNameController.clear();
     for (var i = 0; i < widget._screens.length; i++) {
       TextEditingController tec = TextEditingController();
-      tec.text = widget._screens[i].name;
+      tec.text = widget._screens[i].name!;
       _screenNameController.add(tec);
     }
 
@@ -188,7 +188,7 @@ class _ScreenListState extends State<ScreenList> {
   }
 
   Future<void> _confirmDeleteDialog(
-      int index, String name, BuildContext context) async {
+      int? index, String? name, BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -200,7 +200,7 @@ class _ScreenListState extends State<ScreenList> {
             child: ListBody(
               children: <Widget>[
                 Text(widget._translations.text(LauncherText.deleteConfirm) +
-                    name),
+                    name!),
               ],
             ),
           ),
@@ -276,7 +276,7 @@ class _ScreenListState extends State<ScreenList> {
   }
 
   _editScreen(int selectedScreenIndex, BuildContext context) async {
-    int screenId = widget._screens[selectedScreenIndex].id;
+    int screenId = widget._screens[selectedScreenIndex].id!;
 
     await Navigator.push(
         context,
@@ -397,7 +397,7 @@ class _ScreenListState extends State<ScreenList> {
   }
 
   _validateScreen(int screenIndex, BuildContext context) async {
-    int screenId = widget._screens[screenIndex].id;
+    int screenId = widget._screens[screenIndex].id!;
 
     NetworkModel networkModel = NetworkModel();
     await networkModel.init(
@@ -505,9 +505,9 @@ class _ScreenListState extends State<ScreenList> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void _deleteScreen(int index) async {
+  void _deleteScreen(int? index) async {
     int deleteResponse = await widget._parent.launcherBloc
-        .deleteScreen(widget._screens[index].id);
+        .deleteScreen(widget._screens[index!].id);
     if (deleteResponse >= 0) {
       var snackBar = SnackBar(content: Text(widget._translations.text(LauncherText.deleteComplete)));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -517,7 +517,7 @@ class _ScreenListState extends State<ScreenList> {
     }
   }
 
-  Future<void> _export(BuildContext context, int id) async {
+  Future<void> _export(BuildContext context, int? id) async {
     String path;
 
     if (Platform.isIOS) {

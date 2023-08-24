@@ -58,7 +58,7 @@ class ScreenRepository {
         try {
           //legacy used an integer dummy value, so need to handle that
           Map<String, dynamic> controlMap = jsonDecode(prefs.getString(key) ?? "");
-          screen.controls.add(GicControl.fromJson(controlMap));
+          screen.controls!.add(GicControl.fromJson(controlMap));
           //screen.name = prefs.getString(key);
         } catch (e) {
           debugPrint(e.toString());
@@ -67,11 +67,11 @@ class ScreenRepository {
     });
   }
 
-  String _findUniqueName(String baseName) {
+  String _findUniqueName(String? baseName) {
     String rv = "";
     _cache!.forEach((screen) {
       if (screen.name == baseName) {
-        baseName = baseName + " 1";
+        baseName = baseName! + " 1";
         rv = _findUniqueName(baseName);
         return;
       }
@@ -104,11 +104,11 @@ class ScreenRepository {
   }
 
   _save(SharedPreferences prefs, Screen screen) {
-    prefs.setString("$_prefsScreen${screen.screenId}", screen.name);
+    prefs.setString("$_prefsScreen${screen.screenId}", screen.name!);
     prefs.setInt(
-        "${screen.screenId}$_prefsBackgroundSuffix", screen.backgroundColor);
+        "${screen.screenId}$_prefsBackgroundSuffix", screen.backgroundColor!);
     prefs.setString(
-        "${screen.screenId}$_prefsBackgroundPathSuffix", screen.backgroundPath);
+        "${screen.screenId}$_prefsBackgroundPathSuffix", screen.backgroundPath!);
 
     //clear out the old
     prefs.getKeys().forEach((key) {
@@ -119,8 +119,8 @@ class ScreenRepository {
 
     //add the updated controls
     int i = 0;
-    if (screen.controls != null && screen.controls.isNotEmpty) {
-      screen.controls.forEach((control) {
+    if (screen.controls != null && screen.controls!.isNotEmpty) {
+      screen.controls!.forEach((control) {
         String json = jsonEncode(control.toJson());
         prefs.setString("${screen.screenId}$_prefsControl$i", json);
         i++;
@@ -215,11 +215,11 @@ class ScreenRepository {
     for (int i = 0; i < _cache!.length; i++) {
       if (_cache![i].screenId == id) {
         if (_cache![i].backgroundPath != null &&
-            _cache![i].backgroundPath.isNotEmpty) {
-          final File background = File(_cache![i].backgroundPath);
+            _cache![i].backgroundPath!.isNotEmpty) {
+          final File background = File(_cache![i].backgroundPath!);
           await background.delete();
         }
-        _cache![i].controls.forEach((element) {
+        _cache![i].controls!.forEach((element) {
           if (element.primaryImage.contains("_control_")) {
             final File control = File(element.primaryImage);
             control.delete();
@@ -234,7 +234,7 @@ class ScreenRepository {
 
   /// Takes a file (retrieved from the view) and imports it into the application
   /// File is a ZIP, containing JSON and zero to many image files
-  Future<int> import(File file) async {
+  Future<int?> import(File file) async {
     //get our various folders ready
     Directory cacheTemp = await getTemporaryDirectory();
     Directory files = await getApplicationSupportDirectory();
@@ -329,7 +329,7 @@ class ScreenRepository {
         String newFilename =
             "${fileName.substring(0, separatorPosition + 1)}_${foundIds[oldId]}";
         //found before, so just update references
-        screen.controls.forEach((control) {
+        screen.controls!.forEach((control) {
           if (control.primaryImage.contains("${searchParam}_$oldId")) {
             control.primaryImage = path.join(files.path, "$newFilename.png");
           }
@@ -362,7 +362,7 @@ class ScreenRepository {
         //found a new id, update file and references
         newFilename = path.join(files.path, "$newFilename.png");
 
-        screen.controls.forEach((control) {
+        screen.controls!.forEach((control) {
           if (control.primaryImage.contains("${searchParam}_$oldId")) {
             control.primaryImage = newFilename;
           }
@@ -379,7 +379,7 @@ class ScreenRepository {
   void _renameImage(File element, Screen screen, Directory files) {
     String newFilename =
         path.join(files.path, "${_findElementToRename(element, files)}.png");
-    screen.controls.forEach((control) {
+    screen.controls!.forEach((control) {
       if (control.primaryImage.contains(path.basename(element.path))) {
         control.primaryImage = newFilename;
       }
@@ -390,7 +390,7 @@ class ScreenRepository {
   void _renameBackground(File element, Screen screen, Directory files) {
     String newFilename = _findElementToRename(element, files);
     screen.backgroundPath = path.join(files.path, "$newFilename.png");
-    element.copy(screen.backgroundPath);
+    element.copy(screen.backgroundPath!);
   }
 
   //common code for renaming background / image

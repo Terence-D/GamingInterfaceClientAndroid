@@ -97,12 +97,12 @@ class ScreenEditorState extends State<ScreenEditor> {
     List<Widget> widgets = [];
     if (_service.activeScreenViewModel != null) {
 
-      for(int i=0; i < _service.activeScreenViewModel!.controls.length; i++) {
+      for(int i=0; i < _service.activeScreenViewModel!.controls!.length; i++) {
         widgets.add(GicEditControl(
           disableDrag: _service.altMode,
           gridSize: gridSize,
           pixelRatio: pixelRatio,
-          control: _service.activeScreenViewModel!.controls[i],
+          control: _service.activeScreenViewModel!.controls![i],
           controlIndex: i,
           onSelected: (int i) {
             _onSelected(i);
@@ -130,9 +130,9 @@ class ScreenEditorState extends State<ScreenEditor> {
 
     Container screen;
     if (_service.activeScreenViewModel!.backgroundPath != null &&
-        _service.activeScreenViewModel!.backgroundPath.isNotEmpty) {
+        _service.activeScreenViewModel!.backgroundPath!.isNotEmpty) {
       FileImage fi = FileImage(
-          File(_service.activeScreenViewModel!.backgroundPath)
+          File(_service.activeScreenViewModel!.backgroundPath!)
       );
       screen = Container(
           key: UniqueKey(),
@@ -143,12 +143,12 @@ class ScreenEditorState extends State<ScreenEditor> {
             ),
           ),
           child: Container(child: Stack(children: widgets),
-              key: Key(_service.activeScreenViewModel!.controls.length.toString())));
+              key: Key(_service.activeScreenViewModel!.controls!.length.toString())));
     } else {
       screen = Container(
           color: _service.activeScreenViewModel!.backgroundColor,
           child: Stack(children: widgets,
-          key: Key(_service.activeScreenViewModel!.controls.length.toString())));
+          key: Key(_service.activeScreenViewModel!.controls!.length.toString())));
     }
 
     void rebuild(Element el) {
@@ -216,7 +216,7 @@ class ScreenEditorState extends State<ScreenEditor> {
         size: newControl.height);
 
     setState(() {
-      _service.activeScreenViewModel!.controls.add(newControl);
+      _service.activeScreenViewModel!.controls!.add(newControl);
     });
   }
 
@@ -286,41 +286,40 @@ class ScreenEditorState extends State<ScreenEditor> {
                 gridSize: gridSize,
                 pixelRatio: pixelRatio,
                 control: _service
-                    .activeScreenViewModel!.controls[selectedControlIndex],
+                    .activeScreenViewModel!.controls![selectedControlIndex],
                 controlIndex: selectedControlIndex,
                 onSelected: null, disableDrag: false,
               ));
         });
     setState(() {
-      if (result != null)
-        if (result == controlResult.delete) {
-          setState(() {
-            deletedWidget = _service.activeScreenViewModel!.controls.removeAt(selectedControlIndex);
-          });
-        _showDeleteToast();
-      } else if (result == controlResult.save) {
-          switch (_service
-              .activeScreenViewModel!.controls[selectedControlIndex].type) {
-            case ControlViewModelType.Button:
-              _service.defaultControls.defaultButton = _service
-                  .activeScreenViewModel!.controls[selectedControlIndex].clone();
-              break;
-            case ControlViewModelType.Text:
-              _service.defaultControls.defaultText = _service
-                  .activeScreenViewModel!.controls[selectedControlIndex].clone();
-              break;
-            case ControlViewModelType.Image:
-              break;
-            case ControlViewModelType.Toggle:
-              _service.defaultControls.defaultToggle = _service
-                  .activeScreenViewModel!.controls[selectedControlIndex].clone();
-              break;
-            case ControlViewModelType.QuickButton:
-              _service.defaultControls.defaultButton = _service
-                  .activeScreenViewModel!.controls[selectedControlIndex].clone();
-              break;
-          }
+      if (result == controlResult.delete) {
+        setState(() {
+          deletedWidget = _service.activeScreenViewModel!.controls!.removeAt(selectedControlIndex);
+        });
+      _showDeleteToast();
+    } else if (result == controlResult.save) {
+        switch (_service
+            .activeScreenViewModel!.controls![selectedControlIndex].type) {
+          case ControlViewModelType.Button:
+            _service.defaultControls.defaultButton = _service
+                .activeScreenViewModel!.controls![selectedControlIndex].clone();
+            break;
+          case ControlViewModelType.Text:
+            _service.defaultControls.defaultText = _service
+                .activeScreenViewModel!.controls![selectedControlIndex].clone();
+            break;
+          case ControlViewModelType.Image:
+            break;
+          case ControlViewModelType.Toggle:
+            _service.defaultControls.defaultToggle = _service
+                .activeScreenViewModel!.controls![selectedControlIndex].clone();
+            break;
+          case ControlViewModelType.QuickButton:
+            _service.defaultControls.defaultButton = _service
+                .activeScreenViewModel!.controls![selectedControlIndex].clone();
+            break;
         }
+      }
     });
   }
 
@@ -331,7 +330,7 @@ class ScreenEditorState extends State<ScreenEditor> {
         label: translation.text(ScreenEditorText.undo),
         onPressed: () {
           setState(() {
-            _service.activeScreenViewModel!.controls.add(deletedWidget);
+            _service.activeScreenViewModel!.controls!.add(deletedWidget);
           });
         },
       ),

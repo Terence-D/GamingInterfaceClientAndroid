@@ -10,13 +10,13 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class ScreenViewModel {
-  int version = 2;
-  int screenId = -1;
-  String name = "";
-  List<ControlViewModel> controls = [];
-  int newControlId = -1;
-  Color backgroundColor = Colors.black54;
-  String backgroundPath = "";
+  int? version = 2;
+  int? screenId = -1;
+  String? name = "";
+  List<ControlViewModel>? controls = [];
+  int? newControlId = -1;
+  Color? backgroundColor = Colors.black54;
+  String? backgroundPath = "";
 
   ScreenViewModel.empty() {
     version = 2;
@@ -63,7 +63,7 @@ class ScreenViewModel {
         'name': name,
         'controls': controls,
         'newControlId': newControlId,
-        'backgroundColor': backgroundColor.value,
+        'backgroundColor': backgroundColor!.value,
         'backgroundPath': backgroundPath
       };
 
@@ -84,7 +84,7 @@ class ScreenViewModel {
   /// It'll use the builtin ScreenService.backgroundImagePath
   /// Returns either the file we wrote, or null on error
   Future<File?> save() async {
-    if (screenId < 0) return null;
+    if (screenId! < 0) return null;
 
     try {
       final Directory appFolder = await getApplicationDocumentsDirectory();
@@ -103,7 +103,7 @@ class ScreenViewModel {
   }
 
   /// Export the screen to the chosen path
-  Future<String> export(String exportPath) async {
+  Future<String> export(String? exportPath) async {
     final Directory appFolder = await getApplicationDocumentsDirectory();
     final String screenPath = path.join(
         appFolder.path, ScreenService.screenFolder, screenId.toString());
@@ -112,18 +112,18 @@ class ScreenViewModel {
     //we need to copy in all images stored in the files folder that this screen uses, and update their links to local
     Directory imageFilesDir = await getApplicationSupportDirectory();
 
-    for (int i=0; i < controls.length; i++) {
-      for (int n = 0; n < controls[i].images.length; n++) {
-        if (controls[i].images[n].contains(imageFilesDir.path)) {
-          File oldPath = File (controls[i].images[n]);
+    for (int i=0; i < controls!.length; i++) {
+      for (int n = 0; n < controls![i].images.length; n++) {
+        if (controls![i].images[n].contains(imageFilesDir.path)) {
+          File oldPath = File (controls![i].images[n]);
           String newPath = path.join(screenPath, path.basename(oldPath.path));
           oldPath.copySync(newPath);
-          controls[i].images[n] = newPath;
+          controls![i].images[n] = newPath;
         }
       }
     }
     int result = await CompressedFileService.compressFolder(
-        screenPath, exportPath, fileName);
+        screenPath, exportPath!, fileName);
 
     if (result != 0)
       return "";
@@ -138,8 +138,8 @@ class ScreenViewModel {
     rv.controls = [];
     rv.screenId = model.screenId;
     rv.name = model.name;
-    model.controls.forEach((element) {
-      rv.controls.add(ControlViewModel.fromLegacyModel(element));
+    model.controls!.forEach((element) {
+      rv.controls!.add(ControlViewModel.fromLegacyModel(element));
     });
     rv.newControlId = model.newControlId;
 
@@ -153,7 +153,7 @@ class ScreenViewModel {
   }
 
   /// Convert legacy java color to Flutter Color
-  static Color _convertLegacyColor(int legacyColor) {
-    return Color(legacyColor);
+  static Color? _convertLegacyColor(int? legacyColor) {
+    return Color(legacyColor!);
   }
 }

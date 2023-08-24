@@ -3,14 +3,14 @@ import 'gicControl.dart';
 class Screen {
   static const MAX_CONTROL_SIZE = 800;
 
-  int screenId = -1;
-  List<GicControl> controls = <GicControl>[];
+  int? screenId = -1;
+  List<GicControl>? controls = <GicControl>[];
   //background
-  int newControlId = -1;
-  int backgroundColor;
-  String backgroundPath;
+  int? newControlId = -1;
+  int? backgroundColor;
+  String? backgroundPath;
   //context;
-  String name;
+  String? name;
 
   Screen({
     this.screenId = -1,
@@ -62,8 +62,8 @@ class Screen {
       };
 
   int getNewControlId() {
-    newControlId++;
-    return newControlId - 1;
+    newControlId = newControlId! + 1;
+    return newControlId! - 1;
   }
 
 }

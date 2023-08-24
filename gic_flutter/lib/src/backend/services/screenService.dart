@@ -8,7 +8,6 @@ import 'dart:io';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/screenImportService.dart';
-import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +48,7 @@ class ScreenService {
 
   // Sets which screen we are using as active
   // Returns true on success, false when no matching screen id is found
-  bool setActiveScreen(int screenId) {
+  bool setActiveScreen(int? screenId) {
     bool rv = false;
     if (screenViewModels.isNotEmpty) {
       screenViewModels.forEach((element) {
@@ -111,7 +110,7 @@ class ScreenService {
 
   /// Delete the screen with the associated id
   /// returns the number of deleted records (SHOULD BE 1!!) on success, sub zero on fail
-  Future<int> deleteScreen(int idToDelete) async {
+  Future<int> deleteScreen(int? idToDelete) async {
     //can't delete the last screen
     if (screenViewModels.length < 2) return -1;
 
@@ -182,12 +181,12 @@ class ScreenService {
       ScreenViewModel newScreen = ScreenViewModel.fromJson(
           json.decode(newScreenJson.readAsStringSync()));
 
-      if (newScreen.backgroundPath.contains(originalPath))
-        newScreen.backgroundPath.replaceAll(originalPath, newPath);
-      for (int i=0; i < newScreen.controls.length; i++) {
-        for (int n=0; n < newScreen.controls[i].images.length; n++) {
-          if (newScreen.controls[i].images[n].contains(originalPath))
-            newScreen.controls[i].images[n].replaceAll(originalPath, newPath);
+      if (newScreen.backgroundPath!.contains(originalPath))
+        newScreen.backgroundPath!.replaceAll(originalPath, newPath);
+      for (int i=0; i < newScreen.controls!.length; i++) {
+        for (int n=0; n < newScreen.controls![i].images.length; n++) {
+          if (newScreen.controls![i].images[n].contains(originalPath))
+            newScreen.controls![i].images[n].replaceAll(originalPath, newPath);
         }
       }
       newScreen.screenId = newId;

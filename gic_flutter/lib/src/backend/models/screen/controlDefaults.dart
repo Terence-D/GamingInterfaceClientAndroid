@@ -20,7 +20,7 @@ class ControlDefaults {
 
   SharedPreferences _prefs;
 
-  ControlDefaults(this._prefs, int screenId) {
+  ControlDefaults(this._prefs, int? screenId) {
     if (this._prefs.containsKey("v2$screenId$_imageDefaults")) {
       Map<String, dynamic> imageControlMap =
           jsonDecode(_prefs.getString("v2$screenId$_imageDefaults") ?? "");

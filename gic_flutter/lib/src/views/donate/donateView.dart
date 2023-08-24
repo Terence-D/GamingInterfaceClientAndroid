@@ -36,7 +36,7 @@ class DonateViewState extends BaseState<DonateView> {
   bool _isAvailable = false;
   bool _purchasePending = false;
   bool _loading = true;
-  late String? _queryProductError;
+  String? _queryProductError;
 
   @override
   void initState() {

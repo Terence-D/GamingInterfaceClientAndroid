@@ -53,7 +53,7 @@ class LauncherRepository {
   }
 
   /// Updates the screen name for the matching ID
-  Future updateName(int id, String newName) async {
+  Future updateName(int? id, String? newName) async {
     _screenService.screenViewModels.forEach((screen) {
       if (screen.screenId == id) {
         screen.name = newName;
@@ -86,7 +86,7 @@ class LauncherRepository {
   }
 
   /// Remove the matching screen
-  Future<int> deleteScreen(int id) async {
+  Future<int> deleteScreen(int? id) async {
     return await _screenService.deleteScreen(id);
   }
 
@@ -96,7 +96,7 @@ class LauncherRepository {
   }
 
   /// Exports the screen with matching id to the export path
-  Future<String> export(String exportPath, int id) async {
+  Future<String> export(String? exportPath, int? id) async {
     _screenService.setActiveScreen(id);
     return _screenService.activeScreenViewModel!.export(exportPath);
   }
@@ -111,7 +111,7 @@ class LauncherRepository {
     double furthestRight = 0;
     double furthestBottom = 0;
 
-    _screenService.activeScreenViewModel!.controls.forEach((element) {
+    _screenService.activeScreenViewModel!.controls!.forEach((element) {
       double rightPos = element.left + element.width;
       double bottomPos = element.top + element.height;
       if (rightPos > furthestRight) furthestRight = rightPos;
@@ -155,7 +155,7 @@ class LauncherRepository {
   }
 
   /// Resizes the chosen screens dimensions
-  Future<int> resizeScreen(oldId, BuildContext context) async {
+  Future<int?> resizeScreen(oldId, BuildContext context) async {
     List screenInfo = await checkScreenSize(oldId);
     List deviceInfo = buildDimensions(context);
 
@@ -171,7 +171,7 @@ class LauncherRepository {
 
     await _screenService.duplicateScreen(oldId);
 
-    _screenService.activeScreenViewModel!.controls.forEach((control) {
+    _screenService.activeScreenViewModel!.controls!.forEach((control) {
       control.left = control.left * adjustX;
       control.width = (control.width * adjustX);
       control.top = control.top * adjustY;
@@ -206,7 +206,7 @@ class LauncherRepository {
         viewModel.screens.add(ScreenListItem(element.screenId, element.name));
       });
       viewModel.screens
-          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+          .sort((a, b) => a.name!.toLowerCase().compareTo(b.name!.toLowerCase()));
     }
 
     //get generic info

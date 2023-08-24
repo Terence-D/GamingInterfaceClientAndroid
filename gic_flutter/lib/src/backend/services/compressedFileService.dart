@@ -38,11 +38,11 @@ class CompressedFileService {
   /// destinationFolder is the destination folder
   /// exportFile is the file we are creating
   /// Returns 0 on success, -1 on error
-  static Future<int> compressFolder(String folderToCompress, String destinationFolder, String exportFile) async {
+  static Future<int> compressFolder(String folderToCompress, String destinationFolder, String? exportFile) async {
     //add the zip extension if required
     try {
-      if (!exportFile.endsWith(".zip")) {
-        exportFile += ".zip";
+      if (!exportFile!.endsWith(".zip")) {
+        exportFile = exportFile + ".zip";
       }
 
       Directory source = Directory(folderToCompress);
