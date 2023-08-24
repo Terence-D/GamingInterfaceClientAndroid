@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Gaming Interface Client</string>
 
-    <string name="title_activity_game_interface">Game Interface</string>
+    <string name="title_activity_game_interface">Gaming Interface Client</string>
 </resources>
