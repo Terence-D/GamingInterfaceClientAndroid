@@ -8,12 +8,16 @@ ThemeData darkTheme() {
     scaffoldBackgroundColor: Color(0xFF383838),
     canvasColor: Color(0xFF383838),
     //buttonColor: Color(0xff575757),
-
+    appBarTheme: const AppBarTheme(
+      color: Colors.indigo,
+      iconTheme: IconThemeData(color: Colors.white),
+    ),
     // Define the default TextTheme. Use this to specify the default
     // text styling for headlines, titles, bodies of text, and more.
     textTheme: TextTheme(
       bodyText2: TextStyle(color: Color(0xA1F8F8F8))
-    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Color(0xff43a047), brightness: Brightness.dark,
+    ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Color(0xff43a047),brightness: Brightness.dark,
+
   ),
   );
 }
