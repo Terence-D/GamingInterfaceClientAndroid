@@ -11,10 +11,11 @@ ThemeData darkTheme() {
     appBarTheme: const AppBarTheme(
       color: Colors.indigo,
       iconTheme: IconThemeData(color: Colors.white),
+      foregroundColor: Color(0xA1F8F8F8)
     ),
     snackBarTheme: const SnackBarThemeData(
       actionTextColor: Colors.blue,
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.black54,
       contentTextStyle: TextStyle(color: Colors.white),
     ),
     // Define the default TextTheme. Use this to specify the default

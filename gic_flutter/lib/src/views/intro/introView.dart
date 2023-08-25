@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/theme/theme.dart';
 import 'package:gic_flutter/src/views/launcher/launcher.dart';
@@ -31,6 +32,10 @@ class IntroViewState extends State<IntroView> implements IntroViewContract  {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent),
+    );
+
     _primaryColor = CustomTheme.of(context).primaryColor;
     if (_pages == null) {
       return Stack(

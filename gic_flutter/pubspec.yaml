@@ -38,7 +38,7 @@ dependencies:
   get_it: ^7.2.0
   http: ^0.13.4
   in_app_purchase: ^3.1.5
-  introduction_screen: ^3.1.7
+  introduction_screen: ^3.1.11
   keep_screen_on: ^2.0.0
   package_info_plus: ^3.1.0
   path_provider: ^2.0.5
