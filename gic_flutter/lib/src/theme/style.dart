@@ -12,6 +12,11 @@ ThemeData darkTheme() {
       color: Colors.indigo,
       iconTheme: IconThemeData(color: Colors.white),
     ),
+    snackBarTheme: const SnackBarThemeData(
+      actionTextColor: Colors.blue,
+      backgroundColor: Colors.black,
+      contentTextStyle: TextStyle(color: Colors.white),
+    ),
     // Define the default TextTheme. Use this to specify the default
     // text styling for headlines, titles, bodies of text, and more.
     textTheme: TextTheme(
