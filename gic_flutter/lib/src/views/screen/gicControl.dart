@@ -27,14 +27,14 @@ class GicControl extends BaseGicControl {
   State<StatefulWidget> createState() {
     return GicButtonState(
         control: control,
-        networkModel: networkModel!,
+        networkModel: networkModel,
         pixelRatio: pixelRatio,
         constraints: constraints!);
   }
 }
 
 class GicButtonState extends BaseGicControlState {
-  final NetworkModel networkModel;
+  final NetworkModel? networkModel;
   final BoxConstraints constraints;
 
   GicButtonState(

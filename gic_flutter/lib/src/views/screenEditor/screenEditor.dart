@@ -274,7 +274,7 @@ class ScreenEditorState extends State<ScreenEditor> {
   }
 
   Future<void> _onSelected(int selectedControlIndex) async {
-    controlResult result = controlResult.save;
+    controlResult? result = controlResult.save;
     result = await showDialog(
         context: context,
         builder: (BuildContext context) {

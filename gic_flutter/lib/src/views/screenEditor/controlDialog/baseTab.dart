@@ -7,7 +7,7 @@ import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 abstract class BaseTab extends StatefulWidget {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
-  final int screenId;
+  final int? screenId;
   final ControlDefaults? defaultControls;
 
   BaseTab({Key? key, required this.gicEditControl, required this.translation, required this.screenId, this.defaultControls})
