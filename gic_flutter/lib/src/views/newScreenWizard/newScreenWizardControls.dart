@@ -23,7 +23,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
   int _itemCount = 0;
   List<_Key> _keyMap = [];
   AutoItKeyMap autoItKeyMap = AutoItKeyMap();
-  List selectedKey = [];
+  List<_Key> selectedKeyList = [];
   late List<String> controlTypeText;
 
   @override
@@ -31,22 +31,25 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
     controlTypeText = [];
 
     _itemCount = widget.state.viewModel.horizontalControlCount * widget.state.viewModel.verticalControlCount;
-    selectedKey = List.filled(_itemCount, []);
 
     widget.state.keyNameController = List.filled(_itemCount, []);
     widget.state.viewModel.controls = List.filled(_itemCount, []);
 
-    //initialize values to be sane
-    for (var i = 0; i < _itemCount; i++) {
-      TextEditingController tec = TextEditingController();
-      widget.state.keyNameController[i] = tec;
-      widget.state.viewModel.controls[i] = NewScreenWizardControl();
-      controlTypeText.add(widget.state.translation.text(NewScreenWizardText.buttonType));
-    }
-
     autoItKeyMap.map.forEach((key, value) {
       _keyMap.add(_Key(key, value));
     });
+
+    //initialize values to be sane
+    for (var i = 0; i < _itemCount; i++) {
+      TextEditingController tec = TextEditingController();
+      tec.text = "New";
+      widget.state.keyNameController[i] = tec;
+      widget.state.viewModel.controls[i] = NewScreenWizardControl();
+      controlTypeText.add(widget.state.translation.text(NewScreenWizardText.buttonType));
+      widget.state.viewModel.controls[i].key = _keyMap[0].key;
+    }
+
+    selectedKeyList = List.filled(_itemCount, _keyMap[0]);
 
     super.initState();
   }
@@ -98,15 +101,15 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
               ),
               Row(
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: dim.activityMargin, right: dim.activityMargin),
-                    child: DropdownButton<_Key>(
-                      hint: Text(widget.state.translation.text(NewScreenWizardText.controlCommand)),
-                      onChanged: (_Key? newValue) { _updateState(index, control: newValue!); },
-                      value: selectedKey[index]!,
-                      items: _dropdownItems()
+                    Padding(
+                      padding: EdgeInsets.only(left: dim.activityMargin, right: dim.activityMargin),
+                      child: DropdownButton<_Key>(
+                        hint: Text(widget.state.translation.text(NewScreenWizardText.controlCommand)),
+                        onChanged: (_Key? newValue) { _updateState(index, control: newValue!); },
+                        value: selectedKeyList[index],
+                        items: _dropdownItems()
+                      ),
                     ),
-                  ),
                 ],
               ),
               Row(
@@ -166,7 +169,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
   void _updateState(int index, {_Key? control, bool? isSwitch, bool? ctrl, bool? alt, bool? shift}) {
     setState(() {
       if (control != null) {
-        selectedKey[index] = control;
+        selectedKeyList[index] = control;
         widget.state.viewModel.controls[index].key = control.key;
       }
 
