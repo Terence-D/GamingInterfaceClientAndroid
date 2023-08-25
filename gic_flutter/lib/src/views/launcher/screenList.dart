@@ -528,12 +528,12 @@ class _ScreenListState extends State<ScreenList> {
       path = exportDirectory.path;
     }
 
-    if (path != null) {
-      if (await Permission.storage.request().isGranted) {
+    // if (path != null) {
+    //   if (await Permission.storage.request().isGranted) {
         String result = await widget._parent.launcherBloc.export(path, id);
         if (result != null) await Share.shareFiles(["$result.zip"]);
-      }
-    }
+    //   }
+    // }
   }
 
   void _showServerErrorDialog(BuildContext context) {
