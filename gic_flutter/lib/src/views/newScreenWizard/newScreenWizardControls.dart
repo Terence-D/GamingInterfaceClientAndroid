@@ -103,7 +103,7 @@ class NewScreenWizardControlsState extends State<NewScreenWizardControls> {
                     child: DropdownButton<_Key>(
                       hint: Text(widget.state.translation.text(NewScreenWizardText.controlCommand)),
                       onChanged: (_Key? newValue) { _updateState(index, control: newValue!); },
-                      value: selectedKey[index],
+                      value: selectedKey[index]!,
                       items: _dropdownItems()
                     ),
                   ),
