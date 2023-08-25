@@ -242,7 +242,7 @@ class DonateViewState extends BaseState<DonateView> {
     }));
     productList.addAll(_products.map(
       (ProductDetails productDetails) {
-        PurchaseDetails previousPurchase = purchases[productDetails.id]!;
+        PurchaseDetails? previousPurchase = purchases[productDetails.id];
         return ListTile(
             title: Text(
               productDetails.title,
