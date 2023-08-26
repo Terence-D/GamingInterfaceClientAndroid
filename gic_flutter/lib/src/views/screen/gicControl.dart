@@ -29,13 +29,13 @@ class GicControl extends BaseGicControl {
         control: control,
         networkModel: networkModel,
         pixelRatio: pixelRatio,
-        constraints: constraints!);
+        constraints: constraints);
   }
 }
 
 class GicButtonState extends BaseGicControlState {
   final NetworkModel? networkModel;
-  final BoxConstraints constraints;
+  final BoxConstraints? constraints;
 
   GicButtonState(
       {required control,
