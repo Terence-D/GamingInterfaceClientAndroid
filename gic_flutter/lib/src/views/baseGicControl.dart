@@ -8,13 +8,13 @@ import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
 abstract class BaseGicControl extends StatefulWidget {
   final ControlViewModel control;
   final double pixelRatio;
-  final BoxConstraints constraints;
+  final BoxConstraints? constraints;
 
   BaseGicControl(
-      {Key key,
-      @required this.control,
-      @required this.pixelRatio,
-      @required this.constraints})
+      {Key? key,
+      required this.control,
+      required this.pixelRatio,
+      required this.constraints})
       : super(key: key);
 }
 
@@ -23,15 +23,17 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
   final double pixelRatio;
   final BorderRadius buttonBorder = BorderRadius.all(Radius.circular(5));
 
-  BoxDecoration unpressed;
-  BoxDecoration pressed;
-  BoxDecoration active;
+  BoxDecoration? unpressed;
+  BoxDecoration? pressed;
+  BoxDecoration? active;
 
-  bool preview;
+  bool preview = false;
 
-  BaseGicControlState({@required this.control, @required this.pixelRatio});
+  BaseGicControlState({
+    required this.control,
+    required this.pixelRatio});
 
-  sendCommand(String commandUrl, int commandIndex, bool provideFeedback);
+  sendCommand(String? commandUrl, int commandIndex, bool provideFeedback);
 
   Widget buildControl();
 
@@ -55,7 +57,7 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
     return buildControl();
   }
 
-  Widget buildControlContainer([BoxConstraints constraints]) {
+  Widget buildControlContainer([BoxConstraints? constraints]) {
     //figure out if we are only viewing a preview, and if so we may need to
     //shrink it down
     double widthToUse = control.width;
@@ -94,10 +96,10 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
           _toggleTap(Command.KEY_DOWN);
           break;
         case ControlViewModelType.QuickButton:
-          _buttonTap("toggle", Command.KEY_DOWN, pressed);
+          _buttonTap("toggle", Command.KEY_DOWN, pressed!);
           break;
         case ControlViewModelType.Button:
-          _buttonTap("key", Command.KEY_DOWN, pressed);
+          _buttonTap("key", Command.KEY_DOWN, pressed!);
           break;
         case ControlViewModelType.Text:
         case ControlViewModelType.Image:
@@ -114,10 +116,10 @@ abstract class BaseGicControlState extends State<BaseGicControl> {
           _toggleTap(Command.KEY_UP);
           break;
         case ControlViewModelType.QuickButton:
-          _buttonTap("toggle", Command.KEY_UP, unpressed);
+          _buttonTap("toggle", Command.KEY_UP, unpressed!);
           break;
         case ControlViewModelType.Button:
-          _buttonTap("key", Command.KEY_UP, unpressed);
+          _buttonTap("key", Command.KEY_UP, unpressed!);
           break;
         case ControlViewModelType.Text:
         case ControlViewModelType.Image:

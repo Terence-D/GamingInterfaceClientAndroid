@@ -5,7 +5,7 @@ import 'package:gic_flutter/src/views/screenEditor/helpDialog/selectTab.dart';
 class HelpDialog extends StatefulWidget {
   final IntlScreenEditor translation;
 
-  HelpDialog({Key key, this.translation})
+  HelpDialog({Key? key, required this.translation})
       : super(key: key);
 
   @override

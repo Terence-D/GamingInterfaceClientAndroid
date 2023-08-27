@@ -3,16 +3,22 @@ import 'gicControl.dart';
 class Screen {
   static const MAX_CONTROL_SIZE = 800;
 
-  int screenId = -1;
-  List<GicControl> controls = <GicControl>[];
+  int? screenId = -1;
+  List<GicControl>? controls = <GicControl>[];
   //background
-  int newControlId = -1;
-  int backgroundColor;
-  String backgroundPath;
+  int? newControlId = -1;
+  int? backgroundColor;
+  String? backgroundPath;
   //context;
-  String name;
+  String? name;
 
-  Screen({this.screenId, this.controls, this.backgroundColor, this.backgroundPath, this.newControlId, this.name});
+  Screen({
+    this.screenId = -1,
+    this.controls = const[],
+    this.backgroundColor = 0,
+    this.backgroundPath = "",
+    this.newControlId = -1,
+    this.name = ""});
 
   factory Screen.fromJson(Map<String, dynamic> json) {
     var list = json['controls'] as List;
@@ -56,8 +62,8 @@ class Screen {
       };
 
   int getNewControlId() {
-    newControlId++;
-    return newControlId - 1;
+    newControlId = newControlId! + 1;
+    return newControlId! - 1;
   }
 
 }

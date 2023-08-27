@@ -18,6 +18,6 @@ class LauncherModel {
 class ScreenListItem {
   ScreenListItem(this.id, this.name);
 
-  String name;
-  final int id;
+  String? name;
+  final int? id;
 }

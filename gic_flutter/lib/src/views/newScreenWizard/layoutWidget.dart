@@ -8,7 +8,7 @@ import 'newScreenWizard.dart';
 class LayoutWidget extends StatefulWidget {
   final NewScreenWizardState state;
 
-  const LayoutWidget ( this.state, {Key key  }): super(key: key);
+  const LayoutWidget ( this.state, {Key? key  }): super(key: key);
 
   @override
   State<StatefulWidget> createState() => LayoutState();
@@ -28,20 +28,20 @@ class LayoutState extends State<LayoutWidget> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              RaisedButton(onPressed: () { _updateCount(horizontal: -1); },
+              ElevatedButton(onPressed: () { _updateCount(horizontal: -1); },
                 child: Text("${widget.state.translation.text(NewScreenWizardText.decrease)}"),),
               Text("${widget.state.viewModel.horizontalControlCount} ${widget.state.translation.text(NewScreenWizardText.controlsWide)}"),
-              RaisedButton(onPressed: () { _updateCount(horizontal: 1); },
+              ElevatedButton(onPressed: () { _updateCount(horizontal: 1); },
                 child: Text("${widget.state.translation.text(NewScreenWizardText.increase)}"),),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              RaisedButton(onPressed: () { _updateCount(vertical: -1); },
+              ElevatedButton(onPressed: () { _updateCount(vertical: -1); },
                 child: Text("${widget.state.translation.text(NewScreenWizardText.decrease)}"),),
               Text("${widget.state.viewModel.verticalControlCount} ${widget.state.translation.text(NewScreenWizardText.controlsDepth)}"),
-              RaisedButton(onPressed: () { _updateCount(vertical: 1); },
+              ElevatedButton(onPressed: () { _updateCount(vertical: 1); },
                 child: Text("${widget.state.translation.text(NewScreenWizardText.increase)}"),),
             ],
           ),

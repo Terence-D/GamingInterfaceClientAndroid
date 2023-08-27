@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class DialogSlider extends StatefulWidget {
   DialogSlider(
-      {Key key,
-      this.icon,
-      this.color,
-      this.text,
-      this.onChanged,
-      this.originalValue})
+      {Key? key,
+        required this.icon,
+        required this.color,
+        required this.text,
+        required this.onChanged,
+        required this.originalValue})
       : super(key: key);
 
   final IconData icon;
@@ -21,7 +21,7 @@ class DialogSlider extends StatefulWidget {
 }
 
 class _DialogSliderState extends State<DialogSlider> {
-  double _value;
+  late double _value;
 
   @override
   void initState() {

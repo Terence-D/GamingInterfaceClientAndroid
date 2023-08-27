@@ -15,7 +15,7 @@ class DesignTab extends BaseTab {
   final ControlDefaults defaultControls;
   final IntlScreenEditor translation;
 
-  DesignTab({Key key, gicEditControl, this.translation, screenId, this.defaultControls})
+  DesignTab({Key? key, gicEditControl, required this.translation, screenId, required this.defaultControls})
       : super(
             key: key,
             defaultControls: defaultControls,
@@ -28,9 +28,9 @@ class DesignTab extends BaseTab {
 }
 
 class DesignTabState extends BaseTabState {
-  String switchText;
+  late String switchText;
   final List<TextEditingController> textControllers = [];
-  Orientation orientation;
+  late Orientation orientation;
 
   @override
   void initState() {
@@ -216,16 +216,16 @@ class DesignTabState extends BaseTabState {
 
   Future<void> _importImage() async {
     await FilePicker.platform.clearTemporaryFiles();
-    FilePickerResult result = await FilePicker.platform.pickFiles(
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['jpg', 'png', 'gif'],
     );
     if (result != null) {
-      File sourceFile = File(result.files.single.path);
+      File sourceFile = File(result.files.single.path!);
       File newFile;
       if (widget.gicEditControl.control.type == ControlViewModelType.Image) {
-        newFile = await _getDestinationName(
-            result, "${widget.screenId.toString()}_control_");
+        newFile = (await _getDestinationName(
+            result, "${widget.screenId.toString()}_control_"))!;
         setState(()  {
           if (widget.gicEditControl.control.images.isEmpty) {
             widget.gicEditControl.control.images.add(newFile.path);
@@ -234,16 +234,16 @@ class DesignTabState extends BaseTabState {
           }
         });
       } else {
-        newFile = await _getDestinationName(result, "button_");
+        newFile = (await _getDestinationName(result, "button_"))!;
       }
       sourceFile.copySync(newFile.path);
     }
   }
 
-  Future<File> _getDestinationName(
+  Future<File?> _getDestinationName(
       FilePickerResult result, String filePrefix) async {
     Directory filesDir = await getApplicationSupportDirectory();
-    File newFile;
+    File? newFile;
     String destPath;
     for (int i = 0; i < 1000; i++) {
       String filename =
@@ -262,24 +262,24 @@ class DesignTabState extends BaseTabState {
       case ControlViewModelType.Button:
       case ControlViewModelType.QuickButton:
         setState(() {
-          widget.gicEditControl.control.design = widget.defaultControls.defaultButton.design;
+          widget.gicEditControl.control.design = widget.defaultControls!.defaultButton.design;
           widget.gicEditControl.control.images.clear();
-          for (int i=0; i < widget.defaultControls.defaultButton.images.length; i++)
-            widget.gicEditControl.control.images.add(widget.defaultControls.defaultButton.images[i]);
+          for (int i=0; i < widget.defaultControls!.defaultButton.images.length; i++)
+            widget.gicEditControl.control.images.add(widget.defaultControls!.defaultButton.images[i]);
           widget.gicEditControl.control.colors.clear();
-          for (int i=0; i < widget.defaultControls.defaultButton.colors.length; i++)
-            widget.gicEditControl.control.colors.add(widget.defaultControls.defaultButton.colors[i]);
+          for (int i=0; i < widget.defaultControls!.defaultButton.colors.length; i++)
+            widget.gicEditControl.control.colors.add(widget.defaultControls!.defaultButton.colors[i]);
         });
         break;
       case ControlViewModelType.Toggle:
         setState(() {
-          widget.gicEditControl.control.design = widget.defaultControls.defaultToggle.design;
+          widget.gicEditControl.control.design = widget.defaultControls!.defaultToggle.design;
           widget.gicEditControl.control.images.clear();
-          for (int i=0; i < widget.defaultControls.defaultToggle.images.length; i++)
-            widget.gicEditControl.control.images.add(widget.defaultControls.defaultToggle.images[i]);
+          for (int i=0; i < widget.defaultControls!.defaultToggle.images.length; i++)
+            widget.gicEditControl.control.images.add(widget.defaultControls!.defaultToggle.images[i]);
           widget.gicEditControl.control.colors.clear();
-          for (int i=0; i < widget.defaultControls.defaultToggle.colors.length; i++)
-            widget.gicEditControl.control.colors.add(widget.defaultControls.defaultToggle.colors[i]);
+          for (int i=0; i < widget.defaultControls!.defaultToggle.colors.length; i++)
+            widget.gicEditControl.control.colors.add(widget.defaultControls!.defaultToggle.colors[i]);
         });
         break;
       case ControlViewModelType.Text:

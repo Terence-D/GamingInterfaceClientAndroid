@@ -13,7 +13,7 @@ class GicApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      onGenerateTitle: (BuildContext context) => Intl.of(context).title,
+      onGenerateTitle: (BuildContext context) => Intl.of(context)!.title,
       theme: CustomTheme.of(context),
       //theme: lightTheme(),
       //darkTheme: darkTheme(),

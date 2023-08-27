@@ -2,9 +2,9 @@ class Command {
   static const int KEY_DOWN = 0;
   static const int KEY_UP = 1;
 
-  String key = "A";
-  List<String> modifiers = [];
-  int activatorType = 0; //key down, key up, etc
+  String? key = "A";
+  List<String>? modifiers = [];
+  int? activatorType = 0; //key down, key up, etc
 
   Command.empty();
 
@@ -28,7 +28,7 @@ class Command {
 
     //handle both case possibilities
     var jsonMods;
-    List<String> mods = [];
+    List<String>? mods = [];
     if (json.containsKey('modifier'))
       jsonMods = json['modifier'];
     else if (json.containsKey('Modifier'))
@@ -36,13 +36,13 @@ class Command {
     if (jsonMods != null)
       mods = List<String>.from(jsonMods);
 
-    String jsonKey = "";
+    String? jsonKey = "";
     if (json.containsKey('key'))
       jsonKey = json['key'];
     else if (json.containsKey('Key'))
       jsonKey = json['Key'];
 
-    int jsonActivator=0;
+    int? jsonActivator=0;
     if (json.containsKey('activatorType'))
       jsonActivator = json['activatorType'];
     else if (json.containsKey('ActivatorType'))

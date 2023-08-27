@@ -29,7 +29,7 @@ class FeedbackViewState extends BaseState<FeedbackView> {
   @override
   void onLoadComplete(ViewModel viewModel) {
     setState(() {
-      this.viewModel = viewModel;
+      this.viewModel = viewModel as FeedbackVM;
     });
   }
 

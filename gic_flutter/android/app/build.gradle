@@ -34,7 +34,7 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     flavorDimensions "version"
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -48,7 +48,7 @@ android {
     defaultConfig {
         applicationId "ca.coffeeshopstudio.gaminginterfaceclient"
         minSdkVersion 16
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -56,12 +56,11 @@ android {
     }
 
     productFlavors {
- 
         gplay {
         }
  
         other {
-            minSdkVersion 21
+            applicationId "ca.coffeeshopstudio.gaminginterfaceclient.internal"
         }
     }
     
@@ -72,6 +71,7 @@ android {
             storeFile file(keystoreProperties['storeFile'])
             storePassword keystoreProperties['storePassword']
         }
+        debug {}
     }
 
     buildTypes {
@@ -81,6 +81,9 @@ android {
             shrinkResources false
             //useProguard true
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
 }

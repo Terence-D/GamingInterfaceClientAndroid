@@ -29,14 +29,14 @@ class DonateViewState extends BaseState<DonateView> {
 
   //IAP stuff
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
-  StreamSubscription<List<PurchaseDetails>> _subscription;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
   List<String> _notFoundIds = [];
   List<ProductDetails> _products = [];
   List<PurchaseDetails> _purchases = [];
   bool _isAvailable = false;
   bool _purchasePending = false;
   bool _loading = true;
-  String _queryProductError;
+  String? _queryProductError;
 
   @override
   void initState() {
@@ -59,7 +59,7 @@ class DonateViewState extends BaseState<DonateView> {
   @override
   void onLoadComplete(ViewModel viewModel) {
     setState(() {
-      this.viewModel = viewModel;
+      this.viewModel = viewModel as DonateVM;
     });
   }
 
@@ -80,7 +80,7 @@ class DonateViewState extends BaseState<DonateView> {
       );
     } else {
       stack.add(Center(
-        child: Text(_queryProductError),
+        child: Text(_queryProductError!),
       ));
     }
     if (_purchasePending) {
@@ -146,7 +146,7 @@ class DonateViewState extends BaseState<DonateView> {
         await _inAppPurchase.queryProductDetails(_kProductIds.toSet());
     if (productDetailResponse.error != null) {
       setState(() {
-        _queryProductError = productDetailResponse.error.message;
+        _queryProductError = productDetailResponse.error!.message;
         _isAvailable = isAvailable;
         _products = productDetailResponse.productDetails;
         _purchases = [];
@@ -242,7 +242,7 @@ class DonateViewState extends BaseState<DonateView> {
     }));
     productList.addAll(_products.map(
       (ProductDetails productDetails) {
-        PurchaseDetails previousPurchase = purchases[productDetails.id];
+        PurchaseDetails? previousPurchase = purchases[productDetails.id];
         return ListTile(
             title: Text(
               productDetails.title,
@@ -307,7 +307,7 @@ class DonateViewState extends BaseState<DonateView> {
     });
   }
 
-  void handleError(IAPError error) {
+  void handleError(IAPError? error) {
     setState(() {
       _purchasePending = false;
     });

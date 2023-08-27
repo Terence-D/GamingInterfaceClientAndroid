@@ -12,7 +12,7 @@ class TextTab extends BaseTab {
   final ControlDefaults defaultControls;
   final GicEditControl gicEditControl;
 
-  TextTab({Key key, this.gicEditControl, this.translation, screenId, this.defaultControls})
+  TextTab({Key? key, required this.gicEditControl, required this.translation, screenId, required this.defaultControls})
       : super(
       key: key,
       defaultControls: defaultControls,
@@ -193,23 +193,23 @@ class TextTabState extends BaseTabState {
       case ControlViewModelType.Button:
       case ControlViewModelType.QuickButton:
         setState(() {
-          widget.gicEditControl.control.font.color = widget.defaultControls.defaultButton.font.color;
-          widget.gicEditControl.control.font.family = widget.defaultControls.defaultButton.font.family;
-          widget.gicEditControl.control.font.size = widget.defaultControls.defaultButton.font.size;
+          widget.gicEditControl.control.font.color = widget.defaultControls!.defaultButton.font.color;
+          widget.gicEditControl.control.font.family = widget.defaultControls!.defaultButton.font.family;
+          widget.gicEditControl.control.font.size = widget.defaultControls!.defaultButton.font.size;
         });
         break;
       case ControlViewModelType.Text:
         setState(() {
-          widget.gicEditControl.control.font.color = widget.defaultControls.defaultText.font.color;
-          widget.gicEditControl.control.font.family = widget.defaultControls.defaultText.font.family;
-          widget.gicEditControl.control.font.size = widget.defaultControls.defaultText.font.size;
+          widget.gicEditControl.control.font.color = widget.defaultControls!.defaultText.font.color;
+          widget.gicEditControl.control.font.family = widget.defaultControls!.defaultText.font.family;
+          widget.gicEditControl.control.font.size = widget.defaultControls!.defaultText.font.size;
         });
         break;
       case ControlViewModelType.Toggle:
         setState(() {
-          widget.gicEditControl.control.font.color = widget.defaultControls.defaultToggle.font.color;
-          widget.gicEditControl.control.font.family = widget.defaultControls.defaultToggle.font.family;
-          widget.gicEditControl.control.font.size = widget.defaultControls.defaultToggle.font.size;
+          widget.gicEditControl.control.font.color = widget.defaultControls!.defaultToggle.font.color;
+          widget.gicEditControl.control.font.family = widget.defaultControls!.defaultToggle.font.family;
+          widget.gicEditControl.control.font.size = widget.defaultControls!.defaultToggle.font.size;
         });
         break;
       case ControlViewModelType.Image:

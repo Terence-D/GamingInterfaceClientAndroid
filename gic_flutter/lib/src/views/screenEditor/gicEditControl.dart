@@ -7,16 +7,18 @@ typedef void DragControl(
     double newLeft, double newTop, int selectedControlIndex);
 
 class GicEditControl extends BaseGicControl {
-  final SelectedWidgetCallback onSelected;
+  final SelectedWidgetCallback? onSelected;
   final int controlIndex;
   final GridSize gridSize;
+  final bool disableDrag;
 
   GicEditControl(
-      {Key key,
-      this.gridSize,
+      {Key? key,
+      required this.gridSize,
+      required this.disableDrag,
       @required control,
-      @required this.controlIndex,
-      @required this.onSelected,
+      required this.controlIndex,
+      required this.onSelected,
       @required pixelRatio})
       : super(
             key: key,
@@ -27,6 +29,7 @@ class GicEditControl extends BaseGicControl {
   @override
   State<StatefulWidget> createState() {
     return GicEditControlState(
+        disableDrag: disableDrag,
         gridSize: gridSize,
         control: control,
         controlIndex: controlIndex,
@@ -36,18 +39,20 @@ class GicEditControl extends BaseGicControl {
 }
 
 class GicEditControlState extends BaseGicControlState {
-  final SelectedWidgetCallback onSelected;
+  final SelectedWidgetCallback? onSelected;
   final int controlIndex;
+  final bool disableDrag;
   final GridSize gridSize;
 
-  double _originalWidth;
-  double _originalHeight;
+  double _originalWidth = 0;
+  double _originalHeight = 0;
 
   GicEditControlState(
-      {this.gridSize,
+      {required this.gridSize,
+        required this.disableDrag,
       @required control,
-      @required this.controlIndex,
-      @required this.onSelected,
+      required this.controlIndex,
+      required this.onSelected,
       @required pixelRatio})
       : super(control: control, pixelRatio: pixelRatio) {
     _originalWidth = control.width;
@@ -55,6 +60,16 @@ class GicEditControlState extends BaseGicControlState {
   }
 
   Widget buildControl() {
+    if (disableDrag) {
+      return Positioned(
+        top: control.top / pixelRatio,
+        left: control.left / pixelRatio,
+        child: XGestureDetector(
+          onTap: onLongPress,
+            bypassTapEventOnDoubleTap: false,
+            child: buildControlContainer()),
+      );
+    }
     return Positioned(
       top: control.top / pixelRatio,
       left: control.left / pixelRatio,
@@ -70,7 +85,7 @@ class GicEditControlState extends BaseGicControlState {
   }
 
   void onLongPress(event) {
-    onSelected(controlIndex);
+    onSelected!(controlIndex);
   }
 
   void onScaleUpdate(ScaleEvent event) {
@@ -102,19 +117,17 @@ class GicEditControlState extends BaseGicControlState {
     });
   }
 
-  sendCommand(String commandUrl, int commandIndex, bool provideFeedback) {
-    if (onSelected != null) {
-      setState(() {
-        onSelected(controlIndex);
-      });
+  sendCommand(String? commandUrl, int commandIndex, bool provideFeedback) {
+    setState(() {
+      onSelected!(controlIndex);
+    });
     }
-  }
 
   /// Determines where to place something, based on the currently set grid value
   /// startPosition - the raw position, either X or Y based
   /// size - size of the control, on the same axis as startPosition.  -1 ignores
-  double _getGridPosition({double startPosition, double size = -1}) {
-    double rawPos = startPosition * pixelRatio;
+  double _getGridPosition({double? startPosition, double size = -1}) {
+    double rawPos = startPosition! * pixelRatio;
     if (size > -1) {
       rawPos = rawPos - (size / 2);
     }

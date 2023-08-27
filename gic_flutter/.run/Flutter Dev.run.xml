@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Flutter Dev" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="buildFlavor" value="gplay" />
+    <option name="filePath" value="$PROJECT_DIR$/lib/src/main_gplay.dart" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 
 class AccentButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final Widget child;
+  final VoidCallback? onPressed;
+  final Widget? child;
 
-  const AccentButton({this.child, this.onPressed, Key key}) : super(key: key);
+  const AccentButton({this.child, this.onPressed, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return RaisedButton(
+    return ElevatedButton(
       onPressed: onPressed,
       child: child,
-      textColor: theme.accentTextTheme.button.color,
-//      highlightColor: Color(0xffF44336),
-//      color: Color(0xffF44336),
-      highlightColor: theme.accentColor,
-      color: theme.accentColor,
+      style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary,
+      ),
+//      textColor: theme.accentTextTheme.button.color,
+//      highlightColor: theme.accentColor,
     );
   }
 }

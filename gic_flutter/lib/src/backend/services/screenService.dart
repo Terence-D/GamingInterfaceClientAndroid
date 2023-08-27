@@ -8,7 +8,6 @@ import 'dart:io';
 import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/screenViewModel.dart';
 import 'package:gic_flutter/src/backend/services/screenImportService.dart';
-import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,14 +17,16 @@ class ScreenService {
   static String controlImageFolder = "controls";
   static String screenFolder = "screens";
 
+  bool altMode = false;
+
   //current screen working with
-  ScreenViewModel activeScreenViewModel;
+  ScreenViewModel? activeScreenViewModel;
 
   //list of all screens available
   List<ScreenViewModel> screenViewModels = [];
 
   //default control values to use
-  ControlDefaults defaultControls;
+  late ControlDefaults defaultControls;
 
   //snap to grid feature for the editor
   final String _prefGridSize = "prefGridSize";
@@ -41,16 +42,15 @@ class ScreenService {
       await loadScreens();
     }
 
-    defaultControls = ControlDefaults(prefs, activeScreenViewModel.screenId);
-    gridSize = prefs.getInt(_prefGridSize);
-    if (gridSize == null) gridSize = 0;
+    defaultControls = ControlDefaults(prefs, activeScreenViewModel!.screenId);
+    gridSize = prefs.getInt(_prefGridSize) ?? 0;
   }
 
   // Sets which screen we are using as active
   // Returns true on success, false when no matching screen id is found
-  bool setActiveScreen(int screenId) {
+  bool setActiveScreen(int? screenId) {
     bool rv = false;
-    if (screenViewModels != null && screenViewModels.isNotEmpty) {
+    if (screenViewModels.isNotEmpty) {
       screenViewModels.forEach((element) {
         if (element.screenId == screenId) {
           activeScreenViewModel = element;
@@ -65,11 +65,8 @@ class ScreenService {
   /// Returns true on success, false on any failure
   Future<bool> loadScreens() async {
     try {
-      if (screenViewModels == null) {
-        screenViewModels = [];
-      } else {
-        screenViewModels.clear();
-      }
+      screenViewModels.clear();
+
       final Directory appSupportPath = await getApplicationDocumentsDirectory();
       String screenPath = path.join(appSupportPath.path, screenFolder);
 
@@ -113,7 +110,7 @@ class ScreenService {
 
   /// Delete the screen with the associated id
   /// returns the number of deleted records (SHOULD BE 1!!) on success, sub zero on fail
-  Future<int> deleteScreen(int idToDelete) async {
+  Future<int> deleteScreen(int? idToDelete) async {
     //can't delete the last screen
     if (screenViewModels.length < 2) return -1;
 
@@ -131,7 +128,7 @@ class ScreenService {
     }
 
     int originalLength = screenViewModels.length;
-    ScreenViewModel toRemove;
+    ScreenViewModel? toRemove;
     screenViewModels.forEach((screen) {
       if (screen.screenId == idToDelete) {
         //remove the model from the list
@@ -170,7 +167,7 @@ class ScreenService {
       int newId = _findUniqueId();
       String newPath =
           path.join(appFolder.path, screenFolder, newId.toString());
-      await Directory(newPath).createSync(recursive: true);
+      await Directory(newPath).create(recursive: true);
       Directory newDirectory = Directory(newPath);
 
       //copy the files over
@@ -184,12 +181,12 @@ class ScreenService {
       ScreenViewModel newScreen = ScreenViewModel.fromJson(
           json.decode(newScreenJson.readAsStringSync()));
 
-      if (newScreen.backgroundPath != null && newScreen.backgroundPath.contains(originalPath))
-        newScreen.backgroundPath.replaceAll(originalPath, newPath);
-      for (int i=0; i < newScreen.controls.length; i++) {
-        for (int n=0; n < newScreen.controls[i].images.length; n++) {
-          if (newScreen.controls[i].images[n].contains(originalPath))
-            newScreen.controls[i].images[n].replaceAll(originalPath, newPath);
+      if (newScreen.backgroundPath!.contains(originalPath))
+        newScreen.backgroundPath!.replaceAll(originalPath, newPath);
+      for (int i=0; i < newScreen.controls!.length; i++) {
+        for (int n=0; n < newScreen.controls![i].images.length; n++) {
+          if (newScreen.controls![i].images[n].contains(originalPath))
+            newScreen.controls![i].images[n].replaceAll(originalPath, newPath);
         }
       }
       newScreen.screenId = newId;
@@ -211,7 +208,7 @@ class ScreenService {
   /// baseName: name we want to use
   /// foundCount: how many instances of this name we found
   String _findUniqueName({String baseName = "New Screen", int foundCount = 0}) {
-    screenViewModels.forEach((screen) {
+    screenViewModels.map((screen) {
       if (screen.name == baseName) {
         foundCount++;
         return _findUniqueName(

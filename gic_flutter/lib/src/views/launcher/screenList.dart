@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/intl/localizations.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
@@ -26,7 +25,7 @@ import 'launcher.dart';
 class VersionResponse {
   final String version;
 
-  VersionResponse({this.version});
+  VersionResponse({this.version = ""});
 
   factory VersionResponse.fromJson(Map<String, dynamic> json) {
     return VersionResponse(version: json['version']);
@@ -57,7 +56,7 @@ class _ScreenListState extends State<ScreenList> {
     _screenNameController.clear();
     for (var i = 0; i < widget._screens.length; i++) {
       TextEditingController tec = TextEditingController();
-      tec.text = widget._screens[i].name;
+      tec.text = widget._screens[i].name!;
       _screenNameController.add(tec);
     }
 
@@ -189,7 +188,7 @@ class _ScreenListState extends State<ScreenList> {
   }
 
   Future<void> _confirmDeleteDialog(
-      int index, String name, BuildContext context) async {
+      int? index, String? name, BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -201,7 +200,7 @@ class _ScreenListState extends State<ScreenList> {
             child: ListBody(
               children: <Widget>[
                 Text(widget._translations.text(LauncherText.deleteConfirm) +
-                    name),
+                    name!),
               ],
             ),
           ),
@@ -272,14 +271,12 @@ class _ScreenListState extends State<ScreenList> {
   }
 
   void _showMessage(String text) {
-    Fluttertoast.showToast(
-      msg: text,
-      toastLength: Toast.LENGTH_SHORT,
-    );
+    var snackBar = SnackBar(content: Text(text));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   _editScreen(int selectedScreenIndex, BuildContext context) async {
-    int screenId = widget._screens[selectedScreenIndex].id;
+    int screenId = widget._screens[selectedScreenIndex].id!;
 
     await Navigator.push(
         context,
@@ -337,11 +334,11 @@ class _ScreenListState extends State<ScreenList> {
           Email email = Email(
             body:
                 "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
-            subject: Intl.of(context).onboardEmailSubject,
+            subject: Intl.of(context)!.onboardEmailSubject,
           );
           await FlutterEmailSender.send(email);
         },
-        child: Text(Intl.of(context).onboardSendLink,
+        child: Text(Intl.of(context)!.onboardSendLink,
             style: TextStyle(color: Colors.white)));
 
     // set up the AlertDialog
@@ -400,7 +397,7 @@ class _ScreenListState extends State<ScreenList> {
   }
 
   _validateScreen(int screenIndex, BuildContext context) async {
-    int screenId = widget._screens[screenIndex].id;
+    int screenId = widget._screens[screenIndex].id!;
 
     NetworkModel networkModel = NetworkModel();
     await networkModel.init(
@@ -438,7 +435,7 @@ class _ScreenListState extends State<ScreenList> {
 
     NetworkResponse test = await response;
 
-    Navigator.of(_keyLoader.currentContext, rootNavigator: true).pop();
+    Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
     switch (test) {
       case NetworkResponse.Ok:
         _startGame(context, screenId, networkModel);
@@ -484,11 +481,11 @@ class _ScreenListState extends State<ScreenList> {
       BuildContext context, int screenId, NetworkModel networkModel) async {
     widget._parent.launcherBloc.saveConnectionSettings(networkModel);
 
-    ScreenViewModel screen =
+    ScreenViewModel? screen =
         await widget._parent.launcherBloc.loadScreen(screenId);
 
     ScreenVM viewModel = ScreenVM(
-        screen,
+        screen!,
         networkModel,
         widget._parent.launcherBloc.getSound(),
         widget._parent.launcherBloc.getVibration(),
@@ -504,26 +501,23 @@ class _ScreenListState extends State<ScreenList> {
     widget._parent.launcherBloc.updateScreenName(
         widget._screens[index].id, _screenNameController[index].text);
     widget._screens[index].name = _screenNameController[index].text;
-    Fluttertoast.showToast(
-      msg: widget._translations.text(LauncherText.nameUpdated),
-    );
+    var snackBar = SnackBar(content: Text(widget._translations.text(LauncherText.nameUpdated)));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void _deleteScreen(int index) async {
+  void _deleteScreen(int? index) async {
     int deleteResponse = await widget._parent.launcherBloc
-        .deleteScreen(widget._screens[index].id);
+        .deleteScreen(widget._screens[index!].id);
     if (deleteResponse >= 0) {
-      await Fluttertoast.showToast(
-        msg: widget._translations.text(LauncherText.deleteComplete),
-      );
+      var snackBar = SnackBar(content: Text(widget._translations.text(LauncherText.deleteComplete)));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
-      await Fluttertoast.showToast(
-        msg: widget._translations.text(LauncherText.deleteError),
-      );
+      var snackBar = SnackBar(content: Text(widget._translations.text(LauncherText.deleteError)));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
-  Future<void> _export(BuildContext context, int id) async {
+  Future<void> _export(BuildContext context, int? id) async {
     String path;
 
     if (Platform.isIOS) {
@@ -534,12 +528,12 @@ class _ScreenListState extends State<ScreenList> {
       path = exportDirectory.path;
     }
 
-    if (path != null) {
-      if (await Permission.storage.request().isGranted) {
+    // if (path != null) {
+    //   if (await Permission.storage.request().isGranted) {
         String result = await widget._parent.launcherBloc.export(path, id);
         if (result != null) await Share.shareFiles(["$result.zip"]);
-      }
-    }
+    //   }
+    // }
   }
 
   void _showServerErrorDialog(BuildContext context) {
@@ -555,7 +549,7 @@ class _ScreenListState extends State<ScreenList> {
           Email email = Email(
             body:
                 "https://github.com/Terence-D/GamingInterfaceCommandServer/releases",
-            subject: Intl.of(context).onboardEmailSubject,
+            subject: Intl.of(context)!.onboardEmailSubject,
           );
           await FlutterEmailSender.send(email);
         },

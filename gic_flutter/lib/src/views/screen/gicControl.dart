@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gic_flutter/src/backend/models/networkModel.dart';
-import 'package:gic_flutter/src/backend/services/networkService.dart';
 import 'package:gic_flutter/src/views/baseGicControl.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
 
 class GicControl extends BaseGicControl {
-  final NetworkModel networkModel;
-  final BoxConstraints constraints;
-  final ScreenView screenView;
+  final NetworkModel? networkModel;
+  final BoxConstraints? constraints;
+  final ScreenView? screenView;
 
   GicControl(
       {
-        Key key,
-        @required control,
-        @required this.networkModel,
-        @required pixelRatio,
-        @required this.screenView,
+        Key? key,
+        required control,
+        required this.networkModel,
+        required pixelRatio,
+        this.screenView,
         this.constraints
       })
       : super(
@@ -37,19 +34,19 @@ class GicControl extends BaseGicControl {
 }
 
 class GicButtonState extends BaseGicControlState {
-  final NetworkModel networkModel;
-  final BoxConstraints constraints;
+  final NetworkModel? networkModel;
+  final BoxConstraints? constraints;
 
   GicButtonState(
-      {@required control,
-      @required this.networkModel,
-      @required pixelRatio,
-      @required this.constraints})
+      {required control,
+      required this.networkModel,
+      required pixelRatio,
+      required this.constraints})
       : super(control: control, pixelRatio: pixelRatio);
 
-  void sendCommand(String commandUrl, int commandIndex, bool provideFeedback) {
+  void sendCommand(String? commandUrl, int commandIndex, bool provideFeedback) {
     if ((widget as GicControl).screenView != null)
-      (widget as GicControl).screenView.sendCommand(control, commandUrl, commandIndex, provideFeedback).ignore();
+      (widget as GicControl).screenView!.sendCommand(control, commandUrl!, context, commandIndex, provideFeedback).ignore();
   }
 
   GestureDetector buildControl() {

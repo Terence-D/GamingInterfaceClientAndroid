@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/screen/gicControl.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/font.dart';
@@ -15,7 +13,7 @@ ControlViewModelType getTypeFromString(String typeAsString) {
       return element;
     }
   }
-  return null;
+  return ControlViewModelType.Button;
 }
 
 enum ControlDesignType { Image, UpDownGradient }
@@ -26,7 +24,7 @@ ControlDesignType getTypeDesignString(String designAsString) {
       return element;
     }
   }
-  return null;
+  return ControlDesignType.Image;
 }
 
 class ControlViewModel {
@@ -52,11 +50,11 @@ class ControlViewModel {
 
   factory ControlViewModel.fromLegacyModel(GicControl model) {
     ControlViewModel rv = ControlViewModel();
-    rv.text = model.text;
-    rv.left = model.left;
-    rv.top = model.top;
-    rv.width = model.width.toDouble();
-    rv.height = model.height.toDouble();
+    rv.text = model.text!;
+    rv.left = model.left!;
+    rv.top = model.top!;
+    rv.width = model.width!.toDouble();
+    rv.height = model.height!.toDouble();
     rv.type = _getType(model.viewType);
     rv.commands = _getCommands(model);
     rv.font = _getFont(model);
@@ -166,11 +164,9 @@ class ControlViewModel {
 
   static List<Command> _getCommands(GicControl model) {
     List<Command> rv = <Command>[];
-    if (model.command != null) {
-      rv.add(model.command);
-      if (model.commandSecondary != null) rv.add(model.commandSecondary);
-    }
-    return rv;
+    rv.add(model.command);
+    rv.add(model.commandSecondary);
+      return rv;
   }
 
   static Font _getFont(GicControl model) {
@@ -178,10 +174,10 @@ class ControlViewModel {
     if (model.fontColor == -1) {
       rv.color = Colors.white;
     } else {
-      rv.color = _convertJavaColor(model.fontColor);
+      rv.color = _convertJavaColor(model.fontColor ?? 0);
     }
-    rv.size = model.fontSize.toDouble();
-    if (model.fontName != null && model.fontName.isNotEmpty) {
+    rv.size = model.fontSize!.toDouble();
+    if (model.fontName.isNotEmpty) {
       rv.family = model.fontName;
     }
 
@@ -193,12 +189,12 @@ class ControlViewModel {
     if (model.primaryColor == -1) {
       colors.add(Colors.black);
     } else {
-      colors.add(_convertJavaColor(model.primaryColor));
+      colors.add(_convertJavaColor(model.primaryColor ?? 0));
     }
     if (model.secondaryColor == -1) {
       colors.add(Colors.white);
     } else {
-      colors.add(_convertJavaColor(model.secondaryColor));
+      colors.add(_convertJavaColor(model.secondaryColor ?? 0));
     }
 
     return colors;
@@ -215,7 +211,7 @@ class ControlViewModel {
       images.add(model.primaryImage);
     } else if (model.primaryImageResource != -1) {
       images.add(_convertDrawableResource(
-          model.primaryImageResource, model.viewType, true));
+          model.primaryImageResource ?? 0, model.viewType, true));
     } else {
       return images;
     } //mo primary, no secondary
@@ -223,7 +219,7 @@ class ControlViewModel {
       images.add(model.secondaryImage);
     } else if (model.secondaryImageResource != -1) {
       images.add(_convertDrawableResource(
-          model.secondaryImageResource, model.viewType, false));
+          model.secondaryImageResource ?? 0, model.viewType, false));
     }
 
     return images;

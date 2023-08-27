@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ScreenSizeWidget extends StatefulWidget {
   final Function(String) onSelectParam;
 
-  ScreenSizeWidget(this.onSelectParam, {Key key}) : super(key: key);
+  ScreenSizeWidget(this.onSelectParam, {Key? key}) : super(key: key);
 
   @override
   _ScreenSizeWidgetState createState() => _ScreenSizeWidgetState();
@@ -11,7 +11,7 @@ class ScreenSizeWidget extends StatefulWidget {
 
 class _ScreenSizeWidgetState extends State<ScreenSizeWidget> {
   List<String> dropdownItems = <String>['Phone', 'Small Tablet', 'Large Tablet'];
-  String device;
+  String device = "";
   _ScreenSizeWidgetState() {
     device = (dropdownItems[0]);
   }
@@ -32,9 +32,9 @@ class _ScreenSizeWidgetState extends State<ScreenSizeWidget> {
       underline: Container(
         height: 2,
       ),
-      onChanged: (String newValue) {
+      onChanged: (String? newValue) {
         setState(() {
-          device = (newValue);
+          device = newValue!;
           widget.onSelectParam(device);
         });
       },

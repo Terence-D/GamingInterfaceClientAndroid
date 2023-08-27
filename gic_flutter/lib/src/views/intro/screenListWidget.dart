@@ -4,14 +4,12 @@ import 'package:gic_flutter/src/theme/theme.dart';
 class ScreenItem {
   String title;
   bool selected = false;
-  ScreenItem(title) {
-    this.title = title;
-  }
+  ScreenItem(this.title);
 }
 
 class ScreenListWidget extends StatefulWidget {
   final List<ScreenItem> _screens;
-  ScreenListWidget(this._screens, {Key key}) : super(key: key);
+  ScreenListWidget(this._screens, {Key? key}) : super(key: key);
 
   @override
   _ScreenListWidgetState createState() => _ScreenListWidgetState();

@@ -13,10 +13,10 @@ enum controlResult {save,delete}
 class ControlDialog extends StatefulWidget {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
-  final int screenId;
+  final int? screenId;
   final ScreenService screenService;
 
-  ControlDialog({Key key, this.gicEditControl, this.translation, this.screenId, this.screenService})
+  ControlDialog({Key? key, required this.gicEditControl, required this.translation, required this.screenId, required this.screenService})
       : super(key: key);
 
   @override
@@ -118,6 +118,7 @@ class _ControlDialogState extends State<ControlDialog> {
         _tabContents.add(CommandTab(
             gicEditControl: widget.gicEditControl,
             translation: translation,
+            screenId: -1,
             isButton: true));
         _tabs.add(designTab());
         _tabContents.add(DesignTab(
@@ -136,6 +137,7 @@ class _ControlDialogState extends State<ControlDialog> {
         _tabContents.add(CommandTab(
             gicEditControl: widget.gicEditControl,
             translation: translation,
+            screenId: -1,
             isButton: true));
         _tabs.add(designTab());
         _tabContents.add(DesignTab(

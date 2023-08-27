@@ -5,7 +5,7 @@ class SimpleTextTab extends StatefulWidget {
   final String title;
   final String details;
 
-  SimpleTextTab({Key key, this.title, this.details}) : super(key: key);
+  SimpleTextTab({Key? key, required this.title, required this.details}) : super(key: key);
 
   @override
   _SimpleTextTabState createState() => _SimpleTextTabState();

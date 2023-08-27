@@ -7,10 +7,10 @@ import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
 abstract class BaseTab extends StatefulWidget {
   final IntlScreenEditor translation;
   final GicEditControl gicEditControl;
-  final int screenId;
-  final ControlDefaults defaultControls;
+  final int? screenId;
+  final ControlDefaults? defaultControls;
 
-  BaseTab({Key key, this.gicEditControl, this.translation, this.screenId, this.defaultControls})
+  BaseTab({Key? key, required this.gicEditControl, required this.translation, required this.screenId, this.defaultControls})
       : super(key: key);
 }
 
@@ -19,7 +19,7 @@ abstract class BaseTabState extends State<BaseTab> {
   double pixelRatio = 1;
 
   @protected
-  Widget preview([BoxConstraints constraints]) {
+  Widget preview([BoxConstraints? constraints]) {
     return Column(
       children: [
         Padding(
@@ -29,7 +29,7 @@ abstract class BaseTabState extends State<BaseTab> {
         ),
         FittedBox(
           child: GicControl(
-            constraints: constraints,
+            constraints: constraints!,
             pixelRatio: pixelRatio,
             control: widget.gicEditControl.control,
             networkModel: null,

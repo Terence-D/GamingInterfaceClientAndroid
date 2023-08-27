@@ -13,20 +13,20 @@ class GicControl {
   //2 - switched on, ready for mouse down,
   //3 - switched on, ready for mouse up
   //after 3, we reset back to 0
-  int stage = 0;
+  int? stage = 0;
   Command command = Command.empty();
-  String text = "NONE";
-  double left = 140;
-  double width = 320;
-  double top = 200;
-  double height = 120;
-  int fontColor = -1;
-  int primaryColor = -1;
-  int secondaryColor = -1;
-  int fontSize = 36;
+  String? text = "NONE";
+  double? left = 140;
+  double? width = 320;
+  double? top = 200;
+  double? height = 120;
+  int? fontColor = -1;
+  int? primaryColor = -1;
+  int? secondaryColor = -1;
+  int? fontSize = 36;
   int viewType = 0; //is it a button, switch, image, etc
-  int primaryImageResource = -1;//R.drawable.button_blue;
-  int secondaryImageResource = -1;//R.drawable.button_blue_dark;
+  int? primaryImageResource = -1;//R.drawable.button_blue;
+  int? secondaryImageResource = -1;//R.drawable.button_blue_dark;
   String primaryImage = "";
   String secondaryImage = "";
   String fontName = "";
@@ -40,7 +40,7 @@ class GicControl {
 
   GicControl ({
     this.stage, 
-    this.command,
+    required this.command,
     this.text,
     this.left,
     this.width,
@@ -50,14 +50,14 @@ class GicControl {
     this.primaryColor,
     this.secondaryColor,
     this.fontSize,
-    this.viewType,
+    this.viewType = 0,
     this.primaryImageResource,
     this.secondaryImageResource,
-    this.primaryImage,
-    this.secondaryImage,
-    this.fontName,
-    this.fontType,
-    this.commandSecondary
+    required this.primaryImage,
+    required this.secondaryImage,
+    required this.fontName,
+    required this.fontType,
+    required this.commandSecondary
   });
 
   factory GicControl.fromJson(Map<String, dynamic> json) {

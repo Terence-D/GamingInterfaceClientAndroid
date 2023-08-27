@@ -9,7 +9,7 @@ import 'newScreenWizard.dart';
 class ControlDesignWidget extends StatefulWidget {
   final NewScreenWizardState state;
 
-  const ControlDesignWidget ( this.state, {Key key  }): super(key: key);
+  const ControlDesignWidget ( this.state, {Key? key  }): super(key: key);
 
   @override
   State<StatefulWidget> createState() => ControlDesignState();
@@ -17,7 +17,7 @@ class ControlDesignWidget extends StatefulWidget {
 }
 
 class ControlDesignState extends State<ControlDesignWidget> {
-  Icon icon;
+  Icon? icon;
 
   @override
   void initState() {
@@ -37,10 +37,10 @@ class ControlDesignState extends State<ControlDesignWidget> {
           ),
           Container(
             height: 50.0,
-            child: RaisedButton(
+            child: ElevatedButton(
               onPressed: () {},
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-              padding: EdgeInsets.all(0.0),
+              // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+              // padding: EdgeInsets.all(0.0),
               child: Ink(
                 decoration: BoxDecoration(
                     gradient: LinearGradient(colors: [Color(0xff374ABE), Color(0xff64B6FF)],

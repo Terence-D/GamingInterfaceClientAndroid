@@ -63,17 +63,17 @@ class _ImageList extends StatelessWidget {
 
 /// this class handles the loading of custom and built in images
 class _ImageServer {
-  static List<Widget> _images;
-  static List<String> _imagePaths;
+  static List<Widget>? _images;
+  static List<String>? _imagePaths;
 
   static Widget getImageByIndex(int index) {
-    return _images[index];
+    return _images![index];
   }
 
   static getFilenameByIndex(int index) {
-    return _imagePaths[index];
+    return _imagePaths![index];
   }
-  static int length() => _images.length;
+  static int length() => _images!.length;
 
   static Future<void> loadImages() async {
     _images = [];
@@ -83,9 +83,8 @@ class _ImageServer {
     await filesDir.list(recursive: false).forEach((element) {
       if (element.path.contains("button_")) {
         //valid image
-        _images
-            .add(Image.file(File(element.path), width: 120.0, height: 80.0));
-        _imagePaths.add(element.path);
+        _images!.add(Image.file(File(element.path), width: 120.0, height: 80.0));
+        _imagePaths!.add(element.path);
       }
     });
 
@@ -93,11 +92,11 @@ class _ImageServer {
     final manifestContent = await rootBundle.loadString('AssetManifest.json');
     final Map<String, dynamic> manifestMap = json.decode(manifestContent);
     manifestMap.keys.where((String key) => key.contains('images/controls/')).forEach((element) {
-        _images.add(Image(image:AssetImage(element),
+        _images!.add(Image(image:AssetImage(element),
             width: 120.0, height: 80.0));
         File file = File(element);
         String basename = path.basenameWithoutExtension(file.path);
-        _imagePaths.add(basename);
+        _imagePaths!.add(basename);
     });
   }
 }
