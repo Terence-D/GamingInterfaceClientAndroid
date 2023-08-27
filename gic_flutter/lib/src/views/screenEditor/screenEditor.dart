@@ -186,6 +186,33 @@ class ScreenEditorState extends State<ScreenEditor> {
     _service.altMode = !_service.altMode;
     await SharedPreferences.getInstance().then((prefs) {
       prefs.setBool(prefAltMode, _service.altMode);
+      String title = "Alt Mode OFF";
+      String text = "Drag and Drop is now Enabled again.";
+      if (_service.altMode) {
+         title = "Alt Mode ON";
+         text = "Drag and Drop is disabled.  This is for compatibility with some user setups.  To move the control, go into the Control Editor and the Dimensions Tab.";
+      }
+      text += " Restart the Editor to enable the changes.";
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text(title),
+            content: new Text(text),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new ElevatedButton(
+                child: new Text("Dismiss"),
+                onPressed: () {
+                  // Close the dialog
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     });
   }
 

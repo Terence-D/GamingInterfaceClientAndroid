@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlLauncher.dart';
 import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/theme/dimensions.dart' as dim;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:showcaseview/showcaseview.dart';
 
 import 'launcher.dart';
@@ -36,6 +37,8 @@ class _ServerLoginState extends State<ServerLogin> {
 
   @override
   Widget build(BuildContext context) {
+    Future.delayed(Duration.zero, () => showFiveFourWarning(context));
+
     if (_orientation == Orientation.portrait) {
       return SingleChildScrollView(
           child: Column(
@@ -178,4 +181,34 @@ class _ServerLoginState extends State<ServerLogin> {
     } else
       return -1;
   }
+
+  final fiveFourWarning= 'five_four_first_loaded_warning';
+
+  showFiveFourWarning(BuildContext context) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool? isFirstLoaded = prefs.getBool(fiveFourWarning);
+      if (isFirstLoaded == null) {
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            // return object of type Dialog
+            return AlertDialog(
+              title: new Text("Warning"),
+              content: new Text("I had to make signficant 'under the hood' changes - although I've tested on my own devices that it works, if you run into problems please let me know by using the Feedback menu option.  Thank you for your support and understanding."),
+              actions: <Widget>[
+                // usually buttons at the bottom of the dialog
+                new ElevatedButton(
+                  child: new Text("Dismiss"),
+                  onPressed: () {
+                    // Close the dialog
+                    Navigator.of(context).pop();
+                    prefs.setBool(fiveFourWarning, false);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
 }
