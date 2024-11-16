@@ -53,7 +53,6 @@ class _ServerLoginState extends State<ServerLogin> {
 
   List<Widget> _serverInput(BuildContext context) {
     return <Widget>[
-      bannerRow(context),
       _warning(),
       _noScreenWarning(),
       _addressTextWidget(),
@@ -105,28 +104,6 @@ class _ServerLoginState extends State<ServerLogin> {
               hintText: _translations.text(LauncherText.address)),
         ));
   }
-
-  Row bannerRow(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Visibility(
-        visible: _viewModel.donate,
-        child: Icon(
-          Icons.free_breakfast,
-          color: Colors.green,
-          size: 30.0,
-        ),
-      ),
-      Visibility(
-        visible: _viewModel.donateStar,
-        child: Icon(
-          Icons.star,
-          color: Colors.yellow,
-          size: 30.0,
-        ),
-      ),
-    ]);
-  }
-
 
   Widget _warning() {
     return

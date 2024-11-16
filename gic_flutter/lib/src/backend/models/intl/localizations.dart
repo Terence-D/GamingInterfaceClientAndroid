@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
-import 'package:gic_flutter/src/backend/models/intl/intlDonate.dart';
 
 import 'intlAbout.dart';
 import 'intlFeedback.dart';
@@ -40,10 +39,6 @@ class Intl {
 
   String options(OptionsText resource) {
     return IntlOptions.localizedStrings[locale.languageCode]![resource]!;
-  }
-
-  String donate(DonateText resource) {
-    return IntlDonate.localizedStrings[locale.languageCode]![resource]!;
   }
 
   String feedback(FeedbackText resource) {
@@ -99,8 +94,6 @@ class Intl {
       'onboardOldAndroidDesc':
           'You are running an older version of Android.  Certain functions are disabled (such as import/export) for now.  This may change if I can find the time to work around the limitations.',
       'onboardSupportTitle': 'Support',
-      'onboardSupportDesc':
-          'Although this app is completely free and open source (and will remain as such!), if you like the app and wish to support development, I appreciate any support you can provide.  There is a Donate menu option for more information.  Thank you :)',
       'onboardImportSuccess': 'Import Complete!',
     }
   };
