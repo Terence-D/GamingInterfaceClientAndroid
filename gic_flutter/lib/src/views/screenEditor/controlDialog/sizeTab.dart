@@ -38,7 +38,7 @@ class SizeTabState extends BaseTabState {
           return Column(
             children: [
               Text(widget.translation.text(ScreenEditorText.sizeTabHeader),
-                  style: Theme.of(context).textTheme.headline5),
+                  style: Theme.of(context).textTheme.headlineSmall),
               Text(widget.translation.text(ScreenEditorText.sizeTabDetails)),
               Align(
                 alignment: Alignment.centerRight,

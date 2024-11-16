@@ -96,7 +96,7 @@ class LauncherState extends State<Launcher> {
           currentFocus.unfocus();
         }
       },
-      child: ShowCaseWidget(builder: Builder(builder: (context) {
+      child: ShowCaseWidget(builder: (context) {
         showcaseContext = context;
         return Scaffold(
             appBar: _launcherAppBar(),
@@ -112,8 +112,7 @@ class LauncherState extends State<Launcher> {
               },
             ),
             floatingActionButton: _fab(context));
-      })),
-    );
+      }));
   }
 
   Widget _fab(BuildContext context) {

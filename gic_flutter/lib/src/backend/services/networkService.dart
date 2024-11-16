@@ -50,7 +50,7 @@ class NetworkService {
       headers["Authorization"] = 'Basic $basicAuth';
       Response response = await http.post(url, headers: headers).timeout(const Duration(seconds: 5));
 
-      if (response != null && response.statusCode < 500) {
+      if (response.statusCode < 500) {
         // If the server did return a 200 OK response then parse the JSON.
         if (response.statusCode == 401)
           return NetworkResponse.Unauthorized;

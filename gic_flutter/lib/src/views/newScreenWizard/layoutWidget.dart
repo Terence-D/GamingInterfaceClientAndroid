@@ -1,5 +1,4 @@
 // this widget handles setting if we are portrait or landscape mode
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlNewScreenWizard.dart';
 
@@ -23,7 +22,7 @@ class LayoutState extends State<LayoutWidget> {
         children: <Widget>[
           Text(
             widget.state.translation.text(NewScreenWizardText.layout),
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

@@ -54,12 +54,10 @@ class ScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    if (screenVM.screen != null) {
-      screenVM.screen.controls!.forEach((element) {
-        widgets.add(_buildGicControl(element, pixelRatio));
-      });
-    }
-    if (screenVM.keepScreenOn) {
+    screenVM.screen.controls!.forEach((element) {
+      widgets.add(_buildGicControl(element, pixelRatio));
+    });
+      if (screenVM.keepScreenOn) {
       KeepScreenOn.turnOn();
     }
 

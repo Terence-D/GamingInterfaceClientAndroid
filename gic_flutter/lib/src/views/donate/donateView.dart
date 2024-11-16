@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/viewModel.dart';
 import 'package:gic_flutter/src/views/donate/donateVM.dart';
@@ -212,7 +211,7 @@ class DonateViewState extends BaseState<DonateView> {
         Divider(),
         ListTile(
             title: Text(viewModel.notConnected,
-                style: TextStyle(color: ThemeData.light().errorColor)),
+                style: TextStyle(color: ThemeData.light().colorScheme.error)),
             subtitle: Text(viewModel.unableToPurchase))
       ]);
     }
@@ -253,8 +252,7 @@ class DonateViewState extends BaseState<DonateView> {
             trailing: TextButton(
               child: Text(productDetails.price),
               style: TextButton.styleFrom(
-                backgroundColor: Colors.green[800],
-                primary: Colors.white,
+                foregroundColor: Colors.white, backgroundColor: Colors.green[800],
               ),
               onPressed: () {
                 final PurchaseParam purchaseParam =

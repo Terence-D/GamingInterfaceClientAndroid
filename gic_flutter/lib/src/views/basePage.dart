@@ -70,7 +70,7 @@ abstract class BaseState<Page extends BasePage> extends State<Page> with Widgets
 
   Widget header(String text, [TextStyle? textStyle]) {
     if (textStyle == null) {
-      textStyle = Theme.of(context).textTheme.headline5;
+      textStyle = Theme.of(context).textTheme.headlineSmall;
     }
     return Text(
       text,

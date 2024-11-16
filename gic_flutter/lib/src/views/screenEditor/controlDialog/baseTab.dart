@@ -25,7 +25,7 @@ abstract class BaseTabState extends State<BaseTab> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(widget.translation.text(ScreenEditorText.previewHeader),
-              style: Theme.of(context).textTheme.headline5),
+              style: Theme.of(context).textTheme.headlineSmall),
         ),
         FittedBox(
           child: GicControl(

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/viewModel.dart';
 import 'package:gic_flutter/src/backend/models/viewSection.dart';
@@ -34,10 +33,8 @@ class AboutViewState extends BaseState<AboutView> {
   @override
   Widget build(BuildContext context) {
     String title = " ";
-    if (viewModel != null && viewModel.toolbarTitle != null) {
-      title = viewModel.toolbarTitle;
-    }
-    return Scaffold(
+    title = viewModel.toolbarTitle;
+      return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
         title: Text(title),
@@ -48,7 +45,7 @@ class AboutViewState extends BaseState<AboutView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              header(viewModel.appName, Theme.of(context).textTheme.headline4),
+              header(viewModel.appName, Theme.of(context).textTheme.headlineMedium),
               Text(viewModel.versionText),
               link(viewModel.url),
               section(viewModel.server, centered: true),
@@ -65,7 +62,7 @@ class AboutViewState extends BaseState<AboutView> {
   Widget _libraries(List<ViewSection>? sections) {
     if (sections != null) {
       List<Widget> widgets = <Widget>[];
-      TextStyle? textStyle = Theme.of(context).textTheme.subtitle1;
+      TextStyle? textStyle = Theme.of(context).textTheme.titleMedium;
       sections.forEach(
           (s) => widgets.add(section(s, optionalHeaderStyle: textStyle)));
 
