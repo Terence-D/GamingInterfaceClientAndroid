@@ -46,8 +46,8 @@ android {
 
     defaultConfig {
         applicationId "ca.coffeeshopstudio.gaminginterfaceclient"
-        minSdk = 19
-        targetSdk = 35
+        minSdk = flutter.minSdkVersion
+        targetSdk = 35 //flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
