@@ -13,8 +13,8 @@ class AccentButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       child: child,
-      style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary,
-      ),
+      // style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.primary,
+      // ),
 //      textColor: theme.accentTextTheme.button.color,
 //      highlightColor: theme.accentColor,
     );

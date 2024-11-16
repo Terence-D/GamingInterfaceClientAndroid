@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/viewModel.dart';
 import 'package:gic_flutter/src/theme/dimensions.dart' as dim;
@@ -36,10 +35,8 @@ class FeedbackViewState extends BaseState<FeedbackView> {
   @override
   Widget build(BuildContext context) {
     String title = " ";
-    if (viewModel != null && viewModel.toolbarTitle != null) {
-      title = viewModel.toolbarTitle;
-    }
-    return Scaffold(
+    title = viewModel.toolbarTitle;
+      return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: true,
           title: Text(title),

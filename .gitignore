@@ -94,3 +94,8 @@ gic_flutter/android/app/.settings/org.eclipse.buildship.core.prefs
 .idea/misc.xml
 .idea/codeStyles/Project.xml
 gic_flutter/.flutter-plugins-dependencies
+/xgesture_flutter/.dart_tool/package_config.json
+/xgesture_flutter/.dart_tool/package_config_subset
+/xgesture_flutter/.dart_tool/version
+/xgesture_flutter/.dart_tool/extension_discovery/vs_code.json
+/.idea/other.xml

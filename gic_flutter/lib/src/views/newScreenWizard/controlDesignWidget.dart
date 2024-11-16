@@ -1,6 +1,4 @@
 // this widget handles setting if we are portrait or landscape mode
-import
-'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlNewScreenWizard.dart';
 
@@ -33,7 +31,7 @@ class ControlDesignState extends State<ControlDesignWidget> {
         children: <Widget>[
           Text(
             widget.state.translation.text(NewScreenWizardText.buttonDesign),
-            style: Theme.of(context).textTheme.headline5,
+            style: Theme.of(context).textTheme.headlineSmall,
           ),
           Container(
             height: 50.0,

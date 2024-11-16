@@ -56,7 +56,7 @@ class DesignTabState extends BaseTabState {
           return Column(
             children: [
               Text(widget.translation.text(ScreenEditorText.designTabHeader),
-                  style: Theme.of(context).textTheme.headline5),
+                  style: Theme.of(context).textTheme.headlineSmall),
               Text(detailsText),
               Column(children: [
                 Visibility(

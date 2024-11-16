@@ -8,13 +8,11 @@ import 'package:gic_flutter/src/backend/models/launcherModel.dart';
 import 'package:gic_flutter/src/backend/services/cryptoService.dart';
 import 'package:gic_flutter/src/flavor.dart';
 import 'package:gic_flutter/src/views/about/aboutView.dart';
-import 'package:gic_flutter/src/views/donate/donateView.dart';
 import 'package:gic_flutter/src/views/feedback/feedbackView.dart';
 import 'package:gic_flutter/src/views/intro/introView.dart';
 import 'package:gic_flutter/src/views/menuOption.dart';
 import 'package:gic_flutter/src/views/newScreenWizard/newScreenWizard.dart';
 import 'package:gic_flutter/src/views/options/optionsView.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -57,19 +55,8 @@ class LauncherState extends State<Launcher> {
 
   late BuildContext showcaseContext;
 
-  late StreamSubscription<List<PurchaseDetails>> _subscription;
-
   @override
   void initState() {
-    final Stream purchaseUpdated = InAppPurchase.instance.purchaseStream;
-    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
-      _listenToPurchaseUpdated(purchaseDetailsList);
-    }, onDone: () {
-      _subscription.cancel();
-    }, onError: (error) {
-      // handle error here.
-    }) as StreamSubscription<List<PurchaseDetails>>;
-
     super.initState();
     translation = IntlLauncher(context);
     passwordController.addListener(_passwordListener);
@@ -96,7 +83,7 @@ class LauncherState extends State<Launcher> {
           currentFocus.unfocus();
         }
       },
-      child: ShowCaseWidget(builder: Builder(builder: (context) {
+      child: ShowCaseWidget(builder: (context) {
         showcaseContext = context;
         return Scaffold(
             appBar: _launcherAppBar(),
@@ -112,8 +99,7 @@ class LauncherState extends State<Launcher> {
               },
             ),
             floatingActionButton: _fab(context));
-      })),
-    );
+      }));
   }
 
   Widget _fab(BuildContext context) {
@@ -209,12 +195,6 @@ class LauncherState extends State<Launcher> {
     BuildEnvironment.init(flavor: BuildFlavor.gplay);
     assert(env != null);
 
-    if (env!.flavor == BuildFlavor.gplay) {
-      rv.add(MenuOption(
-          title: translation.text(LauncherText.menuDonate),
-          icon: Icons.present_to_all));
-    }
-
     return PopupMenuButton<MenuOption>(
       onSelected: _menuSelectAction,
       itemBuilder: (BuildContext context) {
@@ -230,10 +210,7 @@ class LauncherState extends State<Launcher> {
 
   //action to take when picking from the menu
   void _menuSelectAction(MenuOption choice) {
-    if (choice.title == translation.text(LauncherText.menuDonate)) {
-      _showUi(DonateView());
-      //_getNewActivity(Channel.actionViewDonate);
-    } else if (choice.title == translation.text(LauncherText.menuAbout)) {
+    if (choice.title == translation.text(LauncherText.menuAbout)) {
       _showUi(AboutView());
     } else if (choice.title == translation.text(LauncherText.menuFeedback)) {
       _showUi(FeedbackView());
@@ -313,28 +290,5 @@ class LauncherState extends State<Launcher> {
       }
       newScreenId = -1;
     }
-  }
-
-  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
-    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-      if (purchaseDetails.status == PurchaseStatus.pending) {
-        // _showPendingUI();
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error) {
-          // _handleError(purchaseDetails.error!);
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
-          //bool valid = await _verifyPurchase(purchaseDetails);
-          // if (valid) {
-          launcherBloc.setDonation(purchaseDetails.productID, true);
-          // } else {
-          //   _handleInvalidPurchase(purchaseDetails);
-          // }
-        }
-        if (purchaseDetails.pendingCompletePurchase) {
-          await InAppPurchase.instance.completePurchase(purchaseDetails);
-        }
-      }
-    });
   }
 }

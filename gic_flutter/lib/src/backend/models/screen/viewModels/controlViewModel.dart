@@ -207,7 +207,7 @@ class ControlViewModel {
 
   static List<String> _getImages(GicControl model) {
     List<String> images = <String>[];
-    if (model.primaryImage != null && model.primaryImage.isNotEmpty) {
+    if (model.primaryImage.isNotEmpty) {
       images.add(model.primaryImage);
     } else if (model.primaryImageResource != -1) {
       images.add(_convertDrawableResource(
@@ -215,7 +215,7 @@ class ControlViewModel {
     } else {
       return images;
     } //mo primary, no secondary
-    if (model.secondaryImage != null && model.secondaryImage.isNotEmpty) {
+    if (model.secondaryImage.isNotEmpty) {
       images.add(model.secondaryImage);
     } else if (model.secondaryImageResource != -1) {
       images.add(_convertDrawableResource(

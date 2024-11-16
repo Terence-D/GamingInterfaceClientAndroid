@@ -37,7 +37,7 @@ class TextTabState extends BaseTabState {
           return Column(
             children: [
               Text(widget.translation.text(ScreenEditorText.textTabHeader),
-                  style: Theme.of(context).textTheme.headline5),
+                  style: Theme.of(context).textTheme.headlineSmall),
               Text(widget.translation
                   .text(ScreenEditorText.textTabPrimaryDetails)),
               Row(
@@ -73,7 +73,7 @@ class TextTabState extends BaseTabState {
                 ],
               ),
               Text(widget.translation.text(ScreenEditorText.textTabFontSize),
-                  style: Theme.of(context).textTheme.headline5),
+                  style: Theme.of(context).textTheme.headlineSmall),
               Row(
                 children: [
                   Expanded(

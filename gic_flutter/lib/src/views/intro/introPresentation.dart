@@ -97,11 +97,6 @@ class IntroPresentation {
           ),
         ) // Single child scroll view
       ),
-      PageViewModel(
-        title: Intl.of(context)!.onboardSupportTitle,
-        body: Intl.of(context)!.onboardSupportDesc,
-        image: Icon(Icons.free_breakfast, size: 175.0, color: primaryColor),
-      ),
     ];
     if (oldApi != null) {
       _pages!.add(oldApi);

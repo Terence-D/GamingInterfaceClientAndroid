@@ -20,7 +20,7 @@ class _SimpleTextTabState extends State<SimpleTextTab> {
         return Column(
           children: [
             Text(widget.title,
-                style: Theme.of(context).textTheme.headline5),
+                style: Theme.of(context).textTheme.headlineSmall),
             Divider(
               height: 10,
               thickness: 2,

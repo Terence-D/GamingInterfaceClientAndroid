@@ -9,8 +9,6 @@ class LauncherModel {
   String address = "";
   String password = "";
   String port = "";
-  bool donate = false;
-  bool donateStar = false;
   List<ScreenListItem> screens = [];
   int newScreenid = 0;
 }

@@ -3,15 +3,27 @@ import 'package:gic_flutter/src/theme/style.dart';
 
 enum ThemeKeys { LIGHT, DARK }
 
+class MyAppThemes {
+  static final lightTheme = ThemeData(
+    primaryColor: myDarkTheme().primaryColor,
+    brightness: Brightness.light,
+  );
+
+  static final darkTheme = ThemeData(
+    primaryColor: myLightTheme().primaryColor,
+    brightness: Brightness.dark,
+  );
+}
+
 class Themes {
   static ThemeData getThemeFromKey(ThemeKeys themeKey) {
     switch (themeKey) {
       case ThemeKeys.LIGHT:
-        return lightTheme();
+        return ThemeData.light();
       case ThemeKeys.DARK:
-        return darkTheme();
+        return ThemeData.dark();
       default:
-        return darkTheme();
+        return ThemeData.dark();
     }
   }
 }

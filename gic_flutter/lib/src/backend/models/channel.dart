@@ -8,8 +8,7 @@ class Channel {
   static const String actionViewStart = "start";
   static const String actionViewEdit = "edit";
   static const String actionViewManager = "manager";
-  static const String actionViewDonate = "donate";
-  
+
   static const String actionUtilDecrypt = "decrypt";
   static const String actionUtilEncrypt = "encrypt";
   static const String actionGetDownloadFolder = "downloadFolder";

@@ -14,7 +14,6 @@ import 'package:gic_flutter/src/views/screen/screenVM.dart';
 import 'package:gic_flutter/src/views/screen/screenView.dart';
 import 'package:gic_flutter/src/views/screenEditor/screenEditor.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -109,7 +108,7 @@ class _ScreenListState extends State<ScreenList> {
 
   Widget _deleteButton(BuildContext context, int index) {
     IconButton deleteButton = IconButton(
-      color: Theme.of(context).errorColor,
+      color: Theme.of(context).colorScheme.error,
       icon: Icon(Icons.delete_forever),
       tooltip: widget._translations.text(LauncherText.buttonDelete),
 //                        key: delete,
@@ -414,16 +413,15 @@ class _ScreenListState extends State<ScreenList> {
 
   Future _validateSettings(
       NetworkModel networkModel, BuildContext context, int screenId) async {
-    if (networkModel.password == null ||
-        CryptoService.decrypt(networkModel.password).length < 6) {
+    if (CryptoService.decrypt(networkModel.password).length < 6) {
       _showMessage(widget._translations.text(LauncherText.errorPassword));
       return;
     }
-    if (networkModel.port == null || int.tryParse(networkModel.port) == null) {
+    if (int.tryParse(networkModel.port) == null) {
       _showMessage(widget._translations.text(LauncherText.errorPort));
       return;
     }
-    if (networkModel.address == null || networkModel.address.isEmpty) {
+    if (networkModel.address.isEmpty) {
       _showMessage(widget._translations.text(LauncherText.errorServerInvalid));
       return;
     }
@@ -531,7 +529,7 @@ class _ScreenListState extends State<ScreenList> {
     // if (path != null) {
     //   if (await Permission.storage.request().isGranted) {
         String result = await widget._parent.launcherBloc.export(path, id);
-        if (result != null) await Share.shareFiles(["$result.zip"]);
+        await Share.shareXFiles([XFile("$result.zip")]);
     //   }
     // }
   }

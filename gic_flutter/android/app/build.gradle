@@ -30,11 +30,10 @@ if (keystorePropertiesFile.exists()) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-apply plugin: 'kotlin-android-extensions'
 
 android {
     flavorDimensions "version"
-    compileSdkVersion 33
+    compileSdk = flutter.compileSdkVersion
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
@@ -47,8 +46,8 @@ android {
 
     defaultConfig {
         applicationId "ca.coffeeshopstudio.gaminginterfaceclient"
-        minSdkVersion 16
-        targetSdkVersion 33
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -93,5 +92,5 @@ flutter {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.20"
 }

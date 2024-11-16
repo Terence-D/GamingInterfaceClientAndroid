@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gic_flutter/src/backend/models/autoItKeyMap.dart';
 import 'package:gic_flutter/src/backend/models/intl/intlScreenEditor.dart';
 import 'package:gic_flutter/src/backend/models/screen/command.dart';
-import 'package:gic_flutter/src/backend/models/screen/controlDefaults.dart';
-import 'package:gic_flutter/src/backend/models/screen/gicControl.dart';
 import 'package:gic_flutter/src/backend/models/screen/viewModels/controlViewModel.dart';
 import 'package:gic_flutter/src/views/screenEditor/controlDialog/baseTab.dart';
 import 'package:gic_flutter/src/views/screenEditor/gicEditControl.dart';
@@ -59,7 +57,7 @@ class CommandTabState extends BaseTabState {
           return Column(
             children: [
               Text(widget.translation.text(ScreenEditorText.commandTabHeader),
-                  style: Theme.of(context).textTheme.headline5),
+                  style: Theme.of(context).textTheme.headlineSmall),
               Visibility(
                 child: Text(widget.translation
                     .text(ScreenEditorText.commandTabPrimaryToggleDetails)),

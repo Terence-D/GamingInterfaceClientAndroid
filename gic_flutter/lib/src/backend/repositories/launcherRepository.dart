@@ -20,8 +20,6 @@ class LauncherRepository {
   static const String _prefPort = "port";
   static const String _prefAddress = "address";
   static const String _prefConvertB = "legacyConvertScreensB";
-  static const String _prefDonate = "coffee";
-  static const String _prefDonateStar = "star";
 
   /// Startup method, retrieves pay and version settings
   /// Once done will load in the view model
@@ -219,18 +217,6 @@ class LauncherRepository {
 
     //donation settings
     //await InAppPurchase.instance.restorePurchases();
-    if (_prefs.containsKey(_prefDonate)) {
-      viewModel.donate = _prefs.getBool(_prefDonate)!;
-    } else {
-      viewModel.donate = false;
-    }
-
-    if (_prefs.containsKey(_prefDonateStar)) {
-      viewModel.donateStar = _prefs.getBool(_prefDonateStar)!;
-    } else {
-      viewModel.donateStar = false;
-    }
-
     return viewModel;
   }
 
