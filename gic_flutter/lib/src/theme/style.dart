@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
-ThemeData darkTheme() {
+class DarkColors {
+
+}
+
+ThemeData myDarkTheme() {
   return ThemeData(
     primaryColor: Color(0xff3F51B5),
     primaryColorDark: Color(0xff2A41B3),
@@ -27,7 +31,7 @@ ThemeData darkTheme() {
   );
 }
 
-ThemeData lightTheme() {
+ThemeData myLightTheme() {
   return ThemeData(
     brightness: Brightness.light,
 

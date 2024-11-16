@@ -41,24 +41,24 @@ class OptionsViewState extends BaseState<OptionsView> {
         title: Text(title),
       ),
       body: ListView(children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListTile(
-            title: Text(_viewModel.darkModeTitle),
-            subtitle: Text(_viewModel.darkModelText),
-            trailing: Checkbox(
-              value: _viewModel.darkMode,
-              onChanged: (val) {
-                _setTheme(val!);
-              },
-            ),
-            onTap: () {
-              setState(() {
-                _setTheme(!_viewModel.darkMode);
-              });
-            },
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.all(8.0),
+        //   child: ListTile(
+        //     title: Text(_viewModel.darkModeTitle),
+        //     subtitle: Text(_viewModel.darkModelText),
+        //     trailing: Checkbox(
+        //       value: _viewModel.darkMode,
+        //       onChanged: (val) {
+        //         _setTheme(val!);
+        //       },
+        //     ),
+        //     onTap: () {
+        //       setState(() {
+        //         _setTheme(!_viewModel.darkMode);
+        //       });
+        //     },
+        //   ),
+        // ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListTile(
@@ -120,6 +120,15 @@ class OptionsViewState extends BaseState<OptionsView> {
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 
   void _setTheme(bool val) {
+    ThemeMode _themeMode = ThemeMode.system;
+
+    setState(() {
+      if (val)
+        _themeMode = ThemeMode.light;
+      else
+        _themeMode = ThemeMode.dark;
+    });
+
     (presentation as OptionsPresentation).setTheme(val);
     if (val) {
       CustomTheme.instanceOf(context).changeTheme(ThemeKeys.DARK);

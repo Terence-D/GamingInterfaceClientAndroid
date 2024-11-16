@@ -165,14 +165,6 @@ class Intl {
     return _localized[locale.languageCode]!['onboardOldAndroidDesc']!;
   }
 
-  String get onboardSupportTitle {
-    return _localized[locale.languageCode]!['onboardSupportTitle']!;
-  }
-
-  String get onboardSupportDesc {
-    return _localized[locale.languageCode]!['onboardSupportDesc']!;
-  }
-
   String get onboardImportSuccess {
     return _localized[locale.languageCode]!['onboardImportSuccess']!;
   }
